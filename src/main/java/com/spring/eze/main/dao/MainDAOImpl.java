@@ -5,7 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public class mainDAOImpl implements mainDAO{
+public class MainDAOImpl implements MainDAO{
 
 
     @Autowired

@@ -1,16 +1,17 @@
 package com.spring.eze.main.controller;
 
-import com.spring.eze.main.service.mainService;
+import com.spring.eze.main.service.MainService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.Mapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 
-@Controller
-public class mainController {
+@Controller("/main")
+public class MainController {
 
     @Autowired
-    private mainService service;
+    private MainService service;
 
+	@RequestMapping("/")
     public void testDBConnection(){
 
         try {

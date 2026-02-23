@@ -1,3 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 <!-- Mybatis 설정 시작 -->
 	<!-- 컨넥션풀 -->
 	<bean id="dataSource" class="org.springframework.jndi.JndiObjectFactoryBean">
@@ -16,3 +20,4 @@
 	</bean>
 	<!-- Mybatis 설정 종료 -->
 
+</beans>
