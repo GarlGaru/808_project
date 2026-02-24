@@ -4,6 +4,8 @@ import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import com.spring.eze.main.dto.TestDTO;
+
 @Repository
 public class MainDAOImpl implements MainDAO{
 
@@ -12,7 +14,10 @@ public class MainDAOImpl implements MainDAO{
     private SqlSession sqlSession;
 
     @Override
-    public void testDBConnection() {
-
+    public TestDTO testDBConnection() {
+    	System.out.println("MainDAOImpl");
+    	MainDAO dao = sqlSession.getMapper(MainDAO.class);
+    	TestDTO dto = dao.testDBConnection();
+    	return dto;
     }
 }

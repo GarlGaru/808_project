@@ -5,7 +5,7 @@
 <!-- Mybatis 설정 시작 -->
 	<!-- 컨넥션풀 -->
 	<bean id="dataSource" class="org.springframework.jndi.JndiObjectFactoryBean">
-		<property name="jndiName" value="java:comp/env/jdbc/jsp_pj_ict06" />   <!-- 컨넥션 풀 lookup -->
+		<property name="jndiName" value="java:comp/env/jdbc/eze" />   <!-- 컨넥션 풀 lookup -->
 		<property name="resourceRef" value="true" />
 	</bean>
 
