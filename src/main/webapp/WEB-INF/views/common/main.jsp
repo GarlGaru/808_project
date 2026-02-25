@@ -407,7 +407,6 @@
 
 
 
-
     <%@ include file="/WEB-INF/views/common/footer.jsp" %>
 
     <script src="${path}/resources/common/js/jquery/jquery-2.2.4.min.js"></script>
