@@ -2,8 +2,11 @@ package com.spring.eze.show.controller;
 
 
 import com.spring.eze.main.service.MainService;
+import com.spring.eze.show.dto.Seat.SeatDTO;
+import com.spring.eze.show.service.Seat.SeatSerivce;
 
 import java.io.IOException;
+import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -25,7 +28,9 @@ public class ShowController {
 
 	@Autowired
     private MainService service;
-
+	@Autowired
+	private SeatSerivce seatservice;
+	
 	@RequestMapping("")
     public String show(HttpServletRequest request, HttpServletResponse response, Model model)
 			throws ServletException, IOException {
@@ -34,4 +39,16 @@ public class ShowController {
 		return "show/show";
     }
 
+	
+	@RequestMapping("/seat")
+    public String seat(HttpServletRequest request, HttpServletResponse response, Model model)
+			throws ServletException, IOException {
+		log.info("ShowController - seat화면");
+
+		String scheduleId = request.getParameter("schedule_id");
+	    List<SeatDTO> list = seatservice.getSeatList(scheduleId);
+
+	    model.addAttribute("list", list);
+	    return "show/seat_select";
+    }
 }
