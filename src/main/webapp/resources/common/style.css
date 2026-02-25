@@ -1,0 +1,184 @@
+:root {
+  --page-bg-start: #dbeafe;
+  --page-bg-mid: #93c5fd;
+  --page-bg-end: #3b82f6;
+  --action-primary-bg: #2563eb;
+  --action-primary-border: #2563eb;
+  --action-primary-hover-bg: #1d4ed8;
+  --action-primary-hover-border: #1d4ed8;
+}
+
+body {
+  background: linear-gradient(
+    140deg,
+    var(--page-bg-start) 0%,
+    var(--page-bg-mid) 45%,
+    var(--page-bg-end) 100%
+  );
+  min-height: 100vh;
+}
+
+.sample-main {
+  padding-top: 150px;
+  padding-bottom: 60px;
+}
+
+.sample-panel,
+.side-panel {
+  border-radius: 18px;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.25);
+}
+
+.sample-panel {
+  background: rgba(255, 255, 255, 0.96);
+}
+
+.side-panel {
+  background: rgba(245, 248, 255, 0.94);
+}
+
+.side-panel h5 {
+  font-weight: 700;
+}
+
+.theme-choice-btn {
+  width: 100%;
+  border-radius: 999px;
+  border: 2px solid transparent;
+  font-weight: 700;
+  color: #ffffff;
+}
+
+.theme-choice-btn:hover,
+.theme-choice-btn:focus {
+  color: #ffffff;
+}
+
+.theme-choice-btn.active {
+  box-shadow: 0 0 0 3px rgba(17, 24, 39, 0.25);
+}
+
+.theme-blue {
+  background: #2563eb;
+}
+
+.theme-orange {
+  background: #ea580c;
+}
+
+.theme-gradient {
+  background: linear-gradient(90deg, #2563eb 0%, #ea580c 100%);
+}
+
+.link-button {
+  min-width: 200px;
+}
+
+.spotify-action-btn {
+  min-width: 180px;
+  height: 48px;
+  border-radius: 999px;
+  font-weight: 700;
+  font-size: 15px;
+  letter-spacing: 0.01em;
+  border: 1px solid transparent;
+  transition: all 0.2s ease;
+}
+
+.spotify-action-btn:focus {
+  box-shadow: none;
+}
+
+.spotify-action-primary {
+  background: var(--action-primary-bg);
+  border-color: var(--action-primary-border);
+  color: #ffffff;
+}
+
+.spotify-action-primary:hover,
+.spotify-action-primary:focus {
+  background: var(--action-primary-hover-bg);
+  border-color: var(--action-primary-hover-border);
+  color: #ffffff;
+}
+
+.spotify-action-cancel {
+  background-color: #393939;
+  border-color: #121212;
+  color: #ffffff;
+}
+
+.spotify-action-cancel:hover,
+.spotify-action-cancel:focus {
+  background-color: #000000;
+  border-color: #000000;
+  color: #ffffff;
+}
+
+.spotify-action-neutral {
+  background-color: #ffffff;
+  border-color: #d9d9d9;
+  color: #121212;
+}
+
+.spotify-action-neutral:hover,
+.spotify-action-neutral:focus {
+  background-color: #f5f5f5;
+  border-color: #bdbdbd;
+  color: #121212;
+}
+
+#statusMessage {
+  font-size: 15px;
+}
+
+body.dark-mode .sample-panel,
+body.dark-mode .side-panel {
+  background: rgba(18, 18, 18, 0.94);
+  color: #f3f4f6;
+}
+
+body.dark-mode .sample-panel h4,
+body.dark-mode .sample-panel p,
+body.dark-mode .sample-panel label,
+body.dark-mode .side-panel h5,
+body.dark-mode .custom-control-label {
+  color: #f3f4f6;
+}
+
+body.dark-mode .form-control {
+  background-color: #1f2937;
+  border-color: #4b5563;
+  color: #ffffff;
+}
+
+body.dark-mode .form-control::placeholder {
+  color: #d1d5db;
+}
+
+body.dark-mode .list-group-item {
+  background-color: #111827;
+  border-color: #374151;
+  color: #f9fafb;
+}
+
+body.dark-mode #statusMessage {
+  background-color: #111827;
+  border-color: #374151;
+  color: #f9fafb;
+}
+
+body.dark-mode hr {
+  border-top-color: rgba(255, 255, 255, 0.2);
+}
+
+@media (max-width: 767.98px) {
+  .sample-main {
+    padding-top: 110px;
+  }
+
+  .spotify-action-btn {
+    width: 100%;
+  }
+}
+
