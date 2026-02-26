@@ -1672,6 +1672,39 @@ img {
     font-size: 16px; }
   .single-web-icon:hover {
     box-shadow: 0 2px 50px 0 rgba(0, 0, 0, 0.15); }
+    
+    
+    
+    
+    /* =====여기서 부터 추가====== */
+	.play-overlay {
+	    position: absolute;
+	    bottom: 15px;
+	    right: 15px;
+	    width: 32px;
+	    height: 32px;
+	    background: #1DB954;
+	    border-radius: 50%;
+	    display: flex;
+	    align-items: center;
+	    justify-content: center;
+	    color: black;
+	    font-weight: bold;
+	    font-size: 14px;
+	    opacity: 0;
+	    transform: translateY(10px);
+	    transition: 
+	        opacity 0.25s ease 0.2s,   /* 0.2초 딜레이 */
+	        transform 0.25s ease 0.2s;
+	}
+
+	.music-card:hover .play-overlay {
+	    opacity: 1;
+	    transform: translateY(-0px);
+	} 
+	.card-body {
+	    background: linear-gradient(to top, #000 70%, rgba(0,0,0,0.8));
+	}
 
 /* ====== The End ====== */
 

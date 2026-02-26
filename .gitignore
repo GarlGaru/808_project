@@ -53,10 +53,11 @@ tmp/
 *.swp
 *~.nib
 local.properties
-#.settings/
+.settings/
 .loadpath
 .recommenders
 target/
+.classpath
 
 # External tool builders
 .externalToolBuilders/

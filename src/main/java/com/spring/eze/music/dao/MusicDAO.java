@@ -1,0 +1,25 @@
+package com.spring.eze.music.dao;
+
+import java.util.List;
+import java.util.Map;
+
+import com.spring.eze.music.dto.SongDTO;
+
+public interface MusicDAO {
+
+	public List<SongDTO> getSongList();
+
+    public SongDTO getSongDetail(int songId);
+
+    public List<SongDTO> getSimilarSongs(Map<String, Object> param);
+
+    public List<SongDTO> searchSongs(String keyword);
+
+    public void insertPlayLog(int songId, int userId);
+
+    public void insertSongLike(int songId, int userId);
+
+    public void deleteSongLike(int songId, int userId);
+
+    public int existsSongLike(int songId, int userId);
+}
