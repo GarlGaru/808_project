@@ -2,11 +2,9 @@ package com.spring.eze.show.controller;
 
 
 import com.spring.eze.main.service.MainService;
-import com.spring.eze.show.dto.Seat.SeatDTO;
 import com.spring.eze.show.service.Seat.SeatService;
 
 import java.io.IOException;
-import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -17,25 +15,25 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
+
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
 @RequestMapping("/show")
 public class ShowController {
-	
-	private static final Logger log = LoggerFactory.getLogger(ShowController.class);
+   
+   private static final Logger log = LoggerFactory.getLogger(ShowController.class);
 
-	@Autowired
+    @Autowired
     private MainService service;
-	
 	@Autowired
 	private SeatService seatService;
-	
-	@RequestMapping("")
+
+   
+   @RequestMapping("")
     public String show(HttpServletRequest request, HttpServletResponse response, Model model)
-			throws ServletException, IOException {
-		log.info("ShowController - main화면");
+         throws ServletException, IOException {
+      log.info("ShowController - main화면");
 
 		return "show/show";
     }
@@ -49,5 +47,4 @@ public class ShowController {
 		seatService.getSeatList(request, response, model);
 		return "show/seat";
     }
-
 }
