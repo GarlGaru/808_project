@@ -1,4 +1,4 @@
-﻿<!-- ##### Header Area Start ##### -->
+<!-- ##### Header Area Start ##### -->
 <header class="header-area">
     <div class="oneMusic-main-menu">
         <div class="classy-nav-container breakpoint-off">
