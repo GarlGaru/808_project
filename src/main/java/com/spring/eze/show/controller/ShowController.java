@@ -2,8 +2,8 @@ package com.spring.eze.show.controller;
 
 
 import com.spring.eze.main.service.MainService;
-import com.spring.eze.show.dto.Seat.SeatDTO;
-import com.spring.eze.show.service.Seat.SeatSerivce;
+import com.spring.eze.show.dto.review.ReviewDTO;
+import com.spring.eze.show.service.review.ReviewService;
 
 import java.io.IOException;
 import java.util.List;
@@ -17,38 +17,42 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
+
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
 @RequestMapping("/show")
 public class ShowController {
-	
-	private static final Logger log = LoggerFactory.getLogger(ShowController.class);
+   
+   private static final Logger log = LoggerFactory.getLogger(ShowController.class);
 
-	@Autowired
+   @Autowired
     private MainService service;
-	@Autowired
-	private SeatSerivce seatservice;
-	
-	@RequestMapping("")
+   
+   @Autowired
+    private ReviewService rservice;
+   
+   @RequestMapping("")
     public String show(HttpServletRequest request, HttpServletResponse response, Model model)
-			throws ServletException, IOException {
-		log.info("ShowController - main화면");
+         throws ServletException, IOException {
+      log.info("ShowController - main화면");
 
-		return "show/show";
+      return "show/show";
     }
-
-	
-	@RequestMapping("/seat")
-    public String seat(HttpServletRequest request, HttpServletResponse response, Model model)
-			throws ServletException, IOException {
-		log.info("ShowController - seat화면");
-
-		String scheduleId = request.getParameter("schedule_id");
-	    List<SeatDTO> list = seatservice.getSeatList(scheduleId);
-
-	    model.addAttribute("list", list);
-	    return "show/seat_select";
-    }
+   
+   @RequestMapping("/reviewList")
+   public String reviewList(HttpServletRequest request, HttpServletResponse response, Model model)
+	         throws ServletException, IOException {
+       
+       List<ReviewDTO> reviews = rservice.getReviewList(request, response, model);
+       int totalCount = rservice.getTotalReviewCount(request, response, model);
+       String[] concertList = {"지킬앤하이드", "레미제라블", "데스노트", "오페라의유령", "위키드", 
+               "맘마미아", "시카고", "캣츠", "킹키부츠", "노트르담드파리"};
+       
+       model.addAttribute("concertList", concertList);
+       model.addAttribute("reviews", reviews);
+       model.addAttribute("totalCount", totalCount);
+       return "show/review";
+   }
+	 
 }
