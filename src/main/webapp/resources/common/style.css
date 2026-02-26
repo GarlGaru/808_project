@@ -1,11 +1,11 @@
 :root {
-  --page-bg-start: #dbeafe;
-  --page-bg-mid: #93c5fd;
-  --page-bg-end: #3b82f6;
-  --action-primary-bg: #2563eb;
-  --action-primary-border: #2563eb;
-  --action-primary-hover-bg: #1d4ed8;
-  --action-primary-hover-border: #1d4ed8;
+  --page-bg-start: #ffedde;
+  --page-bg-mid: #DF8845;
+  --page-bg-end: #ED6701;
+  --action-primary-bg: linear-gradient(90deg, #DF8845 0%, #ED6701 100%);
+  --action-primary-border: #ed670100;
+  --action-primary-hover-bg: #ED6701;
+  --action-primary-hover-border: #ed670100;
 }
 
 body {
