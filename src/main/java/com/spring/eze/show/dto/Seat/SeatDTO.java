@@ -1,133 +1,116 @@
 package com.spring.eze.show.dto.Seat;
 
-import java.time.LocalDateTime;
 import java.util.Date;
 
 public class SeatDTO {
 
-	
+    private int seatId;
+    private String showId;		//API Id
+    private int scheduleId;	//공연 날짜 및 시간
+    private String userId;
+
+    private String seatLabel;	  // 예 A-10
+    private String resSeatLabel;  // 좌석 라벨 (예: A열 15번) -> 예약된
+    private String seatGrade;     // 좌석 등급 (VIP, R석 등)
+    private String seatStatus;    // 예약 상태 (예약중, 완료, 취소 등)
    
-    private int seat_id;
-	private String user_id;
-    private String schedule_id;	//공연 날짜 및 시간
-
-    private String res_seat_label;  // 좌석 라벨 (예: A열 15번)
-    private String seat_grade;     // 좌석 등급 (VIP, R석 등)
-    private String seat_status;    // 예약 상태 (예약중, 완료, 취소 등)
-    
-    private Date hold_At;        // 선점 시작 시간
-    private Date hold_Expires;	  // 선점 만료 시간	 
-    
-    
-    public SeatDTO(int seat_id, String user_id, String schedule_id, String res_seat_label, String seat_grade,
-			String seat_status, Date hold_At, Date hold_Expires) {
+    private Date holdAt;        // 선점 시작 시간
+	
+    public SeatDTO() {
 		super();
-		this.seat_id = seat_id;
-		this.user_id = user_id;
-		this.schedule_id = schedule_id;
-		this.res_seat_label = res_seat_label;
-		this.seat_grade = seat_grade;
-		this.seat_status = seat_status;
-		this.hold_At = hold_At;
-		this.hold_Expires = hold_Expires;
+		// TODO Auto-generated constructor stub
 	}
 
-    
-	public SeatDTO() {
+	public SeatDTO(int seatId, String showId, int scheduleId, String userId, String seatLabel, String resSeatLabel,
+			String seatGrade, String seatStatus, Date holdAt) {
 		super();
+		this.seatId = seatId;
+		this.showId = showId;
+		this.scheduleId = scheduleId;
+		this.userId = userId;
+		this.seatLabel = seatLabel;
+		this.resSeatLabel = resSeatLabel;
+		this.seatGrade = seatGrade;
+		this.seatStatus = seatStatus;
+		this.holdAt = holdAt;
 	}
 
-
-
-	public int getSeat_id() {
-		return seat_id;
+	public int getSeatId() {
+		return seatId;
 	}
 
-
-
-	public void setSeat_id(int seat_id) {
-		this.seat_id = seat_id;
+	public void setSeatId(int seatId) {
+		this.seatId = seatId;
 	}
 
-
-
-	public String getUser_id() {
-		return user_id;
+	public String getShowId() {
+		return showId;
 	}
 
-
-	public void setUser_id(String user_id) {
-		this.user_id = user_id;
+	public void setShowId(String showId) {
+		this.showId = showId;
 	}
 
-
-	public String getSchedule_id() {
-		return schedule_id;
+	public int getScheduleId() {
+		return scheduleId;
 	}
 
-
-	public void setSchedule_id(String schedule_id) {
-		this.schedule_id = schedule_id;
+	public void setScheduleId(int scheduleId) {
+		this.scheduleId = scheduleId;
 	}
 
-
-	public String getRes_seat_label() {
-		return res_seat_label;
+	public String getUserId() {
+		return userId;
 	}
 
-
-	public void setRes_seat_label(String res_seat_label) {
-		this.res_seat_label = res_seat_label;
+	public void setUserId(String userId) {
+		this.userId = userId;
 	}
 
-
-	public String getSeat_grade() {
-		return seat_grade;
+	public String getSeatLabel() {
+		return seatLabel;
 	}
 
-
-	public void setSeat_grade(String seat_grade) {
-		this.seat_grade = seat_grade;
+	public void setSeatLabel(String seatLabel) {
+		this.seatLabel = seatLabel;
 	}
 
-
-	public String getSeat_status() {
-		return seat_status;
+	public String getResSeatLabel() {
+		return resSeatLabel;
 	}
 
-
-	public void setSeat_status(String seat_status) {
-		this.seat_status = seat_status;
+	public void setResSeatLabel(String resSeatLabel) {
+		this.resSeatLabel = resSeatLabel;
 	}
 
-
-	public Date getHold_At() {
-		return hold_At;
+	public String getSeatGrade() {
+		return seatGrade;
 	}
 
-
-	public void setHold_At(Date hold_At) {
-		this.hold_At = hold_At;
+	public void setSeatGrade(String seatGrade) {
+		this.seatGrade = seatGrade;
 	}
 
-
-	public Date getHold_Expires() {
-		return hold_Expires;
+	public String getSeatStatus() {
+		return seatStatus;
 	}
 
-
-	public void setHold_Expires(Date hold_Expires) {
-		this.hold_Expires = hold_Expires;
+	public void setSeatStatus(String seatStatus) {
+		this.seatStatus = seatStatus;
 	}
 
+	public Date getHoldAt() {
+		return holdAt;
+	}
+
+	public void setHoldAt(Date holdAt) {
+		this.holdAt = holdAt;
+	}
 
 	@Override
 	public String toString() {
-		return "SeatDTO [seat_id=" + seat_id + ", user_id=" + user_id + ", schedule_id=" + schedule_id
-				+ ", res_seat_label=" + res_seat_label + ", seat_grade=" + seat_grade + ", seat_status=" + seat_status
-				+ ", hold_At=" + hold_At + ", hold_Expires=" + hold_Expires + "]";
+		return "SeatDTO [seatId=" + seatId + ", showId=" + showId + ", scheduleId=" + scheduleId + ", userId=" + userId
+				+ ", seatLabel=" + seatLabel + ", resSeatLabel=" + resSeatLabel + ", seatGrade=" + seatGrade
+				+ ", seatStatus=" + seatStatus + ", holdAt=" + holdAt + "]";
 	}
-    
-    
-    
 }
