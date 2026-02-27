@@ -3,6 +3,7 @@ package com.spring.eze.show.controller;
 
 import com.spring.eze.main.service.MainService;
 import com.spring.eze.show.service.Seat.SeatService;
+import com.spring.eze.show.service.show.ShowService;
 
 import java.io.IOException;
 
@@ -28,17 +29,22 @@ public class ShowController {
     private MainService service;
 	@Autowired
 	private SeatService seatService;
+	@Autowired
+	private ShowService showservice;
 
    
-   @RequestMapping("")
+   // [공연메인] -------------
+	@RequestMapping("")
     public String show(HttpServletRequest request, HttpServletResponse response, Model model)
          throws ServletException, IOException {
       log.info("ShowController - main화면");
 
+      	showservice.getShowMain(request, response, model);
 		return "show/show";
     }
-	
-	// 좌석맵 조회(회차별)
+   
+   // [좌석] -------------
+   // 좌석맵 조회(회차별)
 	@RequestMapping("/seat")
 	public String seat(HttpServletRequest request, HttpServletResponse response, Model model)
 			throws ServletException, IOException {
@@ -47,4 +53,8 @@ public class ShowController {
 		seatService.getSeatList(request, response, model);
 		return "show/seat";
     }
+	
+
+	
+ 
 }
