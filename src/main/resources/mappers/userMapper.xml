@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+<mapper namespace="com.spring.eze.user.dao.UserDAO">
+
+    <!-- ResultMap -->
+    <resultMap id="userMap" type="com.spring.eze.user.dto.UserDTO">
+        <id     property="userId"        column="user_id"/>
+        <result property="email"         column="email"/>
+        <result property="password"      column="password"/>
+        <result property="nickname"      column="nickname"/>
+        <result property="emailVerified" column="email_verified"/>
+        <result property="createdAt"     column="created_at"/>
+    </resultMap>
+
+    <resultMap id="emailCodeMap" type="com.spring.eze.user.dto.EmailCodeDTO">
+        <id     property="emailCodeId" column="email_code_id"/>
+        <result property="email"       column="email"/>
+        <result property="code"        column="code"/>
+        <result property="expiresAt"   column="expires_at"/>
+        <result property="createdAt"   column="created_at"/>
+    </resultMap>
+
+    <!-- 1. 회원가입 -->
+    <insert id="insertUser" parameterType="com.spring.eze.user.dto.UserDTO">
+        INSERT INTO user_tbl (user_id, email, password, nickname)
+        VALUES (
+            (SELECT NVL(MAX(user_id), 0) + 1 FROM user_tbl),
+            #{email}, #{password}, #{nickname}
+        )
+    </insert>
+
+    <!-- 2. 이메일 중복확인 -->
+    <select id="checkEmail" parameterType="String" resultType="int">
+        SELECT COUNT(*)
+          FROM user_tbl
+         WHERE email = #{email}
+    </select>
+
+    <!-- 3. 닉네임 중복확인 -->
+    <select id="checkNickname" parameterType="String" resultType="int">
+        SELECT COUNT(*)
+          FROM user_tbl
+         WHERE nickname = #{nickname}
+    </select>
+
+    <!-- 4. 로그인 시 유저 조회 -->
+    <select id="getUserByEmail" parameterType="String" resultMap="userMap">
+        SELECT user_id,
+               email,
+               password,
+               nickname,
+               email_verified,
+               created_at
+          FROM user_tbl
+         WHERE email = #{email}
+    </select>
+
+    <!-- 5. 이메일 인증 완료 처리 -->
+    <update id="updateEmailVerified" parameterType="String">
+        UPDATE user_tbl
+           SET email_verified = 1
+         WHERE email = #{email}
+    </update>
+    
+	<!-- 6. 비밀번호 수정 -->
+    <update id="updatePw" parameterType="java.util.Map">
+    <!-- 이메일이 일치하는 사용자의 비밀번호를 새로운 값으로 변경합니다. -->
+    UPDATE user_tbl
+       SET password = #{password}
+     WHERE email = #{email}
+	</update>
+
+
+    <!-- 7. 회원탈퇴 -->
+    <delete id="deleteUser" parameterType="String">
+        DELETE FROM user_tbl
+         WHERE email = #{email}
+    </delete>
+
+    <!-- 8. 인증코드 저장 -->
+	<insert id="insertEmailCode" parameterType="com.spring.eze.user.dto.EmailCodeDTO">
+	    <!--   시퀀스 대신 서브쿼리를 사용하여 최대 ID + 1을 생성하여 넣습니다. -->
+	    INSERT INTO email_code_tbl (
+	        email_code_id, 
+	        email, 
+	        code, 
+	        expires_at, 
+	        created_at
+	    ) VALUES (
+	        (SELECT NVL(MAX(email_code_id), 0) + 1 FROM email_code_tbl), #{email, jdbcType=VARCHAR},
+	        #{code, jdbcType=VARCHAR},
+	        SYSDATE + (5/1440),
+	        SYSDATE
+	    )
+	</insert>
+
+    <!-- 9. 인증코드 조회 (가장 최근 1건) -->
+	<select id="getEmailCode" parameterType="String" resultMap="emailCodeMap">
+	    SELECT * FROM (
+	        SELECT * FROM email_code_tbl
+	        WHERE email = #{email, jdbcType=VARCHAR}
+	          AND expires_at > SYSDATE
+	        ORDER BY created_at DESC
+	    ) WHERE ROWNUM = 1
+	</select>
+
+
+</mapper>
+

@@ -15,9 +15,7 @@
 <body class="dark-mode">
     <%@ include file="/WEB-INF/views/common/common.jsp" %>
     <%@ include file="/WEB-INF/views/common/header.jsp" %>
-
-
-
+   
     <!-- ##### Hero Area Start ##### -->
     <section class="hero-area">
         <div class="hero-slides owl-carousel">
@@ -414,5 +412,6 @@
     <script src="${path}/resources/common/js/plugins/plugins.js"></script>
     <script src="${path}/resources/common/js/active.js"></script>
     <script src="${path}/resources/common/js/main.js"></script>
+    
 </body>
 </html>
