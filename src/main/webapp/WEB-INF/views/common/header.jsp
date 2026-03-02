@@ -25,7 +25,14 @@
 								<li><a href="${path}/main">Home</a></li>
 								<li><a href="${path}/music">Music</a></li>
 								<li><a href="${path}/show">Show</a></li>
-								<li><a href="#">Contact</a></li>
+								<c:if test="${sessionScope.loginUser.nickname == 'admin'}">
+									<li><a href="${path}/admin">ADMIN</a></li>
+								</c:if>
+								<c:if test="${sessionScope.loginUser.nickname != 'admin'}">
+									<li><a href="#">Contact</a></li>
+								</c:if>
+
+
 							</ul>
 
 							<div class="login-register-cart-button d-flex align-items-center">

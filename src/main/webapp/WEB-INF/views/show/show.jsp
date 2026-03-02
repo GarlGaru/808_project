@@ -105,9 +105,14 @@
     <%@ include file="/WEB-INF/views/common/common.jsp" %>
     <%@ include file="/WEB-INF/views/common/header.jsp" %>
     <br><br><br><br>
+    <br><br><br><br>
 
-    
-
+	<div class="section" style="justify-content-center">
+		<a href="${path}/show/seat-detail">
+			<img src="${path}/resources/presentation/show.png">
+		</a>
+    </div>
+<%-- 
     <div class="show-wrap">
      	<!-- 1) 장르 배너 시작 -->
      	<div class="genre-bar">
@@ -172,8 +177,8 @@
      			<button type="button" class="nav-btn nav-right" onclick="scrollTrack('upcomingTrack', 1)"></button>
      		</div>
      	</div>
-    </div>
-
+    </div> 
+ --%>
 
     <br><br><br><br>
 

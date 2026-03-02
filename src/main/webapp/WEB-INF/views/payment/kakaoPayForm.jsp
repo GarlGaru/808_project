@@ -45,11 +45,17 @@
 		<form action="${pageContext.request.contextPath}/kakaopay/ready"
 			method="post">
 			
-			<div class="payment-dev">
-				<label>상품명</label><br/> 
-				<input type="text" name="paymentType"
-					placeholder="결제타입을 입력하세요" required />
-			</div>
+			<table class="payment-dev" border="1" style="width:400px;">
+             <tr>
+                 <th style="width:120px;">상품명</th>
+                 <td>
+                     <select name="paymentType" required>
+                         <option value="TICKET" selected>TICKET</option>
+                         <option value="SUBSCRIBE">SUBSCRIBE</option>
+                     </select>
+                 </td>
+             </tr>
+         	</table>
 
 			<div class="payment-dev">
 				<label>상품명</label><br/> 

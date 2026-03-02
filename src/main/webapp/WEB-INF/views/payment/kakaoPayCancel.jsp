@@ -20,7 +20,7 @@
 
 	<p>orderId: ${orderId}</p>
 
-	<a href="${pageContext.request.contextPath}/kakao-pay/form">다시 결제하기</a>
+	<a href="${pageContext.request.contextPath}/kakaopay/form">다시 결제하기</a>
 
 
 </body>

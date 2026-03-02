@@ -53,6 +53,14 @@ public class ShowController {
 		seatService.getSeatList(request, response, model);
 		return "show/seat";
     }
+
+    @RequestMapping("/seat-detail")
+    public String seatDetail(HttpServletRequest request, HttpServletResponse response, Model model)
+            throws ServletException, IOException {
+        log.info("seatDetail");
+
+        return "show/show-detail";
+    }
 	
 
 	

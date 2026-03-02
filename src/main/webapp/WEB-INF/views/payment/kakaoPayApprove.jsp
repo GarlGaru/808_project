@@ -38,7 +38,7 @@
 		<p>tid : ${approve.tid}</p>
 		<p>상품명 : ${approve.item_name}</p>
 		<p>승인시간 : ${approve['approved_at']}</p>
-		<a href="${pageContext.request.contextPath}/kakao-pay/form">다시</a>
+		<a href="${pageContext.request.contextPath}/kakaopay/form">다시</a>
 	</div>
 </body>
 </html>
