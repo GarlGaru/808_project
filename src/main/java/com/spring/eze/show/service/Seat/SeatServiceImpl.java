@@ -1,6 +1,7 @@
 package com.spring.eze.show.service.Seat;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -41,8 +42,9 @@ public class SeatServiceImpl implements SeatService {
 		map.put("schedule_id", scheduleId);
 		
 		// DB 조회
-		List<SeatDTO> list = dao.selectSeatList(map);
-		
+//		List<SeatDTO> list = dao.selectSeatList(map);
+		List<SeatDTO> list = new ArrayList<SeatDTO>();
+
 		// 화면 전달
 		model.addAttribute("seatList", list);
 		

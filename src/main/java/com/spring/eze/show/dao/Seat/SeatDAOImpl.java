@@ -12,18 +12,19 @@ import com.spring.eze.show.dto.Seat.SeatDTO;
 @Repository
 public class SeatDAOImpl implements SeatDAO {
 
-	@Autowired
-	private SqlSessionTemplate sqlSession;
+//	@Autowired
+//	private SqlSessionTemplate sqlSession;
 	
 	// 좌석 조회
 	@Override
 	public List<SeatDTO> selectSeatList(Map<String, Object> map) {
-		System.out.println("SeatDAOImpl - selectSeatList()");
-		
-		SeatDAO dao = sqlSession.getMapper(SeatDAO.class);
-		List<SeatDTO> list = dao.selectSeatList(map);
-		
-		return list;
+//		System.out.println("SeatDAOImpl - selectSeatList()");
+//
+//		SeatDAO dao = sqlSession.getMapper(SeatDAO.class);
+//		List<SeatDTO> list = dao.selectSeatList(map);
+//
+//		return list;
+        return null;
 	}
 
 	@Override
