@@ -57,7 +57,7 @@ public class UserController {
         
         // 세션 종료
         request.getSession().invalidate();
-        return "redirect:/loginPage";
+        return "redirect:/main";
     }
 
     // 4. 회원가입 처리
