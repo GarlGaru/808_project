@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+ <mapper namespace="com.spring.eze.show.dao.Seat.SeatDAO">  <!-- namespace="패키지명.인터페이스" -->
+	<resultMap id="seatMap" type="com.spring.eze.show.dto.Seat.SeatDTO">
+		<id property="id" column="id"/>
+		<result property="showMe" column="show_me"/>
+	</resultMap>
+	
+	<select id="selectSeatList" parameterType="map" resultType="com.spring.eze.show.dto.Seat.SeatDTO">
+	SELECT
+       seat_id,
+       show_id,
+       schedule_id,
+       user_id,
+       res_seat_label,
+       seat_label,
+       seat_grade,
+       seat_status,
+       hold_at
+   FROM seat_tbl
+   WHERE show_id = #{show_id}
+     AND schedule_id = #{schedule_id}
+   ORDER BY seat_label
+	</select>
+
+ </mapper> 
