@@ -21,34 +21,34 @@
     <!-- 2) 메인 곡 리스트 (인기순) -->
     <select id="getSongList" resultMap="songResultMap">
         SELECT
-            s.songs_id          AS song_id,
+            s.song_id          AS song_id,
             s.title             AS title,
             ar.name             AS artist_name,
             al.title            AS album_title,
             g.name              AS genre_name,
-            g.genres_id         AS genre_id,
+            g.genre_id         AS genre_id,
             al.cover_image_url  AS cover_image_url,
             NVL(pl.play_count, 0) AS play_count,
             NVL(sl.like_count, 0) AS like_count
         FROM songs_tbl s
         JOIN artists_tbl ar
-          ON s.artists_id = ar.artists_id
+          ON s.artist_id = ar.artist_id
         JOIN albums_tbl al
-          ON s.albums_id = al.albums_id
+          ON s.album_id = al.album_id
         JOIN genres_tbl g
-          ON s.genres_id = g.genres_id
+          ON s.genre_id = g.genre_id
         LEFT JOIN (
-            SELECT songs_id, COUNT(*) AS play_count
+            SELECT song_id, COUNT(*) AS play_count
             FROM play_log_tbl
-            GROUP BY songs_id
+            GROUP BY song_id
         ) pl
-          ON s.songs_id = pl.songs_id
+          ON s.song_id = pl.song_id
         LEFT JOIN (
-            SELECT songs_id, COUNT(*) AS like_count
+            SELECT song_id, COUNT(*) AS like_count
             FROM song_likes_tbl
-            GROUP BY songs_id
+            GROUP BY song_id
         ) sl
-          ON s.songs_id = sl.songs_id
+          ON s.song_id = sl.song_id
         ORDER BY play_count DESC, song_id DESC
     </select>
 
@@ -57,35 +57,35 @@
             parameterType="int"
             resultMap="songResultMap">
         SELECT
-            s.songs_id          AS song_id,
+            s.song_id          AS song_id,
             s.title             AS title,
             ar.name             AS artist_name,
             al.title            AS album_title,
             g.name              AS genre_name,
-            g.genres_id         AS genre_id,
+            g.genre_id         AS genre_id,
             al.cover_image_url  AS cover_image_url,
             NVL(pl.play_count, 0) AS play_count,
             NVL(sl.like_count, 0) AS like_count
         FROM songs_tbl s
         JOIN artists_tbl ar
-          ON s.artists_id = ar.artists_id
+          ON s.artist_id = ar.artist_id
         JOIN albums_tbl al
-          ON s.albums_id = al.albums_id
+          ON s.album_id = al.album_id
         JOIN genres_tbl g
-          ON s.genres_id = g.genres_id
+          ON s.genre_id = g.genre_id
         LEFT JOIN (
-            SELECT songs_id, COUNT(*) AS play_count
+            SELECT song_id, COUNT(*) AS play_count
             FROM play_log_tbl
-            GROUP BY songs_id
+            GROUP BY song_id
         ) pl
-          ON s.songs_id = pl.songs_id
+          ON s.song_id = pl.song_id
         LEFT JOIN (
-            SELECT songs_id, COUNT(*) AS like_count
+            SELECT song_id, COUNT(*) AS like_count
             FROM song_likes_tbl
-            GROUP BY songs_id
+            GROUP BY song_id
         ) sl
-          ON s.songs_id = sl.songs_id
-        WHERE s.songs_id = #{songId}
+          ON s.song_id = sl.song_id
+        WHERE s.song_id = #{songId}
     </select>
 
     <!-- 4) 유사곡 (같은 장르 / 자기 자신 제외) -->
@@ -93,36 +93,36 @@
 	        parameterType="map"
 	        resultMap="songResultMap">
 	    SELECT
-	        s.songs_id          AS song_id,
+	        s.song_id          AS song_id,
 	        s.title             AS title,
 	        ar.name             AS artist_name,
 	        al.title            AS album_title,
 	        g.name              AS genre_name,
-	        g.genres_id         AS genre_id,
+	        g.genre_id         AS genre_id,
 	        al.cover_image_url  AS cover_image_url,
 	        NVL(pl.play_count, 0) AS play_count,
 	        NVL(sl.like_count, 0) AS like_count
 	    FROM songs_tbl s
 	    JOIN artists_tbl ar
-	      ON s.artists_id = ar.artists_id
+	      ON s.artist_id = ar.artist_id
 	    JOIN albums_tbl al
-	      ON s.albums_id = al.albums_id
+	      ON s.album_id = al.album_id
 	    JOIN genres_tbl g
-	      ON s.genres_id = g.genres_id
+	      ON s.genre_id = g.genre_id
 	    LEFT JOIN (
-	        SELECT songs_id, COUNT(*) AS play_count
+	        SELECT song_id, COUNT(*) AS play_count
 	        FROM play_log_tbl
-	        GROUP BY songs_id
+	        GROUP BY song_id
 	    ) pl
-	      ON s.songs_id = pl.songs_id
+	      ON s.song_id = pl.song_id
 	    LEFT JOIN (
-	        SELECT songs_id, COUNT(*) AS like_count
+	        SELECT song_id, COUNT(*) AS like_count
 	        FROM song_likes_tbl
-	        GROUP BY songs_id
+	        GROUP BY song_id
 	    ) sl
-	      ON s.songs_id = sl.songs_id
-	    WHERE g.genres_id = #{genreId}
-	      AND s.songs_id != #{songId}
+	      ON s.song_id = sl.song_id
+	    WHERE g.genre_id = #{genreId}
+	      AND s.song_id != #{songId}
 	    ORDER BY play_count DESC, song_id DESC
 	</select>
     <!-- 5) 곡 검색 (제목 + 아티스트) -->
@@ -130,34 +130,34 @@
             parameterType="string"
             resultMap="songResultMap">
         SELECT
-            s.songs_id          AS song_id,
+            s.song_id          AS song_id,
             s.title             AS title,
             ar.name             AS artist_name,
             al.title            AS album_title,
             g.name              AS genre_name,
-            g.genres_id         AS genre_id,
+            g.genre_id         AS genre_id,
             al.cover_image_url  AS cover_image_url,
             NVL(pl.play_count, 0) AS play_count,
             NVL(sl.like_count, 0) AS like_count
         FROM songs_tbl s
         JOIN artists_tbl ar
-          ON s.artists_id = ar.artists_id
+          ON s.artist_id = ar.artist_id
         JOIN albums_tbl al
-          ON s.albums_id = al.albums_id
+          ON s.album_id = al.album_id
         JOIN genres_tbl g
-          ON s.genres_id = g.genres_id
+          ON s.genre_id = g.genre_id
         LEFT JOIN (
-            SELECT songs_id, COUNT(*) AS play_count
+            SELECT song_id, COUNT(*) AS play_count
             FROM play_log_tbl
-            GROUP BY songs_id
+            GROUP BY song_id
         ) pl
-          ON s.songs_id = pl.songs_id
+          ON s.song_id = pl.song_id
         LEFT JOIN (
-            SELECT songs_id, COUNT(*) AS like_count
+            SELECT song_id, COUNT(*) AS like_count
             FROM song_likes_tbl
-            GROUP BY songs_id
+            GROUP BY song_id
         ) sl
-          ON s.songs_id = sl.songs_id
+          ON s.song_id = sl.song_id
         WHERE s.title  LIKE '%' || #{keyword} || '%'
            OR ar.name LIKE '%' || #{keyword} || '%'
         ORDER BY play_count DESC, song_id DESC
@@ -167,7 +167,7 @@
     <insert id="insertPlayLog">
         INSERT INTO play_log_tbl (
             play_log_id,
-            songs_id,
+            song_id,
             users_id,
             played_at
         ) VALUES (
@@ -183,7 +183,7 @@
         INSERT INTO song_likes_tbl (
             song_likes_id,
             users_id,
-            songs_id
+            song_id
         ) VALUES (
             song_likes_seq.NEXTVAL,
             #{userId},
@@ -195,7 +195,7 @@
     <delete id="deleteSongLike">
         DELETE FROM song_likes_tbl
         WHERE users_id = #{userId}
-          AND songs_id = #{songId}
+          AND song_id = #{songId}
     </delete>
 
     <!-- 9) 이 유저가 이 곡을 좋아요 했는지 체크 -->
@@ -205,7 +205,7 @@
         SELECT COUNT(*)
         FROM song_likes_tbl
         WHERE users_id = #{userId}
-          AND songs_id = #{songId}
+          AND song_id = #{songId}
     </select>
 
 </mapper>
