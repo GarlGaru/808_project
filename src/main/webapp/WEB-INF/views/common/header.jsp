@@ -1,11 +1,11 @@
-﻿<!-- ##### Header Area Start ##### -->
+<!-- ##### Header Area Start ##### -->
 <header class="header-area">
     <div class="oneMusic-main-menu">
         <div class="classy-nav-container breakpoint-off">
             <div class="container">
                 <nav class="classy-navbar justify-content-between" id="oneMusicNav">
                     <a href="#" class="nav-brand">
-                        <img src="${path}/resources/img/core-img/logo.png" alt="OneMusic logo">
+                        <img src="${path}/resources/common/img/logo.png" alt="OneMusic logo">
                     </a>
 
                     <div class="classy-navbar-toggler">

@@ -18,6 +18,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 @RequestMapping("/show")
@@ -42,7 +43,35 @@ public class ShowController {
       	showservice.getShowMain(request, response, model);
 		return "show/show";
     }
-   
+	
+   // [공연장르상세페이지] -------------
+	@RequestMapping("/showList")
+	public String showList(@RequestParam(value="category", defaultValue="concert")String category, Model model)
+         throws ServletException, IOException {
+      log.info("ShowController - 각 장르별 상세페이지 화면");
+     
+      showservice.prepareShowListPage(category, model);
+      return "show/show";
+	}
+	
+//   // 콘서트 
+//	@RequestMapping("/show/musicalList")
+//	public String musicalList(HttpServletRequest request, HttpServletResponse response, Model model)
+//	     throws ServletException, IOException {
+//	  log.info("ShowController - 뮤지컬 상세페이지 화면");
+//	 
+//	  return "show/musicalList";
+//	}
+//	
+//   // 콘서트 
+//	@RequestMapping("/show/playList")
+//	public String playList(HttpServletRequest request, HttpServletResponse response, Model model)
+//	     throws ServletException, IOException {
+//	  log.info("ShowController - 연극 상세페이지 화면");
+//	 
+//	  return "show/playList";
+//	}
+//	
    // [좌석] -------------
    // 좌석맵 조회(회차별)
 	@RequestMapping("/seat")

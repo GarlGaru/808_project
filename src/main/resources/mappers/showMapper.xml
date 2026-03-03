@@ -72,4 +72,45 @@
 	 WHERE start_date > SYSDATE
 	 ORDER BY start_date ASC
 	</select>
+	
+	<!-- 장르별 상세페이지 -->
+	<select id="getShowListByCategory" parameterType="String" resultType="com.spring.eze.show.dto.Show.ShowDTO">
+    SELECT * FROM (
+        SELECT a.*, ROWNUM rnum FROM (
+            SELECT show_id as showId,
+                   title,
+                   venue_name as venueName,
+                   start_date as startDate,
+                   genre
+              FROM show_tbl
+             WHERE 
+             <![CDATA[
+                start_date >= SYSDATE 
+             ]]>
+               AND 
+             <choose>
+                <when test="_parameter == 'concert'">
+                    genre IN ('대중음악', '서양음악(클래식)', '복합', '무용(서양/한국무용)', '서커스/마술', '한국음악(국악)')
+                </when>
+                <when test="_parameter == 'musical'">
+                    genre = '뮤지컬'
+                </when>
+                <when test="_parameter == 'play'">
+                    genre = '연극'
+                </when>
+                <otherwise>
+                    genre = '대중음악'
+                </otherwise>
+             </choose>
+             ORDER BY start_date DESC
+        ) a 
+        <![CDATA[
+            WHERE ROWNUM <= 20
+        ]]>
+    ) 
+    <![CDATA[
+        WHERE rnum >= 1
+    ]]>
+	</select>
+	
  </mapper> 
