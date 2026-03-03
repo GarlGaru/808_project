@@ -28,7 +28,7 @@
 									<li><a href="${path}/admin">ADMIN</a></li>
 								</c:if>
 								<c:if test="${sessionScope.loginUser.nickname != 'admin'}">
-									<li><a href="#">Contact</a></li>
+									<li><a href="${path}/main/board">Board</a></li>
 								</c:if>
 
 
