@@ -1,4 +1,3 @@
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <!-- ##### Header Area Start ##### -->
 <header class="header-area">
 	<div class="oneMusic-main-menu">
@@ -43,7 +42,7 @@
 											<span>${sessionScope.loginUser.nickname}</span>
 										</div>
 										<div class="login-register-btn mr-15">
-											<a href="${path}/mypage" title="마이페이지">👤</a>
+											<a href="${path}/mypage" title="마이페이지">&#x1F464;</a>
 										</div>
 										<div class="login-register-btn">
 											<a href="${path}/logout">Logout</a>
