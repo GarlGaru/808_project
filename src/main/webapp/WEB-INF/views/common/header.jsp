@@ -35,6 +35,9 @@
 										<div class="login-register-btn mr-15">
 											<span>${sessionScope.loginUser.nickname}</span>
 										</div>
+										<div class="login-register-btn mr-15">
+											<a href="${path}/mypage" title="마이페이지">👤</a>
+										</div>
 										<div class="login-register-btn">
 											<a href="${path}/logout">Logout</a>
 										</div>
@@ -56,4 +59,5 @@
 		</div>
 	</div>
 </header>
+
 <!-- ##### Header Area End ##### -->

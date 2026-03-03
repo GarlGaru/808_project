@@ -9,7 +9,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -163,4 +162,17 @@ public class UserController {
         
         return service.deleteUser(request, response);
     }
+    
+ // 11. 마이페이지
+    @RequestMapping(value = "/mypage", method = RequestMethod.GET)
+    public String mypage(HttpServletRequest request) 
+            throws ServletException, IOException {
+
+        logger.info("<<< url => /mypage >>>");
+
+        // mypage.jsp (또는 mypage.html)로 이동
+        return "user/mypage";
+    }
+
+
 }
