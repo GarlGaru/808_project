@@ -162,4 +162,17 @@ public class UserController {
         
         return service.deleteUser(request, response);
     }
+    
+ // 11. 마이페이지
+    @RequestMapping(value = "/mypage", method = RequestMethod.GET)
+    public String mypage(HttpServletRequest request) 
+            throws ServletException, IOException {
+
+        logger.info("<<< url => /mypage >>>");
+
+        // mypage.jsp (또는 mypage.html)로 이동
+        return "user/mypage";
+    }
+
+
 }
