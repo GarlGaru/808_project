@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.spring.eze.show.dao.review.ReviewDAO">  <!-- namespace="패키지명.인터페이스" -->
+	<resultMap id="testMap" type="com.spring.eze.show.dto.review.ReviewDTO">
+		<id property="id" column="id"/>
+		<result property="showMe" column="show_me"/>
+	</resultMap>
+	
+  <!-- ========================= -->
+    <!-- 1. ResultMap -->
+    <!-- ========================= -->
+    <resultMap id="reviewMap" type="com.spring.eze.show.dto.review.ReviewDTO">
+
+        <id property="reviewId" column="review_id"/>
+        <result property="userNum" column="user_id"/>
+        <result property="showId" column="show_id"/>
+        <result property="rating" column="rating"/>
+        <result property="content" column="content"/>
+        <result property="createdAt" column="created_at"/>
+
+        <!-- JOIN 컬럼 -->
+        <result property="userId" column="login_id"/>
+        <result property="profileImg" column="profile_img"/>
+        <result property="concertTitle" column="show_title"/>
+
+    </resultMap>
+
+    <!-- ========================= -->
+    <!-- 2. 후기 목록 -->
+    <!-- ========================= -->
+    <select id="getReviewList" resultMap="reviewMap">
+
+        SELECT
+            r.review_id,
+            r.user_id,
+            r.show_id,
+            r.rating,
+            r.content,
+            r.created_at,
+            u.login_id,
+            u.profile_img,
+            s.show_title
+        FROM review r
+        LEFT JOIN user_tbl u ON r.user_id = u.user_id
+        LEFT JOIN show_tbl s ON r.show_id = s.show_id
+        ORDER BY r.review_id DESC
+
+    </select>
+
+<select id="getReviewByShowId"
+        parameterType="string"
+        resultMap="reviewMap">
+
+    SELECT
+        r.review_id,
+        r.user_id,
+        r.show_id,
+        r.rating,
+        r.content,
+        r.created_at,
+        u.login_id,
+        u.profile_img,
+        s.show_title
+    FROM review r
+    LEFT JOIN user_tbl u ON r.user_id = u.user_id
+    LEFT JOIN show_tbl s ON r.show_id = s.show_id
+    WHERE s.show_title = #{showId}
+    ORDER BY r.review_id DESC
+
+</select>
+
+    <!-- ========================= -->
+    <!-- 3. 전체 개수 -->
+    <!-- ========================= -->
+    <select id="getTotalCount" resultType="int">
+        SELECT COUNT(*) FROM review
+    </select>
+
+    <!-- ========================= -->
+    <!-- 4. 상세 보기 -->
+    <!-- ========================= -->
+    <select id="getReviewDetail" parameterType="int" resultMap="reviewMap">
+
+        SELECT
+            r.review_id,
+            r.user_id,
+            r.show_id,
+            r.rating,
+            r.content,
+            r.created_at,
+            u.login_id,
+            u.profile_img,
+            s.show_title
+        FROM review r
+        LEFT JOIN user_tbl u ON r.user_id = u.user_id
+        LEFT JOIN show_tbl s ON r.show_id = s.show_id
+        WHERE r.review_id = #{reviewId}
+
+    </select>
+
+    <!-- ========================= -->
+    <!-- 5. 후기 작성 -->
+    <!-- ========================= -->
+    <insert id="insertReview" parameterType="com.spring.eze.show.dto.review.ReviewDTO">
+
+        INSERT INTO review (
+            review_id,
+            user_id,
+            show_id,
+            rating,
+            content,
+            created_at
+        )
+        VALUES (
+            review_seq.NEXTVAL,
+            #{userNum},
+            #{showId},
+            #{rating},
+            #{content},
+            SYSDATE
+        )
+
+    </insert>
+
+    <!-- ========================= -->
+    <!-- 6. 후기 수정 -->
+    <!-- ========================= -->
+    <update id="updateReview" parameterType="com.spring.eze.show.dto.review.ReviewDTO">
+
+        UPDATE review
+        SET
+            content = #{content},
+            rating = #{rating},
+            show_id = #{showId}
+        WHERE review_id = #{reviewId}
+
+    </update>
+
+    <!-- ========================= -->
+    <!-- 7. 후기 삭제 -->
+    <!-- ========================= -->
+    <delete id="deleteReview" parameterType="int">
+        DELETE FROM review
+        WHERE review_id = #{reviewId}
+    </delete>
+
+    <!-- ========================= -->
+    <!-- 8. 조회수 증가 (컬럼 있을 경우만) -->
+    <!-- ========================= -->
+    <update id="plusReadCnt" parameterType="int">
+        UPDATE review
+        SET read_cnt = read_cnt + 1
+        WHERE review_id = #{reviewId}
+    </update>
+
+
+ </mapper> 

@@ -28,17 +28,21 @@ public class SeatServiceImpl implements SeatService {
 			throws ServletException, IOException {
 		System.out.println("SeatServiceImpl - getSeatList()");
 		
-		// 파라미터로 받기
+		
+		 System.out.println("===== 파라미터 확인 =====");
+		    System.out.println("show_id: " + request.getParameter("show_id"));
+		    System.out.println("schedule_id: " + request.getParameter("schedule_id"));
+		    System.out.println("========================");
+		
 		String showId = request.getParameter("show_id");
 		int scheduleId = Integer.parseInt(request.getParameter("schedule_id"));
 		
-		System.out.println("getSeatLiest() - showId" + showId);
-		System.out.println("getSeatList() - scheduleId" + scheduleId);
-		
-		// DAO에 넘길 map 생성
+		System.out.println("getSeatLiest() - show_id" + showId);
+		System.out.println("getSeatList() - schedule_id" + scheduleId);
+		//DAO에 넘길 map 생성
 		Map<String, Object> map = new HashMap<String, Object>();
-		map.put("show_id", showId);
-		map.put("schedule_id", scheduleId);
+		map.put("showId", showId);
+		map.put("scheduleId", scheduleId);
 		
 		// DB 조회
 		List<SeatDTO> list = dao.selectSeatList(map);

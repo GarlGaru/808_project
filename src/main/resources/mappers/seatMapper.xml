@@ -20,8 +20,8 @@
        seat_status,
        hold_at
    FROM seat_tbl
-   WHERE show_id = #{show_id}
-     AND schedule_id = #{schedule_id}
+   WHERE show_id = #{showId, jdbcType=VARCHAR}
+     AND schedule_id = #{scheduleId, jdbcType=INTEGER}
    ORDER BY seat_label
 	</select>
 

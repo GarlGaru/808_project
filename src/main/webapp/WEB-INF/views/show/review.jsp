@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ include file="/WEB-INF/views/common/setting.jsp" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -68,11 +69,21 @@
             <c:forEach var="review" items="${reviews}">
                 <div class="review-card">
                     <div class="user-info">
-                        <div class="profile-img">
-                            <img src="${review.profileImg != null ? review.profileImg : path += '/resources/images/default-profile.png'}" alt="프로필">
-                        </div>
+<%--                         <div class="profile-img">
+                           <img src="${review.profileImg != null ? review.profileImg : path}/resources/images/default-profile.png">
+                        </div> --%>
+                      <c:choose>
+				    <c:when test="${not empty review.profileImg}">
+				        <img src="${review.profileImg}">
+				    </c:when>
+				    <c:otherwise>
+				        <img src="${path}/resources/images/default-profile.png">
+				    </c:otherwise>
+				</c:choose>
                         <span class="user-id">${review.userId}</span>
-                        <span class="reg-date">${review.createdAt}</span>
+                        <span class="reg-date">
+						    <fmt:formatDate value="${review.createdAt}" pattern="yyyy-MM-dd" />
+						</span>
                         
                     </div>
                     <div class="review-content">
@@ -99,7 +110,7 @@
    <button class="btn" 
         style="border-radius: 50px; font-weight: bold; padding: 10px 25px; 
                position: absolute; right: 0; color: white; border: none;
-               background-image: linear-gradient(to right, #DF8845, #ED6701); /* 왼쪽에서 오른쪽으로 그라데이션 */
+               background-image: linear-gradient(to right, #DF8845, #ED6701);" 
         onclick="location.href='${path}/show/writeReview'">
     후기 작성하기
 </button>
@@ -107,6 +118,13 @@
     </div>
 
 
+	<script>
+     
+        var msg = "${msg}";
+        if(msg === "insertSuccess") {
+            alert("후기가 성공적으로 등록되었습니다!");
+        }
+    </script>
 
     <%@ include file="/WEB-INF/views/common/footer.jsp" %>
 
