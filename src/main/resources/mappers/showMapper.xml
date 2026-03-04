@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+ <mapper namespace="com.spring.eze.show.dao.Show.ShowDAO">  <!-- namespace="패키지명.인터페이스" -->
+	<resultMap id="seatMap" type="com.spring.eze.show.dto.Show.ShowDTO">
+		<id property="id" column="id"/>
+		<result property="showMe" column="show_me"/>
+	</resultMap>
+	
+	<!-- 메인 -->
+	<select id="selectShowMainList" parameterType="map" resultType="com.spring.eze.show.dto.Show.ShowDTO">
+    <choose>
+        <when test="genre != null and genre != ''">
+            SELECT * FROM (
+                SELECT show_id as showId, 
+                	   title, 
+                	   venue_name as venueName, 
+                	   poster_url as posterUrl, 
+                	   start_date as startDate
+                  FROM show_tbl
+                 WHERE genre LIKE '%' || #{genre} || '%'
+                 ORDER BY start_date DESC
+            ) WHERE ROWNUM <![CDATA[ <= ]]> 20
+        </when>
+        
+        <otherwise>
+            SELECT * FROM (
+                SELECT show_id as showId, 
+                	   title, 
+                	   venue_name as venueName, 
+                	   poster_url as posterUrl, 
+                	   start_date as startDate
+                  FROM show_tbl 
+                 WHERE genre LIKE '%대중음악%' 
+                 ORDER BY start_date DESC
+            ) WHERE ROWNUM <![CDATA[ <= ]]> 10
+            UNION ALL
+            SELECT * FROM (
+                SELECT show_id as showId, 
+                	   title, 
+                	   venue_name as venueName, 
+                	   poster_url as posterUrl, 
+                	   start_date as startDate 
+                  FROM show_tbl 
+                 WHERE genre LIKE '%뮤지컬%' 
+                 ORDER BY start_date DESC
+            ) WHERE ROWNUM <![CDATA[ <= ]]> 8
+            UNION ALL
+            SELECT * FROM (
+                SELECT show_id as showId, 
+                	   title, 
+                	   venue_name as venueName, 
+                	   poster_url as posterUrl, 
+                	   start_date as startDate 
+                  FROM show_tbl 
+                 WHERE genre LIKE '%연극%' 
+                 ORDER BY start_date DESC
+            ) WHERE ROWNUM <![CDATA[ <= ]]> 7
+        </otherwise>
+   	 	</choose>
+	</select>
+	
+	<!-- 오픈 예정 공연 -->
+	<select id="selectShowUpcoming" resultType="com.spring.eze.show.dto.Show.ShowDTO">
+	SELECT show_id as showId,
+		   title,
+		   venue_name as venueName,
+		   poster_url as posterUrl,
+		   start_date as startDate
+	  FROM show_tbl
+	 WHERE start_date > SYSDATE
+	 ORDER BY start_date ASC
+	</select>
+	
+	<!-- 장르별 상세페이지 -->
+	<select id="getShowListByCategory" parameterType="String" resultType="com.spring.eze.show.dto.Show.ShowDTO">
+    SELECT * FROM (
+        SELECT a.*, ROWNUM rnum FROM (
+            SELECT show_id as showId,
+                   title,
+                   venue_name as venueName,
+                   start_date as startDate,
+                   genre
+              FROM show_tbl
+             WHERE 
+             <![CDATA[
+                start_date >= SYSDATE 
+             ]]>
+               AND 
+             <choose>
+                <when test="_parameter == 'concert'">
+                    genre IN ('대중음악', '서양음악(클래식)', '복합', '무용(서양/한국무용)', '서커스/마술', '한국음악(국악)')
+                </when>
+                <when test="_parameter == 'musical'">
+                    genre = '뮤지컬'
+                </when>
+                <when test="_parameter == 'play'">
+                    genre = '연극'
+                </when>
+                <otherwise>
+                    genre = '대중음악'
+                </otherwise>
+             </choose>
+             ORDER BY start_date DESC
+        ) a 
+        <![CDATA[
+            WHERE ROWNUM <= 20
+        ]]>
+    ) 
+    <![CDATA[
+        WHERE rnum >= 1
+    ]]>
+	</select>
+	
+ </mapper> 
