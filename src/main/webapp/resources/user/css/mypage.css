@@ -1,0 +1,516 @@
+/* ============================================================
+   mypage.css
+   Bootstrap 4 충돌 방지 전략:
+   - .mypage-overlay : position fixed (전역 필요)
+   - .mypage-modal 하위 : 모든 스타일 격리
+   - Bootstrap의 .nav-item .badge .card 등 완전 덮어쓰기
+   ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500&family=Syne:wght@400;600;700;800&display=swap');
+
+/* ── CSS 변수: overlay 스코프 ── */
+.mypage-overlay {
+  --c-bg:      #0d0f14;
+  --c-sidebar: #0f1319;
+  --c-text:    #f2f2f2;
+  --c-gray:    rgba(242,242,242,0.4);
+  --c-muted:   rgba(242,242,242,0.38);
+  --c-muted2:  rgba(242,242,242,0.62);
+  --c-border:  rgba(255,255,255,0.06);
+  --c-border2: rgba(255,255,255,0.12);
+  --c-sd:      rgba(0,0,0,0.9);
+  --c-sl:      rgba(255,255,255,0.04);
+  --c-gold:    #c9a84c;
+  --c-silver:  #888888;
+  --c-bronze:  #6a4a2a;
+}
+
+/* ════════════════════════════════════
+   OVERLAY — position:fixed 이므로 전역
+   ════════════════════════════════════ */
+.mypage-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: rgba(0,0,0,0.55);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: mp-fadein 0.3s ease;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 12px;
+  color: var(--c-gray);
+}
+
+/* ════════════════════════════════════
+   MODAL — 이하 전부 .mypage-modal 하위
+   Bootstrap 4 완전 격리
+   ════════════════════════════════════ */
+.mypage-modal {
+  position: relative;
+  width: 980px;
+  height: 680px;
+  background: var(--c-bg);
+  border-radius: 14px;
+  overflow: hidden;
+  display: flex;
+  border: 1px solid var(--c-border);
+  box-shadow: 12px 12px 20px var(--c-sd), -4px -4px 12px var(--c-sl);
+  animation: mp-slideup 0.45s cubic-bezier(0.16,1,0.3,1);
+}
+
+/* box-sizing 격리 */
+.mypage-modal *,
+.mypage-modal *::before,
+.mypage-modal *::after { box-sizing: border-box; }
+.mypage-modal input,
+.mypage-modal textarea { user-select: text; }
+
+/* ── SIDEBAR ── */
+.mypage-modal .sidebar {
+  width: 216px;
+  flex-shrink: 0;
+  background: var(--c-sidebar);
+  border-right: 1px solid var(--c-border);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  box-shadow: 4px 0 20px rgba(0,0,0,0.6);
+}
+
+.mypage-modal .sb-prof {
+  padding: 22px 16px 18px;
+  border-bottom: 1px solid var(--c-border);
+  flex-shrink: 0;
+}
+
+.mypage-modal .av-wrap {
+  position: relative;
+  display: inline-block;
+  margin-bottom: 11px;
+}
+
+.mypage-modal .av {
+  width: 68px; height: 68px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.1);
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Syne', sans-serif;
+  font-size: 24px; font-weight: 800; color: var(--c-text);
+  overflow: hidden; cursor: pointer; transition: 0.2s;
+  box-shadow: 4px 4px 12px var(--c-sd), -2px -2px 6px var(--c-sl);
+}
+.mypage-modal .av:hover {
+  background: rgba(255,255,255,0.08);
+  border-color: rgba(255,255,255,0.2);
+  transform: translateY(-1px);
+}
+.mypage-modal .av img { width:100%; height:100%; object-fit:cover; border-radius:50%; }
+
+.mypage-modal .av-edit {
+  position: absolute; bottom: 1px; right: 1px;
+  width: 20px; height: 20px; border-radius: 50%;
+  background: rgba(255,255,255,0.12);
+  color: var(--c-text); font-size: 9px; font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; border: 1px solid rgba(255,255,255,0.18);
+}
+
+.mypage-modal .sb-name  { font-size:13px; font-weight:800; color:var(--c-text); letter-spacing:-0.2px; }
+.mypage-modal .sb-email { font-size:10px; color:var(--c-gray); margin-top:1px; }
+.mypage-modal .sb-badges { display:flex; flex-direction:column; gap:4px; margin-top:8px; }
+
+/* Bootstrap .badge 완전 덮어쓰기 */
+.mypage-modal .grade-badge,
+.mypage-modal .level-badge {
+  padding: 3px 9px; border-radius: 20px;
+  font-size: 9px; font-weight: 500;
+  display: inline-block; letter-spacing: 0.2px;
+  /* Bootstrap reset */
+  vertical-align: unset; white-space: nowrap;
+}
+.mypage-modal .grade-badge.premium { border:1px solid rgba(255,255,255,0.2); color:var(--c-text); background:rgba(255,255,255,0.07); }
+.mypage-modal .grade-badge.ultimate { border:1px solid rgba(201,168,76,0.4); color:var(--c-gold); background:rgba(201,168,76,0.08); }
+.mypage-modal .grade-badge.free    { border:1px solid rgba(255,255,255,0.1); color:rgba(242,242,242,0.55); background:rgba(255,255,255,0.04); }
+.mypage-modal .level-badge         { border:1px solid rgba(255,255,255,0.1); color:rgba(242,242,242,0.55); background:rgba(255,255,255,0.04); }
+
+/* ── NAV — Bootstrap .nav-item 완전 덮어쓰기 ── */
+.mypage-modal .sb-nav {
+  flex:1; padding:10px 9px;
+  overflow-y:auto; scrollbar-width:none;
+}
+.mypage-modal .sb-nav::-webkit-scrollbar { display:none; }
+
+.mypage-modal .nav-item {
+  display:flex; align-items:center; gap:9px;
+  padding:9px 11px; border-radius:8px;
+  font-size:11px; font-weight:500; color:var(--c-gray);
+  cursor:pointer; transition:0.2s; margin-bottom:2px;
+  border:1px solid transparent;
+  /* Bootstrap .nav-item 리셋 */
+  float:none; list-style:none; text-decoration:none;
+  background:transparent; width:auto;
+}
+.mypage-modal .nav-item:hover {
+  color:var(--c-muted2); background:rgba(255,255,255,0.04);
+}
+.mypage-modal .nav-item.active {
+  color:var(--c-text);
+  background:rgba(255,255,255,0.07);
+  border-color:rgba(255,255,255,0.1);
+  box-shadow: inset 2px 2px 5px rgba(0,0,0,0.5), inset -1px -1px 3px var(--c-sl);
+}
+.mypage-modal .nav-icon { font-size:14px; width:18px; text-align:center; flex-shrink:0; }
+
+/* ── CLOSE BTN ── */
+.mypage-modal .close-btn {
+  position:absolute; top:12px; right:12px;
+  width:28px; height:28px; border-radius:50%;
+  background:rgba(255,255,255,0.05);
+  border:1px solid rgba(255,255,255,0.08);
+  color:var(--c-gray); font-size:12px; z-index:20;
+  display:flex; align-items:center; justify-content:center;
+  cursor:pointer; transition:0.2s; line-height:1;
+  /* Bootstrap .close 리셋 */
+  opacity:1; text-shadow:none; padding:0;
+}
+.mypage-modal .close-btn:hover { background:rgba(255,255,255,0.1); color:var(--c-text); opacity:1; }
+
+/* ── MAIN PANE ── */
+.mypage-modal .main-pane {
+  flex:1; display:flex; flex-direction:column; min-width:0; overflow:hidden;
+}
+.mypage-modal .pane-header {
+  padding:18px 24px 14px; border-bottom:1px solid var(--c-border); flex-shrink:0;
+}
+.mypage-modal .pane-title { font-family:'Syne',sans-serif; font-size:15px; font-weight:800; color:var(--c-text); letter-spacing:-0.2px; }
+.mypage-modal .pane-sub   { font-size:10px; color:var(--c-gray); margin-top:2px; }
+
+.mypage-modal .pane-body {
+  flex:1; overflow-y:auto; padding:18px 24px 22px;
+  scrollbar-width:thin; scrollbar-color:rgba(255,255,255,0.08) transparent; min-height:0;
+}
+.mypage-modal .pane-body::-webkit-scrollbar       { width:3px; }
+.mypage-modal .pane-body::-webkit-scrollbar-thumb { background:rgba(255,255,255,0.08); border-radius:2px; }
+
+/* ── TAB PANES — Bootstrap .tab-pane 완전 덮어쓰기 ── */
+.mypage-modal .tab-pane        { display:none; opacity:1; }
+.mypage-modal .tab-pane.active { display:block; animation:mp-fadein 0.22s ease; }
+
+/* ── 레이아웃 유틸 ── */
+.mypage-modal .two-col     { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+.mypage-modal .row-between { display:flex; justify-content:space-between; align-items:center; }
+.mypage-modal .sec-title {
+  font-family:'Syne',sans-serif; font-size:10px; font-weight:700;
+  color:var(--c-muted2); letter-spacing:0.8px; text-transform:uppercase; margin-bottom:10px;
+}
+
+/* ── STAT — Bootstrap .card 완전 덮어쓰기 ── */
+.mypage-modal .stat-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-bottom:12px; }
+.mypage-modal .stat-card {
+  background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.07);
+  border-radius:10px; padding:14px 16px; transition:border-color 0.2s;
+  box-shadow:4px 4px 10px var(--c-sd), -2px -2px 6px var(--c-sl);
+  /* Bootstrap .card 리셋 */
+  word-wrap:normal;
+}
+.mypage-modal .stat-card:hover { border-color:rgba(255,255,255,0.12); }
+.mypage-modal .stat-num   { font-family:'Syne',sans-serif; font-size:22px; font-weight:800; color:var(--c-text); letter-spacing:-0.5px; margin-top:4px; }
+.mypage-modal .stat-label { font-size:9px; color:var(--c-gray); text-transform:uppercase; letter-spacing:0.5px; }
+.mypage-modal .stat-sub   { font-size:10px; color:var(--c-gray); margin-top:2px; }
+
+/* ── LIST ITEMS ── */
+.mypage-modal .list-item {
+  display:flex; align-items:center; gap:10px;
+  padding:9px 11px; background:rgba(255,255,255,0.03);
+  border:1px solid var(--c-border); border-radius:8px;
+  transition:0.2s; cursor:pointer; margin-bottom:7px;
+  box-shadow:3px 3px 8px var(--c-sd), -1px -1px 4px var(--c-sl);
+}
+.mypage-modal .list-item:last-child { margin-bottom:0; }
+.mypage-modal .list-item:hover {
+  background:rgba(255,255,255,0.055); border-color:var(--c-border2); transform:translateX(3px);
+}
+.mypage-modal .li-thumb { width:32px; height:32px; border-radius:6px; display:flex; align-items:center; justify-content:center; font-size:14px; flex-shrink:0; background:rgba(255,255,255,0.05); }
+.mypage-modal .li-info  { flex:1; min-width:0; }
+.mypage-modal .li-name  { font-size:11px; font-weight:500; color:var(--c-text); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.mypage-modal .li-sub   { font-size:10px; color:var(--c-gray); margin-top:1px; }
+.mypage-modal .li-right { font-size:10px; color:var(--c-gray); white-space:nowrap; }
+
+.mypage-modal .rank        { font-family:'Syne',sans-serif; font-size:10px; font-weight:700; width:16px; color:var(--c-gray); }
+.mypage-modal .rank.gold   { color:var(--c-gold); }
+.mypage-modal .rank.silver { color:var(--c-silver); }
+.mypage-modal .rank.bronze { color:var(--c-bronze); }
+
+.mypage-modal .prog-bar  { height:2px; background:rgba(255,255,255,0.07); border-radius:1px; margin-top:4px; }
+.mypage-modal .prog-fill { height:100%; background:rgba(255,255,255,0.45); border-radius:1px; }
+
+/* ── GENRE ── */
+.mypage-modal .genre-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:7px; }
+.mypage-modal .genre-tag  { background:rgba(255,255,255,0.03); border:1px solid var(--c-border); border-radius:7px; padding:8px 10px; text-align:center; box-shadow:3px 3px 7px var(--c-sd); }
+.mypage-modal .genre-name { font-size:10px; font-weight:500; color:var(--c-text); }
+.mypage-modal .genre-pct  { font-size:9px; color:var(--c-gray); margin-top:1px; }
+
+/* ── SELECT ── */
+.mypage-modal .mp-select {
+  padding:5px 10px; background:rgba(255,255,255,0.04);
+  border:1px solid rgba(255,255,255,0.07); border-radius:7px;
+  color:var(--c-muted2); font-size:10px; cursor:pointer; outline:none;
+  font-family:'DM Sans',sans-serif;
+  box-shadow:inset 2px 2px 5px rgba(0,0,0,0.5);
+}
+.mypage-modal .mp-select option { background:#1a1a1d; }
+
+/* ── COMMENTS ── */
+.mypage-modal .cmt-item {
+  background:rgba(255,255,255,0.03); border:1px solid var(--c-border);
+  border-radius:8px; padding:12px 14px; margin-bottom:8px;
+  transition:0.2s; box-shadow:3px 3px 8px var(--c-sd);
+}
+.mypage-modal .cmt-item:hover { border-color:var(--c-border2); }
+.mypage-modal .cmt-meta    { display:flex; justify-content:space-between; margin-bottom:5px; }
+.mypage-modal .cmt-target  { font-size:10px; color:var(--c-muted2); font-weight:500; }
+.mypage-modal .cmt-date    { font-size:9px; color:var(--c-gray); }
+.mypage-modal .cmt-text    { font-size:11px; color:var(--c-muted2); line-height:1.6; }
+.mypage-modal .cmt-actions { display:flex; gap:5px; margin-top:8px; }
+.mypage-modal .cmt-btn {
+  font-size:10px; padding:3px 8px; border-radius:6px;
+  background:transparent; border:1px solid rgba(255,255,255,0.08);
+  color:var(--c-gray); cursor:pointer; transition:0.2s; font-family:'DM Sans',sans-serif;
+}
+.mypage-modal .cmt-btn:hover     { background:rgba(255,255,255,0.06); color:var(--c-text); }
+.mypage-modal .cmt-btn.del:hover { background:rgba(239,68,68,0.1); color:#f87171; border-color:rgba(239,68,68,0.2); }
+
+/* ── RESERVATION 포스터 카드 ── */
+.mypage-modal .res-grid {
+  display:grid; grid-template-columns:repeat(3,1fr); gap:12px;
+}
+.mypage-modal .res-card {
+  border-radius:12px; overflow:hidden; cursor:pointer; transition:0.25s;
+  border:1px solid rgba(255,255,255,0.07);
+  box-shadow:4px 4px 14px var(--c-sd);
+}
+.mypage-modal .res-card:hover {
+  transform:translateY(-4px);
+  box-shadow:0 14px 36px rgba(0,0,0,0.75);
+  border-color:rgba(255,255,255,0.14);
+}
+.mypage-modal .res-poster {
+  width:100%; aspect-ratio:2/3; position:relative;
+  display:flex; flex-direction:column; justify-content:flex-end;
+  padding:14px 12px 12px; overflow:hidden;
+}
+.mypage-modal .res-poster-bg {
+  position:absolute; inset:0;
+  background-size:cover; background-position:center;
+  transition:transform 0.4s ease;
+}
+.mypage-modal .res-card:hover .res-poster-bg { transform:scale(1.04); }
+.mypage-modal .res-poster-dim {
+  position:absolute; inset:0;
+  background:linear-gradient(to top,rgba(0,0,0,0.85) 0%,rgba(0,0,0,0.25) 50%,rgba(0,0,0,0.05) 100%);
+}
+.mypage-modal .res-content { position:relative; z-index:1; }
+.mypage-modal .res-name {
+  font-family:'Syne',sans-serif; font-size:12px; font-weight:800;
+  color:#fff; text-shadow:0 1px 6px rgba(0,0,0,0.8);
+  line-height:1.3; margin-bottom:4px;
+  display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;
+}
+.mypage-modal .res-date { font-size:10px; color:rgba(255,255,255,0.7); margin-bottom:6px; }
+
+/* RESERVATION_TBL.status / PAYMENT_ORDER.status 뱃지 */
+.mypage-modal .status-badge {
+  font-size:9px; padding:2px 8px; border-radius:20px;
+  font-weight:600; display:inline-block; letter-spacing:0.2px;
+}
+.mypage-modal .status-badge.confirmed { background:rgba(74,222,128,0.18); color:#4ade80; border:1px solid rgba(74,222,128,0.25); }
+.mypage-modal .status-badge.cancelled { background:rgba(239,68,68,0.15);  color:#f87171; border:1px solid rgba(239,68,68,0.2);  }
+.mypage-modal .status-badge.pending   { background:rgba(250,204,21,0.15); color:#fbbf24; border:1px solid rgba(250,204,21,0.2); }
+.mypage-modal .status-badge.paid      { background:rgba(74,222,128,0.18); color:#4ade80; border:1px solid rgba(74,222,128,0.25); }
+.mypage-modal .status-badge.refunded  { background:rgba(239,68,68,0.15);  color:#f87171; border:1px solid rgba(239,68,68,0.2);  }
+
+.mypage-modal .res-info {
+  padding:10px 12px; background:rgba(255,255,255,0.035);
+  border-top:1px solid var(--c-border);
+}
+.mypage-modal .res-venue { font-size:10px; color:var(--c-muted2); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.mypage-modal .res-seat  { font-size:10px; color:var(--c-gray); margin-top:2px; }
+.mypage-modal .res-price {
+  font-family:'Syne',sans-serif; font-size:12px; font-weight:700; color:var(--c-text);
+  margin-top:6px; display:flex; justify-content:space-between; align-items:center;
+}
+.mypage-modal .res-detail-btn {
+  font-size:9px; padding:2px 8px; border-radius:6px;
+  background:transparent; border:1px solid rgba(255,255,255,0.1);
+  color:var(--c-gray); cursor:pointer; transition:0.2s; font-family:'DM Sans',sans-serif;
+}
+.mypage-modal .res-detail-btn:hover { background:rgba(255,255,255,0.07); color:var(--c-text); }
+.mypage-modal .res-empty      { text-align:center; padding:48px 0; color:var(--c-muted); }
+.mypage-modal .res-empty-icon { font-size:36px; margin-bottom:10px; opacity:0.4; }
+
+.mypage-modal .more-link {
+  display:inline-block; padding:7px 20px; border-radius:22px;
+  background:transparent; border:1px solid rgba(255,255,255,0.15);
+  color:var(--c-muted2); font-size:10px; text-decoration:none; transition:0.2s;
+}
+.mypage-modal .more-link:hover { background:rgba(255,255,255,0.06); color:var(--c-text); border-color:rgba(255,255,255,0.28); }
+
+/* ── PAYMENTS ── */
+.mypage-modal .chart-wrap {
+  background:rgba(255,255,255,0.03); border:1px solid var(--c-border);
+  border-radius:10px; padding:16px; margin-bottom:12px; height:185px;
+  box-shadow:4px 4px 10px var(--c-sd), -2px -2px 6px var(--c-sl);
+}
+.mypage-modal .pay-item {
+  display:flex; align-items:center; gap:11px;
+  padding:9px 13px; background:rgba(255,255,255,0.03);
+  border:1px solid var(--c-border); border-radius:8px; margin-bottom:6px;
+  box-shadow:3px 3px 8px var(--c-sd), -1px -1px 4px var(--c-sl);
+}
+.mypage-modal .pay-item:last-child { margin-bottom:0; }
+.mypage-modal .pay-icon  { width:32px; height:32px; border-radius:6px; background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.1); display:flex; align-items:center; justify-content:center; font-size:15px; flex-shrink:0; }
+.mypage-modal .pay-info  { flex:1; }
+.mypage-modal .pay-name  { font-size:11px; font-weight:500; color:var(--c-text); }
+.mypage-modal .pay-sub   { font-size:10px; color:var(--c-gray); margin-top:1px; }
+.mypage-modal .pay-right { font-family:'Syne',sans-serif; font-size:12px; font-weight:700; color:var(--c-text); text-align:right; }
+
+/* ── MEMBERSHIP ── */
+.mypage-modal .ms-card {
+  background:rgba(255,255,255,0.035); border:1px solid rgba(255,255,255,0.1);
+  border-radius:10px; padding:20px; margin-bottom:11px; position:relative; overflow:hidden;
+  box-shadow:6px 6px 14px var(--c-sd), -2px -2px 8px var(--c-sl);
+}
+.mypage-modal .ms-card::after {
+  content:''; position:absolute; top:-30px; right:-30px;
+  width:120px; height:120px; border-radius:50%;
+  background:radial-gradient(circle,rgba(255,255,255,0.04),transparent 70%); pointer-events:none;
+}
+.mypage-modal .ms-title    { font-family:'Syne',sans-serif; font-size:18px; font-weight:800; color:var(--c-text); }
+.mypage-modal .ms-expire   { font-size:10px; color:var(--c-gray); margin-top:4px; }
+.mypage-modal .ms-benefits { display:grid; grid-template-columns:1fr 1fr; gap:7px; margin-top:13px; }
+.mypage-modal .ms-item {
+  display:flex; align-items:center; gap:6px;
+  font-size:10px; color:var(--c-muted2);
+}
+.mypage-modal .ms-item::before {
+  content:'✓'; width:15px; height:15px; border-radius:50%;
+  background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.12);
+  display:flex; align-items:center; justify-content:center;
+  font-size:8px; color:var(--c-text); flex-shrink:0;
+}
+.mypage-modal .upgrade-btn {
+  width:100%; padding:13px; border-radius:24px; border:none;
+  background:#fff; color:#000; font-family:'Syne',sans-serif;
+  font-size:12px; font-weight:700; letter-spacing:1.2px; text-transform:uppercase;
+  cursor:pointer; transition:0.2s;
+  box-shadow:6px 6px 14px rgba(0,0,0,0.8), -2px -2px 8px var(--c-sl);
+}
+.mypage-modal .upgrade-btn:hover  { opacity:0.88; transform:translateY(-1px); }
+.mypage-modal .upgrade-btn:active { transform:translateY(0); opacity:0.8; }
+
+/* ── PROFILE ── */
+.mypage-modal .pv-title  { font-family:'Syne',sans-serif; font-size:12px; font-weight:700; color:var(--c-text); }
+.mypage-modal .pv-field  {
+  display:flex; align-items:center; padding:11px 14px;
+  background:rgba(255,255,255,0.03); border:1px solid var(--c-border);
+  border-radius:8px; margin-bottom:7px;
+  box-shadow:inset 2px 2px 6px rgba(0,0,0,0.6), inset -1px -1px 3px var(--c-sl);
+}
+.mypage-modal .pv-label { font-size:10px; color:var(--c-gray); width:82px; flex-shrink:0; text-transform:uppercase; letter-spacing:0.3px; }
+.mypage-modal .pv-val   { font-size:12px; color:var(--c-text); font-weight:500; }
+.mypage-modal .pv-val.muted { color:var(--c-muted2); font-size:11px; }
+
+/* ── FORM ── */
+.mypage-modal .f-group { display:flex; flex-direction:column; gap:5px; margin-bottom:9px; }
+.mypage-modal .f-group label { font-size:10px; color:var(--c-muted2); font-weight:500; letter-spacing:0.3px; text-transform:uppercase; }
+.mypage-modal .f-row   { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+
+.mypage-modal .f-input {
+  padding:10px 14px; background:rgba(255,255,255,0.04);
+  border:1px solid rgba(255,255,255,0.07); border-radius:8px;
+  color:var(--c-text); font-family:'DM Sans',sans-serif; font-size:12px;
+  outline:none; width:100%; transition:0.25s;
+  box-shadow:inset 2px 2px 6px rgba(0,0,0,0.6), inset -1px -1px 3px var(--c-sl);
+  /* Bootstrap form-control 리셋 */
+  background-clip:unset; -webkit-appearance:none;
+}
+.mypage-modal .f-input::placeholder { color:rgba(242,242,242,0.2); }
+.mypage-modal .f-input:focus        { border-color:rgb(190,190,190); box-shadow:inset 0.5px 0.5px 7px rgb(140,140,140); }
+.mypage-modal .f-input:disabled     { opacity:0.4; cursor:not-allowed; }
+
+.mypage-modal .code-row             { display:flex; gap:7px; }
+.mypage-modal .code-row .f-input    { flex:1; }
+.mypage-modal .code-btn {
+  padding:0 12px; height:38px; flex-shrink:0;
+  background:rgba(255,255,255,0.07); border:1px solid rgba(255,255,255,0.1);
+  border-radius:8px; color:rgba(242,242,242,0.7);
+  font-size:11px; font-weight:500; cursor:pointer;
+  white-space:nowrap; font-family:'DM Sans',sans-serif; transition:0.2s;
+}
+.mypage-modal .code-btn:hover { background:rgba(255,255,255,0.12); color:var(--c-text); }
+
+.mypage-modal .pw-box {
+  background:rgba(255,255,255,0.025); border:1px solid var(--c-border);
+  border-radius:10px; padding:14px; margin-top:6px;
+  box-shadow:inset 2px 2px 8px rgba(0,0,0,0.5);
+}
+.mypage-modal .pw-title { font-family:'Syne',sans-serif; font-size:11px; font-weight:700; color:var(--c-muted2); margin-bottom:11px; }
+
+.mypage-modal .danger-zone  { margin-top:12px; padding-top:12px; border-top:1px solid rgba(239,68,68,0.14); }
+.mypage-modal .danger-label { font-size:9px; color:rgba(248,113,113,0.5); text-transform:uppercase; letter-spacing:0.6px; margin-bottom:7px; font-weight:600; }
+.mypage-modal .danger-btn {
+  padding:7px 14px; border-radius:7px;
+  border:1px solid rgba(239,68,68,0.22); background:rgba(239,68,68,0.07);
+  color:#f87171; font-size:11px; font-family:'DM Sans',sans-serif; cursor:pointer; transition:0.2s;
+}
+.mypage-modal .danger-btn:hover { background:rgba(239,68,68,0.15); }
+
+/* ── BUTTONS ── */
+.mypage-modal .outline-btn {
+  padding:6px 16px; border-radius:22px; background:transparent;
+  border:1px solid rgba(255,255,255,0.2); color:var(--c-muted2);
+  font-size:11px; font-weight:500; cursor:pointer;
+  font-family:'DM Sans',sans-serif; transition:0.2s;
+}
+.mypage-modal .outline-btn:hover { background:rgba(255,255,255,0.07); border-color:rgba(255,255,255,0.35); color:var(--c-text); }
+
+.mypage-modal .primary-btn {
+  padding:6px 18px; border-radius:22px; background:#fff; color:#000;
+  font-size:11px; font-weight:700; cursor:pointer; border:none;
+  font-family:'DM Sans',sans-serif; transition:0.2s;
+  box-shadow:4px 4px 10px rgba(0,0,0,0.7); letter-spacing:0.5px;
+}
+.mypage-modal .primary-btn:hover  { opacity:0.88; transform:translateY(-1px); }
+.mypage-modal .primary-btn:active { transform:translateY(0); opacity:0.8; }
+
+/* ════════════════════════════════════
+   ANIMATIONS
+   ════════════════════════════════════ */
+@keyframes mp-fadein  { from{opacity:0} to{opacity:1} }
+@keyframes mp-slideup {
+  from{opacity:0;transform:translateY(26px) scale(0.97)}
+  to  {opacity:1;transform:translateY(0)    scale(1)   }
+}
+@keyframes mp-genie-out {
+  0%  {transform:translateY(0) scaleX(1) scaleY(1);opacity:1;clip-path:polygon(0% 0%,100% 0%,100% 100%,0% 100%)}
+  25% {transform:translateY(-6%) scaleX(.94) scaleY(.9);opacity:1;clip-path:polygon(8% 0%,92% 0%,97% 75%,3% 75%)}
+  50% {transform:translateY(-25%) scaleX(.62) scaleY(.56);opacity:.96;clip-path:polygon(20% 0%,80% 0%,88% 50%,12% 50%)}
+  70% {transform:translateY(-52%) scaleX(.3) scaleY(.3);opacity:.75;clip-path:polygon(33% 0%,67% 0%,70% 28%,30% 28%)}
+  87% {transform:translateY(-78%) scaleX(.08) scaleY(.09);opacity:.35;clip-path:polygon(45% 0%,55% 0%,57% 8%,43% 8%)}
+  100%{transform:translateY(-94%) scaleX(0) scaleY(0);opacity:0;clip-path:polygon(50% 0%,50% 0%,50% 0%,50% 0%)}
+}
+@keyframes mp-overlay-out { 0%,70%{opacity:1} 100%{opacity:0} }
+@keyframes mp-icon-pop {
+  0%  {transform:scale(1);  box-shadow:0 0 0 0   rgba(255,255,255,.6)}
+  40% {transform:scale(1.18);box-shadow:0 0 0 10px rgba(255,255,255,0)}
+  70% {transform:scale(.92)}
+  100%{transform:scale(1)}
+}
+
+.mypage-modal.genie-out   { animation:mp-genie-out   0.65s cubic-bezier(0.4,0,0.2,1) forwards; pointer-events:none; }
+.mypage-overlay.genie-out { animation:mp-overlay-out 0.65s ease forwards; pointer-events:none; }
+.mypage-modal .av.icon-pop { animation:mp-icon-pop 0.5s cubic-bezier(0.36,.07,.19,.97) forwards; }

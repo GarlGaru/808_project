@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.spring.eze.admin.dao.AdminStatsDAO">
+
+  <!-- 최근 5일 가입자 수 -->
+  <select id="selectSignupLast5"
+          resultType="com.spring.eze.admin.dto.DailyCountDTO">
+    <![CDATA[
+      SELECT TO_CHAR(d.dt, 'MM/DD') AS label,
+             NVL(s.cnt, 0) AS cnt
+        FROM (
+              SELECT TRUNC(SYSDATE) - (LEVEL - 1) AS dt
+                FROM dual
+             CONNECT BY LEVEL <= 5
+             ) d
+        LEFT JOIN (
+              SELECT TRUNC(created_at) AS dt,
+                     COUNT(*) AS cnt
+                FROM user_tbl
+               WHERE created_at >= TRUNC(SYSDATE) - 4
+               GROUP BY TRUNC(created_at)
+             ) s
+          ON s.dt = d.dt
+       ORDER BY d.dt
+    ]]>
+  </select>
+
+  <!-- 최근 5일 결제 승인 건수 -->
+  <select id="selectPayLast5"
+          resultType="com.spring.eze.admin.dto.DailyCountDTO">
+    <![CDATA[
+      SELECT TO_CHAR(d.dt, 'MM/DD') AS label,
+             NVL(p.cnt, 0) AS cnt
+        FROM (
+              SELECT TRUNC(SYSDATE) - (LEVEL - 1) AS dt
+                FROM dual
+             CONNECT BY LEVEL <= 5
+             ) d
+        LEFT JOIN (
+              SELECT TRUNC(approved_at) AS dt,
+                     COUNT(*) AS cnt
+                FROM payment_order
+               WHERE status = 'APPROVED'
+                 AND approved_at >= TRUNC(SYSDATE) - 4
+               GROUP BY TRUNC(approved_at)
+             ) p
+          ON p.dt = d.dt
+       ORDER BY d.dt
+    ]]>
+  </select>
+  
+  <select id="selectPayStatus"
+        resultType="com.spring.eze.admin.dto.DailyCountDTO">
+  <![CDATA[
+    SELECT status AS label,
+           COUNT(*) AS cnt
+    FROM payment_order
+    GROUP BY status
+  ]]>
+</select>
+
+</mapper>

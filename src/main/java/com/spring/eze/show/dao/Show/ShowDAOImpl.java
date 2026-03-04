@@ -22,6 +22,7 @@ public class ShowDAOImpl implements ShowDAO{
 		System.out.println("ShowDAOImpl - selectShowMainList()");
 		ShowDAO dao = sqlSession.getMapper(ShowDAO.class);
 		return dao.selectShowMainList(map);
+      
 	}
 
 	//오픈 예정 공연
@@ -30,6 +31,7 @@ public class ShowDAOImpl implements ShowDAO{
 		System.out.println("ShowDAOImpl - selectShowUpcoming()");
 		ShowDAO dao = sqlSession.getMapper(ShowDAO.class);
 		return dao.selectShowUpcoming();
+  
 	}
 
 	// 장르별 상세페이지

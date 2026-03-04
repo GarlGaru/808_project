@@ -4,7 +4,7 @@ import java.sql.Date;
 
 public class ShowDTO {
 
-	private String showId; //Kopis Api id
+    private String showId; //Kopis Api id
 	private String title;
 	private Date startDate;
 	private Date endDate;

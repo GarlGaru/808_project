@@ -1,10 +1,7 @@
 package com.spring.eze.show.service.show;
 
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -37,10 +34,11 @@ public class ShowServiceImpl implements ShowService{
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("genre", genre);
 		List<ShowDTO> list = dao.selectShowMainList(map);
-		
+	
+
 		// 3. 하단 오픈 예정 공연
 		List<ShowDTO> upcomingList = dao.selectShowUpcoming();
-		
+
 		System.out.println("genre=" + genre);
 		System.out.println("main list size=" + list.size());
 		

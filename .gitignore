@@ -29,6 +29,7 @@ replay_pid*
 #ide
 .vscode
 .idea
+.smarttomcat
 
 #env
 .env
@@ -53,10 +54,11 @@ tmp/
 *.swp
 *~.nib
 local.properties
-#.settings/
+.settings/
 .loadpath
 .recommenders
 target/
+.classpath
 
 # External tool builders
 .externalToolBuilders/
