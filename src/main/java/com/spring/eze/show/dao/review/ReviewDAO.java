@@ -30,5 +30,6 @@ public interface ReviewDAO {
     
     public List<ReviewDTO> getReviewByShowId(String showId);
     
+    public List<ReviewDTO> getShowListForReview();
    
 }

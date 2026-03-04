@@ -41,10 +41,10 @@ public class ReviewServiceImpl implements ReviewService {
 		    }
 
 		    int total = list.size();
-
+		 
 		    model.addAttribute("reviews", list);
 		    model.addAttribute("totalCount", total);
-		    model.addAttribute("concertList", getConcertList());
+		    
 	}
 
 
@@ -62,23 +62,29 @@ public class ReviewServiceImpl implements ReviewService {
 
 	    System.out.println("ReviewServiceImpl - reviewInsertAction()");
 
-	    HttpSession session = request.getSession();
+	    ///HttpSession session = request.getSession();
 
-	    String showId = request.getParameter("concertTitle"); // 이름 나중에 showId로 바꾸는 게 좋음
+	    String showId = request.getParameter("showId");  // 이름 나중에 showId로 바꾸는 게 좋음
 	    String content = request.getParameter("content");
 	    String ratingStr = request.getParameter("rating");
 
-	    int rating = (ratingStr != null) ? Integer.parseInt(ratingStr) : 5;
+	    int rating = 0;
+	    if (ratingStr != null && !ratingStr.equals("")) {
+	        rating = Integer.parseInt(ratingStr);
+	    }
+
 
 	    ReviewDTO dto = new ReviewDTO();
+	    dto.setUserNum(1);  
+	    
 	    dto.setRating(rating);
 	    dto.setContent(content);
 	    dto.setShowId(showId);
 
-	    Integer userNum = (Integer)session.getAttribute("userNum");
-	    dto.setUserNum(userNum);
-
 	    dao.insertReview(dto);
+	    System.out.println("후기작성완료");
+
+	  
 		
 	}
 	
@@ -123,17 +129,11 @@ public class ReviewServiceImpl implements ReviewService {
 	@Override
 	public void getConcertListAction(HttpServletRequest request, HttpServletResponse response, Model model)
 			throws ServletException, IOException {
+		List<ReviewDTO> showList = dao.getShowListForReview();
 		
-		model.addAttribute("concertList", getConcertList());
-		
+		model.addAttribute("showList", showList);
 	}
 
-	@Override
-	public String[] getConcertList() {
-		return new String[] {"지킬앤하이드", "레미제라블", "데스노트", "오페라의유령", "위키드", 
-                "맘마미아", "시카고", "캣츠", "킹키부츠", "노트르담드파리"};
-		
-	}
 
 
 

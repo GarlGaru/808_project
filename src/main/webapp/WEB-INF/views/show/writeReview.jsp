@@ -57,16 +57,17 @@
             <h2 class="text-center mb-4" style="color: white; font-weight: bold;">공연 후기 작성</h2>
             
             <form action="${path}/show/insertReview" method="post" onsubmit="return confirmRegister()">
-                
                 <div class="form-group">
-                    <label for="concertTitle">관람한 공연</label>
-                    <select name="showId" id="showId" class="form-control" required>
-					    <option value="">공연을 선택해주세요</option>
-					    <c:forEach var="title" items="${concertList}">
-					        <option value="${title}">${title}</option>
-					    </c:forEach>
-					</select>
-                </div>
+				    <label for="showId">공연 선택</label>
+				    <select name="showId" id="showId" class="form-control" required>
+				        <option value="">-- 후기를 작성할 공연을 선택하세요 --</option>
+				        
+				        <%-- DB에서 넘어온 showList를 하나씩 꺼내서 옵션으로 만듬 --%>
+				        <c:forEach var="show" items="${showList}">
+				            <option value="${show.showId}">${show.concertTitle}</option>
+				        </c:forEach>
+				    </select>
+				</div>
 
                 <div class="form-group">
                     <label for="rating">별점</label>

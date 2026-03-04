@@ -2,6 +2,7 @@ package com.spring.eze.show.controller;
 
 
 import com.spring.eze.main.service.MainService;
+import com.spring.eze.show.dao.Show.ShowDAO;
 import com.spring.eze.show.dto.review.ReviewDTO;
 import com.spring.eze.show.service.Seat.SeatService;
 
@@ -82,7 +83,7 @@ public class ShowController {
 	   log.info("ShowController - writeReview");
 	   
 	   reviewService.getConcertListAction(request, response, model);
-	   
+	 
        return "show/writeReview"; // 위에서 만든 jsp 이름
    }
 

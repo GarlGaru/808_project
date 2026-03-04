@@ -40,7 +40,6 @@ public interface ReviewService {
             throws ServletException, IOException;
 
 
-	String[] getConcertList();
 }
 
     

@@ -66,6 +66,12 @@ public class ReviewDAOImpl implements ReviewDAO {
 		// TODO Auto-generated method stub
 		return sqlSession.selectList(NAMESPACE + "getReviewByShowId", showId);
 	}
+
+	@Override
+	public List<ReviewDTO> getShowListForReview() {
+		// TODO Auto-generated method stub
+		return sqlSession.selectList(NAMESPACE + "getShowListForReview");
+	}
 	
 
 }

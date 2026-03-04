@@ -12,7 +12,7 @@
     <title>공연 후기 게시판</title>
 
 <style>
-        /* 후기 게시판 전용 스타일 (다크모드 맞춤) */
+        
         .review-section { color: #fff; padding: 50px 0; }
         .review-header { display: flex; justify-content: space-between; align-items: flex-end; border-bottom: 1px solid #444; padding-bottom: 20px; margin-bottom: 30px; }
         .review-card { background: #222; border-radius: 10px; padding: 20px; margin-bottom: 15px; border: 1px solid #333; }
