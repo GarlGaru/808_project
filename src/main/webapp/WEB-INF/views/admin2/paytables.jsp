@@ -36,7 +36,7 @@
             <div class="sidebar-brand-icon rotate-n-15">
                 <i class="fas fa-table"></i>
             </div>
-            <div class="sidebar-brand-text mx-3">Admin</div>
+            <div class="sidebar-brand-text mx-3">808 Admin</div>
         </a>
 
         <hr class="sidebar-divider my-0">
@@ -73,13 +73,13 @@
 
             <!-- Topbar -->
             <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 shadow">
-                <span class="h5 mb-0 text-gray-800">Tables Page</span>
+                <span class="h5 mb-0 text-gray-800">PAY Tables Page</span>
             </nav>
 
             <!-- Page Content -->
             <div class="container-fluid">
 
-                <h1 class="h3 mb-2 text-gray-800">Tables</h1>
+                <h1 class="h3 mb-2 text-gray-800">PAY Tables</h1>
 
                 <div class="card shadow mb-4">
                     <div class="card-header py-3">
@@ -90,40 +90,36 @@
                             <table class="table table-bordered" id="dataTable" width="100%">
                                 <thead>
                                     <tr>
-                                        <th>Name</th>
-                                        <th>Position</th>
-                                        <th>Office</th>
-                                        <th>Age</th>
-                                        <th>Start date</th>
-                                        <th>Salary</th>
+                                        <th>결제번호</th>
+                                        <th>결제한회원</th>
+                                        <th>상품명</th>
+                                        <th>구매수량</th>
+                                        <th>총결제금액</th>
+                                        <th>카카오페이 결제 고유번호</th>
+                                        
+                                        <th>결제상태</th>
+                                        <th>주문생성시간</th>
+                                        <th>결제승인시간</th>
+                                        <th>결제실패사유</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr>
-                                        <td>Tiger Nixon</td>
-                                        <td>System Architect</td>
-                                        <td>Edinburgh</td>
-                                        <td>61</td>
-                                        <td>2011/04/25</td>
-                                        <td>$320,800</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Garrett Winters</td>
-                                        <td>Accountant</td>
-                                        <td>Tokyo</td>
-                                        <td>63</td>
-                                        <td>2011/07/25</td>
-                                        <td>$170,750</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Ashton Cox</td>
-                                        <td>Junior Technical Author</td>
-                                        <td>San Francisco</td>
-                                        <td>66</td>
-                                        <td>2009/01/12</td>
-                                        <td>$86,000</td>
-                                    </tr>
-                                </tbody>
+                                    <c:forEach var="p" items="${payList}">
+										<tr>
+										    <td>${p.orderId}</td>
+										    <td>${p.userId}</td>
+										    <td>${p.itemName}</td>
+										    <td>${p.quantity}</td>
+										    <td>${p.totalAmount}</td>
+										    <td>${p.tid}</td>
+										    
+										    <td>${p.status}</td>
+										    <td>${p.createdAt}</td>
+										    <td>${p.approvedAt}</td>
+										    <td>${p.failReason}</td>
+										</tr>
+										</c:forEach>
+			                     </tbody>
                             </table>
                         </div>
                     </div>

@@ -3,18 +3,22 @@ package com.spring.eze.admin.controller;
 import java.util.List;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.spring.eze.admin.dto.AdminPaymentOrderDTO;
+import com.spring.eze.admin.dto.AdminUserDTO;
 import com.spring.eze.admin.dto.DailyCountDTO;
 import com.spring.eze.admin.service.AdminStatsService;
 
 @Controller
 @RequestMapping("/admin")
 public class AdminController {
-	
+
 	private final AdminStatsService service;
+	
 
 	public AdminController(AdminStatsService service) {
 	        this.service = service;
@@ -23,6 +27,8 @@ public class AdminController {
     // 대시보드
     @GetMapping({"", "/"})
     public String index() {
+    	System.out.println(service.selectPayList().size());
+    	
         return "/admin2/index";
     }
 
@@ -91,12 +97,18 @@ public class AdminController {
     }
 
     @GetMapping("/user")
-    public String usertables() {
+    public String usertables(Model model) {
+    	List<AdminUserDTO> list = service.selectUserList();
+    	
+    	model.addAttribute("userList", list);
+    	System.out.println("userList size = " + list.size());
+    	
         return "/admin2/usertables";
     }
     
     @GetMapping("/pay")
-    public String paytables() {
+    public String paytables(Model model) {
+        model.addAttribute("payList", service.selectPayList());
         return "/admin2/paytables";
     }
     
