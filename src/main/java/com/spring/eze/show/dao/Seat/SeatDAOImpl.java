@@ -12,8 +12,8 @@ import com.spring.eze.show.dto.Seat.SeatDTO;
 @Repository
 public class SeatDAOImpl implements SeatDAO {
 
-//	@Autowired
-//	private SqlSessionTemplate sqlSession;
+	@Autowired
+	private SqlSessionTemplate sqlSession;
 	
 	// 좌석 조회
 	@Override
@@ -35,14 +35,20 @@ public class SeatDAOImpl implements SeatDAO {
 
 	@Override
 	public int updateHoldSeats(Map<String, Object> map) {
-		// TODO Auto-generated method stub
-		return 0;
+		
+		return sqlSession.update("com.spring.eze.show.dao.Seat.SeatDAO.updateHoldSeats",map);
 	}
 
 	@Override
 	public int updateReleaseSeats(Map<String, Object> map) {
 		// TODO Auto-generated method stub
 		return 0;
+	}
+
+	@Override
+	public int updateReleaseExpiredSeats() {
+		// TODO Auto-generated method stub
+		return sqlSession.update("com.spring.eze.show.dao.Seat.SeatDAO.updateReleaseExpiredSeats");
 	}
 
 }

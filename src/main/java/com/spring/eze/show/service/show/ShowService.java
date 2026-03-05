@@ -13,4 +13,6 @@ public interface ShowService {
 	public void getShowMain(HttpServletRequest request, HttpServletResponse resposne, Model model)
 		throws ServletException, IOException;
 	
+	public void prepareShowListPage(String category, Model model)
+		throws ServletException, IOException;
 }
