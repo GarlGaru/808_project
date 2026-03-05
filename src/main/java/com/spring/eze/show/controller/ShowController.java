@@ -3,6 +3,7 @@ package com.spring.eze.show.controller;
 
 import com.spring.eze.main.service.MainService;
 import com.spring.eze.show.dao.Show.ShowDAO;
+import com.spring.eze.show.dto.Seat.SeatDTO;
 import com.spring.eze.show.dto.review.ReviewDTO;
 import com.spring.eze.show.service.Seat.SeatService;
 
@@ -32,6 +33,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 
 @Controller
@@ -143,6 +145,13 @@ public class ShowController {
 		return "show/seat";
     }
 
+	@ResponseBody
+	@RequestMapping("/seatStatus")
+	public List<SeatDTO> getSeatStatus(@RequestParam String showId, @RequestParam int scheduleId) {
+		
+		return seatService.getSeatStatus(showId, scheduleId);
+	}
+	
     @RequestMapping("/seat-detail")
     public String seatDetail(HttpServletRequest request, HttpServletResponse response, Model model)
             throws ServletException, IOException {
@@ -153,9 +162,43 @@ public class ShowController {
 	
 
 	@PostMapping("/reserve")
-	public String reserveSeat(HttpServletRequest request) {
-	
+	public String reserveSeat(HttpServletRequest request, HttpServletResponse reponse, Model model)
+			throws ServletException, IOException{
+		log.info("ShowController - 좌석 선점 및 예약 확인 페이지 이동");
+		
+		try {
+			seatService.selectSeats(request, reponse, model);
+		
+		String[] selectedSeats = request.getParameterValues("selectedSeats");
+		String showId = request.getParameter("show_id");
+		String scheduleId = request.getParameter("scheduleId");
+		
+		model.addAttribute("selectedSeats",selectedSeats);
+		model.addAttribute("showId", showId);
+		model.addAttribute("scheduleId",scheduleId);
+		
 	    return "show/seatres"; 
+	    
+		}catch(Exception e) {
+			model.addAttribute("errorMsg", "이미 선택된 좌석이 포함되어 있습니다.");
+			return "show/seatres";
+		}
+	}
+	
+	//타이머 5분 후 좌석 해지 Ajax용
+	@ResponseBody
+	@PostMapping("/release")
+	public String releaseSeats(HttpServletRequest request, HttpServletResponse response, Model model)
+			throws ServletException, IOException {
+		log.info("Showcontroller - 타이머 종료로 인한 좌석해제(Ajax)");
+		
+		try {
+			seatService.cancelSelectedSeats(request, response, model);
+			return "success";
+			
+		}catch (Exception e) {
+			return "fail";
+		}
 	}
 	
 	

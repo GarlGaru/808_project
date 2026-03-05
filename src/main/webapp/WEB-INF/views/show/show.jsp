@@ -20,13 +20,13 @@
     <%@ include file="/WEB-INF/views/common/header.jsp" %>
     <br><br><br><br>
     <br><br><br><br>
-
+<%-- 
 	<div class="section" style="justify-content-center">
 		<a href="${path}/show/seat-detail">
 			<img src="${path}/resources/presentation/show.png">
 		</a>
-    </div>
-<%-- 
+    </div> --%>
+ 
     <div class="show-wrap">
      	<!-- 1) 장르 배너 시작 -->
      	<div class="genre-bar">
@@ -99,7 +99,7 @@
      		</div>
      	</div>
     </div> 
- --%>
+ 
 
     <br><br><br><br>
 
