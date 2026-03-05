@@ -82,5 +82,22 @@ public class MusicController {
         // 4) 상세 페이지로 이동
         return "music/detail";
     }
-
+	 @RequestMapping("/recommend")
+	 public String recommend(HttpServletRequest request,
+	                            HttpServletResponse response,
+	                            Model model) {
+		
+		 log.info("<<< url => /recommend >>>");
+		 return "/music/recommend";
+	 }
+	 
+	 @RequestMapping("/ranking")
+	 public String ranking(HttpServletRequest request,
+	                            HttpServletResponse response,
+	                            Model model) {
+		 log.info("<<< url => /ranking >>>");
+		 return "/music/ranking";
+	 }
+	 
+ 
 }
