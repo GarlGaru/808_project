@@ -1,4 +1,3 @@
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <!-- ##### Header Area Start ##### -->
 <header class="header-area">
 	<div class="oneMusic-main-menu">
@@ -29,7 +28,7 @@
 									<li><a href="${path}/admin">ADMIN</a></li>
 								</c:if>
 								<c:if test="${sessionScope.loginUser.nickname != 'admin'}">
-									<li><a href="#">Contact</a></li>
+									<li><a href="${path}/main/board">Board</a></li>
 								</c:if>
 
 
@@ -41,6 +40,9 @@
 									<c:when test="${not empty sessionScope.loginUser}">
 										<div class="login-register-btn mr-15">
 											<span>${sessionScope.loginUser.nickname}</span>
+										</div>
+										<div class="login-register-btn mr-15">
+											<a href="${path}/mypage" title="마이페이지">&#x1F464;</a>
 										</div>
 										<div class="login-register-btn">
 											<a href="${path}/logout">Logout</a>
@@ -63,4 +65,5 @@
 		</div>
 	</div>
 </header>
+
 <!-- ##### Header Area End ##### -->

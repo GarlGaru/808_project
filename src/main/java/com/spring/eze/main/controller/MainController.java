@@ -43,4 +43,14 @@ public class MainController {
 		return "home";
     }
 
+	@RequestMapping("/board")
+    public String board(HttpServletRequest request, HttpServletResponse response, Model model)
+			throws ServletException, IOException {
+		log.info("board");
+
+        
+		return "common/board";
+    }
+	
+
 }
