@@ -44,5 +44,10 @@ public class PaymentDAOImpl implements PaymentDAO{
 		
 	}
 
+	@Override
+	public int updateFailReason(PaymentOrderDTO dto) {
+		return sqlSession.update(NS + "updateFailReason", dto);
+	}
+
 	
 }

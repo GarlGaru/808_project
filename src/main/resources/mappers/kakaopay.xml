@@ -56,5 +56,12 @@
            FAIL_REASON = #{failReason}
      WHERE ORDER_ID = #{orderId}
   </update>
+  
+  <!-- 결제 취소 -->
+  <update id="updateFailReason" parameterType="com.spring.eze.payment.dto.PaymentOrderDTO">
+  UPDATE payment_order
+     SET fail_reason = #{failReason}
+   WHERE order_id = #{orderId}
+</update>
 
 </mapper>

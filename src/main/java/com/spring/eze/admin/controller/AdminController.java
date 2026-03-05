@@ -90,9 +90,24 @@ public class AdminController {
         return "/admin2/charts";
     }
 
-    @GetMapping("/tables")
-    public String tables() {
-        return "/admin2/tables";
+    @GetMapping("/user")
+    public String usertables() {
+        return "/admin2/usertables";
+    }
+    
+    @GetMapping("/pay")
+    public String paytables() {
+        return "/admin2/paytables";
+    }
+    
+    @GetMapping("/board")
+    public String boardtables() {
+        return "/admin2/boardtables";
+    }
+    
+    @GetMapping("/music")
+    public String musicttables() {
+        return "/admin2/musictables";
     }
     
     //디비연결해서 데이터리스트로가져올거임
