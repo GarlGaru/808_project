@@ -1,5 +1,6 @@
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <!-- ##### Header Area Start ##### -->
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ include file="/WEB-INF/views/common/setting.jsp" %>
 <header class="header-area">
 	<div class="oneMusic-main-menu">
 		<div class="classy-nav-container breakpoint-off">
@@ -12,14 +13,12 @@
 					<div class="classy-navbar-toggler">
 						<span class="navbarToggler"><span></span><span></span><span></span></span>
 					</div>
-
 					<div class="classy-menu">
 						<div class="classycloseIcon">
 							<div class="cross-wrap">
 								<span class="top"></span><span class="bottom"></span>
 							</div>
 						</div>
-
 						<div class="classynav">
 							<ul>
 								<li><a href="${path}/main">Home</a></li>
@@ -27,27 +26,24 @@
 								<li><a href="${path}/show">Show</a></li>
 								<li><a href="#">Contact</a></li>
 							</ul>
-
 							<div class="login-register-cart-button d-flex align-items-center">
-
 								<c:choose>
+									<%-- 로그인 된 상태: 닉네임 클릭 → openMypage() --%>
 									<c:when test="${not empty sessionScope.loginUser}">
 										<div class="login-register-btn mr-15">
-											<span>${sessionScope.loginUser.nickname}</span>
-										</div>
-										<div class="login-register-btn mr-15">
-											<a href="${path}/mypage" title="마이페이지">👤</a>
+											<a href="javascript:void(0)" onclick="openMypage()">${sessionScope.loginUser.nickname}님 👤</a>
 										</div>
 										<div class="login-register-btn">
 											<a href="${path}/logout">Logout</a>
 										</div>
 									</c:when>
+									<%-- 로그인 안 된 상태 --%>
 									<c:otherwise>
 										<div class="login-register-btn mr-15">
-											<a href="${path}/authModal">Login</a>
+											<a href="javascript:void(0)" onclick="openAuthModal()">Login</a>
 										</div>
 										<div class="login-register-btn">
-											<a href="${path}/main">Register</a>
+											<a href="javascript:void(0)" onclick="openAuthModal('register')">Register</a>
 										</div>
 									</c:otherwise>
 								</c:choose>
@@ -59,5 +55,12 @@
 		</div>
 	</div>
 </header>
-
 <!-- ##### Header Area End ##### -->
+
+<%-- ────────────────────────────────────────────────────────
+     mypageModal fragment — 헤더와 함께 모든 페이지에 로드됨
+     openMypage() 호출 시 오버레이 표시
+     백단 없어도 더미 데이터로 UI 확인 가능
+──────────────────────────────────────────────────────── --%>
+<%@ include file="/WEB-INF/views/user/mypageModal.jsp" %>
+<%@ include file="/WEB-INF/views/user/authModal.jsp" %>

@@ -10,10 +10,12 @@ public class UserDTO {
 	private String nickname;
 	private int emailVerified;
 	private Timestamp createdAt;
+	private ProfileDTO profile;
 	
 	public UserDTO() {
 		super();
 	}
+	
 
 	public UserDTO(int userId, String email, String password, String nickname, int emailVerified,
 			Timestamp createdAt) {
@@ -73,6 +75,17 @@ public class UserDTO {
 	public void setCreatedAt(Timestamp createdAt) {
 		this.createdAt = createdAt;
 	}
+
+	
+	public ProfileDTO getProfile() {
+		return profile;
+	}
+
+
+	public void setProfile(ProfileDTO profile) {
+		this.profile = profile;
+	}
+
 
 	@Override
 	public String toString() {
