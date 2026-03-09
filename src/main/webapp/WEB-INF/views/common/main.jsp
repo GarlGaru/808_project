@@ -22,7 +22,7 @@
             <!-- Single Hero Slide -->
             <div class="single-hero-slide d-flex align-items-center justify-content-center">
                 <!-- Slide Img -->
-                <div class="slide-img bg-img" style="background-image: url(img/bg-img/bg-1.jpg);"></div>
+                <!-- <div class="slide-img bg-img" style="background-image: url(img/bg-img/bg-1.jpg);"></div> -->
                 <!-- Slide Content -->
                 <div class="container">
                     <div class="row">
@@ -65,7 +65,7 @@
                     <div class="albums-slideshow owl-carousel">
                         <!-- Single Album -->
                         <div class="single-album">
-                            <img src="img/bg-img/a1.jpg" alt="">
+                            <img src="${path}/resources/common/img/core-img/default.jpg" alt="">
                             <div class="album-info">
                                 <a href="#">
                                     <h5>The Cure</h5>
@@ -76,7 +76,7 @@
 
                         <!-- Single Album -->
                         <div class="single-album">
-                            <img src="img/bg-img/a2.jpg" alt="">
+                            <img src="${path}/resources/common/img/core-img/default.jpg" alt="">
                             <div class="album-info">
                                 <a href="#">
                                     <h5>Sam Smith</h5>
@@ -87,7 +87,7 @@
 
                         <!-- Single Album -->
                         <div class="single-album">
-                            <img src="img/bg-img/a3.jpg" alt="">
+                            <img src="${path}/resources/common/img/core-img/default.jpg" alt="">
                             <div class="album-info">
                                 <a href="#">
                                     <h5>Will I am</h5>
@@ -98,7 +98,7 @@
 
                         <!-- Single Album -->
                         <div class="single-album">
-                            <img src="img/bg-img/a4.jpg" alt="">
+                            <img src="${path}/resources/common/img/core-img/default.jpg" alt="">
                             <div class="album-info">
                                 <a href="#">
                                     <h5>The Cure</h5>
@@ -109,7 +109,7 @@
 
                         <!-- Single Album -->
                         <div class="single-album">
-                            <img src="img/bg-img/a5.jpg" alt="">
+                            <img src="${path}/resources/common/img/core-img/default.jpg" alt="">
                             <div class="album-info">
                                 <a href="#">
                                     <h5>DJ SMITH</h5>
@@ -120,7 +120,7 @@
 
                         <!-- Single Album -->
                         <div class="single-album">
-                            <img src="img/bg-img/a6.jpg" alt="">
+                            <img src="${path}/resources/common/img/core-img/default.jpg" alt="">
                             <div class="album-info">
                                 <a href="#">
                                     <h5>The Ustopable</h5>
@@ -131,7 +131,7 @@
 
                         <!-- Single Album -->
                         <div class="single-album">
-                            <img src="img/bg-img/a7.jpg" alt="">
+                            <img src="${path}/resources/common/img/core-img/default.jpg" alt="">
                             <div class="album-info">
                                 <a href="#">
                                     <h5>Beyonce</h5>
@@ -164,7 +164,7 @@
                 <div class="col-12 col-sm-6 col-md-4 col-lg-2">
                     <div class="single-album-area wow fadeInUp" data-wow-delay="100ms">
                         <div class="album-thumb">
-                            <img src="img/bg-img/b1.jpg" alt="">
+                            <img src="${path}/resources/common/img/core-img/default.jpg" alt="">
                             <!-- Album Price -->
                             <div class="album-price">
                                 <p>$0.90</p>
@@ -187,7 +187,7 @@
                 <div class="col-12 col-sm-6 col-md-4 col-lg-2">
                     <div class="single-album-area wow fadeInUp" data-wow-delay="200ms">
                         <div class="album-thumb">
-                            <img src="img/bg-img/b2.jpg" alt="">
+                            <img src="${path}/resources/common/img/core-img/default.jpg" alt="">
                         </div>
                         <div class="album-info">
                             <a href="#">
@@ -202,7 +202,7 @@
                 <div class="col-12 col-sm-6 col-md-4 col-lg-2">
                     <div class="single-album-area wow fadeInUp" data-wow-delay="300ms">
                         <div class="album-thumb">
-                            <img src="img/bg-img/b3.jpg" alt="">
+                            <img src="${path}/resources/common/img/core-img/default.jpg" alt="">
                         </div>
                         <div class="album-info">
                             <a href="#">
@@ -217,7 +217,7 @@
                 <div class="col-12 col-sm-6 col-md-4 col-lg-2">
                     <div class="single-album-area wow fadeInUp" data-wow-delay="400ms">
                         <div class="album-thumb">
-                            <img src="img/bg-img/b4.jpg" alt="">
+                            <img src="${path}/resources/common/img/core-img/default.jpg" alt="">
                         </div>
                         <div class="album-info">
                             <a href="#">
@@ -232,7 +232,7 @@
                 <div class="col-12 col-sm-6 col-md-4 col-lg-2">
                     <div class="single-album-area wow fadeInUp" data-wow-delay="500ms">
                         <div class="album-thumb">
-                            <img src="img/bg-img/b1.jpg" alt="">
+                            <img src="${path}/resources/common/img/core-img/default.jpg" alt="">
                             <!-- Album Price -->
                             <div class="album-price">
                                 <p>$0.90</p>
@@ -255,7 +255,7 @@
                 <div class="col-12 col-sm-6 col-md-4 col-lg-2">
                     <div class="single-album-area wow fadeInUp" data-wow-delay="600ms">
                         <div class="album-thumb">
-                            <img src="img/bg-img/b2.jpg" alt="">
+                            <img src="${path}/resources/common/img/core-img/default.jpg" alt="">
                         </div>
                         <div class="album-info">
                             <a href="#">
@@ -270,7 +270,7 @@
                 <div class="col-12 col-sm-6 col-md-4 col-lg-2">
                     <div class="single-album-area wow fadeInUp" data-wow-delay="100ms">
                         <div class="album-thumb">
-                            <img src="img/bg-img/b3.jpg" alt="">
+                            <img src="${path}/resources/common/img/core-img/default.jpg" alt="">
                         </div>
                         <div class="album-info">
                             <a href="#">
@@ -285,7 +285,7 @@
                 <div class="col-12 col-sm-6 col-md-4 col-lg-2">
                     <div class="single-album-area wow fadeInUp" data-wow-delay="200ms">
                         <div class="album-thumb">
-                            <img src="img/bg-img/b4.jpg" alt="">
+                            <img src="${path}/resources/common/img/core-img/default.jpg" alt="">
                         </div>
                         <div class="album-info">
                             <a href="#">
@@ -300,7 +300,7 @@
                 <div class="col-12 col-sm-6 col-md-4 col-lg-2">
                     <div class="single-album-area wow fadeInUp" data-wow-delay="300ms">
                         <div class="album-thumb">
-                            <img src="img/bg-img/b1.jpg" alt="">
+                            <img src="${path}/resources/common/img/core-img/default.jpg" alt="">
                             <!-- Album Price -->
                             <div class="album-price">
                                 <p>$0.90</p>
@@ -323,7 +323,7 @@
                 <div class="col-12 col-sm-6 col-md-4 col-lg-2">
                     <div class="single-album-area wow fadeInUp" data-wow-delay="400ms">
                         <div class="album-thumb">
-                            <img src="img/bg-img/b2.jpg" alt="">
+                            <img src="${path}/resources/common/img/core-img/default.jpg" alt="">
                         </div>
                         <div class="album-info">
                             <a href="#">
@@ -338,7 +338,7 @@
                 <div class="col-12 col-sm-6 col-md-4 col-lg-2">
                     <div class="single-album-area wow fadeInUp" data-wow-delay="500ms">
                         <div class="album-thumb">
-                            <img src="img/bg-img/b3.jpg" alt="">
+                            <img src="${path}/resources/common/img/core-img/default.jpg" alt="">
                         </div>
                         <div class="album-info">
                             <a href="#">
@@ -353,7 +353,7 @@
                 <div class="col-12 col-sm-6 col-md-4 col-lg-2">
                     <div class="single-album-area wow fadeInUp" data-wow-delay="600ms">
                         <div class="album-thumb">
-                            <img src="img/bg-img/b4.jpg" alt="">
+                            <img src="${path}/resources/common/img/core-img/default.jpg" alt="">
                         </div>
                         <div class="album-info">
                             <a href="#">

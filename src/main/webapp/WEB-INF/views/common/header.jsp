@@ -24,7 +24,12 @@
 								<li><a href="${path}/main">Home</a></li>
 								<li><a href="${path}/music">Music</a></li>
 								<li><a href="${path}/show">Show</a></li>
-								<li><a href="#">Contact</a></li>
+								<c:if test="${sessionScope.loginUser.nickname == 'admin'}">
+									<li><a href="${path}/admin">ADMIN</a></li>
+								</c:if>
+								<c:if test="${sessionScope.loginUser.nickname != 'admin'}">
+									<li><a href="${path}/main/board">Board</a></li>
+								</c:if>
 							</ul>
 							<div class="login-register-cart-button d-flex align-items-center">
 								<c:choose>
@@ -57,10 +62,6 @@
 </header>
 <!-- ##### Header Area End ##### -->
 
-<%-- ────────────────────────────────────────────────────────
-     mypageModal fragment — 헤더와 함께 모든 페이지에 로드됨
-     openMypage() 호출 시 오버레이 표시
-     백단 없어도 더미 데이터로 UI 확인 가능
-──────────────────────────────────────────────────────── --%>
+<%-- 로그인/회원가입, 마이페이지 --%>
 <%@ include file="/WEB-INF/views/user/mypageModal.jsp" %>
 <%@ include file="/WEB-INF/views/user/authModal.jsp" %>

@@ -29,6 +29,7 @@ replay_pid*
 #ide
 .vscode
 .idea
+.smarttomcat
 
 #env
 .env
