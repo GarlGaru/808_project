@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder; // 암호화 라이브러리
 import org.springframework.stereotype.Service;
 
 import com.spring.eze.user.dto.UserDTO;
@@ -21,8 +22,11 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private UserDAO dao;
+    
+    @Autowired
+    private BCryptPasswordEncoder encoder; // SecurityConfig에서 빈(bean)으로 등록한 함호화 객체 주입
 
-    // 백엔드 검증용 정규식 — JS와 동일한 기준 유지
+    // 백엔드 검증용 정규식 — JS와 동일한 기준 유지(한글/영/숫 2~10자)
     private static final String EMAIL_PATTERN    = "^[A-Za-z0-9+_.-]+@(.+)$";
     private static final String NICKNAME_PATTERN = "^[가-힣a-zA-Z0-9]{2,10}$";
 
@@ -33,7 +37,7 @@ public class UserServiceImpl implements UserService {
         return val == null ? null : val.trim();
     }
 
-    // 1. 회원가입
+    // 1. 회원가입 (BCrypt 암호화 적용)
     @Override
     public int insertUser(HttpServletRequest request)
             throws ServletException, IOException {
@@ -49,13 +53,20 @@ public class UserServiceImpl implements UserService {
             }
             
             // 백엔드 2차 검증
-            if (!Pattern.matches(EMAIL_PATTERN, email))    return -1; // 이메일 형식 오류
-            if (!Pattern.matches(NICKNAME_PATTERN, nickname)) return -2; // 닉네임 형식 오류
-            if (password.length() < 8)                     return -3; // 비밀번호 길이 부족
+            if (!Pattern.matches(EMAIL_PATTERN, email))
+            	return -1; // 이메일 형식 오류
+            if (!Pattern.matches(NICKNAME_PATTERN, nickname))
+            	return -2; // 닉네임 형식 오류
+            if (password.length() < 8)                    
+            	return -3; // 비밀번호 길이 부족
 
             UserDTO dto = new UserDTO();
             dto.setEmail(email);
-            dto.setPassword(password);
+            
+            // BCrypt 암호화 실행
+            // encode()를 쓰면 매번 다른 '솔트'를 섞어서 해시를 만듦(보안 좋음, 길이는 약 60자)
+            String encodedPw = encoder.encode(password);
+            dto.setPassword(encodedPw);
             dto.setNickname(nickname);
 
             int insertCnt = dao.insertUser(dto);
@@ -106,34 +117,41 @@ public class UserServiceImpl implements UserService {
         }
     }
 
-    // 4. 로그인
+    // 4. 로그인(암호화된 비밀번호 비교 방식)
     @Override
     public int loginAction(HttpServletRequest request)
             throws ServletException, IOException {
         try {
             String email    = getParam(request, "email");
-            String password = request.getParameter("password"); // 비밀번호는 보안상 trim 하지 않음 (공백 포함 가능)
+            String password = request.getParameter("password"); // 비밀번호는 보안상 trim 하지 않음 (공백 포함 가능, 로그인창에서 입력받은 평문 비번)
             
             // 기본 유효성 검사
-            if (email == null || password == null || password.isEmpty()) return 0;
+            if (email == null || password == null || password.isEmpty())
+            	return 0;
             
             // DB에서 유저 정보 조회
             UserDTO loginUser = dao.getUserByEmail(email);
-            if (loginUser == null)                              return 0; // 이메일 없음
+            if (loginUser == null)
+            	return 0; // 이메일 없음
             
+            // matches()메서드로 비밀번호 비교 
+            // BCrypt는 복호화가 안 되기 때문에 .equals()를 절대 못씀.
+            // encoder.match(사용자입력값, DB저장값) 순서로 넣으면 내부에서 솔트 꺼내서 비교해줌
             // 비밀번호 검증 (현재는 equals, 추후 BCrypt.checkpw로 변경 예정 부분)
             String dbPw = loginUser.getPassword();
-            if (dbPw == null || !dbPw.equals(password))        return 0; // 비밀번호 불일치
+            if (dbPw == null || !encoder.matches(password, dbPw))
+            	return 0; // 비밀번호 불일치
             
             // 이메일 인증 여부 확인
-            if (loginUser.getEmailVerified() != 1)             return 2; // 이메일 미인증
+            if (loginUser.getEmailVerified() != 1)
+            	return 2; // 이메일 미인증
             
-            // 세션에 저장하기 전, DTO에서 비밀번호 제거
+            // 로그인 성공 처리 => 보안을 위해 세션에 담기 전 비번 정보는 삭제
             loginUser.setPassword(null);
             
             // 세션 설정
             HttpSession session = request.getSession();
-            session.setAttribute("loginUser", loginUser);
+            session.setAttribute("loginUser", loginUser); // 세션에 유저 객체 통째로 저장(비번x)
             session.setAttribute("userEmail", email);
 
             System.out.println(">>> [로그인 성공] " + email);
@@ -159,18 +177,20 @@ public class UserServiceImpl implements UserService {
     @Override
     public int updatePw(HttpServletRequest request) {
         String email    = getParam(request, "email");
-        String password = request.getParameter("password"); // 비밀번호는 trim 하지 않음
+        String password = request.getParameter("password"); // 새로 바꿀 비번
 
         if (email == null || password == null || password.isEmpty()) {
             System.out.println(">>> [비밀번호 수정 실패] 빈값 입력");
             return 0;
         }
 
+        // 바꿀 비밀번호도 당연히 암호화 해서 저장해야 함
+        String updatedPw = encoder.encode(password);
         System.out.println(">>> 비밀번호 수정 대상: " + email);
 
         Map<String, Object> map = new HashMap<>();
         map.put("email", email);
-        map.put("password", password);
+        map.put("password", updatedPw);
         return dao.updatePw(map);
     }
 
