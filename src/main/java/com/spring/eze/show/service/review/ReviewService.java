@@ -1,46 +1,27 @@
 package com.spring.eze.show.service.review;
 
-import java.io.IOException;
+import java.util.List;
 
-
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import org.springframework.ui.Model;
-
-
+import com.spring.eze.show.dto.review.ReviewDTO;
 
 public interface ReviewService {
-	
-	//  후기 목록 가져오기 
-	public void reviewListAction(HttpServletRequest request, HttpServletResponse response, Model model)
-					throws ServletException, IOException;
-	
-    // 전체 후기 개수 가져오기 
-    public int getTotalReviewCount(HttpServletRequest request, HttpServletResponse response, Model model);
-    	
-	//후기 작성
-    public void reviewInsertAction(HttpServletRequest request, HttpServletResponse response, Model model)
-            throws ServletException, IOException;
-    
- // 4. 후기 수정 처리
-    public void reviewUpdateAction(HttpServletRequest request, HttpServletResponse response, Model model)
-            throws ServletException, IOException;
 
-    // 5. 후기 삭제 처리
-    public void reviewDeleteAction(HttpServletRequest request, HttpServletResponse response, Model model)
-            throws ServletException, IOException;
+	// 후기 목록 가져오기
+	public List<ReviewDTO> getReviewList(String showId);
 
-    // 6. 아이디 마스킹 처리 
-    public String maskUserId(String userId);
-    
-    // 7. 공연 목록 가져오기 (작성 폼 등에서 사용)
-    public void getConcertListAction(HttpServletRequest request, HttpServletResponse response, Model model)
-            throws ServletException, IOException;
+	// 후기 작성
+	public void insertReview(ReviewDTO dto);
 
+	// 4. 후기 수정 처리
+	public void reviewUpdateAction(ReviewDTO dto);
+
+	// 5. 후기 삭제 처리
+	public boolean deleteReview(int reviewId);
+
+	// 평균 별점
+	double getAvgRating(String showId);
+
+	// 페이징	
+	List<ReviewDTO> getReviewPaging(String showId, int page, String sort);
 
 }
-
-    
-

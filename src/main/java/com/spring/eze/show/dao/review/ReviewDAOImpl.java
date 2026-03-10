@@ -1,6 +1,7 @@
 package com.spring.eze.show.dao.review;
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,21 +17,7 @@ public class ReviewDAOImpl implements ReviewDAO {
 
 	private static final String NAMESPACE = "com.spring.eze.show.dao.review.ReviewDAO.";
 	
-	@Override
-	public List<ReviewDTO> getReviewList() {
-		return sqlSession.selectList(NAMESPACE + "getReviewList");
-	}
 
-	@Override
-	public int getTotalCount() {
-		return sqlSession.selectOne(NAMESPACE + "getTotalCount");
-	}
-
-	@Override
-	public ReviewDTO getReviewDetail(int reviewId) {
-		return sqlSession.selectOne(NAMESPACE + "getReviewDetail", reviewId);
-		
-	}
 
 	@Override
 	public void updateReview(ReviewDTO dto) {
@@ -50,28 +37,29 @@ public class ReviewDAOImpl implements ReviewDAO {
 		
 	}
 
-	@Override
-	public void plusReadCnt(int reviewId) {
-		sqlSession.update(NAMESPACE + "plusReadCnt", reviewId);
-		
-	}
-
-	@Override
-	public List<String> getConcertTitles() {
-		return sqlSession.selectList(NAMESPACE + "getConcertTitles");
-	}
 
 	@Override
 	public List<ReviewDTO> getReviewByShowId(String showId) {
-		// TODO Auto-generated method stub
+		
 		return sqlSession.selectList(NAMESPACE + "getReviewByShowId", showId);
 	}
 
+	
+
+
+
 	@Override
-	public List<ReviewDTO> getShowListForReview() {
-		// TODO Auto-generated method stub
-		return sqlSession.selectList(NAMESPACE + "getShowListForReview");
+	public double getAvgRating(String showId) {
+		
+		return sqlSession.selectOne(NAMESPACE+"getAvgRating" ,showId);
 	}
+
+	@Override
+	public List<ReviewDTO> getReviewPaging(Map<String, Object> map) {
+		
+		return sqlSession.selectList(NAMESPACE + "getReviewPaging", map);
+	}
+
 	
 
 }

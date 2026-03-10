@@ -28,6 +28,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -65,45 +66,86 @@ public class ShowController {
 		return "show/show";
     }
 
-
-   //후기 목록 조회
-   @RequestMapping("/reviewList")
-   public String reviewList(HttpServletRequest request, HttpServletResponse response, Model model)
-     throws ServletException, IOException {
-         
-         log.info("ShowController - reviewList");
-         
-         reviewService.reviewListAction(request, response, model);
-         
-          return "show/review";
-     }
+////리 뷰 긔!!!!!!!!!!!!////////////////////////////////////////////////////////////
+	
+   //리뷰 목록 조회
+//   @ResponseBody
+//   @GetMapping("/reviewList")
+//   public List<ReviewDTO> reviewList(
+//		   @RequestParam String showId, 
+//		   @RequestParam int page, 
+//		   @RequestParam String sort) {
+//	   return reviewService.getReviewPaging(showId, page, sort);
+//     }
    
+	// 1. 이 주소는 '화면(JSP)'을 띄워주는 용도야! (@ResponseBody 쓰면 안 돼!)
+	@GetMapping("/review")
+	public String reviewPage(Model model) {
+	    log.info("리뷰 테스트 페이지 접속");
+	    // 테스트용 공연 ID를 모델에 담아서 JSP로 보내줌
+	    model.addAttribute("showId", "PF_test_001"); 
+	    return "show/review"; // WEB-INF/views/show/review.jsp를 찾아가라!
+	}
+	
+	@ResponseBody
+	@GetMapping("/reviewList")
+	public List<ReviewDTO> reviewList(
+	    @RequestParam(value="showId", required=false, defaultValue="PF_test_001") String showId, 
+	    @RequestParam(value="page", required=false, defaultValue="1") int page, 
+	    @RequestParam(value="sort", required=false, defaultValue="latest") String sort) {
+	    
+	    log.info("리뷰 목록 요청 - showId: {}, page: {}, sort: {}", showId, page);
+	    return reviewService.getReviewPaging(showId, page, sort);
+	}
+	
    //후기 작성 페이지
-   @GetMapping("/writeReview")
-   public String writeReviewForm(HttpServletRequest request, HttpServletResponse response, Model model)
-		     throws ServletException, IOException {
-   
-	   log.info("ShowController - writeReview");
+   @ResponseBody
+   @PostMapping("/reviewInsert")
+   public String reviewInsert(@RequestBody ReviewDTO dto) {
 	   
-	   reviewService.getConcertListAction(request, response, model);
+	   dto.setUserId(1);
+	   dto.setNickname("테스트유저");
+	   
+	   log.info("ShowController - reviewInsert");
+	   
+	   reviewService.insertReview(dto);
 	 
-       return "show/writeReview"; // 위에서 만든 jsp 이름
+      
+       return "success"; 
    }
 
- //2. 작성한 후기 실제로 DB에 저장하기 (POST)
-   @PostMapping("/insertReview")
-   public String insertReview(HttpServletRequest request, HttpServletResponse response, Model model, RedirectAttributes rttr)
-		     throws ServletException, IOException {
+   //후기 수정
+   @ResponseBody
+   @PostMapping("/reviewUpdate")
+   public String reviewUpdate(@RequestBody ReviewDTO dto) {
 	   
-	   reviewService.reviewInsertAction(request, response, model);
-	   rttr.addFlashAttribute("msg", "insertSuccess");
+	   reviewService.reviewUpdateAction(dto);
 	   
-      // 후기목록 페이지로 리턴
-     return "redirect:/show/reviewList";
-  }
+	   
+	   return "success"; 
+   }
    
-	// 좌석맵 조회(회차별)
-
+   @ResponseBody
+   @PostMapping("/reviewDelete")
+   public String reviewDelete(@RequestParam int reviewId) {
+	   
+	   boolean result = reviewService.deleteReview(reviewId);
+	   
+	   if(result) {
+		   return "success";
+	   }else {
+		   return "fail";
+	   }
+   }
+   
+   @ResponseBody
+   @GetMapping("/reviewAvg")
+   public double reviewAvg(String showId) {
+	   
+	   return reviewService.getAvgRating(showId);
+   }
+   
+   // 리 뷰 끝 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	
    // [공연장르상세페이지] -------------
 	@RequestMapping("/showList")
@@ -133,7 +175,8 @@ public class ShowController {
 //	  return "show/playList";
 //	}
 //	
-   // [좌석] -------------
+	
+//// 여기부터 좌석이긔긔긔!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
    // 좌석맵 조회(회차별)
 
 	@RequestMapping("/seat")

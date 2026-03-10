@@ -25,44 +25,33 @@
     <!-- ========================= -->
     <!-- 2. 후기 전체 목록 -->
     <!-- ========================= -->
-    <select id="getReviewList" resultMap="reviewMap">
-        SELECT
-            r.review_id,
-            r.user_id,
-            r.show_id,
-            r.rating,
-            r.content,
-            r.created_at,
-            u.nickname,
-            s.title
-        FROM review_tbl r
-        LEFT JOIN user_tbl u ON r.user_id = u.user_id
-        LEFT JOIN show_tbl s ON r.show_id = s.show_id
-        ORDER BY r.review_id DESC
+    <select id="getReviewPaging" resultMap="reviewMap">
+        SELECT * 
+        FROM (
+        	SELECT
+			  r.review_id,
+			  r.user_id,
+			  r.nickname,
+			  r.rating,
+			  r.content,
+			  r.created_at,
+			  ROW_NUMBER() OVER(
+			  
+			  <choose>
+			  	<when test="sort == 'rating'">
+			  	ORDER BY r.rating DESC
+			  	</when>
+			  
+			  <otherwise>ORDER BY r.created_at DESC</otherwise>
+			  </choose>
+			  ) rn
+			  FROM review_tbl r
+			  WHERE r.show_id = #{showId}       
+        )
+        WHERE rn BETWEEN #{start} AND #{end}
+        
     </select>
 
-
-    <!-- ========================= -->
-    <!-- 3. 공연별 후기 목록 -->
-    <!-- ========================= -->
-    <select id="getReviewByShowId"
-            parameterType="string"
-            resultMap="reviewMap">
-        SELECT
-            r.review_id,
-            r.user_id,
-            r.show_id,
-            r.rating,
-            r.content,
-            r.created_at,
-            u.nickname,
-            s.title
-        FROM review_tbl r
-        LEFT JOIN user_tbl u ON r.user_id = u.user_id
-        LEFT JOIN show_tbl s ON r.show_id = s.show_id
-        WHERE r.show_id = #{showId}
-        ORDER BY r.review_id DESC
-    </select>
 
 
     <!-- ========================= -->
@@ -74,56 +63,41 @@
 
 
     <!-- ========================= -->
-    <!-- 5. 상세 보기 -->
-    <!-- ========================= -->
-    <select id="getReviewDetail"
-            parameterType="int"
-            resultMap="reviewMap">
-        SELECT
-            r.review_id,
-            r.user_id,
-            r.show_id,
-            r.rating,
-            r.content,
-            r.created_at,
-            u.nickname,
-            s.title
-        FROM review_tbl r
-        LEFT JOIN user_tbl u ON r.user_id = u.user_id
-        LEFT JOIN show_tbl s ON r.show_id = s.show_id
-        WHERE r.review_id = #{reviewId}
-    </select>
-
-
-    <!-- ========================= -->
     <!-- 6. 후기 작성 -->
     <!-- ========================= -->
-    <insert id="insertReview"
-            parameterType="com.spring.eze.show.dto.review.ReviewDTO">
+    <insert id="insertReview">
+            
         INSERT INTO review_tbl (
             review_id,
             user_id,
             show_id,
             rating,
             content,
+            nickname,
             created_at
         )
         VALUES (
             review_seq.NEXTVAL,
-            #{userId},
+            #{userNum},
             #{showId},
             #{rating},
             #{content},
+             #{nickname},
             SYSDATE
         )
     </insert>
+	
 
+	<delete id="deleteReview">
+	DELETE FROM review_tbl
+	WHERE review_id = #{reviewId}
+	AND user_id = #{userNum}
+	</delete>
 
     <!-- ========================= -->
     <!-- 7. 후기 수정 -->
     <!-- ========================= -->
-    <update id="updateReview"
-            parameterType="com.spring.eze.show.dto.review.ReviewDTO">
+    <update id="updateReview">
         UPDATE review_tbl
         SET
             content = #{content},
@@ -132,22 +106,14 @@
     </update>
 
 
-    <!-- ========================= -->
-    <!-- 8. 후기 삭제 -->
-    <!-- ========================= -->
-    <delete id="deleteReview"
-            parameterType="int">
-        DELETE FROM review_tbl
-        WHERE review_id = #{reviewId}
-    </delete>
-    
-    <select id="getShowListForReview" resultType="com.spring.eze.show.dto.review.ReviewDTO">
-    SELECT 
-        show_id as showId, 
-        title as concertTitle 
-    FROM show_tbl
-    ORDER BY title ASC
-</select>
+  <select id="getAvgRating" resultType="double">
+  SELECT
+  NVL(ROUND(AVG(rating),1),0)
+  FROM review_tbl
+  WHERE show_id = #{showId}
+  
+  </select>
+
 
 
 </mapper>
