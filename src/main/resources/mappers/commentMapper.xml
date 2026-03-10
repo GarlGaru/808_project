@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper
+
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+
+<mapper namespace="com.spring.eze.board.dao.CommentDAO">
+
+<!--  댓글 자료 -->
+
+  <select id="commentCnt" resultType="int">
+
+        SELECT COUNT(*) FROM FREE_COMMENT_TBL
+
+    </select>
+
+
+
+<select id="getCommentList" resultType="com.spring.eze.board.dto.CommentDTO">
+    SELECT 
+        C.CNO, C.BNO, C.USER_ID AS userId, C.CONTENT, C.REGDATE,
+        U.NICKNAME AS nickname  FROM FREE_COMMENT_TBL C
+    JOIN user_tbl U ON C.USER_ID = U.user_id
+    WHERE C.BNO = #{bno}
+    ORDER BY C.CNO DESC
+</select>
+
+
+
+<select id="CommentList" resultType="com.spring.eze.board.dto.CommentDTO">
+        SELECT 
+            C.CNO, 
+            C.BNO, 
+            C.P_CNO AS pCno,      
+            C.USER_ID AS userId, 
+            C.CONTENT, 
+            C.REGDATE,
+            U.NICKNAME AS nickname 
+        FROM FREE_COMMENT_TBL C
+        JOIN user_tbl U ON C.USER_ID = U.user_id 
+        WHERE C.BNO = #{bno}
+        ORDER BY NVL(C.P_CNO, C.CNO) DESC, C.REGDATE ASC
+    </select>
+
+    <insert id="insertComment" parameterType="com.spring.eze.board.dto.CommentDTO">
+        INSERT INTO FREE_COMMENT_TBL (
+            CNO, BNO, USER_ID, CONTENT, REGDATE
+        ) VALUES (
+            SEQ_FREE_COMMENT.NEXTVAL, #{bno}, #{userId}, #{content}, SYSDATE
+        )
+    </insert>
+
+<delete id="deleteComment">
+    DELETE FROM FREE_COMMENT_TBL 
+    WHERE CNO = #{cno} 
+</delete>
+
+<update id="updateComment" parameterType="com.spring.eze.board.dto.CommentDTO">
+    UPDATE FREE_COMMENT_TBL
+    SET CONTENT = #{content}
+    WHERE CNO = #{cno}
+</update>
+
+<!-- <insert id="insertComment" parameterType="com.spring.eze.board.dto.CommentDTO">
+    INSERT INTO FREE_COMMENT_TBL (
+        CNO, 
+        BNO, 
+        USER_ID, 
+        CONTENT, 
+        REGDATE
+    ) VALUES (
+        SEQ_FREE_COMMENT.NEXTVAL, 
+        #{bno}, 
+        #{userId}, 
+        #{content}, 
+        SYSDATE
+    )
+</insert> -->
+
+</mapper>

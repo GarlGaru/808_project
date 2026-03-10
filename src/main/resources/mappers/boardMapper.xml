@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.spring.eze.board.dao.BoardDAO">
+<!-- 게시판 -->
+    <insert id="insertBoard" parameterType="com.spring.eze.board.dto.BoardDTO">
+        INSERT INTO FREE_BOARD_TBL (
+            BNO,         --
+            USER_ID, 
+            TITLE, 
+            CONTENT, 
+            REGDATE, 
+            VIEWCNT
+        ) VALUES (
+            SEQ_FREE_BOARD.NEXTVAL, 
+            #{userId},              
+            #{title}, 
+            #{content}, 
+            SYSDATE, 
+            0
+        )
+    </insert>
+
+    <update id="updateBoard" parameterType="com.spring.eze.board.dto.BoardDTO">
+        UPDATE FREE_BOARD_TBL
+        SET TITLE = #{title, jdbcType=VARCHAR},
+            CONTENT = #{content, jdbcType=CLOB}
+        WHERE BNO = #{bno}
+          AND USER_ID = #{userId} 
+    </update>
+
+    <delete id="deleteBoard" parameterType="com.spring.eze.board.dto.BoardDTO">
+        DELETE FROM FREE_BOARD_TBL
+        WHERE BNO = #{bno}
+          AND USER_ID = #{userId}
+    </delete>
+
+    <select id="getBoardDetail" resultType="com.spring.eze.board.dto.BoardDTO" parameterType="int">
+        SELECT
+            B.BNO,
+            B.USER_ID as userId, 
+            B.TITLE,
+            B.CONTENT,
+            B.REGDATE,
+            B.VIEWCNT as viewcnt,
+            U.NICKNAME AS nickname
+        FROM FREE_BOARD_TBL B
+        JOIN 
+            user_tbl U ON B.USER_ID = U.user_id
+        WHERE BNO = #{bno}
+    </select>
+<select id="boardList" resultType="com.spring.eze.board.dto.BoardDTO" parameterType="map">
+    SELECT * FROM (
+        SELECT ROWNUM AS RNUM, A.* FROM (
+            SELECT 
+                B.BNO, 
+                B.USER_ID AS userId, 
+                U.NICKNAME AS nickname, 
+                B.TITLE, 
+                B.CONTENT, 
+                B.REGDATE, 
+                B.VIEWCNT,
+                (SELECT COUNT(*) FROM BOARD_LIKE_TBL L WHERE L.BNO = B.BNO) AS likeCount
+            FROM 
+                FREE_BOARD_TBL B
+            JOIN 
+                user_tbl U ON B.USER_ID = U.user_id
+            ORDER BY B.BNO DESC
+        ) A WHERE ROWNUM &lt;= #{endRow}
+    ) WHERE RNUM &gt;= #{startRow}
+</select>
+
+<select id="boardCnt" resultType="int">
+    SELECT COUNT(*) FROM FREE_BOARD_TBL
+</select>
+
+<update id="plusReadCnt">
+    UPDATE FREE_BOARD_TBL SET VIEWCNT = VIEWCNT + 1 WHERE BNO = #{bno}
+</update>
+    
+    </mapper>

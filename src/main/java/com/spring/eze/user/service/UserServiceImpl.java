@@ -126,7 +126,7 @@ public class UserServiceImpl implements UserService {
             HttpSession session = request.getSession();
             session.setAttribute("loginUser", loginUser);
             session.setAttribute("userEmail", email);
-
+            
             System.out.println(">>> [로그인 성공] " + email);
             return 1;
 
