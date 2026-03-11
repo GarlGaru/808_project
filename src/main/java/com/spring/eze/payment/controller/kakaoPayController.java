@@ -85,7 +85,10 @@ public class kakaoPayController {
         model.addAttribute("orderId", orderId);
 
         // /WEB-INF/views/payment/kakaoPayApprove.jsp
-        return "payment/kakaoPayApprove";
+        // 테스트용
+        //return "payment/kakaoPayApprove";
+        // 실제로 쓸거(현재 메인으로보냄)
+        return "redirect:/main";
     }
 
     /**

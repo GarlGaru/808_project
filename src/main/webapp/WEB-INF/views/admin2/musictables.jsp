@@ -6,22 +6,40 @@
 <c:set var="adminUrl" value="${ctx}/admin" />
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko">
 <head>
 
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Admin - Tables</title>
+    <title>Admin - Music Tables</title>
 
-    <!-- FontAwesome -->
     <link href="${adminRes}/vendor/fontawesome-free/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Nunito:200,300,400,600,700,800,900" rel="stylesheet">
-
-    <!-- SB Admin CSS -->
     <link href="${adminRes}/css/sb-admin-2.min.css" rel="stylesheet">
-
-    <!-- DataTables CSS -->
     <link href="${adminRes}/vendor/datatables/dataTables.bootstrap4.min.css" rel="stylesheet">
+
+    <style>
+        .table td, .table th {
+            vertical-align: middle;
+            text-align: center;
+        }
+
+        .album-cover {
+            width: 60px;
+            height: 60px;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+
+        .song-title {
+            font-weight: 600;
+            text-align: left;
+        }
+
+        .text-left {
+            text-align: left !important;
+        }
+    </style>
 
 </head>
 
@@ -34,7 +52,7 @@
 
         <a class="sidebar-brand d-flex align-items-center justify-content-center" href="${adminUrl}">
             <div class="sidebar-brand-icon rotate-n-15">
-                <i class="fas fa-table"></i>
+                <i class="fas fa-music"></i>
             </div>
             <div class="sidebar-brand-text mx-3">Admin</div>
         </a>
@@ -49,16 +67,30 @@
         </li>
 
         <li class="nav-item">
-            <a class="nav-link" href="${adminUrl}/charts">
-                <i class="fas fa-fw fa-chart-area"></i>
-                <span>Charts</span>
+            <a class="nav-link" href="${adminUrl}/user">
+                <i class="fas fa-fw fa-users"></i>
+                <span>Users</span>
+            </a>
+        </li>
+
+        <li class="nav-item">
+            <a class="nav-link" href="${adminUrl}/pay">
+                <i class="fas fa-fw fa-credit-card"></i>
+                <span>Payments</span>
             </a>
         </li>
 
         <li class="nav-item active">
-            <a class="nav-link" href="${adminUrl}/tables">
-                <i class="fas fa-fw fa-table"></i>
-                <span>Tables</span>
+            <a class="nav-link" href="${adminUrl}/music">
+                <i class="fas fa-fw fa-music"></i>
+                <span>Music</span>
+            </a>
+        </li>
+
+        <li class="nav-item">
+            <a class="nav-link" href="${adminUrl}/charts">
+                <i class="fas fa-fw fa-chart-area"></i>
+                <span>Charts</span>
             </a>
         </li>
 
@@ -73,70 +105,114 @@
 
             <!-- Topbar -->
             <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 shadow">
-                <span class="h5 mb-0 text-gray-800">Tables Page</span>
+                <span class="h5 mb-0 text-gray-800">음악 관리</span>
             </nav>
 
             <!-- Page Content -->
             <div class="container-fluid">
 
-                <h1 class="h3 mb-2 text-gray-800">Tables</h1>
+                <h1 class="h3 mb-2 text-gray-800">Music Tables</h1>
+                <p class="mb-4">노래 / 아티스트 / 앨범 / 장르 목록</p>
 
                 <div class="card shadow mb-4">
-                    <div class="card-header py-3">
-                        <h6 class="m-0 font-weight-bold text-primary">DataTables Example</h6>
+                    <div class="card-header py-3 d-flex justify-content-between align-items-center">
+                        <h6 class="m-0 font-weight-bold text-primary">음악 목록</h6>
                     </div>
+                    
                     <div class="card-body">
                         <div class="table-responsive">
                             <table class="table table-bordered" id="dataTable" width="100%">
-                                <thead>
+                                <thead class="thead-light">
                                     <tr>
-                                        <th>Name</th>
-                                        <th>Position</th>
-                                        <th>Office</th>
-                                        <th>Age</th>
-                                        <th>Start date</th>
-                                        <th>Salary</th>
+                                        <th>노래 ID</th>
+                                        <th>앨범 커버</th>
+                                        <th>노래 제목</th>
+                                        <th>아티스트</th>
+                                        <th>앨범명</th>
+                                        <th>장르</th>
+                                        <th>발매일</th>
+                                        <th>노래</th>
                                     </tr>
                                 </thead>
+
                                 <tbody>
-                                    <tr>
-                                        <td>Tiger Nixon</td>
-                                        <td>System Architect</td>
-                                        <td>Edinburgh</td>
-                                        <td>61</td>
-                                        <td>2011/04/25</td>
-                                        <td>$320,800</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Garrett Winters</td>
-                                        <td>Accountant</td>
-                                        <td>Tokyo</td>
-                                        <td>63</td>
-                                        <td>2011/07/25</td>
-                                        <td>$170,750</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Ashton Cox</td>
-                                        <td>Junior Technical Author</td>
-                                        <td>San Francisco</td>
-                                        <td>66</td>
-                                        <td>2009/01/12</td>
-                                        <td>$86,000</td>
-                                    </tr>
-                                </tbody>
+								    <c:choose>
+								        <c:when test="${not empty musicList}">
+								            <c:forEach var="music" items="${musicList}">
+								                <tr>
+								                    <td>${music.songId}</td>
+								
+								                    <td>
+								                        <c:choose>
+								                            <c:when test="${not empty music.coverImageUrl}">
+								                                <img src="${ctx}${music.coverImageUrl}"
+								                                     alt="cover"
+								                                     class="album-cover">
+								                            </c:when>
+								                            <c:otherwise>
+								                                <span class="text-muted">이미지 없음</span>
+								                            </c:otherwise>
+								                        </c:choose>
+								                    </td>
+								
+								                    <td>${music.songTitle}</td>
+								                    <td>${music.artistName}</td>
+								                    <td>${music.albumTitle}</td>
+								                    <td>${music.genreName}</td>
+								                    <td>${music.releaseDate}</td>
+								                    
+								                    <!-- 노래추가 -->
+								                    <td class="text-left">
+													
+													    <span>${music.songTitle}</span>
+													
+													    <c:choose>
+													        <c:when test="${not empty music.songPath}">
+													        
+													            <button class="btn btn-sm btn-primary"
+													                    onclick="toggleAudio('audio${music.songId}', this)">
+													                재생
+													            </button>
+													
+													            <audio id="audio${music.songId}">
+													                <source src="${ctx}${music.songPath}" type="audio/mpeg">
+													            </audio>
+													
+													        </c:when>
+													
+													        <c:otherwise>
+													            <span class="text-muted">파일 없음</span>
+													        </c:otherwise>
+													    </c:choose>
+													
+													</td>
+								                    <!-- 노래추가 끝 -->
+								                </tr>
+								            </c:forEach>
+								        </c:when>
+								        <c:otherwise>
+								            <tr>
+								                <td colspan="7">등록된 음악 데이터가 없습니다.</td>
+								            </tr>
+								        </c:otherwise>
+								    </c:choose>
+								</tbody>
                             </table>
                         </div>
+                        <div class="d-flex justify-content-end mt-3">
+						    <a href="${adminUrl}/music/write" class="btn btn-success">
+						        <i class="fas fa-plus"></i> 음악 등록
+						    </a>
+						</div>
                     </div>
                 </div>
-
             </div>
-
         </div>
 
         <!-- Footer -->
         <footer class="sticky-footer bg-white">
             <div class="container my-auto text-center">
-                <span>Copyright &copy; Admin 2026</span>
+                <span>Copyright &copy; EZE Admin 2026</span>
             </div>
         </footer>
 
@@ -144,26 +220,57 @@
 
 </div>
 
-<!-- Scroll Top -->
 <a class="scroll-to-top rounded" href="#page-top">
     <i class="fas fa-angle-up"></i>
 </a>
 
-<!-- JS -->
 <script src="${adminRes}/vendor/jquery/jquery.min.js"></script>
 <script src="${adminRes}/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
 <script src="${adminRes}/vendor/jquery-easing/jquery.easing.min.js"></script>
 <script src="${adminRes}/js/sb-admin-2.min.js"></script>
-
-<!-- DataTables JS -->
 <script src="${adminRes}/vendor/datatables/jquery.dataTables.min.js"></script>
 <script src="${adminRes}/vendor/datatables/dataTables.bootstrap4.min.js"></script>
 
-<!-- Init -->
 <script>
     $(document).ready(function() {
-        $('#dataTable').DataTable();
+        $('#dataTable').DataTable({
+            "pageLength": 10,
+            "lengthMenu": [10, 25, 50, 100],
+            "ordering": true,
+            "searching": true,
+            "language": {
+                "search": "검색:",
+                "lengthMenu": "_MENU_ 개씩 보기",
+                "info": "_START_ ~ _END_ / 총 _TOTAL_개",
+                "paginate": {
+                    "first": "처음",
+                    "last": "마지막",
+                    "next": "다음",
+                    "previous": "이전"
+                },
+                "zeroRecords": "검색 결과가 없습니다.",
+                "infoEmpty": "데이터가 없습니다."
+            }
+        });
     });
+    
+    
+    //노래추가
+    
+    function toggleAudio(audioId, btn) {
+
+    var audio = document.getElementById(audioId);
+
+    if (audio.paused) {
+        audio.play();
+        btn.innerText = "정지";
+    } else {
+        audio.pause();
+        audio.currentTime = 0;
+        btn.innerText = "재생";
+    }
+
+}
 </script>
 
 </body>

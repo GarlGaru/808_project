@@ -14,4 +14,5 @@ public interface AdminStatsDAO {
 	List<DailyCountDTO> selectSignupLast5();
     List<DailyCountDTO> selectPayLast5();
     List<AdminUserDTO> selectUserList();
+    List<AdminUserDTO> setProfileImageUrl();
 }

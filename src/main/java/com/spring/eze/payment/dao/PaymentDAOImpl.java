@@ -1,5 +1,7 @@
 package com.spring.eze.payment.dao;
 
+import java.util.Map;
+
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -19,7 +21,13 @@ public class PaymentDAOImpl implements PaymentDAO{
 		
 		return sqlSession.insert(NS + "insertOrder", dto);		
 	}
-
+	
+	//유저프로필에도 구독상태값 같이 저장
+	@Override
+	public void updateMembershipType(Map<String, Object> param) {
+	    sqlSession.update(NS + "updateMembershipType", param);
+	}
+	
 	@Override
 	public int updateTid(PaymentOrderDTO dto) {
 		
@@ -40,7 +48,7 @@ public class PaymentDAOImpl implements PaymentDAO{
 
 	@Override
 	public void updateFail(PaymentOrderDTO dto) {
-		 sqlSession.update("kakaopay.updateFail", dto);
+		 sqlSession.update(NS + "updateFail", dto);
 		
 	}
 

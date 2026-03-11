@@ -173,7 +173,13 @@ public class kakaopayServiceImpl implements kakaopayService {
             if ("TICKET".equals(order.getPaymentType())) {
                 // 티켓 확정 처리
             } else if ("SUBSCRIBE".equals(order.getPaymentType())) {
-                // 구독 시작 처리
+            	// 구독 시작 처리
+            	 Map<String, Object> param = new HashMap<>();
+            	    param.put("userId", userId);
+            	    param.put("membershipType", "PRO");
+
+            	    paymentDAO.updateMembershipType(param);
+                
             }
 
             return res.getBody();

@@ -13,6 +13,13 @@
     (#{orderId}, #{reservationId}, #{userId}, #{itemName},
      #{quantity}, #{totalAmount}, #{status}, #{paymentType})
   </insert>
+  
+  <!-- 구독 결제시 같이 유저 프로필에도 같이저장함 -->
+  <update id="updateMembershipType">
+    UPDATE profile_tbl
+    SET membership_type = #{membershipType}
+    WHERE user_id = #{userId}
+ </update>
 
   <!-- 2) tid 업데이트 (ready 성공 후) -->
   <update id="updateTid" parameterType="com.spring.eze.payment.dto.PaymentOrderDTO">
