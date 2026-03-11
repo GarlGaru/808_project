@@ -62,7 +62,66 @@ public class ShowController {
       	showservice.getShowMain(request, response, model);
 		return "show/show";
     }
-
+	
+	// [공연장르상세페이지] <방법A> 장르 탭  -------------
+	@RequestMapping("/showList")
+	public String showList(@RequestParam(value="category", defaultValue="concert")String category, 
+			   			   @RequestParam(value="subCategory", defaultValue="all")String subCategory,
+			   			   Model model)
+		 throws ServletException, IOException {
+      log.info("ShowController - 각 장르별 상세페이지 화면 ");
+     
+      showservice.prepareShowListPage(category, subCategory, model);
+      return "show/showList";
+	}
+		
+	// [공연장르상세페이지] <방법B> 공연 장르 탭 ajax 데이터 요청 -------
+	@RequestMapping("/showListAjax")
+	public String showListAjax(@RequestParam(value="category", defaultValue="concert")String category, 
+							   @RequestParam(value="subCategory", defaultValue="all")String subCategory,
+							   Model model)
+		 throws ServletException, IOException {
+	  log.info("ShowController - Ajax 데이터 요청 화면 (카테고리, 세부장르)");	
+		
+	  showservice.prepareShowListPage(category, subCategory, model);
+	  return "show/showListContent";
+	}
+	
+	// [공연상세페이지] 공연개별페이지 -----
+	@RequestMapping("/showDetail")
+	public String showDetail(@RequestParam("showId") String showId, Model model)
+		throws ServletException, IOException {
+		log.info("ShowController - 공연 상세페이지 화면 요청화면" + showId);	
+		
+		showservice.getShowDetail(showId, model);
+		return "show/showDetail";
+	}
+	
+	// [공연상세페이지] 공연개별상세페이지 탭 -----
+	@RequestMapping("/getTabContentAjax")
+	public String showDetailAjax(@RequestParam("showId") String showId, 
+								 @RequestParam("tabName") String tabName, Model model)
+		 throws ServletException, IOException {
+	  log.info("ShowController - Ajax 데이터 요청 화면");	
+		
+	  showservice.getTabContent(showId, tabName, model);
+	  return "show/tabs/" + tabName;
+	}
+	
+	// [공연상세페이지] 날짜 선택 시 해당 날짜의 '시간 목록'만 가져오는 Ajax -----
+	@RequestMapping("/getScheduleAjax")
+	public String getScheduleAjax(@RequestParam("showId") String showId, 
+	                              @RequestParam("playDate") String playDate, Model model)
+		throws ServletException, IOException {
+    log.info("ShowController - 날짜별 시간 목록 Ajax 요청: " + showId + ", " + playDate); 
+    
+    // 1. 서비스에서 해당 날짜의 시간 리스트만 가져오도록 별도 메서드 호출
+    showservice.getScheduleByDate(showId, playDate, model);
+    
+    // 2. 전체 페이지가 아닌, 시간 버튼들만 있는 '조각 JSP'를 리턴
+    return "show/scheduleTimeList"; 
+	}
+	
 
    //후기 목록 조회
    @RequestMapping("/reviewList")
@@ -103,34 +162,6 @@ public class ShowController {
 	// 좌석맵 조회(회차별)
 
 	
-   // [공연장르상세페이지] -------------
-	@RequestMapping("/showList")
-	public String showList(@RequestParam(value="category", defaultValue="concert")String category, Model model)
-         throws ServletException, IOException {
-      log.info("ShowController - 각 장르별 상세페이지 화면");
-     
-      showservice.prepareShowListPage(category, model);
-      return "show/show";
-	}
-	
-//   // 콘서트 
-//	@RequestMapping("/show/musicalList")
-//	public String musicalList(HttpServletRequest request, HttpServletResponse response, Model model)
-//	     throws ServletException, IOException {
-//	  log.info("ShowController - 뮤지컬 상세페이지 화면");
-//	 
-//	  return "show/musicalList";
-//	}
-//	
-//   // 콘서트 
-//	@RequestMapping("/show/playList")
-//	public String playList(HttpServletRequest request, HttpServletResponse response, Model model)
-//	     throws ServletException, IOException {
-//	  log.info("ShowController - 연극 상세페이지 화면");
-//	 
-//	  return "show/playList";
-//	}
-//	
    // [좌석] -------------
    // 좌석맵 조회(회차별)
 

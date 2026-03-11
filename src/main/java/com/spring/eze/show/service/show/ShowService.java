@@ -13,6 +13,15 @@ public interface ShowService {
 	public void getShowMain(HttpServletRequest request, HttpServletResponse resposne, Model model)
 		throws ServletException, IOException;
 	
-	public void prepareShowListPage(String category, Model model)
+	public void prepareShowListPage(String category, String subCategory, Model model)
+		throws ServletException, IOException;
+	
+	public void getShowDetail(String showId, Model model)
+		throws ServletException, IOException;
+	
+	public void getScheduleByDate(String showId, String playDate, Model model)
+		throws ServletException, IOException;
+	
+	public void getTabContent (String showId, String tabName, Model model)
 		throws ServletException, IOException;
 }
