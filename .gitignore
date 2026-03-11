@@ -114,3 +114,13 @@ target/
 .sts4-cache/
 
 # End of https://www.toptal.com/developers/gitignore/api/eclipse
+
+
+
+# music files
+*.mp3 
+*.wav
+*.flac
+
+
+

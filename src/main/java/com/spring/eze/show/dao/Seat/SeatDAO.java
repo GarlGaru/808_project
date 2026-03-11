@@ -23,4 +23,6 @@ public interface SeatDAO {
 	public int updateReleaseSeats(Map<String, Object> map);
 	// map: show_id, schedule_id, user_id, seatLabels(list) or seat_label
 	
+	public int updateReleaseExpiredSeats();
+	
 }
