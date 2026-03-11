@@ -15,6 +15,7 @@ import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 
 import com.spring.eze.show.dao.Seat.SeatDAO;
@@ -79,7 +80,7 @@ public class SeatServiceImpl implements SeatService {
 	@Override
 	public void selectSeats(HttpServletRequest request, HttpServletResponse response, Model model)
 			throws ServletException, IOException {
-		String showId = request.getParameter("show_id");
+		String showId = request.getParameter("showId");
 		int scheduleId = Integer.parseInt(request.getParameter("scheduleId"));
 		String[] selectedSeats = request.getParameterValues("selectedSeats");
 		
@@ -127,12 +128,32 @@ public class SeatServiceImpl implements SeatService {
 
 	@Override
 	public List<SeatDTO> getSeatStatus(String showId, int scheduleId) {
-		Map<String, Object> map = new HashMap<String, Object>();
+		Map<String, Object> map = new HashMap<>();
 		map.put("showId", showId);
 		map.put("scheduleId", scheduleId);
 		
 		return dao.selectSeatStatus(map);
 		
+	}
+	@Override
+	@Transactional
+	public boolean checkAndLockSeats(String showId, int scheduleId, List<String> seats){
+		// 1. 먼저 누군가 그새 채갔는지 확인 (이미 짠 로직)
+	    boolean isAvailable = dao.checkAndLockSeats(showId, scheduleId, seats);
+	    
+	    if (!isAvailable) return false;
+
+	    // 2. [핵심] 비어있다면, 지금 즉시 내 이름으로 'HELD' 자물쇠 채우기!
+	    Map<String, Object> map = new HashMap<>();
+	    map.put("showId", showId);
+	    map.put("scheduleId", scheduleId);
+	    map.put("userId", "TEMP_USER"); // 실제로는 세션의 loginUserId 사용
+	    map.put("seatLabels", seats);
+
+	    int result = dao.updateHoldSeats(map);
+	    
+	    // 선택한 좌석 수만큼 성공적으로 업데이트 됐는지 확인
+	    return result == seats.size();
 	}
 
 }

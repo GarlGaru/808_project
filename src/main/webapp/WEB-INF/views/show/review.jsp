@@ -37,6 +37,7 @@
 
 	<hr>
 	
+	<div id="writeArea">
 	<h3>리뷰 작성</h3>
 	
 	<br><br>
@@ -60,6 +61,8 @@
 	<button onclick="writeReview()">리뷰 작성</button>
 	
 	<hr>
+	
+	</div>
 	
 	<h3>리뷰 목록</h3>
 	
@@ -94,21 +97,32 @@
     
     const path="<%=path%>";
     const showId="PF281626";  //실제 상세페이지에는 const showId="${show.showId}";
+    const loginUserId="${sessionScope.loginUser.userId}";
+    
     
     let page=1;
     let sort="latest";
+    let editingReviewId = null;
     
     $(document).ready(function(){
+    	
+    	if(!loginUserId){
+    		$("#writeArea").html(
+    		` <p style="color:gray; margin-top:20px;"> 로그인이 필요합니다. </p>
+    		<buttom class="btn btn-sm btn-outline-light" onclick="location.href='${path}/user/authModal'">
+    		로그인 하러가기 </button>`
+    		);
+    	}
+    	
     	loadReview();
     	loadAvgRating();
     	
-    	 $(".star").click(function(){
-    	    	let value=$(this).data("value");
-    	    	$("#rating").val(value);
-    	    	$(".star").css("opacity","0.3");
-    	    	$(this).prevAll().addBack().css("opacity","1");
-    	    
-    	    });
+    	$(document).on("click", ".star", function(){
+            let value = $(this).data("value");
+            $("#rating").val(value);
+            $(".star").css("opacity","0.3");
+            $(this).prevAll().addBack().css("opacity","1");
+        });
     	 
 
     	    /* 더보기 */
@@ -127,8 +141,6 @@
     
     });
     
-    
-    
     /* 리뷰 목록 */
     function loadReview(){
     	$.ajax({
@@ -145,22 +157,28 @@
     				html="<p>아직 리뷰가 없습니다.</p>";
     			}else{
     				data.forEach(function(r){
+    					
+    					let buttons = "";
+    					
+    					if(loginUserId == r.userNum) {
+    						buttons = `
+    							<button class="btn btn-sm btn-secondary" onclick="editReview(\${r.reviewId}, \${r.rating})">수정</button>
+                                <button class="btn btn-sm btn-danger" onclick="deleteReview(\${r.reviewId})">삭제</button> `;
+    					}
     					html+=`
-    					<div class="review-box">
+    					<div class="review-box" id="review\${r.reviewId}">
     					<div class="review-header">
     					<span class="review-writer">\${r.nickname}</span>
     					<span class="review-rating">⭐ \${r.rating}</span>
     					</div>
+    					
     					<div class="review-content" id="content\${r.reviewId}">\${r.content}</div>
     					<div class="review-footer">
     					<span class="review-date">\${formatDate(r.createdAt)}</span>
     					
-    					<div>
+    					<div class="review-btn-zone"> \${buttons}
+    			        </div>
     					
-    					<button onclick="editReview(\${r.reviewId})">수정</button>
-    					<button class="delete-btn" onclick="deleteReview(${r.reviewId})">삭제</button>
-    					
-    					</div>
     					</div>
     					</div>
     					`;
@@ -194,8 +212,6 @@
         
     	const reviewData={
     			"showId":showId,
-    			"userNum":1,
-    			"nickname":"테스트유저",
     			"rating":rating,
     			"content":content
     	};
@@ -207,10 +223,16 @@
     		data:JSON.stringify(reviewData),
     		success:function(res){
     			if(res === "success"){
-    				alert("리뷰 등록 완료");
+    				alert("리뷰 등록이 완료되었습니다.");
     				location.reload();
     			}
-    			
+    			else if(res === "login_required"){
+    				alert("로그인 후 이용 가능합니다.");
+    				location.href = path + "/user/authModal";
+    			}
+    			else{
+    				alert("리뷰 저장 실패");
+    			}
     		},
     		error: function(xhr){
     			console.log(xhr.responseText);
@@ -220,83 +242,125 @@
     }
     
     /* 수정페이지  */
-    function editReview(reviewId, content, rating){
+    function editReview(reviewId, rating){
+    	
+    	if(editingReviewId !== null) {
+    		alert("이미 수정 중인 리뷰가 있습니다.");
+    		return;
+    	}
+    	editingReviewId = reviewId;
+    	
+    	// 1. 대상을 변수에 담기 (타이핑 줄이기)
+        const $contentDiv = $("#content" + reviewId);
+        
+        // 2. 원래 써있던 '글자'만 가져오기
+        const originalText = $contentDiv.text().trim();
+        
+        // 3. [중요] 취소할 때를 대비해 원본 글을 '데이터 주머니(data-old)'에 저장!
+        $contentDiv.attr("data-old", originalText);
+    	
     	let html=`
-    		<textarea id="editContent${reviewId}" rows="3">${content}</textarea>
-    		<br>
-    		<select id="editRating${reviewId}">
-    			<option value="1">⭐1</option>
-    			<option value="2"}>⭐2</option>
-    			<option value="3"}>⭐3</option>
-    			<option value="4"}>⭐4</option>
-    			<option value="5"}>⭐5</option>
-    		</select>
+    		 <textarea id="editContent\${reviewId}" class="form-control" rows="3">\${originalText}</textarea>
+            <br>
+            
+            <div class="mt-2">
     		
-    		<button onclick="updateReview(${reviewId})">저장</button>
-    		<button onclick="loadReview()">취소</button>
-    		`;
-    		$("#content" + reviewId).html(html);
+            <select id="editRating\${reviewId}" class="custom-select col-3">
+            <option value="1" \${rating == 1 ? 'selected' : ''}>⭐1</option>
+            <option value="2" \${rating == 2 ? 'selected' : ''}>⭐2</option>
+            <option value="3" \${rating == 3 ? 'selected' : ''}>⭐3</option>
+            <option value="4" \${rating == 4 ? 'selected' : ''}>⭐4</option>
+            <option value="5" \${rating == 5 ? 'selected' : ''}>⭐5</option>
+	        </select>
+	        <button class="btn btn-sm btn-primary" onclick="updateReview(\${reviewId})">저장</button>
+	        <button class="btn btn-sm btn-warning" onclick="cancelEdit(\${reviewId})">취소</button>
+    		</div>`;
+    	    
+	    	$contentDiv.html(html);
+	        
+	        // 5. 수정/삭제 버튼 뭉치 숨기기
+	    	$contentDiv.closest(".review-box").find(".review-btn-zone").hide();
     }
+    
+    /* 수정 취소 */
+    	function cancelEdit(reviewId){
+	    const $contentDiv = $("#content" + reviewId);
+	    
+	    // 1. 주머니(data-old)에 넣어뒀던 원본 글을 다시 꺼내서 채움
+	    const originalText = $contentDiv.attr("data-old");
+	    $contentDiv.html(originalText);
+	    
+	    // 2. 숨겼던 버튼 박스 다시 보여주기
+	    $contentDiv.closest(".review-box").find(".review-btn-zone").show();
+	    
+	    // 3. 수정 중인 상태 해제 (오타 주의: editing)
+	    editingReviewId = null;
+	}
+    
     
     /* 리뷰 수정 */
     function updateReview(reviewId){
-    	const content=$("#editContent" + reviewId).val();
-    	const rating=$("#editRating" + reviewId).val();
     	
-    	const reviewData={
-    			reviewId:reviewId,
-    			content:content,
-    			rating:rating
-    	};
+    	let content = $("#editContent" + reviewId).val().trim();
     	
-    	$.ajax({
-			url:path+"/show/reviewUpdate",
-			type:"POST",
-			contentType:"application/json",
-			data:JSON.stringify(reviewData),
-			
-			success:function(res){
-				if(res=="success"){
-					alert("수정 완료");
-					
-					page=1;
-					loadReview();
-					loadAvgRating();
-					
-				}else{
-					
-					alert("수정 실패");
-				}
-				
-			}
-    		
-    		
-    	});
+    	if(content.length < 1){
+    		alert("내용을 입력하세요.");
+    		return;
+    	}
     	
+    	let rating = $("#editRating" + reviewId).val();
     	
-    }
+    	 $.ajax({
+    	        url: path+"/show/reviewUpdate",
+    	        type:"POST",
+    	        contentType:"application/json",
+    	        data:JSON.stringify({
+    	            reviewId:reviewId,
+    	            content:content,
+    	            rating:rating
+    	        }),
+    	        success:function(res){
+    	            if(res==="success"){
+    	                alert("수정이 완료되었습니다.");
+    	                editingReviewId = null;
+    	                page = 1;
+    	                loadReview();
+    	                loadAvgRating();
+    	            }
+    	        }
+    	    });
+    	}
     
     /* 리뷰 삭제 */
     function deleteReview(reviewId){
+    	
+    	if(!confirm("정말 삭제하시겠습니까?")){
+    		return;
+    	}
+    	
     	$.ajax({
     		url:path+"/show/reviewDelete",
     		type:"POST",
-    		data:{
-    			reviewId:reviewId
-    		},
+    		data:{reviewId:reviewId},
     		success:function(res){
-    			if(res=="success"){
-    				alert("삭제 완료");
-    				page=1;
+    			if(res==="success"){
+    				alert("삭제 되었습니다.");
+    				page = 1;
     				loadReview();
     				loadAvgRating();
-    			}else{
+    			}
+    			else if(res==="login_required"){
+    				alert("로그인 후 이용이 가능합니다.");
+    				location.href = path + "/user/authModal";
+    			}else {
     				alert("삭제 실패");
     			}
     		}
     	});
     	
     }
+    
+    
     
     /* 평균 별점 */
     function loadAvgRating(){

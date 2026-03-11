@@ -25,10 +25,12 @@ public class ReviewServiceImpl implements ReviewService {
 
 //후기 수정
 	@Override
-	public void reviewUpdateAction(ReviewDTO dto) {
+	public boolean reviewUpdateAction(ReviewDTO dto) {
 		System.out.println("ReviewServiceImpl - reviewUpdateAction()");
-
-		dao.updateReview(dto);
+		
+		int result = dao.updateReview(dto);
+		
+		return result > 0;
 
 	}
 
@@ -49,9 +51,17 @@ public class ReviewServiceImpl implements ReviewService {
 
 	// 리뷰삭제
 	@Override
-	public boolean deleteReview(int reviewId) {
-		dao.deleteReview(reviewId);
-		return true;
+	public boolean deleteReview(int reviewId, int userId) {
+		
+		Map<String,Object>map = new HashMap<>();
+		map.put("reviewId", reviewId);
+		map.put("userNum", userId);
+		
+		int result = dao.deleteReview(map);
+		
+		return result > 0;
+		
+		
 	}
 
 	//평균 별점

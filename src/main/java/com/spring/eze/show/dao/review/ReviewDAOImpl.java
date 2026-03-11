@@ -20,14 +20,16 @@ public class ReviewDAOImpl implements ReviewDAO {
 
 
 	@Override
-	public void updateReview(ReviewDTO dto) {
-		sqlSession.update(NAMESPACE + "updateReview", dto);
+	public int updateReview(ReviewDTO dto) {
+		return sqlSession.update(NAMESPACE + "updateReview", dto);
 		
 	}
 
 	@Override
-	public void deleteReview(int reviewId) {
-		sqlSession.delete(NAMESPACE + "deleteReview", reviewId);
+	public int deleteReview(Map<String,Object>map) {
+		return sqlSession.delete(NAMESPACE + "deleteReview", map);
+		
+		
 		
 	}
 

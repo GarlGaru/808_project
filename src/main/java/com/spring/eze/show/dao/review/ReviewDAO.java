@@ -17,10 +17,10 @@ public interface ReviewDAO {
     public void insertReview(ReviewDTO dto);
     
     //리뷰수정
-    public void updateReview(ReviewDTO dto);
+    public int updateReview(ReviewDTO dto);
     
     //리뷰삭제
-    public void deleteReview(int reviewId);
+    public int deleteReview(Map<String, Object>map);
  
     
     double getAvgRating(String showId); //평균별점

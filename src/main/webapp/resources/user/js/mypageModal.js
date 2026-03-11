@@ -1,69 +1,32 @@
 /**
- * mypage.js
- * ================================================================
- * ERD 매핑 주석:
- *   PLAY_LOG_TBL   → songs, artists 더미
- *   FREE_COMMENT   → cmts 더미
- *   RESERVATION_TBL + SEAT_TBL + SCHEDULE_TBL + SHOW_TBL → reservations 더미
- *   PAYMENT_ORDER  → pays 더미
+ * mypageModal.js
+ * 의존성: modalCore.js (window.ModalCore)
  *
- * 실서비스 연동 시: 각 렌더 함수 앞 $.ajax 호출로 교체
- * ================================================================
+ * 변경 내역:
+ *   - openMypage / mpClose → ModalCore.open / ModalCore.close 위임
+ *   - mpOutsideClick 제거 → ModalCore.bindOutsideClick 으로 대체
+ *   - ESC 핸들러 제거 → ModalCore.bindEscKey 로 대체
+ *   - mc-close-btn 은 JSP onclick="mpClose()" 로 직접 연결 (별도 bindCloseBtn 불필요)
  */
 (function () {
   'use strict';
 
   /* ═══════════════════════════════════════════
-     열기 / 닫기
+     열기 / 닫기 — ModalCore 위임
   ═══════════════════════════════════════════ */
 
-  /** 전역 노출 — 어느 페이지 버튼에서든 onclick="openMypage()" */
   window.openMypage = function () {
-    var ov = document.getElementById('mpOverlay');
-    if (!ov) return;
-    ov.style.display = 'flex';
-    ov.offsetHeight; // reflow — animation 재실행
-    ov.classList.remove('genie-out');
-    document.getElementById('mpModal').classList.remove('genie-out');
-    document.body.style.overflow = 'hidden';
+    ModalCore.open('mpOverlay');
   };
 
   window.mpClose = function () {
-    var ov    = document.getElementById('mpOverlay');
-    var modal = document.getElementById('mpModal');
-    var icon  = document.getElementById('mpAv');
-    if (!ov || !modal) return;
-
-    var ir = icon.getBoundingClientRect();
-    var mr = modal.getBoundingClientRect();
-    var offset = ir.left + ir.width / 2 - (mr.left + mr.width / 2);
-    modal.style.transformOrigin = 'calc(50% + ' + offset.toFixed(1) + 'px) top';
-
-    modal.classList.add('genie-out');
-    ov.classList.add('genie-out');
-
-    setTimeout(function () {
-      icon.classList.add('icon-pop');
-      setTimeout(function () {
-        ov.style.display = 'none';
-        modal.classList.remove('genie-out');
-        ov.classList.remove('genie-out');
-        modal.style.transformOrigin = '';
-        icon.classList.remove('icon-pop');
-        document.body.style.overflow = '';
-      }, 500);
-    }, 600);
+    ModalCore.close('mpOverlay', 250);
   };
 
-  /** overlay 직접 클릭 시만 닫힘 (modal 내부 버블링 차단) */
-  window.mpOutsideClick = function (e) {
-    if (e.target === document.getElementById('mpOverlay')) mpClose();
-  };
-
-  document.addEventListener('keydown', function (e) {
-    if (e.key !== 'Escape') return;
-    var ov = document.getElementById('mpOverlay');
-    if (ov && ov.style.display !== 'none') mpClose();
+  /* ── ModalCore 바인딩 — DOMContentLoaded ── */
+  document.addEventListener('DOMContentLoaded', function () {
+    ModalCore.bindOutsideClick('mpOverlay', '.mypage-modal');
+    ModalCore.bindEscKey('mpOverlay');
   });
 
   /* ═══════════════════════════════════════════
@@ -80,7 +43,7 @@
   };
 
   /* ═══════════════════════════════════════════
-     아바타 변경 (PROFILE_TBL.photo_url)
+     아바타 변경
   ═══════════════════════════════════════════ */
   window.mpChangeAvatar = function (input) {
     if (!input.files || !input.files[0]) return;
@@ -89,22 +52,10 @@
       document.getElementById('mpAv').innerHTML = '<img src="' + e.target.result + '" alt="프로필">';
     };
     reader.readAsDataURL(input.files[0]);
-    /*
-     * 실서비스 연동:
-     * var form = new FormData();
-     * form.append('file', input.files[0]);
-     * $.ajax({
-     *   url: contextPath + '/member/uploadPhoto',
-     *   method: 'POST', data: form,
-     *   processData: false, contentType: false,
-     *   success: function(res) { ... }
-     * });
-     */
   };
 
   /* ═══════════════════════════════════════════
      프로필 보기 ↔ 수정 토글
-     USER_TBL.nickname / PROFILE_TBL.birth_date, bio
   ═══════════════════════════════════════════ */
   window.mpEditStart = function () {
     document.getElementById('mpPvView').style.display = 'none';
@@ -121,7 +72,6 @@
 
     if (!nick) { alert('닉네임을 입력해주세요.'); return; }
 
-    // 화면 즉시 반영
     if (nick)  document.getElementById('vNick').textContent = nick;
     if (bio)   document.getElementById('vBio').textContent  = bio || '소개를 입력해주세요';
     if (birth) {
@@ -129,40 +79,19 @@
       document.getElementById('vBirth').textContent =
         d.getFullYear() + '년 ' + (d.getMonth()+1) + '월 ' + d.getDate() + '일';
     }
-
-    /*
-     * 실서비스 연동 (USER_TBL + PROFILE_TBL UPDATE):
-     * $.ajax({
-     *   url: contextPath + '/member/update',
-     *   method: 'POST',
-     *   data: { nickname: nick, bio: bio, birthDate: birth },
-     *   success: function(res) {
-     *     if (res.result === 'ok') { mpEditCancel(); }
-     *     else { alert(res.message); }
-     *   }
-     * });
-     */
     mpEditCancel();
   };
 
   /* ═══════════════════════════════════════════
-     이메일 인증코드 발송 (EMAIL_CODE_TBL)
+     이메일 인증코드 발송
   ═══════════════════════════════════════════ */
   window.mpSendCode = function (email) {
     if (!email) return;
     alert('인증 코드가 ' + email + ' 로 발송되었습니다. (데모)');
-    /*
-     * 실서비스:
-     * $.ajax({
-     *   url: contextPath + '/member/sendEmailCode',
-     *   method: 'POST', data: { email: email },
-     *   success: function(res) { alert(res.message); }
-     * });
-     */
   };
 
   /* ═══════════════════════════════════════════
-     계정 탈퇴 (USER_TBL DELETE → CASCADE)
+     계정 탈퇴
   ═══════════════════════════════════════════ */
   window.mpWithdraw = function () {
     if (confirm('정말 탈퇴하시겠습니까?\n탈퇴 후 모든 데이터가 삭제되며 복구가 불가능합니다.')) {
@@ -172,21 +101,9 @@
 
   /* ═══════════════════════════════════════════
      더미 데이터
-     실서비스: JSP EL 또는 Ajax로 교체
-     ───────────────────────────────────────────
-     ERD 필드 매핑:
-     songs     → SONGS_TBL.song_id, title + ARTISTS_TBL.name + PLAY_LOG_TBL 집계
-     artists   → ARTISTS_TBL.artist_id, name + PLAY_LOG_TBL 집계
-     cmts      → FREE_COMMENT.cno, content + FREE_BOARD.title
-     pays      → PAYMENT_ORDER.order_id, status + SHOW_TBL.title
-     reservations → RESERVATION_TBL.reservation_id, status
-                    + SEAT_TBL.seat_label
-                    + SCHEDULE_TBL.start_time
-                    + SHOW_TBL.title
   ═══════════════════════════════════════════ */
   var DUMMY = {
     songs: [
-      /* song_id, SONGS_TBL.title, ARTISTS_TBL.name, PLAY_LOG_TBL COUNT */
       { rank:1,  title:'All the Right Moves', artist:'Leonardo Lastra', plays:340, em:'🎵' },
       { rank:2,  title:'Rescue Me',           artist:'Erika Marino',    plays:265, em:'💜' },
       { rank:3,  title:'Fantasy Land',        artist:'Isabella Romano', plays:212, em:'🌙' },
@@ -199,29 +116,22 @@
       { rank:10, title:'Blinding Lights',     artist:'The Weeknd',      plays:76,  em:'🔴' }
     ],
     artists: [
-      /* ARTISTS_TBL.artist_id, name + PLAY_LOG_TBL 집계 */
       { rank:1, name:'Erika Marino',    count:54, em:'🎤' },
       { rank:2, name:'Leonardo Lastra', count:41, em:'🎵' },
       { rank:3, name:'Isabella Romano', count:38, em:'🎸' }
     ],
     cmts: [
-      /* FREE_COMMENT.cno + FREE_BOARD.title + content + created_at */
       { target:'All the Right Moves',          date:'2026.02.14', text:'이 곡 정말 중독성 있어요! 계속 듣게 되는 매력이 있어요. 최고입니다 👏' },
       { target:'공연 리뷰: Erika Marino Live',  date:'2026.01.30', text:'라이브 무대가 상상 이상이었어요. 직접 보고 느끼는 에너지가 달랐습니다.' },
       { target:'Fantasy Land 앨범',            date:'2026.01.22', text:'앨범 전체가 하나의 이야기처럼 흘러가는 느낌이에요. 명반입니다!' }
     ],
     pays: [
-      /* PAYMENT_ORDER.order_id, status(PAID/REFUNDED) + SHOW_TBL.title */
       { name:'Premium 정기 결제',  sub:'2026.02.01',                  amt:'₩9,900',   em:'⚡', status:'PAID'     },
       { name:'에릭카 마리노 공연', sub:'2026.01.15 · 서울 올림픽홀',  amt:'₩88,000',  em:'🎫', status:'PAID'     },
       { name:'굿즈 · 키링 세트',   sub:'2026.01.10',                  amt:'₩24,000',  em:'🛍️', status:'REFUNDED' },
       { name:'Premium 정기 결제',  sub:'2026.01.01',                  amt:'₩9,900',   em:'⚡', status:'PAID'     }
     ],
     reservations: [
-      /* RESERVATION_TBL.reservation_id, status(CONFIRMED/CANCELLED)
-         JOIN SEAT_TBL.seat_label
-         JOIN SCHEDULE_TBL.start_time
-         JOIN SHOW_TBL.title */
       {
         showTitle: '에릭카 마리노 단독 콘서트',
         startTime: '2026.03.15 (일) 19:00',
@@ -230,7 +140,7 @@
         amt:       '₩88,000',
         status:    'CONFIRMED',
         gradient:  'linear-gradient(160deg,#4a1a3e 0%,#7a2a5e 40%,#5a1a4e 100%)',
-        posterImg: '' /* 실서비스: SHOW_TBL에 poster_url 컬럼 추가 후 주입 */
+        posterImg: ''
       },
       {
         showTitle: 'Isabella Romano Live Tour',
@@ -262,7 +172,6 @@
     return r === 1 ? 'gold' : r === 2 ? 'silver' : r === 3 ? 'bronze' : '';
   }
 
-  /* PLAY_LOG_TBL 집계 기반 TOP 10 */
   function renderSongs(list) {
     var max = list[0].plays;
     document.getElementById('mpTopList').innerHTML = list.map(function (s) {
@@ -279,7 +188,6 @@
     }).join('');
   }
 
-  /* ARTISTS_TBL + PLAY_LOG_TBL 집계 */
   function renderArtists() {
     document.getElementById('mpTopArtists').innerHTML = DUMMY.artists.map(function (a) {
       return '<div class="list-item">'
@@ -293,7 +201,6 @@
     }).join('');
   }
 
-  /* FREE_COMMENT 기반 */
   function renderComments() {
     document.getElementById('mpCmtList').innerHTML = DUMMY.cmts.map(function (c) {
       return '<div class="cmt-item">'
@@ -304,10 +211,8 @@
     }).join('');
   }
 
-  /* PAYMENT_ORDER 기반 */
   function renderPayments() {
-    /* status 한글 매핑 (PAYMENT_ORDER.status) */
-    var statusMap = { PAID:'완료', REFUNDED:'환불', PENDING:'대기' };
+    var statusMap   = { PAID:'완료', REFUNDED:'환불', PENDING:'대기' };
     var statusClass = { PAID:'confirmed', REFUNDED:'cancelled', PENDING:'pending' };
 
     document.getElementById('mpPayList').innerHTML = DUMMY.pays.map(function (p) {
@@ -321,7 +226,6 @@
     }).join('');
   }
 
-  /* RESERVATION_TBL + SEAT_TBL + SCHEDULE_TBL + SHOW_TBL 조인 기반 */
   function renderReservations() {
     var el = document.getElementById('mpResCards');
     if (!el) return;
@@ -331,7 +235,6 @@
       return;
     }
 
-    /* RESERVATION_TBL.status 한글 매핑 */
     var statusMap   = { CONFIRMED:'예매완료', CANCELLED:'취소/환불', PENDING:'대기중' };
     var statusClass = { CONFIRMED:'confirmed', CANCELLED:'cancelled', PENDING:'pending' };
 
@@ -345,16 +248,16 @@
         +   '<div class="res-poster-bg" style="' + bgStyle + '"></div>'
         +   '<div class="res-poster-dim"></div>'
         +   '<div class="res-content">'
-        +     '<div class="res-name">' + r.showTitle + '</div>'          /* SHOW_TBL.title */
-        +     '<div class="res-date">📅 ' + r.startTime + '</div>'      /* SCHEDULE_TBL.start_time */
+        +     '<div class="res-name">' + r.showTitle + '</div>'
+        +     '<div class="res-date">📅 ' + r.startTime + '</div>'
         +     '<span class="status-badge ' + (statusClass[r.status]||'') + '">'
-        +       (statusMap[r.status]||r.status)                          /* RESERVATION_TBL.status */
+        +       (statusMap[r.status]||r.status)
         +     '</span>'
         +   '</div>'
         + '</div>'
         + '<div class="res-info">'
         +   '<div class="res-venue">📍 ' + r.venue + '</div>'
-        +   '<div class="res-seat">💺 ' + r.seatLabel + '</div>'        /* SEAT_TBL.seat_label */
+        +   '<div class="res-seat">💺 ' + r.seatLabel + '</div>'
         +   '<div class="res-price"><span>' + r.amt + '</span>'
         +     '<button class="res-detail-btn" onclick="alert(\'예매 상세 (데모)\')">상세보기</button>'
         +   '</div>'
@@ -363,7 +266,6 @@
     }).join('') + '</div>';
   }
 
-  /* PAYMENT_ORDER 월별 집계 차트 */
   function mpInitChart() {
     window._mpChartInited = true;
     var canvas = document.getElementById('mpPayChart');
@@ -404,7 +306,7 @@
   };
 
   /* ═══════════════════════════════════════════
-     초기 렌더 — DOMContentLoaded
+     초기 렌더
   ═══════════════════════════════════════════ */
   document.addEventListener('DOMContentLoaded', function () {
     renderSongs(DUMMY.songs);

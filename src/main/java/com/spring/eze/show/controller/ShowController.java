@@ -10,7 +10,7 @@ import com.spring.eze.show.service.Seat.SeatService;
 import com.spring.eze.show.service.review.ReviewService;
 
 import com.spring.eze.show.service.show.ShowService;
-
+import com.spring.eze.user.dto.UserDTO;
 
 import java.io.IOException;
 import java.util.List;
@@ -101,41 +101,64 @@ public class ShowController {
    //후기 작성 페이지
    @ResponseBody
    @PostMapping("/reviewInsert")
-   public String reviewInsert(@RequestBody ReviewDTO dto) {
-	   
-	   dto.setUserId(1);
-	   dto.setNickname("테스트유저");
+   public String reviewInsert(@RequestBody ReviewDTO dto, HttpSession session) {
 	   
 	   log.info("ShowController - reviewInsert");
 	   
+	   UserDTO loginUser = (UserDTO)session.getAttribute("loginUser");
+	   
+	   if(loginUser == null) {
+		   return "login_required";
+	   }
+	   
+	   dto.setUserNum(loginUser.getUserId());
+	   dto.setNickname(loginUser.getNickname());
+	   
 	   reviewService.insertReview(dto);
-	 
-      
        return "success"; 
    }
 
    //후기 수정
    @ResponseBody
    @PostMapping("/reviewUpdate")
-   public String reviewUpdate(@RequestBody ReviewDTO dto) {
+   public String reviewUpdate(@RequestBody ReviewDTO dto, HttpSession session) {
 	   
-	   reviewService.reviewUpdateAction(dto);
+	   UserDTO loginUser = (UserDTO)session.getAttribute("loginUser");
 	   
+	   if(loginUser == null) {
+		   return "login_required";
+	   }
 	   
-	   return "success"; 
-   }
-   
-   @ResponseBody
-   @PostMapping("/reviewDelete")
-   public String reviewDelete(@RequestParam int reviewId) {
+	   dto.setUserNum(loginUser.getUserId());
 	   
-	   boolean result = reviewService.deleteReview(reviewId);
+	   boolean result = reviewService.reviewUpdateAction(dto);
 	   
 	   if(result) {
 		   return "success";
 	   }else {
 		   return "fail";
 	   }
+   }
+   
+   @ResponseBody
+   @PostMapping("/reviewDelete")
+   public String reviewDelete(@RequestParam int reviewId,  HttpSession session) {
+	   
+	   
+	   UserDTO loginUser = (UserDTO)session.getAttribute("loginUser");
+	   
+	   if(loginUser == null) {
+		   return "login_required";
+	   }
+	   
+			   boolean result = reviewService.deleteReview(reviewId, loginUser.getUserId());
+			   
+			   if(result) {
+				   return"success";
+			   }else {
+				   return "fail";
+			   }
+			   
    }
    
    @ResponseBody
@@ -188,8 +211,8 @@ public class ShowController {
 		return "show/seat";
     }
 
+	@GetMapping("/seatStatus")
 	@ResponseBody
-	@RequestMapping("/seatStatus")
 	public List<SeatDTO> getSeatStatus(@RequestParam String showId, @RequestParam int scheduleId) {
 		
 		return seatService.getSeatStatus(showId, scheduleId);
@@ -204,17 +227,33 @@ public class ShowController {
     }
 	
 
+    @ResponseBody
+    @PostMapping("/reserveCheck")
+    public String reserveCheck(
+            @RequestParam("show_id") String showId,
+            @RequestParam("scheduleId") int scheduleId,
+            @RequestParam("selectedSeats") List<String> seats) {
+
+        boolean result = seatService.checkAndLockSeats(showId, scheduleId, seats);
+
+        return result ? "success" : "fail";
+    }
+    
 	@PostMapping("/reserve")
 	public String reserveSeat(HttpServletRequest request, HttpServletResponse reponse, Model model)
 			throws ServletException, IOException{
 		log.info("ShowController - 좌석 선점 및 예약 확인 페이지 이동");
 		
 		try {
-			seatService.selectSeats(request, reponse, model);
+			//seatService.selectSeats(request, reponse, model);
 		
 		String[] selectedSeats = request.getParameterValues("selectedSeats");
-		String showId = request.getParameter("show_id");
+		String showId = request.getParameter("showId");
 		String scheduleId = request.getParameter("scheduleId");
+		
+		if (selectedSeats == null || selectedSeats.length == 0) {
+            return "redirect:/show/seat"; 
+        }
 		
 		model.addAttribute("selectedSeats",selectedSeats);
 		model.addAttribute("showId", showId);

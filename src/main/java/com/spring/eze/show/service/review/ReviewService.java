@@ -13,10 +13,10 @@ public interface ReviewService {
 	public void insertReview(ReviewDTO dto);
 
 	// 4. 후기 수정 처리
-	public void reviewUpdateAction(ReviewDTO dto);
+	public boolean reviewUpdateAction(ReviewDTO dto);
 
 	// 5. 후기 삭제 처리
-	public boolean deleteReview(int reviewId);
+	public boolean deleteReview(int reviewId, int userId);
 
 	// 평균 별점
 	double getAvgRating(String showId);
