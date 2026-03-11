@@ -2,6 +2,11 @@ package com.spring.eze.show.service.review;
 
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.springframework.ui.Model;
+
 import com.spring.eze.show.dto.review.ReviewDTO;
 
 public interface ReviewService {
@@ -23,5 +28,7 @@ public interface ReviewService {
 
 	// 페이징	
 	List<ReviewDTO> getReviewPaging(String showId, int page, String sort);
+
+	public void reviewListAction(HttpServletRequest request, HttpServletResponse response, Model model);
 
 }

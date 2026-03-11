@@ -75,38 +75,62 @@
 	</select>
 	
 	<!-- 장르별 상세페이지 -->
-	<select id="getShowListByCategory" parameterType="String" resultType="com.spring.eze.show.dto.Show.ShowDTO">
+	<select id="getShowListByCategory" parameterType="java.util.Map" resultType="com.spring.eze.show.dto.Show.ShowDTO">
     SELECT * FROM (
         SELECT a.*, ROWNUM rnum FROM (
             SELECT show_id as showId,
                    title,
                    venue_name as venueName,
                    start_date as startDate,
-                   genre
+                   genre,
+                   poster_url AS posterUrl
               FROM show_tbl
              WHERE 
              <![CDATA[
                 start_date >= SYSDATE 
              ]]>
-               AND 
+               
              <choose>
-                <when test="_parameter == 'concert'">
-                    genre IN ('대중음악', '서양음악(클래식)', '복합', '무용(서양/한국무용)', '서커스/마술', '한국음악(국악)')
+                <when test="category == 'concert'">
+                	<choose>
+                		<when test="subCategory == 'pop'">
+                			AND genre = '대중음악'
+                		</when>
+                		<when test="subCategory == 'classic'">
+                			AND genre = '서양음악(클래식)'
+                		</when>
+                		<when test="subCategory == 'dance'">
+                			AND genre = '무용(서양/한국무용)'
+                		</when>
+                		<when test="subCategory == 'circus'">
+                			AND genre = '서커스/마술'
+                		</when>
+                		<when test="subCategory == 'gugak'">
+                			AND genre = '한국음악(국악)'
+                		</when>
+                		<when test="subCategory == 'combination'">
+                			AND genre = '복합'
+                		</when>
+                	<otherwise>
+                		AND genre IN ('대중음악', '서양음악(클래식)', '복합', '무용(서양/한국무용)', '서커스/마술', '한국음악(국악)')
+                	</otherwise>
+                	</choose>
                 </when>
-                <when test="_parameter == 'musical'">
-                    genre = '뮤지컬'
+                <when test="category == 'musical'">
+                	AND genre = '뮤지컬'
                 </when>
-                <when test="_parameter == 'play'">
-                    genre = '연극'
+                <when test="category == 'play'">
+                	AND genre = '연극'
                 </when>
+                
                 <otherwise>
-                    genre = '대중음악'
+                	AND genre = '대중음악'
                 </otherwise>
              </choose>
-             ORDER BY start_date DESC
+             ORDER BY start_date ASC
         ) a 
         <![CDATA[
-            WHERE ROWNUM <= 20
+            WHERE ROWNUM <= 12
         ]]>
     ) 
     <![CDATA[
@@ -114,6 +138,36 @@
     ]]>
 	</select>
 	
+	<!-- 개별 상세페이지 -->
+	<select id="getShowDetail" parameterType="String" resultType="com.spring.eze.show.dto.Show.ShowDTO">
+	    SELECT 
+	        s.show_id AS showId,
+	        s.title,
+	        s.venue_name AS venueName,
+	        s.start_date AS startDate,
+	        s.end_date AS endDate,
+	        s.poster_url AS posterUrl,
+	        s.genre,
+	        d.age_limit AS ageLimit,       
+	        d.ticket_price AS ticketPrice, 
+	        d.cast_info AS castInfo,       
+	        d.styurl,                      
+	        d.runtime                      
+	    FROM show_tbl s
+	    LEFT OUTER JOIN showDetail_tbl d ON s.show_id = d.show_id
+	    WHERE s.show_id = #{showId}
+	</select>
+	
+	<!-- 개별 상세페이지 - 날짜, 회차 선택 -->
+	<select id="getShowSchedule" parameterType="map" resultType="com.spring.eze.show.dto.Show.ShowDTO">
+		SELECT 
+	          schedule_id AS scheduleId,
+	          start_time as startTime,
+	          end_time as endTime
+	    FROM  schedule_tbl
+	   WHERE  show_id = #{showId}
+	     AND  TO_CHAR(play_date, 'YYYY-MM-DD') = #{playDate}	
+	</select>
  </mapper> 
 
 
