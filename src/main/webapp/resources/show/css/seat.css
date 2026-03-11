@@ -1,0 +1,158 @@
+@charset "UTF-8";
+
+
+.step-header{
+	max-width: 900px;
+	margin: 0 auto 15px auto;
+	background: #1e1e1e;
+	border: 1px solid #ED6701;
+	border-radius: 10px;
+	padding: 15px 20px;
+	box-sizing: border-box;
+}
+
+.step-title{
+	font-size: 20px;
+	font-weight: bold;
+	color: #fff;
+	display: flex;
+	align-items: center;
+}
+    
+    
+.seat-container {
+    display: grid;
+    grid-template-columns: repeat(10, 38px); 
+    gap: 6px; 
+    justify-content: center;
+    margin-top: 30px;
+}
+
+.seat {
+    position: relative;
+}
+
+.seat input {
+    display: none;
+}
+
+.seat span {
+    display: block;
+    width: 38px;   
+    height: 38px;  
+    text-align: center;
+    line-height: 38px; 
+    border-radius: 6px;
+    font-size: 11px;
+    cursor: pointer;
+    border: 1px solid #aaa;
+    background-color: #ffffff;
+    color: #000;
+}
+
+/* 등급별 색상 */
+.VIP span { background-color: gold; }
+.R span { background-color: #F54927; }
+.S span { background-color: #E427F5; }
+
+/* 선택 좌석 */
+.seat input:checked + span {
+    background: linear-gradient(135deg, #DF8845, #ED6701);
+    color: white;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+    transform: scale(1.05);
+}
+
+/* 예약된 좌석 */
+.reserved span {
+    background-color: #444 !important;
+    cursor: not-allowed;
+    color: #999;
+}
+
+.seat-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 40px;
+    margin-top: 40px;
+}
+
+/* 왼쪽 좌석 */
+.seat-left {
+}
+
+/* 오른쪽 영역 */
+.seat-right {
+    width: 250px;
+}
+
+/* 가격 박스 */
+.price-box {
+    background: #ffffff;
+    padding: 20px;
+    border-radius: 10px;
+    color: #000;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+}
+
+/* 등급 컬러 표시 */
+.grade {
+    display: inline-block;
+    width: 15px;
+    height: 15px;
+    border-radius: 3px;
+    margin-right: 8px;
+}
+
+.grade.vip { background: gold; }
+.grade.r { background: #F54927; }
+.grade.s { background: #E427F5; }
+
+/* 예약 버튼 (주황 그라데이션) */
+.reserve-btn {
+    width: 100%;
+    background: linear-gradient(135deg, #DF8845, #ED6701);
+    border: none;
+    color: white;
+    padding: 12px;
+    border-radius: 25px;
+    font-weight: bold;
+    transition: all 0.3s ease;
+}
+
+.reserve-btn:hover {
+    transform: scale(1.05);
+    box-shadow: 0 6px 12px rgba(0,0,0,0.3);
+}
+
+/* 좌석 박스 */
+.seat-box{
+	background: #111;
+	border: 2px solid #ED6701;
+	border-radius: 12px;
+	padding: 40px;
+	box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+}
+
+/* 가격표 박스 */
+.price-wrapper{
+	background: #111;
+	border: 2px solid #ED6701;
+	border-radius: 12px;
+	padding: 25px;
+	height: fit-content;
+}
+
+.stage{
+	width: 100%;
+	height: 40px;
+	background: linear-gradient(180deg, #555, #222);
+	color: white;
+	text-align: center;
+	line-height: 40px;
+	font-weight: bold;
+	border-radius: 6px;
+	margin-bottom: 30px;
+	letter-spacing: 3px;
+}
