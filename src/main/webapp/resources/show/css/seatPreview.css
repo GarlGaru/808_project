@@ -1,0 +1,31 @@
+@charset "UTF-8";
+
+.seat-preview-wrapper{
+	max-width:1100px;
+	margin: 80px auto;
+}
+
+.preview-title{
+	color:white;
+	margin-bottom:25px;
+	font-weight:bold;
+}
+
+.preview-item{
+	text-align:center;
+}
+
+.preview-item img{
+	border-radius:10px;
+	transition: all 0.3s;
+}
+
+.preview-item img:hover{
+	transform:scale(1.05);
+}
+
+.preview-item p{
+	margin-top: 8px;
+	color: white;
+	font-weight: 500;
+}
