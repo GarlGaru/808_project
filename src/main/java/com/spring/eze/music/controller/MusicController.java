@@ -78,7 +78,10 @@ public class MusicController {
         // 3) 같은 장르 + 자기 자신 제외한 유사곡 리스트
         List<SongDTO> similarList = musicService.getSimilarSongs(param);
         model.addAttribute("similarList", similarList);
-
+        
+        System.out.println("songId = " + songId);
+        System.out.println("genreId = " + song.getGenreId());
+        System.out.println("similarList size = " + similarList.size());
         // 4) 상세 페이지로 이동
         return "music/detail";
     }
