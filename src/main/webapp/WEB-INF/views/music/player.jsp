@@ -11,10 +11,9 @@
 	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
     <link rel="stylesheet" href="${path}/resources/common/css/style.css">
     <link rel="stylesheet" href="${path}/resources/common/style.css">
+    <link rel="stylesheet" href="${path}/resources/music/css/player.css">
 </head>
 <body class="dark-mode">
-
-    <br><br><br><br>
 
  <!-- 🔊 하단 플레이어 바 (footer 바로 위) -->
     <div class="bottom-player">
@@ -22,7 +21,7 @@
         <div class="player-left">
             <div class="player-cover">
                 <!-- TODO: 현재 재생 중인 곡 커버로 교체 -->
-                <img src="${path}/resources/music/img/default_album.jpg" alt="cover">
+                <img src="${not empty song.coverImageUrl}" alt="cover">
             </div>
             <div class="player-track-info">
                 <!-- TODO: 서버에서 현재 곡 정보 바인딩 -->
@@ -34,15 +33,15 @@
 		<!-- CENTER : 재생/일시정지 + 진행바 -->
 		<div class="player-center">
 			<div class="player-controls">
-				<button class="player-btn" id="btnPrev">
+				<button class="music-player-btn" id="btnPrev">
 					<i class="bi bi-skip-backward-fill"></i>
 				</button>
 
-				<button class="player-btn main" id="btnPlayPause">
+				<button class="music-player-btn main" id="btnPlayPause">
 					<i class="bi bi-play-fill"></i>
 				</button>
 
-				<button class="player-btn" id="btnNext">
+				<button class="music-player-btn" id="btnNext">
 					<i class="bi bi-skip-forward-fill"></i>
 				</button>
 			</div>
@@ -78,8 +77,6 @@
 
     <script src="${path}/resources/common/js/jquery/jquery-2.2.4.min.js"></script>
     <script src="${path}/resources/common/bootstrap-4.6.2-dist/js/bootstrap.bundle.min.js"></script>
-    <script src="${path}/resources/common/js/plugins/plugins.js"></script>
-    <script src="${path}/resources/common/js/active.js"></script>
     <script src="${path}/resources/common/js/main.js"></script>
 </body>
 </html>
