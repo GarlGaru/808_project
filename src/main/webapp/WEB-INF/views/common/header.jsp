@@ -1,5 +1,7 @@
 <!-- ##### Header Area Start ##### -->
 <header class="header-area">
+
+
 	<div class="oneMusic-main-menu">
 		<div class="classy-nav-container breakpoint-off">
 			<div class="container">
@@ -11,6 +13,7 @@
 					<div class="classy-navbar-toggler">
 						<span class="navbarToggler"><span></span><span></span><span></span></span>
 					</div>
+
 
 					<div class="classy-menu">
 						<div class="classycloseIcon">
@@ -24,6 +27,9 @@
 								<li><a href="${path}/main">Home</a></li>
 								<li><a href="${path}/music">Music</a></li>
 								<li><a href="${path}/show">Show</a></li>
+								 <li>
+							        <a href="javascript:void(0);" onclick="openSubscribeModal()">Subscribe</a>
+							    </li>
 								<c:if test="${sessionScope.loginUser.nickname == 'admin'}">
 									<li><a href="${path}/admin">ADMIN</a></li>
 								</c:if>
@@ -66,4 +72,6 @@
 	</div>
 </header>
 
+<jsp:include page="/WEB-INF/views/common/subscribeModal.jsp"/>
+<script src="${path}/resources/common/js/subscribe.js"></script>
 <!-- ##### Header Area End ##### -->
