@@ -32,7 +32,7 @@ public class UserController {
         return "user/authModal";
     }
 
- // 2. 로그인 처리 (AJAX)
+    // 2. 로그인 처리 (AJAX)
     @RequestMapping(value = "/login", method = RequestMethod.POST)
     @ResponseBody // 페이지 이동 없이 결과값(int)만 브라우저로 전송
     public int login(HttpServletRequest request) throws ServletException, IOException {

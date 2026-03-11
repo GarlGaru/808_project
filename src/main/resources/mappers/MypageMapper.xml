@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+<mapper namespace="com.spring.eze.user.dao.MypageDAO">
+  
+<!-- ────────────────────────────────────────────
+       유저 + 프로필 조회
+     ──────────────────────────────────────────── -->
+  <!-- association: UserDTO 안의 ProfileDTO 1:1 중첩 매핑 -->
+  <!-- 내정보 수정 후 세션 갱신용 유저+프로필 재조회 -->
+  <resultMap id="userWithProfileMap" type="com.spring.eze.user.dto.UserDTO">
+	  <id	  property="userId"     column="user_id"/>
+	  <result property="email"	    column="email"/>
+	  <result property="nickname"	column="nickname"/>
+	  <result property="createdAt"  column="created_at"/>
+  	  <association property="profile"
+  	  			   javaType="com.spring.eze.user.dto.ProfileDTO">
+  	  		<result property="membershipType" column="membership_type"/>
+  	  		<result property="birthDate"	  column="birth_date"/>
+  	  		<result property="bio"			  column="bio"/>
+  	  		<result property="photoUrl"	      column="photo_url"/>
+  	  		<result property="updateAt"		  column="updated_at"/>
+  	   </association>		
+  </resultMap>		
+	  
+  <!-- 마이페지이 진입 시 유저 기본정보 + 세션 userId로 프로필 한번에 조회 --> 
+  <select id="selectUserWithProfile" parameterType="int" resultMap="userWithProfileMap">
+	     SELECT U.USER_ID
+	          , U.EMAIL
+	          , U.NICKNAME
+	          , U.CREATED_AT
+	          , P.MEMBERSHIP_TYPE
+	          , P.BIRTH_DATE
+	          , P.BIO
+	          , P.PHOTO_URL
+	          , P.UPDATED_AT
+	       FROM USER_TBL U
+	       LEFT JOIN PROFILE_TBL P ON U.USER_ID = P.USER_ID
+	      WHERE U.USER_ID = #{userId}
+  </select>
+  
+<!-- ────────────────────────────────────────────
+	 내가 쓴 글
+     ──────────────────────────────────────────── --> 
+<!-- 더 보기 방식 - offset 10개씩 로드, map 파라미터: userId, startRow, endRow  -->
+  <select id="selectMyBoardList" parameterType="map" resultType="com.spring.eze.user.dto.MypageBoardDTO">
+  	SELECT * FROM (
+  		SELECT ROWNUM AS RNUM, A.*
+  		FROM (
+  			 SELECT B.BNO
+  			 	  , B.TITLE
+  			 	  , B.CONTENT
+  			 	  , B.REGDATE
+  			 	  , B.VIEWCNT
+ 			   FROM FREE_BOARD_TBL B
+ 			  WHERE B.USER_ID = #{userId}
+ 			  ORDER BY B.BNO DESC
+  			  ) A
+		WHERE ROWNUM &lt;= #{endRow}
+  	)
+  	 WHERE RNUM &gt;= #{starRow}
+  </select>
+  
+<!-- ────────────────────────────────────────────
+	 내가 쓴 댓글
+     ──────────────────────────────────────────── --> 
+     <select id="selectMyCommentList" parameterType="map" resultType="com.spring.eze.user.dto.MypageCommentDTO">
+     
+     
+     
+     
+     </select>
+      
+<!-- ────────────────────────────────────────────
+	 내가 쓴 글
+     ──────────────────────────────────────────── --> 
+      
+<!-- ────────────────────────────────────────────
+	 내가 쓴 글
+     ──────────────────────────────────────────── --> 
+      
+<!-- ────────────────────────────────────────────
+	 내가 쓴 글
+     ──────────────────────────────────────────── --> 
+      
+<!-- ────────────────────────────────────────────
+	 내가 쓴 글
+     ──────────────────────────────────────────── --> 
+      
+<!-- ────────────────────────────────────────────
+	 내가 쓴 글
+     ──────────────────────────────────────────── --> 
+      
+
+
+ </mapper>
+
+ 
+ 

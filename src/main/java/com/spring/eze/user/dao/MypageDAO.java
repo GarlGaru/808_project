@@ -1,25 +1,39 @@
 package com.spring.eze.user.dao;
 
-import com.spring.eze.user.dto.ProfileDTO;
+import java.util.List;
+import java.util.Map;
+
+import com.spring.eze.board.dto.BoardDTO;
+import com.spring.eze.board.dto.CommentDTO;
+import com.spring.eze.payment.dto.PaymentOrderDTO;
+import com.spring.eze.user.dto.MonthlyStatDTO;
+import com.spring.eze.user.dto.UserDTO;
 
 public interface MypageDAO {
 	
-	// 프로필 조회
-	public ProfileDTO getProfile(int userId);
-
-	// 닉네임, 소개, 생년월일 수정
-	public int updateProfile(ProfileDTO DTO);
+	// 유저 + 프로필
+	public UserDTO selectUserProfile(int userId);
 	
-	// 비밀번호 변경
-	public int updatePassword(ProfileDTO DTO);
+	// 게시글
+	public List<BoardDTO> selectMyBoardList(Map<String, Object> map);
+	public int setlectMyBoardCount(int userId);
 	
-	// 프로필 이미지 URL 저장
-	public int updatePhotoUrl(ProfileDTO DTO);
+	// 댓글
+	public List<CommentDTO> selectMyCommentList(Map<String, Object> map);
 	
-	// 프로필 행 존재 여부
-	public int countProfile(int userID);
+	// 예매
+	/* public List<?> selectMyReservationList(int userId); */
 	
-	// 프로필 최초 생성
-	public int insertProfile(int userId); 
+	// 결제 
+	public List<PaymentOrderDTO> selectMyPaymaentList(int userId);
+	public List<MonthlyStatDTO> selecMonthlyStats(int userId);
+	
+	// 내 정보 수정
+	public int updateNickname(Map<String, Object> map);
+	public int updateProfile(Map<String, Object> map);
+	public int updatePhotoUrl(Map<String, Object> map);
+	
+	// 계정 탈퇴
+	public int deleteUser(int userId);
 	
 }

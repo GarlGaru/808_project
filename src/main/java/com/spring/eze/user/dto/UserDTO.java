@@ -15,10 +15,9 @@ public class UserDTO {
 	public UserDTO() {
 		super();
 	}
-	
 
-	public UserDTO(int userId, String email, String password, String nickname, int emailVerified,
-			Timestamp createdAt) {
+	public UserDTO(int userId, String email, String password, String nickname, int emailVerified, Timestamp createdAt,
+			ProfileDTO profile) {
 		super();
 		this.userId = userId;
 		this.email = email;
@@ -26,6 +25,7 @@ public class UserDTO {
 		this.nickname = nickname;
 		this.emailVerified = emailVerified;
 		this.createdAt = createdAt;
+		this.profile = profile;
 	}
 
 	public int getUserId() {
@@ -90,7 +90,7 @@ public class UserDTO {
 	@Override
 	public String toString() {
 		return "UserDTO [userId=" + userId + ", email=" + email + ", password=" + password + ", nickname=" + nickname
-				+ ", emailVerified=" + emailVerified + ", createdAt=" + createdAt + "]";
+				+ ", emailVerified=" + emailVerified + ", createdAt=" + createdAt + ", profile=" + profile + "]";
 	}
 	
 }
