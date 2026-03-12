@@ -117,7 +117,25 @@
                 <div class="card shadow mb-4">
                     <div class="card-header py-3 d-flex justify-content-between align-items-center">
                         <h6 class="m-0 font-weight-bold text-primary">음악 목록</h6>
+                
                     </div>
+                    
+                    <div class="d-flex justify-content-end mt-3">
+						    <a href="${adminUrl}/music/admin_artist" class="btn btn-primary">
+						        <i class="fas fa-plus"></i> 아티스트 등록
+						    </a>
+						   	 &nbsp;
+						    <a href="${adminUrl}/music/admin_album" class="btn btn-info">
+						        <i class="fas fa-plus"></i> 앨범 등록
+						    </a>
+						     &nbsp;
+						    <a href="${adminUrl}/music/admin_genre" class="btn btn-warning">
+						        <i class="fas fa-plus"></i> 장르 등록
+						    </a>
+						     &nbsp;
+					</div>
+					
+					
                     
                     <div class="card-body">
                         <div class="table-responsive">

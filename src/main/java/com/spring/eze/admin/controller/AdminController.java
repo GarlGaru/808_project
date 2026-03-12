@@ -18,6 +18,7 @@ import com.spring.eze.admin.dto.AdminMusicDTO;
 import com.spring.eze.admin.dto.AdminPaymentOrderDTO;
 import com.spring.eze.admin.dto.AdminUserDTO;
 import com.spring.eze.admin.dto.DailyCountDTO;
+import com.spring.eze.admin.service.AdminMusicService;
 import com.spring.eze.admin.service.AdminStatsService;
 
 @Controller
@@ -25,15 +26,18 @@ import com.spring.eze.admin.service.AdminStatsService;
 public class AdminController {
 
 	private final AdminStatsService service;
+	private final AdminMusicService musicService;
 	
-	public AdminController(AdminStatsService service) {
+	public AdminController(AdminStatsService service, AdminMusicService musicService) {
 	        this.service = service;
+	        this.musicService = musicService;
 	}
 
     // 대시보드
     @GetMapping({"", "/"})
     public String index() {
-    	System.out.println(service.selectPayList().size());
+    	//System.out.println(service.selectPayList().size());
+    	System.out.println("admin index 들어옴");
     	
         return "/admin2/index";
     }
@@ -137,121 +141,196 @@ public class AdminController {
     }
     
     //어드민 음악 인서트
-    @GetMapping("/music/write")
-    public String musicWriteForm() {
-    	
-    	return "admin2/musicwrite";
+//    @GetMapping("/music/write")
+//    public String musicWriteForm() {
+//    	
+//    	return "admin2/musicwrite";
+//    }
+//    
+//    //어드민 아티스트 조회
+    @GetMapping("/music/admin_artist")
+    public String adminartist(Model model) {
+
+        List<AdminMusicDTO> artistList = musicService.selectArtistList();
+        model.addAttribute("artistList", artistList);
+
+        return "/admin2/admin_artist";
+    }
+    // 어드민 저장
+    @PostMapping("/music/admin_artist")
+    public String insertArtist(AdminMusicDTO dto,
+            @RequestParam(value = "artistImageFile", required = false) MultipartFile artistImageFile,
+            HttpServletRequest request,
+            Model model) throws Exception {
+
+        System.out.println("아티스트 등록 컨트롤러 들어옴");
+        System.out.println("artistImageFile = " + (artistImageFile == null ? "null" : artistImageFile.getOriginalFilename()));
+
+        String uploadPath =
+                request.getSession()
+                       .getServletContext()
+                       .getRealPath("/resources/music/");
+
+        System.out.println("uploadPath : " + uploadPath);
+
+        long time = System.currentTimeMillis();
+
+        if (artistImageFile != null && !artistImageFile.isEmpty()) {
+
+            String originalName = artistImageFile.getOriginalFilename();
+            originalName = originalName.replaceAll(" ", "_");
+
+            if (!isImageFile(originalName)) {
+                model.addAttribute("msg", "아티스트 이미지는 jpg, jpeg, png, gif, webp 파일만 가능합니다.");
+                model.addAttribute("artistList", musicService.selectArtistList());
+                return "/admin2/admin_artist";
+            }
+
+            File dir = new File(uploadPath + "img/");
+            if (!dir.exists()) {
+                dir.mkdirs();
+            }
+
+            String fileName = time + "_" + originalName;
+
+            File saveFile = new File(dir, fileName);
+            artistImageFile.transferTo(saveFile);
+
+            dto.setProfileImageUrl("/resources/music/img/" + fileName);
+        }
+
+        musicService.insertArtist(dto);
+
+        model.addAttribute("msg", "아티스트 등록 완료");
+        model.addAttribute("artistList", musicService.selectArtistList());
+
+        return "/admin2/admin_artist";
     }
     
-    //어드민 음악 및 mp3 추가
-    @PostMapping("/music/write")
-    public String iunsertMusicAll(AdminMusicDTO dto,
-    		@RequestParam(value = "artistImageFile", required = false) MultipartFile artistImageFile,
-    		@RequestParam(value = "albumImageFile", required = false) MultipartFile albumImageFile,
-    		@RequestParam(value = "songFile", required = false) MultipartFile songFile,
-    		HttpServletRequest request,
-    		Model model
-    	)throws Exception {
-    	
-    	//데이터 확인용
-    	 System.out.println("컨트롤러 들어옴");
-    	 System.out.println("artistImageFile = " + (artistImageFile == null ? "null" : artistImageFile.getOriginalFilename()));
-    	 System.out.println("albumImageFile = " + (albumImageFile == null ? "null" : albumImageFile.getOriginalFilename()));
-    	 System.out.println("songFile = " + (songFile == null ? "null" : songFile.getOriginalFilename()));
-    	    
-    	
-    	//이미지 절대경로
-    	String uploadPath =
-    	        request.getSession()
-    	               .getServletContext()
-    	               .getRealPath("/resources/music/");
-    	System.out.println("uploadPath : " + uploadPath);
-    	
-    	// System.currentTimeMillis()
-    	// 1970년 1월 1일 이후 현재까지 흐른 시간을 "밀리초(ms)" 단위 숫자로 반환
-    	// 파일명 앞에 붙여서 업로드 파일 이름 중복을 방지
-    	long time = System.currentTimeMillis();
-    	
-    	
-    	// 아티스트 이미지 저장
-    	if(!artistImageFile.isEmpty()) {
-    		
-    		 // 사용자가 업로드한 파일의 원래 파일명을 가져옴
-    		 String originalName = artistImageFile.getOriginalFilename();
-    		 
-    		 // 파일명에 공백이 있으면 URL 문제 방지를 위해 "_" 로 치환
-    		 originalName = originalName.replaceAll(" ", "_");
 
-    	        if (!isImageFile(originalName)) {
-    	        	model.addAttribute
-    	        	("msg","아티스트 이미지는 jpg, jpeg, png, gif, webp 파일만 가능합니다.");
-    	        	return "admin2/musicwrite";
-    	        }
-    	        
-    		//참고사이트
-    		//https://developer-talk.tistory.com/811
-    		//파일가져오기 
-    		String fileName = time + "_" + originalName;
-    		
-    		 
-    		File saveFile = new File(uploadPath + "img/" + fileName);
-    		artistImageFile.transferTo(saveFile);
-    		
-    		dto.setProfileImageUrl("/resources/music/img/" + fileName);
-    	}
-    	
-    	// 앨범 이미지 저장
-    	if(!albumImageFile.isEmpty()) {
-    		
-    		String originalName = albumImageFile.getOriginalFilename();
-    		
-    		originalName = originalName.replaceAll(" ", "_");
-    		
-    		if (!isImageFile(originalName)) {
-                model.addAttribute
-                ("msg","이미지 파일(jpg,png,gif)만 업로드 가능합니다.");
-                return "admin2/musicwrite";
-            }
-    		
-    		// 중복 방지를 위해 시간 + 원본파일명으로 새 파일명 생성
-    		String fileName = time + "_" + originalName;
-    		
-    		
-    		
-    		File saveFile = new File(uploadPath + "img/" + fileName);
-    		albumImageFile.transferTo(saveFile);
-    		
-    		dto.setCoverImageUrl("/resources/music/img/" + fileName);
-    	}
-    	
-    	// mp3 파일 저장
-    	if(!songFile.isEmpty()) {
-    		
-    		 String originalName = songFile.getOriginalFilename();
-    		
-    		 originalName = originalName.replaceAll(" ", "_");
-    		 
-    		 if (!isMp3File(originalName)) {
-    	            model.addAttribute
-    	            ("msg","mp3 파일만 업로드 가능합니다.");
-    	            return "admin2/musicwrite";
-    	        }
-    		 
-    		//mp3 파일 저장
-    		String fileName = time + "_" + originalName;
-    		
-    		
-    		File saveFile = new File(uploadPath + "mp3/" + fileName);
-    		songFile.transferTo(saveFile);
-    		
-    		dto.setSongPath("/resources/music/mp3/" + fileName);
-    	}
-    	
-    	service.insertMusicAll(dto);
-    	
-    	model.addAttribute("msg","...");
-    	return "redirect:/admin/music";
-    }
+//    //어드민 음악 인서트
+//    @GetMapping("/music/admin_album")
+//    public String adminalbum() {
+//    	
+//    	return "admin2/admin_album";
+//    }
+//    
+//    //어드민 음악 인서트
+//    @GetMapping("/music/admin_genre")
+//    public String admingenre() {
+//    	
+//    	return "admin2/admin_genre";
+//    }
+    
+    //어드민 음악 및 mp3 추가
+//    @PostMapping("/music/write")
+//    public String iunsertMusicAll(AdminMusicDTO dto,
+//    		@RequestParam(value = "artistImageFile", required = false) MultipartFile artistImageFile,
+//    		@RequestParam(value = "albumImageFile", required = false) MultipartFile albumImageFile,
+//    		@RequestParam(value = "songFile", required = false) MultipartFile songFile,
+//    		HttpServletRequest request,
+//    		Model model
+//    	)throws Exception {
+//    	
+//    	//데이터 확인용
+//    	 System.out.println("컨트롤러 들어옴");
+//    	 System.out.println("artistImageFile = " + (artistImageFile == null ? "null" : artistImageFile.getOriginalFilename()));
+//    	 System.out.println("albumImageFile = " + (albumImageFile == null ? "null" : albumImageFile.getOriginalFilename()));
+//    	 System.out.println("songFile = " + (songFile == null ? "null" : songFile.getOriginalFilename()));
+//    	    
+//    	
+//    	//이미지 절대경로
+//    	String uploadPath =
+//    	        request.getSession()
+//    	               .getServletContext()
+//    	               .getRealPath("/resources/music/");
+//    	System.out.println("uploadPath : " + uploadPath);
+//    	
+//    	// System.currentTimeMillis()
+//    	// 1970년 1월 1일 이후 현재까지 흐른 시간을 "밀리초(ms)" 단위 숫자로 반환
+//    	// 파일명 앞에 붙여서 업로드 파일 이름 중복을 방지
+//    	long time = System.currentTimeMillis();
+//    	
+//    	
+//    	// 아티스트 이미지 저장
+//    	if(!artistImageFile.isEmpty()) {
+//    		
+//    		 // 사용자가 업로드한 파일의 원래 파일명을 가져옴
+//    		 String originalName = artistImageFile.getOriginalFilename();
+//    		 
+//    		 // 파일명에 공백이 있으면 URL 문제 방지를 위해 "_" 로 치환
+//    		 originalName = originalName.replaceAll(" ", "_");
+//
+//    	        if (!isImageFile(originalName)) {
+//    	        	model.addAttribute
+//    	        	("msg","아티스트 이미지는 jpg, jpeg, png, gif, webp 파일만 가능합니다.");
+//    	        	return "admin2/musicwrite";
+//    	        }
+//    	        
+//    		//참고사이트
+//    		//https://developer-talk.tistory.com/811
+//    		//파일가져오기 
+//    		String fileName = time + "_" + originalName;
+//    		
+//    		 
+//    		File saveFile = new File(uploadPath + "img/" + fileName);
+//    		artistImageFile.transferTo(saveFile);
+//    		
+//    		dto.setProfileImageUrl("/resources/music/img/" + fileName);
+//    	}
+//    	
+//    	// 앨범 이미지 저장
+//    	if(!albumImageFile.isEmpty()) {
+//    		
+//    		String originalName = albumImageFile.getOriginalFilename();
+//    		
+//    		originalName = originalName.replaceAll(" ", "_");
+//    		
+//    		if (!isImageFile(originalName)) {
+//                model.addAttribute
+//                ("msg","이미지 파일(jpg,png,gif)만 업로드 가능합니다.");
+//                return "admin2/musicwrite";
+//            }
+//    		
+//    		// 중복 방지를 위해 시간 + 원본파일명으로 새 파일명 생성
+//    		String fileName = time + "_" + originalName;
+//    		
+//    		
+//    		
+//    		File saveFile = new File(uploadPath + "img/" + fileName);
+//    		albumImageFile.transferTo(saveFile);
+//    		
+//    		dto.setCoverImageUrl("/resources/music/img/" + fileName);
+//    	}
+//    	
+//    	// mp3 파일 저장
+//    	if(!songFile.isEmpty()) {
+//    		
+//    		 String originalName = songFile.getOriginalFilename();
+//    		
+//    		 originalName = originalName.replaceAll(" ", "_");
+//    		 
+//    		 if (!isMp3File(originalName)) {
+//    	            model.addAttribute
+//    	            ("msg","mp3 파일만 업로드 가능합니다.");
+//    	            return "admin2/musicwrite";
+//    	        }
+//    		 
+//    		//mp3 파일 저장
+//    		String fileName = time + "_" + originalName;
+//    		
+//    		
+//    		File saveFile = new File(uploadPath + "mp3/" + fileName);
+//    		songFile.transferTo(saveFile);
+//    		
+//    		dto.setSongPath("/resources/music/mp3/" + fileName);
+//    	}
+//    	
+//    	service.insertMusicAll(dto);
+//    	
+//    	model.addAttribute("msg","...");
+//    	return "redirect:/admin/music";
+//    }
     
     //디비연결해서 데이터리스트로가져올거임
     
