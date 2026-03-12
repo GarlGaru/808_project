@@ -5,10 +5,10 @@ import java.sql.Date;
 public class MypagePaymentDTO {
 	
 	private String orderId;		// 주문 번호
-	private String itemNAme; 	// 결제명
+	private String itemName; 	// 결제명
 	private int    totalAmount;	// 결제 금액
 	private Date   approvedAt;	// 결제 승인일
-	private Date   createdAt;	// 결제 승인일
+	private Date   createdAt;	// 결제 생성일
 	private String status; 		// 결제 상태
 	private String paymentType; // 결제 유형
 	
@@ -16,11 +16,11 @@ public class MypagePaymentDTO {
 		super();
 	}
 
-	public MypagePaymentDTO(String orderId, String itemNAme, int totalAmount, Date approvedAt, Date createdAt,
+	public MypagePaymentDTO(String orderId, String itemName, int totalAmount, Date approvedAt, Date createdAt,
 			String status, String paymentType) {
 		super();
 		this.orderId = orderId;
-		this.itemNAme = itemNAme;
+		this.itemName = itemName;
 		this.totalAmount = totalAmount;
 		this.approvedAt = approvedAt;
 		this.createdAt = createdAt;
@@ -36,12 +36,12 @@ public class MypagePaymentDTO {
 		this.orderId = orderId;
 	}
 
-	public String getItemNAme() {
-		return itemNAme;
+	public String getItemName() {
+		return itemName;
 	}
 
-	public void setItemNAme(String itemNAme) {
-		this.itemNAme = itemNAme;
+	public void setItemName(String itemName) {
+		this.itemName = itemName;
 	}
 
 	public int getTotalAmount() {
@@ -86,7 +86,7 @@ public class MypagePaymentDTO {
 
 	@Override
 	public String toString() {
-		return "MypagePaymentDTO [orderId=" + orderId + ", itemNAme=" + itemNAme + ", totalAmount=" + totalAmount
+		return "MypagePaymentDTO [orderId=" + orderId + ", itemName=" + itemName + ", totalAmount=" + totalAmount
 				+ ", approvedAt=" + approvedAt + ", createdAt=" + createdAt + ", status=" + status + ", paymentType="
 				+ paymentType + "]";
 	}

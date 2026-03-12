@@ -2,19 +2,21 @@ package com.spring.eze.user.dto;
 
 public class MypageDayStatDTO {
 	
-	private int    dayIndex;  // 요일 인덱스 1=일 ~ 7=토
-	private String dayName;	  // 요일명 ex) "월"
-	private int    playCount; // 재생수
+	private int    dayIndex;  		// 요일 인덱스 1=일 ~ 7=토
+	private String dayName;	  		// 요일명 ex) "월"
+	private int    playCount; 		// 재생수
+	private int    avgPlayTimeSec;  // 해당 요일 평균 청취시간(초)
 	
 	public MypageDayStatDTO() {
 		super();
 	}
 
-	public MypageDayStatDTO(int dayIndex, String dayName, int playCount) {
+	public MypageDayStatDTO(int dayIndex, String dayName, int playCount, int avgPlayTimeSec) {
 		super();
 		this.dayIndex = dayIndex;
 		this.dayName = dayName;
 		this.playCount = playCount;
+		this.avgPlayTimeSec = avgPlayTimeSec;
 	}
 
 	public int getDayIndex() {
@@ -41,9 +43,18 @@ public class MypageDayStatDTO {
 		this.playCount = playCount;
 	}
 
+	public int getAvgPlayTimeSec() {
+		return avgPlayTimeSec;
+	}
+
+	public void setAvgPlayTimeSec(int avgPlayTimeSec) {
+		this.avgPlayTimeSec = avgPlayTimeSec;
+	}
+
 	@Override
 	public String toString() {
-		return "MypageDayStatDTO [dayIndex=" + dayIndex + ", dayName=" + dayName + ", playCount=" + playCount + "]";
+		return "MypageDayStatDTO [dayIndex=" + dayIndex + ", dayName=" + dayName + ", playCount=" + playCount
+				+ ", avgPlayTimeSec=" + avgPlayTimeSec + "]";
 	}
 
 }

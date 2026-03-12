@@ -69,11 +69,11 @@ public class MypageServiceImpl implements MypageService {
         return mypageDAO.selectMyCommentList(map);
     }
 
-    // ── 예매 내역 ──────────────────────────────────
-    @Override
-    public List<MypageReservationDTO> getMyReservationList(int userId) {
-        return mypageDAO.selectMyReservationList(userId);
-    }
+//    // ── 예매 내역 ──────────────────────────────────
+//    @Override
+//    public List<MypageReservationDTO> getMyReservationList(int userId) {
+//        return mypageDAO.selectMyReservationList(userId);
+//    }
 
     // ── 결제 내역 ──────────────────────────────────
     @Override

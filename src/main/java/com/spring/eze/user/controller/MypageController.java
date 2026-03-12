@@ -81,19 +81,19 @@ public class MypageController {
         return mypageService.getMyCommentList(loginUser.getUserId(), page);
     }
 
-    // ── 예매 내역 ──────────────────────────────────
-    // page 파라미터 없으므로 HttpServletRequest 불필요
-    // HttpSession만 받아서 loginUser 꺼내면 됨
-    @ResponseBody
-    @RequestMapping(value = "/mypage/reservations", method = RequestMethod.GET)
-    public List<MypageReservationDTO> getMyReservations(HttpSession session) {
-        logger.info("<<< url => /mypage/reservations >>>");
-
-        UserDTO loginUser = getLoginUser(session);
-        if (loginUser == null) return null;
-
-        return mypageService.getMyReservationList(loginUser.getUserId());
-    }
+//    // ── 예매 내역 ──────────────────────────────────
+//    // page 파라미터 없으므로 HttpServletRequest 불필요
+//    // HttpSession만 받아서 loginUser 꺼내면 됨
+//    @ResponseBody
+//    @RequestMapping(value = "/mypage/reservations", method = RequestMethod.GET)
+//    public List<MypageReservationDTO> getMyReservations(HttpSession session) {
+//        logger.info("<<< url => /mypage/reservations >>>");
+//
+//        UserDTO loginUser = getLoginUser(session);
+//        if (loginUser == null) return null;
+//
+//        return mypageService.getMyReservationList(loginUser.getUserId());
+//    }
 
     // ── 결제 내역 ──────────────────────────────────
     @ResponseBody
