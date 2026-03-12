@@ -24,6 +24,15 @@
 	
 	<context:component-scan base-package="com.spring.eze" />
 
+	<!-- 파일 업로드 처리 -->
+	<beans:bean id="multipartResolver"
+	    class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
 	
+	    <beans:property name="defaultEncoding" value="UTF-8"/>
+	    <beans:property name="maxUploadSize" value="104857600"/>
+	    <beans:property name="maxUploadSizePerFile" value="52428800"/>
+	
+	</beans:bean>
+		
 	
 </beans:beans>
