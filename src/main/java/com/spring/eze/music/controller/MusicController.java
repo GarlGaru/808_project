@@ -1,6 +1,7 @@
 package com.spring.eze.music.controller;
 
 import com.spring.eze.music.service.MusicService;
+import com.spring.eze.user.dto.UserDTO;
 import com.spring.eze.music.dto.SongDTO;
 
 import java.util.HashMap;
@@ -9,6 +10,7 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,89 +20,138 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
 @RequestMapping("/music")
 public class MusicController {
 
-	private static final Logger log = LoggerFactory.getLogger(MusicController.class);
+    private static final Logger log = LoggerFactory.getLogger(MusicController.class);
 
-	@Autowired
-	private MusicService musicService; // 🔹 MainService 대신 MusicService 사용
+    @Autowired
+    private MusicService musicService;
 
-	/**
-	 * /music 또는 /music/ 로 들어왔을 때 메인 음악 리스트 페이지로 이동
-	 */
-	@GetMapping({ "", "/" })
-	public String musicMain(HttpServletRequest request, HttpServletResponse response, Model model) {
+    // 음악 메인
+    @GetMapping({ "", "/" })
+    public String musicMain(HttpServletRequest request, HttpServletResponse response, Model model) {
 
-		log.info("MusicController - musicMain() 호출");
+        log.info("MusicController - musicMain() 호출");
 
-		// 1) DB에서 곡 리스트 가져오기
-		List<SongDTO> songList = musicService.getSongList();
+        List<SongDTO> weeklyRanking = musicService.getweeklyRanking();
+        List<SongDTO> todayHitSongs = musicService.getTodayHitSongs();
+        List<SongDTO> genreRanking = musicService.getGenreRanking(1); // 기본 장르 1
 
-		// 2) JSP에서 사용할 모델에 담기
-		model.addAttribute("songList", songList);
+        model.addAttribute("weeklyRanking", weeklyRanking);
+        model.addAttribute("todayHitSongs", todayHitSongs);
+        model.addAttribute("genreRanking", genreRanking);
 
-		// 3) /WEB-INF/.../music/music.jsp 로 이동 (뷰리졸버 규칙에 따라)
-		return "music/music"; // 기존과 동일한 뷰 이름 유지
-	}
+        // 필요하면 유지
+        model.addAttribute("songList", weeklyRanking);
 
-	/**
-	 * (옵션) /music/list 로도 접근 가능하게 하고 싶으면 이 메소드 추가해도 됨
-	 */
-	@GetMapping("/list")
-	public String musicList(Model model) {
+        return "music/music";
+    }
 
-		log.info("MusicController - musicList() 호출");
+    @RequestMapping("/recommend")
+    public String recommend(HttpServletRequest request, HttpServletResponse response, Model model) {
+        log.info("<<< url => /recommend >>>");
+        return "/music/recommend";
+    }
 
-		List<SongDTO> songList = musicService.getSongList();
-		model.addAttribute("songList", songList);
+    // 랭킹 페이지 통합
+    @RequestMapping("/ranking")
+    public String ranking(HttpServletRequest request, HttpServletResponse response, Model model) {
 
-		return "music/music";
-	}
+        List<SongDTO> weeklyRanking = musicService.getweeklyRanking();
+        List<SongDTO> todayHitSongs = musicService.getTodayHitSongs();
+        List<SongDTO> genreRanking = musicService.getGenreRanking(1); // 기본 장르 1
 
-	@GetMapping("/detail")
-	public String songDetail(@RequestParam("songId") int songId, Model model) {
+        model.addAttribute("weeklyRanking", weeklyRanking);
+        model.addAttribute("todayHitSongs", todayHitSongs);
+        model.addAttribute("genreRanking", genreRanking);
 
-		// 1) 현재 곡 정보 가져오기
-		SongDTO song = musicService.getSongDetail(songId);
-		model.addAttribute("song", song);
+        // 기존 JSP가 songList만 보고 있다면 호환용으로 같이 넣기
+        model.addAttribute("songList", todayHitSongs);
 
-		// 2) 유사곡 조회를 위한 파라미터(장르 + 현재 곡 id)
-		// SongDTO 안에 genreId 필드가 있다고 가정
-		Map<String, Object> param = new HashMap<>();
-		param.put("songId", songId);
-		param.put("genreId", song.getGenreId());
+        log.info("<<< url => /ranking >>>");
+        return "/music/ranking";
+    }
 
-		// 3) 같은 장르 + 자기 자신 제외한 유사곡 리스트
-		List<SongDTO> similarList = musicService.getSimilarSongs(param);
-		model.addAttribute("similarList", similarList);
+    // 재생 시작 점수
+    @GetMapping("/playScore")
+    @ResponseBody
+    public String recordPlayScore(@RequestParam int songId, HttpSession session) {
 
-		System.out.println("songId = " + songId);
-		System.out.println("genreId = " + song.getGenreId());
-		System.out.println("similarList size = " + similarList.size());
-		// 4) 상세 페이지로 이동
-		return "music/detail";
-	}
+        UserDTO loginUser = (UserDTO) session.getAttribute("loginUser");
+        
+        log.info("playScore 호출됨 - songId={}", songId);
+        log.info("session loginUser={}", loginUser);
+        
+        if (loginUser == null) {
+        	log.info("로그인 안 된 상태라 점수 저장 안 함");
+            return "noLogin";
+        }
 
-	@RequestMapping("/recommend")
-	public String recommend(HttpServletRequest request, HttpServletResponse response, Model model) {
+        int userId = loginUser.getUserId();
+        log.info("점수 저장 시작 - userId={}, songId={}", userId, songId);
+        
+        musicService.addPlayScore(songId, userId);
+        log.info("점수 저장 완료");
+        return "success";
+    }
 
-		log.info("<<< url => /recommend >>>");
-		return "/music/recommend";
-	}
+    // 일정 시간 이상 재생 점수
+    @GetMapping("/intervalScore")
+    @ResponseBody
+    public String recordIntervalScore(@RequestParam int songId, HttpSession session) {
 
-	@RequestMapping("/ranking")
-	public String ranking(HttpServletRequest request, HttpServletResponse response, Model model) {
+        UserDTO loginUser = (UserDTO) session.getAttribute("loginUser");
 
-		// 1) DB에서 곡 리스트 가져오기
-		List<SongDTO> songList = musicService.getSongList();
+        if (loginUser == null) {
+            return "noLogin";
+        }
 
-		// 2) JSP에서 사용할 모델에 담기
-		model.addAttribute("songList", songList);
-		log.info("<<< url => /ranking >>>");
-		return "/music/ranking";
-	}
+        int userId = loginUser.getUserId();
+        musicService.addIntervalScore(songId, userId);
 
+        return "success";
+    }
+
+    // 좋아요 점수
+    @GetMapping("/likeScore")
+    @ResponseBody
+    public String recordLikeScore(@RequestParam int songId, HttpSession session) {
+
+        UserDTO loginUser = (UserDTO) session.getAttribute("loginUser");
+
+        if (loginUser == null) {
+            return "noLogin";
+        }
+
+        int userId = loginUser.getUserId();
+        musicService.addLikeScore(songId, userId);
+
+        return "success";
+    }
+    //곡상세 페이지
+    @GetMapping("/detail")
+    public String songDetail(@RequestParam("songId") int songId, Model model) {
+
+        SongDTO song = musicService.getSongDetail(songId);
+        model.addAttribute("song", song);
+
+        Map<String, Object> param = new HashMap<>();
+        param.put("songId", songId);
+        param.put("genreId", song.getGenreId());
+
+        List<SongDTO> similarList = musicService.getSimilarSongs(param);
+        model.addAttribute("similarList", similarList);
+
+        return "music/detail";
+    }
+    //노래연결
+    @ResponseBody
+    @GetMapping("/songPath")
+    public String getSongPath(@RequestParam("songId") int songId) {
+        return musicService.getSongPath(songId);
+    }
 }

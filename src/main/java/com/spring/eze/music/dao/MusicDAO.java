@@ -33,6 +33,11 @@ public interface MusicDAO {
     
     //장르랭킹
     public List<SongDTO> getGenreRanking(int genreId);
-
-   
+    
+    //점수 insert
+    public void insertSongScore(int songId, int userId, int score);
+    
+    //노래 연결
+    public String getSongPath(int songId);
+ 
 }

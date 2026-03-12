@@ -69,20 +69,36 @@ public class MusicDAOImpl implements MusicDAO {
         param.put("userId", userId);
         return sqlSession.selectOne(NS + "existsSongLike", param);
     }
-    // 랭킹
-    //주간랭킹
+
+    @Override
+    public List<SongDTO> getWeeklyRanking() {
+        return sqlSession.selectList(NS + "getWeeklyRanking");
+    }
+
+    @Override
+    public List<SongDTO> getTodayHitSongs() {
+        return sqlSession.selectList(NS + "getTodayHitSongs");
+    }
+
+    @Override
+    public List<SongDTO> getGenreRanking(int genreId) {
+        return sqlSession.selectList(NS + "getGenreRanking", genreId);
+    }
+
+    @Override
+    public void insertSongScore(int songId, int userId, int score) {
+        Map<String, Object> map = new HashMap<>();
+        map.put("songId", songId);
+        map.put("userId", userId);
+        map.put("score", score);
+
+        sqlSession.insert(NS + "insertSongScore", map);
+    }
+
 	@Override
-	public List<SongDTO> getWeeklyRanking() {
-		return sqlSession.selectOne(NS + "getWeeklyRanking");
+	public String getSongPath(int songId) {
+		
+		 return sqlSession.selectOne(NS + "getSongPath", songId);
 	}
-	 //오늘의 최고 히트곡
-	@Override
-	public List<SongDTO> getTodayHitSongs() {
-		return sqlSession.selectOne(NS + "getTodayHitSongs");
-	}
-	//장르랭킹
-	@Override
-	public List<SongDTO> getGenreRanking(int genreId) {
-		return sqlSession.selectOne(NS + "getGenreRanking");
-	}
+    
 }

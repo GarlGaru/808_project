@@ -5,207 +5,178 @@
 
 <mapper namespace="com.spring.eze.music.dao.MusicDAO">
 
-    <!-- SongDTO 매핑 -->
-    <resultMap id="songResultMap" type="com.spring.eze.music.dto.SongDTO">
-        <id     property="songId"        column="song_id" />
-        <result property="title"         column="title" />
-        <result property="artistName"    column="artist_name" />
-        <result property="albumTitle"    column="album_title" />
-        <result property="genreName"     column="genre_name" />
-        <result property="coverImageUrl" column="cover_image_url" />
-        <result property="playCount"     column="play_count" />
-        <result property="likeCount"     column="like_count" />
-        <result property="genreId"       column="genre_id" />
+    <resultMap id="rankingResultMap" type="com.spring.eze.music.dto.SongDTO">
+        <id property="songId" column="song_id"/>
+        <result property="artistName" column="name"/>
+        <result property="title" column="title"/>
+        <result property="coverImageUrl" column="cover_image_url"/>
+        <result property="totalScore" column="total_score"/>
     </resultMap>
 
-    <!-- 1) 메인 곡 리스트 (인기순) -->
-    <select id="getSongList" resultMap="songResultMap">
+    <!-- 주간 랭킹 -->
+    <select id="getWeeklyRanking" resultMap="rankingResultMap">
         SELECT
-            s.song_id AS song_id,
-            s.title AS title,
-            ar.name AS artist_name,
-            al.title AS album_title,
-            NVL(LISTAGG(g.name, ', ') WITHIN GROUP (ORDER BY g.name), '장르없음') AS genre_name,
-            MIN(g.genre_id) AS genre_id,
-            al.cover_image_url AS cover_image_url,
-            NVL(pl.play_count, 0) AS play_count,
-            NVL(sl.like_count, 0) AS like_count
+            s.song_id,
+            a.name,
+            s.title,
+            al.cover_image_url,
+            sc.total_score
         FROM songs_tbl s
-        JOIN artists_tbl ar
-            ON s.artist_id = ar.artist_id
+        JOIN artists_tbl a
+            ON s.artist_id = a.artist_id
         JOIN albums_tbl al
             ON s.album_id = al.album_id
-        LEFT JOIN song_genre_tbl sg
-            ON s.song_id = sg.song_id
-        LEFT JOIN genres_tbl g
-            ON sg.genre_id = g.genre_id
-        LEFT JOIN (
-            SELECT song_id, COUNT(*) AS play_count
-            FROM play_log_tbl
+        JOIN (
+            SELECT
+                song_id,
+                SUM(score) AS total_score
+            FROM song_score_tbl
+            WHERE created_at >= TRUNC(SYSDATE) - 7
+              AND created_at &lt; TRUNC(SYSDATE) + 1
             GROUP BY song_id
-        ) pl
-            ON s.song_id = pl.song_id
-        LEFT JOIN (
-            SELECT song_id, COUNT(*) AS like_count
-            FROM song_likes_tbl
-            GROUP BY song_id
-        ) sl
-            ON s.song_id = sl.song_id
-        GROUP BY
-            s.song_id,
-            s.title,
-            ar.name,
-            al.title,
-            al.cover_image_url,
-            pl.play_count,
-            sl.like_count
-        ORDER BY NVL(pl.play_count, 0) DESC, s.song_id DESC
+        ) sc
+            ON s.song_id = sc.song_id
+        ORDER BY sc.total_score DESC
+        FETCH FIRST 15 ROWS ONLY
     </select>
 
-    <!-- 2) 곡 상세 -->
-	    <select id="getSongDetail" parameterType="int" resultMap="songResultMap">
-	        SELECT
-	            s.song_id AS song_id,
-	            s.title AS title,
-	            ar.name AS artist_name,
-	            al.title AS album_title,
-	            NVL(LISTAGG(g.name, ', ') WITHIN GROUP (ORDER BY g.name), '장르없음') AS genre_name,
-	            MIN(g.genre_id) AS genre_id,
-	            al.cover_image_url AS cover_image_url,
-	            NVL(pl.play_count, 0) AS play_count,
-	            NVL(sl.like_count, 0) AS like_count
-	        FROM songs_tbl s
-	        JOIN artists_tbl ar
-	            ON s.artist_id = ar.artist_id
-	        JOIN albums_tbl al
-	            ON s.album_id = al.album_id
-	        LEFT JOIN song_genre_tbl sg
-	            ON s.song_id = sg.song_id
-	        LEFT JOIN genres_tbl g
-	            ON sg.genre_id = g.genre_id
-	        LEFT JOIN (
-	            SELECT song_id, COUNT(*) AS play_count
-	            FROM play_log_tbl
-	            GROUP BY song_id
-	        ) pl
-	            ON s.song_id = pl.song_id
-	        LEFT JOIN (
-	            SELECT song_id, COUNT(*) AS like_count
-	            FROM song_likes_tbl
-	            GROUP BY song_id
-	        ) sl
-	            ON s.song_id = sl.song_id
-	        WHERE s.song_id = #{songId}
-	        GROUP BY
-	            s.song_id,
-	            s.title,
-	            ar.name,
-	            al.title,
-	            al.cover_image_url,
-	            pl.play_count,
-	            sl.like_count
-	    </select>
-	
-	    <!-- 3) 유사곡 (같은 장르 / 자기 자신 제외) -->
-	   
-	        <select id="getSimilarSongs" parameterType="map" resultMap="songResultMap">
-	
-		SELECT
-		    s.song_id AS song_id,
-		    s.title AS title,
-		    ar.name AS artist_name,
-		    al.title AS album_title,
-		    NVL(LISTAGG(g.name, ', ') WITHIN GROUP (ORDER BY g.name), '장르없음') AS genre_name,
-		    MIN(g.genre_id) AS genre_id,
-		    al.cover_image_url AS cover_image_url,
-		    NVL(pl.play_count, 0) AS play_count,
-		    NVL(sl.like_count, 0) AS like_count
-		
-		FROM songs_tbl s
-		
-		JOIN artists_tbl ar
-		    ON s.artist_id = ar.artist_id
-		
-		JOIN albums_tbl al
-		    ON s.album_id = al.album_id
-		
-		JOIN song_genre_tbl sg
-		    ON s.song_id = sg.song_id
-		
-		JOIN genres_tbl g
-		    ON sg.genre_id = g.genre_id
-		
-		LEFT JOIN (
-		    SELECT song_id, COUNT(*) AS play_count
-		    FROM play_log_tbl
-		    GROUP BY song_id
-		) pl
-		    ON s.song_id = pl.song_id
-		
-		LEFT JOIN (
-		    SELECT song_id, COUNT(*) AS like_count
-		    FROM song_likes_tbl
-		    GROUP BY song_id
-		) sl
-		    ON s.song_id = sl.song_id
-		
-		WHERE sg.genre_id = #{genreId}
-		AND s.song_id != #{songId}
-		
-		GROUP BY
-		    s.song_id,
-		    s.title,
-		    ar.name,
-		    al.title,
-		    al.cover_image_url,
-		    pl.play_count,
-		    sl.like_count
-		
-		ORDER BY NVL(pl.play_count, 0) DESC
-		
-		</select>
-	 
-	
-	    <!-- 5) 재생 로그 추가 -->
-	    <insert id="insertPlayLog" parameterType="map">
-	        INSERT INTO play_log_tbl (
-	            playlog_id,
-	            song_id,
-	            user_id
-	        ) VALUES (
-	            play_log_seq.NEXTVAL,
-	            #{songId},
-	            #{userId}
-	        )
-	    </insert>
-	
-	    <!-- 6) 좋아요 ON -->
-	    <insert id="insertSongLike" parameterType="map">
-	        INSERT INTO song_likes_tbl (
-	            like_id,
-	            user_id,
-	            song_id
-	        ) VALUES (
-	            song_likes_seq.NEXTVAL,
-	            #{userId},
-	            #{songId}
-	        )
-	    </insert>
-	
-	    <!-- 7) 좋아요 OFF -->
-	    <delete id="deleteSongLike" parameterType="map">
-	        DELETE FROM song_likes_tbl
-	        WHERE user_id = #{userId}
-	          AND song_id = #{songId}
-	    </delete>
-	
-	    <!-- 8) 이 유저가 이 곡을 좋아요 했는지 체크 -->
-	    <select id="existsSongLike" parameterType="map" resultType="int">
-	        SELECT COUNT(*)
-	        FROM song_likes_tbl
-	        WHERE user_id = #{userId}
-	          AND song_id = #{songId}
+    <!-- 오늘의 히트곡 -->
+    <select id="getTodayHitSongs" resultMap="rankingResultMap">
+        SELECT
+            s.song_id,
+            a.name,
+            s.title,
+            al.cover_image_url,
+            sc.total_score
+        FROM songs_tbl s
+        JOIN artists_tbl a
+            ON s.artist_id = a.artist_id
+        JOIN albums_tbl al
+            ON s.album_id = al.album_id
+        JOIN (
+            SELECT
+                song_id,
+                SUM(score) AS total_score
+            FROM song_score_tbl
+            WHERE created_at >= SYSDATE - 1
+              AND created_at &lt; SYSDATE
+            GROUP BY song_id
+        ) sc
+            ON s.song_id = sc.song_id
+        ORDER BY sc.total_score DESC
+        FETCH FIRST 15 ROWS ONLY
     </select>
-	
-	
+
+    <!-- 장르 랭킹 -->
+    <select id="getGenreRanking" parameterType="int" resultMap="rankingResultMap">
+        SELECT
+            s.song_id,
+            a.name,
+            s.title,
+            al.cover_image_url,
+            sc.total_score
+        FROM songs_tbl s
+        JOIN artists_tbl a
+            ON s.artist_id = a.artist_id
+        JOIN albums_tbl al
+            ON s.album_id = al.album_id
+        JOIN song_genre_tbl sg
+            ON s.song_id = sg.song_id
+        JOIN (
+            SELECT
+                song_id,
+                SUM(score) AS total_score
+            FROM song_score_tbl
+            WHERE created_at >= TRUNC(SYSDATE) - 7
+              AND created_at &lt; TRUNC(SYSDATE) + 1
+            GROUP BY song_id
+        ) sc
+            ON s.song_id = sc.song_id
+        WHERE sg.genre_id = #{genreId}
+        ORDER BY sc.total_score DESC
+        FETCH FIRST 15 ROWS ONLY
+    </select>
+
+    <!-- 점수 저장 -->
+    <insert id="insertSongScore">
+        INSERT INTO song_score_tbl
+        (
+            score_id,
+            user_id,
+            song_id,
+            score,
+            created_at
+        )
+        VALUES
+        (
+            song_score_seq.NEXTVAL,
+            #{userId},
+            #{songId},
+            #{score},
+            SYSDATE
+        )
+    </insert>
+    <!-- 곡상세 -->
+		<resultMap id="songDetailResultMap" type="com.spring.eze.music.dto.SongDTO">
+		    <id property="songId" column="song_id"/>
+		    <result property="title" column="title"/>
+		    <result property="artistName" column="artist_name"/>
+		    <result property="albumTitle" column="album_title"/>
+		    <result property="genreName" column="genre_name"/>
+		    <result property="genreId" column="genre_id"/>
+		    <result property="coverImageUrl" column="cover_image_url"/>
+		    <result property="songPath" column="song_path"/>
+		</resultMap>
+		
+		<select id="getSongDetail" parameterType="int" resultMap="songDetailResultMap">
+		    SELECT
+		        s.song_id,
+		        s.title,
+		        a.name AS artist_name,
+		        al.title AS album_title,
+		        g.name AS genre_name,
+		        g.genre_id,
+		        al.cover_image_url,
+		        s.song_path
+		    FROM songs_tbl s
+		    JOIN artists_tbl a
+		        ON s.artist_id = a.artist_id
+		    JOIN albums_tbl al
+		        ON s.album_id = al.album_id
+		    JOIN song_genre_tbl sg
+		        ON s.song_id = sg.song_id
+		    JOIN genres_tbl g
+		        ON sg.genre_id = g.genre_id
+		    WHERE s.song_id = #{songId}
+		</select>
+		
+		<select id="getSimilarSongs" parameterType="map" resultMap="songDetailResultMap">
+		    SELECT
+		        s.song_id,
+		        s.title,
+		        a.name AS artist_name,
+		        al.title AS album_title,
+		        g.name AS genre_name,
+		        g.genre_id,
+		        al.cover_image_url,
+		        s.song_path
+		    FROM songs_tbl s
+		    JOIN artists_tbl a
+		        ON s.artist_id = a.artist_id
+		    JOIN albums_tbl al
+		        ON s.album_id = al.album_id
+		    JOIN song_genre_tbl sg
+		        ON s.song_id = sg.song_id
+		    JOIN genres_tbl g
+		        ON sg.genre_id = g.genre_id
+		    WHERE sg.genre_id = #{genreId}
+		      AND s.song_id != #{songId}
+		    FETCH FIRST 10 ROWS ONLY
+		</select>
+		<!-- 노래연결 -->
+		<select id="getSongPath" parameterType="int" resultType="string">
+	    SELECT song_path
+	    FROM songs_tbl
+	    WHERE song_id = #{songId}
+		</select>
 </mapper>
