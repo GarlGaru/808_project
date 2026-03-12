@@ -1,4 +1,6 @@
 <!-- ##### Header Area Start ##### -->
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ include file="/WEB-INF/views/common/setting.jsp" %>
 <header class="header-area">
 
 
@@ -13,15 +15,12 @@
 					<div class="classy-navbar-toggler">
 						<span class="navbarToggler"><span></span><span></span><span></span></span>
 					</div>
-
-
 					<div class="classy-menu">
 						<div class="classycloseIcon">
 							<div class="cross-wrap">
 								<span class="top"></span><span class="bottom"></span>
 							</div>
 						</div>
-
 						<div class="classynav">
 							<ul>
 								<li><a href="${path}/main">Home</a></li>
@@ -36,30 +35,25 @@
 								<c:if test="${sessionScope.loginUser.nickname != 'admin'}">
 									<li><a href="${path}/main/board">Board</a></li>
 								</c:if>
-
-
 							</ul>
-
 							<div class="login-register-cart-button d-flex align-items-center">
-
 								<c:choose>
+									<%-- 로그인 된 상태: 닉네임 클릭 → openMypage() --%>
 									<c:when test="${not empty sessionScope.loginUser}">
 										<div class="login-register-btn mr-15">
-											<span>${sessionScope.loginUser.nickname}</span>
-										</div>
-										<div class="login-register-btn mr-15">
-											<a href="${path}/mypage" title="마이페이지">&#x1F464;</a>
+											<a href="javascript:void(0)" onclick="openMypage()">${sessionScope.loginUser.nickname}님 👤</a>
 										</div>
 										<div class="login-register-btn">
 											<a href="${path}/logout">Logout</a>
 										</div>
 									</c:when>
+									<%-- 로그인 안 된 상태 --%>
 									<c:otherwise>
 										<div class="login-register-btn mr-15">
-											<a href="${path}/authModal">Login</a>
+											<a href="javascript:void(0)" onclick="openAuthModal()">Login</a>
 										</div>
 										<div class="login-register-btn">
-											<a href="${path}/main">Register</a>
+											<a href="javascript:void(0)" onclick="openAuthModal('register')">Register</a>
 										</div>
 									</c:otherwise>
 								</c:choose>
@@ -75,3 +69,7 @@
 <jsp:include page="/WEB-INF/views/common/subscribeModal.jsp"/>
 <script src="${path}/resources/common/js/subscribe.js"></script>
 <!-- ##### Header Area End ##### -->
+
+<%-- 로그인/회원가입, 마이페이지 --%>
+<%@ include file="/WEB-INF/views/user/mypageModal.jsp" %>
+<%@ include file="/WEB-INF/views/user/authModal.jsp" %>

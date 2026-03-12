@@ -8,7 +8,7 @@
     <meta name="description" content="Bootstrap 4 Spotify-style buttons sample">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>Bootstrap 4 Button Sample</title>
+    <title>808 showDetail</title>
 
     <link rel="stylesheet" href="${path}/resources/common/css/style.css">
     <link rel="stylesheet" href="${path}/resources/common/style.css">
@@ -22,11 +22,13 @@
     <br><br><br><br>
     <br><br><br><br>
 
-	<div class="section" style="justify-content-center">
+	<%-- <div class="section" style="justify-content-center">
 		<a href="${path}/kakaopay/form">
 			<img src="${path}/resources/presentation/show-detail.png">
 		</a>
-    </div>
+    </div> --%>
+    
+    
     <br><br><br><br>
 
 
