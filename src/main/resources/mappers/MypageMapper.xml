@@ -44,57 +44,157 @@
 <!-- ────────────────────────────────────────────
 	 내가 쓴 글
      ──────────────────────────────────────────── --> 
-<!-- 더 보기 방식 - offset 10개씩 로드, map 파라미터: userId, startRow, endRow  -->
+  <!-- 더 보기 방식 10개씩 로드, map 파라미터: userId, startRow, endRow  -->
   <select id="selectMyBoardList" parameterType="map" resultType="com.spring.eze.user.dto.MypageBoardDTO">
-  	SELECT * FROM (
-  		SELECT ROWNUM AS RNUM, A.*
-  		FROM (
-  			 SELECT B.BNO
-  			 	  , B.TITLE
-  			 	  , B.CONTENT
-  			 	  , B.REGDATE
-  			 	  , B.VIEWCNT
- 			   FROM FREE_BOARD_TBL B
- 			  WHERE B.USER_ID = #{userId}
- 			  ORDER BY B.BNO DESC
-  			  ) A
-		WHERE ROWNUM &lt;= #{endRow}
-  	)
-  	 WHERE RNUM &gt;= #{starRow}
+	  	SELECT * FROM (
+	  		SELECT ROWNUM AS RNUM, A.*
+	  		FROM (
+	  			 SELECT B.BNO
+	  			 	  , B.TITLE
+	  			 	  , B.CONTENT
+	  			 	  , B.REGDATE
+	  			 	  , B.VIEWCNT
+	 			   FROM FREE_BOARD_TBL B
+	 			  WHERE B.USER_ID = #{userId}
+	 			  ORDER BY B.BNO DESC
+	  			  ) A
+			WHERE ROWNUM &lt;= #{endRow}
+	  	)
+	  	 WHERE RNUM &gt;= #{starRow}
   </select>
   
 <!-- ────────────────────────────────────────────
 	 내가 쓴 댓글
      ──────────────────────────────────────────── --> 
+     <!-- 내가 쓴 댓글, 더보기 방식 10개씩 로드, 원글제목 같이 조회,  -->
      <select id="selectMyCommentList" parameterType="map" resultType="com.spring.eze.user.dto.MypageCommentDTO">
-     
-     
-     
-     
+         SELECT * FROM (
+         SELECT ROWNUM AS RNUM, A.*
+           FROM (
+                 SELECT C.CNO
+                      , C.BNO
+                      , B.TITLE  AS boardTitle
+                      , C.CONTENT
+                      , C.REGDATE
+                   FROM FREE_COMMENT_TBL C
+                   JOIN FREE_BOARD_TBL   B ON C.BNO = B.BNO
+                  WHERE C.USER_ID = #{userId}
+                  ORDER BY C.CNO DESC
+                ) A
+          WHERE ROWNUM &lt;= #{endRow}
+     )
+      WHERE RNUM &gt;= #{startRow}
      </select>
       
 <!-- ────────────────────────────────────────────
-	 내가 쓴 글
+	 예매 내역
      ──────────────────────────────────────────── --> 
       
 <!-- ────────────────────────────────────────────
-	 내가 쓴 글
+	 결제 내역, 최신순 전체 조회, 월별 지출 합계
      ──────────────────────────────────────────── --> 
-      
+    <select id="selectMyPaymentList" parameterType="int" resultType="com.spring.eze.user.dto.MypagePaymentDTO">
+        SELECT ORDER_ID     AS orderId
+             , ITEM_NAME    AS itemName
+             , TOTAL_AMOUNT AS totalAmount
+             , APPROVED_AT  AS approvedAt
+             , CREATED_AT   AS createdAt
+             , STATUS       AS status
+             , PAYMENT_TYPE AS paymentType
+          FROM PAYMENT_ORDER
+         WHERE USER_ID = #{userId}
+         ORDER BY CREATED_AT DESC
+    </select>
+     
+        <!-- 월별 지출 합계, Chart.js 막대그래프용, 최근 12개월 APPROVED 상태만 GROUP BY 월별 합산 -->
+    <select id="selectMonthlyStats" parameterType="int" resultType="com.spring.eze.user.dto.MypageMonthlyStatDTO">
+        SELECT TO_CHAR(APPROVED_AT, 'YYYY-MM') AS yearMonth
+             , SUM(TOTAL_AMOUNT)               AS totalAmount
+          FROM PAYMENT_ORDER
+         WHERE USER_ID     = #{userId}
+           AND STATUS      = 'APPROVED'
+           AND APPROVED_AT >= ADD_MONTHS(SYSDATE, -12)
+         GROUP BY TO_CHAR(APPROVED_AT, 'YYYY-MM')
+         ORDER BY yearMonth ASC
+    </select>
+     
 <!-- ────────────────────────────────────────────
-	 내가 쓴 글
+	 808 플레이 리포트
      ──────────────────────────────────────────── --> 
-      
-<!-- ────────────────────────────────────────────
-	 내가 쓴 글
-     ──────────────────────────────────────────── --> 
-      
-<!-- ────────────────────────────────────────────
-	 내가 쓴 글
-     ──────────────────────────────────────────── --> 
-      
+      <!-- 총 재생 곡 수 -->
+    <select id="selectTotalPlayCount" parameterType="int" resultType="int">
+        SELECT COUNT(*)
+          FROM PLAY_LOG_TBL
+         WHERE USER_ID = #{userId}
+    </select>
 
+    <!-- 요일별 재생수 — Chart.js + 가장 활발한 요일 표시용 -->
+	<select id="selectPlayCountByDay" parameterType="int" resultType="com.spring.eze.user.dto.MypageDayStatDTO">
+	    SELECT * FROM (
+	        SELECT TO_NUMBER(TO_CHAR(CREATED_AT, 'D')) AS dayIndex
+	             , COUNT(*) AS playCount
+	          FROM SONG_SCORE_TBL
+	         WHERE USER_ID = #{userId}
+	         GROUP BY TO_CHAR(CREATED_AT, 'D')
+	         ORDER BY dayIndex ASC
+	    )
+	</select>
 
+    <!-- 탑 장르 — 재생횟수 기준 상위 5개 -->
+    <select id="selectTopGenres"
+            parameterType="int"
+            resultType="com.spring.eze.user.dto.MypageGenreStatDTO">
+        SELECT G.NAME                                    AS genreName
+             , COUNT(*)                                  AS playCount
+             , ROUND(COUNT(*) * 100 / SUM(COUNT(*)) OVER(), 0) AS percentage
+          FROM SONG_SCORE_TBL SS
+          JOIN SONGS_TBL      S  ON SS.SONG_ID  = S.SONG_ID
+          JOIN GENRES_TBL     G  ON S.GENRE_ID  = G.GENRE_ID
+         WHERE SS.USER_ID = #{userId}
+         GROUP BY G.NAME
+         ORDER BY playCount DESC
+         FETCH FIRST 5 ROWS ONLY
+    </select> 
+      
+<!-- ────────────────────────────────────────────
+	 내 정보 수정
+     ──────────────────────────────────────────── --> 
+      <!-- 닉네임 수정 -->
+    <update id="updateNickname" parameterType="map">
+        UPDATE USER_TBL
+           SET NICKNAME = #{nickname}
+         WHERE USER_ID  = #{userId}
+    </update>
+
+    <!-- 생년월일, 소개 수정, null인 필드는 UPDATE 제외 — 기존값 유지 -->
+    <update id="updateProfile" parameterType="map">
+        UPDATE PROFILE_TBL
+        <set>
+            UPDATED_AT = SYSDATE,
+            <if test="birthDate != null">BIRTH_DATE = #{birthDate},</if>
+            <if test="bio != null">BIO = #{bio}</if>
+        </set>
+         WHERE USER_ID = #{userId}
+    </update>
+
+    <!-- 프로필 사진 경로 수정
+         파일 자체는 서버 로컬 저장, 경로만 DB에 저장 -->
+    <update id="updatePhotoUrl" parameterType="map">
+        UPDATE PROFILE_TBL
+           SET PHOTO_URL  = #{photoUrl}
+             , UPDATED_AT = SYSDATE
+         WHERE USER_ID    = #{userId}
+    </update>
+
+    <!-- 계정 탈퇴
+         user_tbl CASCADE → profile_tbl 자동 삭제
+         세션 invalidate는 Service에서 처리 -->
+    <delete id="deleteUser" parameterType="int">
+        DELETE FROM USER_TBL
+         WHERE USER_ID = #{userId}
+    </delete>
+      
+      
  </mapper>
 
  
