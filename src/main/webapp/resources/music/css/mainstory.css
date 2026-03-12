@@ -180,11 +180,19 @@
 	.weekly-arrow-btn:focus {
 	    outline: none;
 	}
-	
-	
-	
+
 	/* 프로젝트 내 모든 audio 태그 숨김 (JS로만 제어) */
 	audio {
 	    display: none !important;
 	}
+	
+	.music-main-layout {
+    margin-left: 300px;
+    margin-top: 85px;
+    width: calc(100% - 300px);
+    min-height: calc(100vh - 85px);
+    box-sizing: border-box;
+    overflow-x: hidden;
+    padding: 20px;
+	}	
 	</style>

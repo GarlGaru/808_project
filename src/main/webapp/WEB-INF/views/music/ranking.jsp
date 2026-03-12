@@ -35,25 +35,19 @@
 <link rel="stylesheet" href="${path}/resources/common/style.css">
 
 </head>
-<body>
+	<body class="dark-mode">
+
     <%@ include file="/WEB-INF/views/common/common.jsp" %>
     <%@ include file="/WEB-INF/views/common/header.jsp" %>
 
-    <main class="music-page">
-        <%@ include file="/WEB-INF/views/music/aside.jsp" %>
+    <%@ include file="/WEB-INF/views/music/aside.jsp"%>
 
-        <section class="music-content">
-            <div class="ranking-wrap">
-                <!-- 여기에 랭킹 본문 -->
-                		     
-            </div>
-
-            <%@ include file="/WEB-INF/views/common/footer.jsp" %>
-        </section>
-    </main>
+    <div class="music-main-layout">
+        <%@ include file="/WEB-INF/views/music/mainstory.jsp"%>
+    </div>
 
     <%@ include file="/WEB-INF/views/music/player.jsp" %>
-</body>
+    </body>
 
     <!-- 공통 JS -->
     <script src="${path}/resources/common/js/jquery/jquery-2.2.4.min.js"></script>

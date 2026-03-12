@@ -35,21 +35,18 @@ function loadCategory(genreId){
 	
 </head>
 	<body class="dark-mode">
-	    <%@ include file="/WEB-INF/views/common/common.jsp" %>
-	    <%@ include file="/WEB-INF/views/common/header.jsp" %>
 
-    <!-- 상단 Hero 영역 -->
-	<div class="container music-hero d-flex align-items-center">
+    <%@ include file="/WEB-INF/views/common/common.jsp" %>
+    <%@ include file="/WEB-INF/views/common/header.jsp" %>
 
-		<%@ include file="/WEB-INF/views/music/aside.jsp"%>
-	
-		<%@ include file="/WEB-INF/views/music/mainstory.jsp"%>
-	
-		
-	
-	</div>
+    <%@ include file="/WEB-INF/views/music/aside.jsp"%>
 
-	<%@ include file="/WEB-INF/views/music/player.jsp" %>
+    <div class="music-main-layout">
+        <%@ include file="/WEB-INF/views/music/mainstory.jsp"%>
+    </div>
+
+    <%@ include file="/WEB-INF/views/music/player.jsp" %>
+
 
 <!-- ============================================================================================ -->
 

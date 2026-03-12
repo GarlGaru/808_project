@@ -69,4 +69,20 @@ public class MusicDAOImpl implements MusicDAO {
         param.put("userId", userId);
         return sqlSession.selectOne(NS + "existsSongLike", param);
     }
+    // 랭킹
+    //주간랭킹
+	@Override
+	public List<SongDTO> getWeeklyRanking() {
+		return sqlSession.selectOne(NS + "getWeeklyRanking");
+	}
+	 //오늘의 최고 히트곡
+	@Override
+	public List<SongDTO> getTodayHitSongs() {
+		return sqlSession.selectOne(NS + "getTodayHitSongs");
+	}
+	//장르랭킹
+	@Override
+	public List<SongDTO> getGenreRanking(int genreId) {
+		return sqlSession.selectOne(NS + "getGenreRanking");
+	}
 }
