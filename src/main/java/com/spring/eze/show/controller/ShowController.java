@@ -277,7 +277,16 @@ public class ShowController {
 	public String seat(HttpServletRequest request, HttpServletResponse response, Model model)
 			throws ServletException, IOException {
 		log.info("ShowController - 좌석 선택 화면");
-
+		
+		String showId = request.getParameter("showId");
+		String scheduleId = request.getParameter("scheduleId");
+		
+		System.out.println("showId = " + showId);
+		System.out.println("scheduleId = " + scheduleId);
+		
+		model.addAttribute("scheduleId",scheduleId);
+		model.addAttribute("showId",showId);
+		
 		seatService.getSeatList(request, response, model);
 		return "show/seat";
     }

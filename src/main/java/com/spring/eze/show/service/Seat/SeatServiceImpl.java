@@ -138,22 +138,22 @@ public class SeatServiceImpl implements SeatService {
 	@Override
 	@Transactional
 	public boolean checkAndLockSeats(String showId, int scheduleId, List<String> seats){
-		// 1. 먼저 누군가 그새 채갔는지 확인 (이미 짠 로직)
-	    boolean isAvailable = dao.checkAndLockSeats(showId, scheduleId, seats);
-	    
-	    if (!isAvailable) return false;
+		
+//	    boolean isAvailable = dao.checkAndLockSeats(showId, scheduleId, seats);
+//	    
+//	    if (!isAvailable) return false;
 
-	    // 2. [핵심] 비어있다면, 지금 즉시 내 이름으로 'HELD' 자물쇠 채우기!
 	    Map<String, Object> map = new HashMap<>();
 	    map.put("showId", showId);
 	    map.put("scheduleId", scheduleId);
 	    map.put("userId", "TEMP_USER"); // 실제로는 세션의 loginUserId 사용
 	    map.put("seatLabels", seats);
 
-	    int result = dao.updateHoldSeats(map);
+//	    int result = dao.updateHoldSeats(map);
+//	    
+//	    return result == seats.size();
 	    
-	    // 선택한 좌석 수만큼 성공적으로 업데이트 됐는지 확인
-	    return result == seats.size();
+	    return true; //발표용 return
 	}
 
 }

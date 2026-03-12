@@ -56,25 +56,20 @@ public class SeatDAOImpl implements SeatDAO {
 
 	@Override
 	public boolean checkAndLockSeats(String showId, int scheduleId, List<String> seats) {
-		 for(String seat : seats){
-
+		
 			// 1. 안전하게 주머니(Map)를 직접 만들기
-		        Map<String, Object> paramMap = new HashMap<>();
-		        paramMap.put("showId", showId);
-		        paramMap.put("scheduleId", scheduleId);
-		        paramMap.put("seatLabel", seat);
+		        Map<String, Object> map = new HashMap<>();
+		        map.put("showId", showId);
+		        map.put("scheduleId", scheduleId);
+		        map.put("userId", "TEMP_USER"); // 나중에 세션 userId
+		        map.put("seatLabels", seats);
 
-		        // 2. 만든 주머니를 전달하기
-		        SeatDTO seatInfo = sqlSession.selectOne(
+		       int result = sqlSession.selectOne(
 		            "com.spring.eze.show.dao.Seat.SeatDAO.lockSeat",
-		            paramMap // <--- 새로 만든 안전한 주머니 투입!
+		            map
 		        );
 
-		        if(seatInfo != null){
-		            return false; // 이미 누가 가져갔음
-		        }
-		    }
-		    return true;
+		    return result == seats.size();
 		}
 
 }

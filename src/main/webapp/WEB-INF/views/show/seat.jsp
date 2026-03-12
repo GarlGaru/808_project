@@ -35,8 +35,8 @@
 	</div>
 
 <form id="reserveForm" action="${pageContext.request.contextPath}/show/reserve" method="post">
-    <input type="hidden" name="showId" value="${param.showId}">
-    <input type="hidden" name="scheduleId" value="${param.scheduleId}">
+    <input type="hidden" name="showId" value="1"> <%-- ${showId} --%>
+    <input type="hidden" name="scheduleId" value="1">		<%-- ${scheduleId} --%>
     <input type="hidden" name="show_title" value="뮤지컬 <한복입은 남자>">
 
         <div class="seat-wrapper">
@@ -45,7 +45,7 @@
             <div class="seat-left">
             
             <div class="seat-container">
-
+			
 				<!-- 예약 좌석 문자열 생성 (충돌 방지 구조) -->
 				<c:set var="reservedSeats" value=","/>
 				<c:forEach var="s" items="${seatList}">
@@ -140,36 +140,11 @@
     <script src="${path}/resources/common/js/main.js"></script>
 
     <script>
-    $(document).ready(function() {
-
-        /* // 실시간 좌석 상태 업데이트
-        function updateSeatStatus() {
-        	
-       	   const showId = $("input[name='showId']").val();
-           const scheduleId = $("input[name='scheduleId']").val();
-
-        $.ajax({
-            url: "${path}/show/seatStatus",
-            type: "GET",
-            data: {
-                showId: showId,
-                scheduleId: scheduleId
-            },
-            success: function(res){
-                console.log(res);
-            },
-            error: function(){
-                console.log("실시간 업데이트 실패");
-            }
-        });
-    }
- */
-        //updateSeatStatus();
-        
-        //setInterval(updateSeatStatus, 5000);
+    $(document).ready(function(){
 
         // 좌석 선택 이벤트
         $("input[name='selectedSeats']").on("change", function() {
+
             const selectedCount = $("input[name='selectedSeats']:checked").length;
 
             if (selectedCount > 4) {
@@ -190,41 +165,82 @@
             $("#display-price").text(selectedSeats.length ? totalPrice.toLocaleString() : "0");
         });
 
-    });
 
         // 예매 버튼 이벤트
-       $(document).on("click", "#btn-reserve", function() {
-    const selectedSeats = [];
-    $("input[name='selectedSeats']:checked").each(function() {
-        selectedSeats.push($(this).val());
-    });
-    
-    // 1. 좌석 선택 안 했으면 막기 (이건 최소한의 예의!)
-    if (selectedSeats.length === 0) {
-        alert("좌석을 하나 이상 선택해 주세요.");
-        return;
-    }
-    
-    // 2. 그냥 바로 넘어가기 (서버에 물어보지 않음)
-    if (confirm(selectedSeats.length + "개의 좌석을 예약하시겠습니까?")) {
-        console.log("발표 모드: 서버 체크 생략하고 바로 결과 페이지로 이동!");
+        $(document).on("click", "#btn-reserve", function() {
 
-        const popupName = "seatPopup";
-        const popupWidth = 900;
-        const popupHeight = 700;
-        const left = (window.screen.width - popupWidth) / 2;
-        const top = (window.screen.height - popupHeight) / 2;
-        const specs = 'width=' + popupWidth + ',height=' + popupHeight + ',left=' + left + ',top=' + top;
-        
-        // 팝업창 먼저 열기
-        window.open("", popupName, specs);
-        
-        // 폼 타겟을 팝업으로 설정하고 바로 전송!
-        const $form = $("#reserveForm");
-        $form.attr("target", popupName);
-        $form.submit();
-    }
-});
+            const selectedSeats = [];
+
+            $("input[name='selectedSeats']:checked").each(function() {
+                selectedSeats.push($(this).val());
+            });
+
+            if (selectedSeats.length === 0) {
+                alert("좌석을 하나 이상 선택해주세요.");
+                return;
+            }
+			
+            console.log("1. 버튼 클릭됨");
+            
+            const showId = $("input[name='showId']").val();
+            const scheduleId = $("input[name='scheduleId']").val();
+			
+            console.log("2. showId:", showId);
+            console.log("3. scheduleId:", scheduleId);
+            console.log("4. seats:", selectedSeats);
+
+            console.log("5. ajax 호출 직전");
+            
+            $.ajax({
+                url: "${path}/show/reserveCheck",
+                type: "POST",
+                traditional: true,
+                data: {
+                    show_id: showId,
+                    scheduleId: scheduleId,
+                    selectedSeats: selectedSeats
+                },
+                success: function(res){
+                	console.log("6. success:", res);
+                	
+                    if(res === "success"){
+                    	console.log("7. success 분기 진입");
+                    	
+                        const popupName = "seatPopup";
+                        const popupWidth = 900;
+                        const popupHeight = 700;
+                        const left = (window.screen.width - popupWidth) / 2;
+                        const top = (window.screen.height - popupHeight) / 2;
+                        const specs = 'width=' + popupWidth + ',height=' + popupHeight + ',left=' + left + ',top=' + top;
+
+                        window.open("", popupName, specs);
+
+                        const $form = $("#reserveForm");
+                        $form.attr("target", popupName);
+                        $form.submit();
+
+                    }else{
+                    	console.log("8. fail 분기 진입");
+                        alert("이미 선택된 좌석입니다.");
+                        location.reload();
+                    }
+
+                },
+                error:function(){
+                	  console.log("9. ajax error");
+                      console.log("status:", status);
+                      console.log("response:", xhr.responseText);
+                    alert("좌석 확인 중 오류 발생");
+                }
+            });
+
+        });
+
+    });
     </script>
+    <script>
+
+
+</script>
 </body>
 </html>

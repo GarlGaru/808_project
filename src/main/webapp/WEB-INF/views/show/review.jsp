@@ -26,10 +26,7 @@
     <!-- ##### Hero Area Start ##### -->
 	<h2>공연 리뷰</h2>
 	
-	<select id="sortSelect">
-	<option value="latest">최신순</option>
-	<option value="rating">평점순</option>
-	</select>
+	
 	
 	<div>
 	평균 별점 : ⭐ <span id="avgRating">0</span>
@@ -54,7 +51,7 @@
 	
 	<br><br>
 	
-	<textarea id="content" rows="4" cols="50"></textarea>
+	<textarea id="content" rows="4" cols="50" placeholder="내용을 입력하세요."></textarea>
 	
 	<br><br>
 	
@@ -63,10 +60,15 @@
 	<hr>
 	
 	</div>
+	<hr>
 	
-	<h3>리뷰 목록</h3>
+	<h3 style="margin-top: 40px;">리뷰 목록</h3>
+		<select id="sortSelect">
+		<option value="latest">최신순</option>
+		<option value="rating">평점순</option>
+		</select>
 	
-	
+	<hr>
 	<div id="reviewList"></div>
 	<br>
 	
@@ -109,8 +111,7 @@
     	if(!loginUserId){
     		$("#writeArea").html(
     		` <p style="color:gray; margin-top:20px;"> 로그인이 필요합니다. </p>
-    		<buttom class="btn btn-sm btn-outline-light" onclick="location.href='${path}/user/authModal'">
-    		로그인 하러가기 </button>`
+    		`
     		);
     	}
     	
@@ -228,7 +229,7 @@
     			}
     			else if(res === "login_required"){
     				alert("로그인 후 이용 가능합니다.");
-    				location.href = path + "/user/authModal";
+    				openAuthModal();
     			}
     			else{
     				alert("리뷰 저장 실패");
@@ -351,7 +352,7 @@
     			}
     			else if(res==="login_required"){
     				alert("로그인 후 이용이 가능합니다.");
-    				location.href = path + "/user/authModal";
+    				openAuthModal();
     			}else {
     				alert("삭제 실패");
     			}

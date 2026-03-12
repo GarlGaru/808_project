@@ -196,6 +196,27 @@
 	   //예매하기 버튼 활성화
 	   // $('#bookbtn').prop('disabled', false);
    });
+   
+// 예매하기 버튼 클릭 이벤트
+   $(document).on('click', '.btn-booking', function() {
+       const showId = $('#showId').val(); // hidden input에서 가져옴
+      
+       const scheduleId = $('.time-btn.active').data('schedule-id'); 
+
+       
+       if (!scheduleId) {
+           alert("날짜를 선택하고 회차(시간)를 클릭해주세요!");
+           return;
+       }
+
+       // 2. 팝업창 띄우기
+       const contextPath = $('#contextPath').val();
+       const url = contextPath + "/show/seat?showId=" + showId + "&scheduleId=" + scheduleId;
+       const popupName = "seatPopup";
+       const specs = "width=1100,height=850,top=50,left=100,scrollbars=yes";
+       
+       window.open(url, popupName, specs);
+   });
    </script>
 </body>
 </html>
