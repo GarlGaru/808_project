@@ -59,7 +59,37 @@
 
         <!-- 중분류 + 정렬 -->
         <div class="filter-sort-wrap">
-
+			 <c:if test="${currentCategory == 'concert'}">
+		        <div class="sub-filter-line" id="sub-category-tabs">
+		            <button type="button" class="sub-filter-btn ${subCategory == 'all' ? 'active' : ''}"
+		                    onclick="loadSubCategory('all', this)">전체</button>
+		
+		            <button type="button" class="sub-filter-btn ${subCategory == 'pop' ? 'active' : ''}"
+		                    onclick="loadSubCategory('pop', this)">대중음악</button>
+		
+		            <button type="button" class="sub-filter-btn ${subCategory == 'classic' ? 'active' : ''}"
+		                    onclick="loadSubCategory('classic', this)">서양음악(클래식)</button>
+		
+		            <button type="button" class="sub-filter-btn ${subCategory == 'combination' ? 'active' : ''}"
+		                    onclick="loadSubCategory('combination', this)">복합</button>
+		
+		            <button type="button" class="sub-filter-btn ${subCategory == 'dance' ? 'active' : ''}"
+		                    onclick="loadSubCategory('dance', this)">무용(서양/한국무용)</button>
+		
+		            <button type="button" class="sub-filter-btn ${subCategory == 'circus' ? 'active' : ''}"
+		                    onclick="loadSubCategory('circus', this)">서커스/마술</button>
+		
+		            <button type="button" class="sub-filter-btn ${subCategory == 'gugak' ? 'active' : ''}"
+		                    onclick="loadSubCategory('gugak', this)">한국음악(국악)</button>
+		        </div>
+		    </c:if>
+		
+		    <div class="sort-wrap ${currentCategory != 'concert' ? 'sort-only' : ''}">
+		        <button type="button" class="sort-btn active">인기순</button>
+		        <button type="button" class="sort-btn">공연임박순</button>
+		        <button type="button" class="sort-btn">최신순</button>
+		    </div>
+		</div>
            <%--  <c:if test="${currentCategory == 'concert'}"> --%>
                 <%-- <div class="sub-category-wrap" id="sub-category-tabs">
                     <button class="sub-tab-btn ${subCategory == 'all' ? 'active' : ''}" onclick="loadSubCategory('all', this)">전체</button>
@@ -72,7 +102,7 @@
                 </div> --%>
          <%--    </c:if> --%>
          
-         	<div class="sub-filter-line" id="sub-category-tabs">
+         <%-- 	<div class="sub-filter-line" id="sub-category-tabs">
 			    <button type="button" class="sub-filter-btn ${subCategory == 'all' ? 'active' : ''}" onclick="loadSubCategory('all', this)">전체</button>
 			    <button type="button" class="sub-filter-btn ${subCategory == 'pop' ? 'active' : ''}" onclick="loadSubCategory('pop', this)">대중음악</button>
 			    <button type="button" class="sub-filter-btn ${subCategory == 'classic' ? 'active' : ''}" onclick="loadSubCategory('classic', this)">서양음악(클래식)</button>
@@ -80,15 +110,14 @@
 			    <button type="button" class="sub-filter-btn ${subCategory == 'dance' ? 'active' : ''}" onclick="loadSubCategory('dance', this)">무용(서양/한국무용)</button>
 			    <button type="button" class="sub-filter-btn ${subCategory == 'circus' ? 'active' : ''}" onclick="loadSubCategory('circus', this)">서커스/마술</button>
 			    <button type="button" class="sub-filter-btn ${subCategory == 'gugak' ? 'active' : ''}" onclick="loadSubCategory('gugak', this)">한국음악(국악)</button>
-			</div>
+			</div> --%>
 
 
-            <div class="sort-wrap">
+            <!-- <div class="sort-wrap">
                 <button type="button" class="sort-btn active">인기순</button>
                 <button type="button" class="sort-btn">공연임박순</button>
                 <button type="button" class="sort-btn">최신순</button>
-            </div>
-        </div>
+            </div> -->
 
         <!-- 카드 리스트 -->
         <div id="showList" class="row show-card-list">

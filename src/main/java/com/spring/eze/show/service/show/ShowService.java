@@ -22,6 +22,9 @@ public interface ShowService {
 	public void getScheduleByDate(String showId, String playDate, Model model)
 		throws ServletException, IOException;
 	
-	public void getTabContent (String showId, String tabName, Model model)
+	public void getTabContent(String showId, String tabName, Model model)
 		throws ServletException, IOException;
+	
+	public void getShowRanking(HttpServletRequest request, HttpServletResponse resposne, Model model)
+			throws ServletException, IOException;
 }

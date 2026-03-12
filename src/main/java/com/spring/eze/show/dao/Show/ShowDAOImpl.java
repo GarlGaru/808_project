@@ -70,4 +70,12 @@ public class ShowDAOImpl implements ShowDAO{
 		return sqlSession.selectList("com.spring.eze.show.dao.Show.ShowDAO.getShowSchedule", map2);
 	}
 
+	// 랭킹 페이지
+	@Override
+	public List<ShowDTO> getShowRanking(String genre) {
+		System.out.println("ShowDAOImpl - getShowRanking()");
+		
+		return sqlSession.selectList("com.spring.eze.show.dao.Show.ShowDAO.getShowRanking", genre);
+	}
+
 }

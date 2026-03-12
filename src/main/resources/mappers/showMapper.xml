@@ -168,6 +168,21 @@
 	   WHERE  show_id = #{showId}
 	     AND  TO_CHAR(play_date, 'YYYY-MM-DD') = #{playDate}	
 	</select>
+	
+	<!-- 랭킹페이지 -->
+	<select id="getShowRanking" parameterType="String" resultType="com.spring.eze.show.dto.Show.ShowDTO">
+		SELECT
+			show_id AS showId,
+			title,
+			start_date AS startDate,
+			end_date AS endDate,
+			venue_name AS venueName,
+			poster_url AS posterUrl,
+			genre
+	   FROM show_tbl
+	  WHERE genre = #{genre}
+	ORDER BY show_id DESC
+	</select>
  </mapper> 
 
 

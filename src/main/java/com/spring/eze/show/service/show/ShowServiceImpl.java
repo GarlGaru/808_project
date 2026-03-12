@@ -125,4 +125,22 @@ public class ShowServiceImpl implements ShowService{
 		model.addAttribute("dto", dto);
 	}
 
+	// 공연 랭킹
+	@Override
+	public void getShowRanking(HttpServletRequest request, HttpServletResponse resposne, Model model)
+			throws ServletException, IOException {
+		System.out.println("ShowServiceImpl - getTabContent()");
+		
+		String genre = request.getParameter("category");
+		
+		if(genre == null || genre.trim().equals("")) {
+			genre = "concert";
+		}
+		
+		List<ShowDTO> list = dao.getShowRanking(genre);
+		
+		model.addAttribute("list", list);
+		model.addAttribute("currentCategory", genre);
+	}
+
 }

@@ -1,0 +1,42 @@
+@charset "UTF-8";
+.ranking-section {
+    width: 1200px;
+    margin: 0 auto;
+    color: #fff;
+}
+
+.ranking-title {
+    font-size: 36px;
+    font-weight: 700;
+    margin-bottom: 30px;
+}
+
+.ranking-tab-box {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 30px;
+}
+
+.ranking-tab {
+    padding: 12px 28px;
+    border: 1px solid #ff8c00;
+    border-radius: 30px;
+    background-color: transparent;
+    color: #fff;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.ranking-tab.active {
+    background-color: #fff;
+    color: #111;
+    font-weight: 700;
+    border-color: #ff8c00;
+}
+
+#rankingContent {
+    min-height: 250px;
+    padding: 30px;
+    border-radius: 20px;
+    background-color: rgba(255,255,255,0.05);
+}

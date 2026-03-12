@@ -23,4 +23,8 @@ public interface ShowDAO {
 	
 	//날짜,회차 리스트만 가져오도록 
 	public List<ShowDTO> getShowSchedule(@Param("showID") String showId, @Param("playDate") String playDate);
+
+	//랭킹 페이지
+	public List<ShowDTO> getShowRanking(String genre);
+	
 }

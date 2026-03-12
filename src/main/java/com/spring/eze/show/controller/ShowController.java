@@ -124,6 +124,27 @@ public class ShowController {
     return "show/scheduleTimeList"; 
 	}
 	
+	// [랭킹] ---------------
+	@RequestMapping("/ranking")
+	public String ranking(HttpServletRequest request, HttpServletResponse response, Model model)
+		   throws ServletException, IOException {
+        
+        log.info("ShowController - showRanking()");
+        
+        showservice.getShowRanking(request, response, model);
+        return "show/ranking";
+    }
+	
+	// [랭킹] Ajax 용 ---------------
+	@RequestMapping("/rankingAjax")
+	public String rankingAjax(HttpServletRequest request, HttpServletResponse response, Model model)
+		   throws ServletException, IOException {
+        
+        log.info("ShowController - rankingAjax()");
+        
+        showservice.getShowRanking(request, response, model);
+        return "show/rankingContent";
+    }
 
    //후기 목록 조회
    @RequestMapping("/reviewList")
@@ -161,8 +182,6 @@ public class ShowController {
      return "redirect:/show/reviewList";
   }
    
-	// 좌석맵 조회(회차별)
-
 	
    // [좌석] -------------
    // 좌석맵 조회(회차별)
@@ -183,13 +202,13 @@ public class ShowController {
 		return seatService.getSeatStatus(showId, scheduleId);
 	}
 	
-    @RequestMapping("/seat-detail")
-    public String seatDetail(HttpServletRequest request, HttpServletResponse response, Model model)
-            throws ServletException, IOException {
-        log.info("seatDetail");
-
-        return "show/show-detail";
-    }
+//    @RequestMapping("/seat-detail")
+//    public String seatDetail(HttpServletRequest request, HttpServletResponse response, Model model)
+//            throws ServletException, IOException {
+//        log.info("seatDetail");
+//
+//        return "show/show-detail";
+//    }
 	
 
 	@PostMapping("/reserve")

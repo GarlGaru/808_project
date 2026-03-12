@@ -78,6 +78,7 @@
             <li class="active" data-tab="info">상세정보</li>
             <li data-tab="casting">캐스팅</li>
             <li data-tab="venue">공연장 정보</li>
+            <li data-tab="review">공연 후기</li>
             <li data-tab="preview">좌석 프리뷰</li>
         </ul>
 
