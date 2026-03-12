@@ -1,0 +1,144 @@
+/* =========================
+   music.jsp 전용 레이아웃
+   ========================= */
+.header-area .classy-nav-container .classynav ul li a,
+.header-area .classy-nav-container .classynav ul li a span,
+.header-area .classy-nav-container .classynav > ul > li > a {
+    font-size: 18px !important;
+    font-weight: 800 !important;
+    line-height: 96px !important;
+    height: 96px !important;
+    display: inline-flex !important;
+    align-items: center !important;
+}
+html, body {
+    margin: 0;
+    padding: 0;
+    background: #000;
+    overflow-x: hidden;
+}
+
+/* 음악 페이지 전체 */
+.music-layout-page {
+    min-height: 100vh;
+    background: #000;
+}
+
+/* 사이드바 + 메인영역 가로 배치 */
+.music-layout-content {
+    display: flex;
+    width: 100%;
+    min-height: calc(100vh - 86px);
+    padding-top: 86px;     /* 헤더 높이만큼 아래로 밀기 */
+    padding-bottom: 110px; /* 하단 플레이어 높이만큼 여백 */
+    box-sizing: border-box;
+}
+
+/* 왼쪽 사이드바 영역 */
+.music-layout-aside {
+    width: 360px;
+    min-width: 360px;
+    max-width: 360px;
+    flex-shrink: 0;
+    background: #000;
+}
+
+/* 오른쪽 메인 영역 */
+.music-layout-main {
+    flex: 1;
+    min-width: 0;
+    background: #111;
+    padding: 24px 24px 40px 24px;
+    overflow-x: hidden;
+}
+
+@media (max-width: 1400px) {
+    .music-layout-aside {
+        width: 320px;
+        min-width: 320px;
+        max-width: 320px;
+    }
+}
+
+@media (max-width: 1100px) {
+    .music-layout-aside {
+        width: 280px;
+        min-width: 280px;
+        max-width: 280px;
+    }
+}
+
+@media (max-width: 991px) {
+    .music-layout-content {
+        flex-direction: column;
+    }
+
+    .music-layout-aside {
+        width: 100%;
+        min-width: 100%;
+        max-width: 100%;
+    }
+
+    .music-layout-main {
+        width: 100%;
+        padding: 16px 12px 24px 12px;
+    }
+    /* =========================
+   공통 헤더 크기 복구
+   ========================= */
+	
+	/* 헤더 전체 높이 확보 */
+	.header-area {
+	    position: fixed !important;
+	    top: 0 !important;
+	    left: 0 !important;
+	    width: 100% !important;
+	    min-height: 86px !important;
+	    z-index: 1000 !important;
+	    background: #000 !important;
+	}
+	
+	/* 헤더 내부 컨테이너 높이 확보 */
+	.header-area .classy-nav-container,
+	.header-area .classy-navbar,
+	.header-area .container {
+	    min-height: 86px !important;
+	    height: 86px !important;
+	    display: flex;
+	    align-items: center;
+	}
+	
+	/* 로고 이미지 크기 복구 */
+	.header-area .nav-brand img,
+	.header-area .logo img,
+	.header-area img {
+	    max-height: 62px !important;
+	    width: auto !important;
+	    display: block;
+	}
+	
+	/* 메뉴 글자 크기 복구 */
+	.header-area a,
+	.header-area .nav-link,
+	.header-area .classynav ul li a {
+	    font-size: 400px !important;
+	    line-height: 1.4 !important;
+	    font-weight: 700 !important;
+	}
+	
+	/* 헤더 안 리스트 세로 정렬 */
+	.header-area .classynav ul,
+	.header-area .classynav ul li {
+	    display: flex;
+	    align-items: center;
+	}
+	
+	/* 혹시 padding이 줄어든 경우 복구 */
+	.header-area .classynav ul li a {
+	    padding-top: 0 !important;
+	    padding-bottom: 0 !important;
+	    height: 86px !important;
+	    display: flex !important;
+	    align-items: center !important;
+	}
+}
