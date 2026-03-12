@@ -23,7 +23,7 @@
 .slider {position: relative;}
 .track {
 	display: flex;
-	gap: 26px;
+	gap: 10px;
 	overflow-x: auto;
 	scroll-behavior: smooth;
 	padding:15px 44px;
