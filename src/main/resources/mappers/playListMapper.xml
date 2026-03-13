@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.spring.eze.playlist.dao.PlaylistDAO">
+
+    <resultMap id="PlaylistDTO" type="com.spring.eze.playlist.dto.PlaylistDTO">
+        <id property="playlistId" column="PLAYLIST_ID"/>
+        <result property="userId" column="USER_ID"/>
+        <result property="title" column="TITLE"/>
+        <result property="listType" column="LIST_TYPE" javaType="com.spring.eze.playlist.service.PlaylistType"/>
+    </resultMap>
+
+    <resultMap id="PlaylistEleDTO" type="com.spring.eze.playlist.dto.PlaylistEleDTO">
+        <id property="eleId" column="ELE_ID"/>
+        <result property="playlistId" column="PLAYLIST_ID"/>
+        <result property="songId" column="SONG_ID"/>
+    </resultMap>
+
+    <select id="getPlaylist" parameterType="int" resultMap="PlaylistEleDTO">
+        SELECT ELE_ID, PLAYLIST_ID, SONG_ID
+        FROM PLAYLIST_ELE_TBL
+        WHERE PLAYLIST_ID = #{playListId}
+    </select>
+
+
+    <select id="getPlaylistAll" parameterType="int" resultMap="PlaylistDTO">
+        SELECT PLAYLIST_ID, TITLE
+        FROM PLAYLISTS_TBL
+        WHERE USER_ID = #{userId}
+    </select>
+
+    <insert id="createPlaylist" parameterType="com.spring.eze.playlist.dto.PlaylistDTO">
+        INSERT INTO PLAYLISTS_TBL (PLAYLIST_ID, USER_ID, TITLE, LIST_TYPE)
+        SELECT
+            (SELECT NVL(MAX(PLAYLIST_ID), 0) + 1 FROM PLAYLISTS_TBL),
+            #{userId},
+            #{title},
+            #{listType)
+        FROM DUAL
+        WHERE NOT EXISTS (
+            SELECT 1
+            FROM PLAYLISTS_TBL
+            WHERE USER_ID = #{userId}
+                AND LIST_TYPE = #{listType}
+            )
+    </insert>
+
+    <select id="checkPlaylistExist" resultType="int" parameterType="com.spring.eze.playlist.dto.PlaylistDTO">
+        SELECT CASE
+            WHEN EXISTS (
+                SELECT 1
+                FROM PLAYLISTS_TBL
+                WHERE USER_ID = #{userId}
+                AND TITLE = #{title}
+            )
+            THEN 1 ELSE 0
+            END result
+        FROM dual
+    </select>
+
+    <select id="getUniquePlaylist" resultMap="PlaylistDTO">
+        SELECT *
+        FROM PLAYLISTS_TBL
+        WHERE USER_ID = #{userId}
+        AND LIST_TYPE = #{listType}
+    </select>
+
+
+</mapper>

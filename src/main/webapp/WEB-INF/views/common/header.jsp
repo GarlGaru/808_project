@@ -2,6 +2,8 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ include file="/WEB-INF/views/common/setting.jsp" %>
 <header class="header-area">
+
+
 	<div class="oneMusic-main-menu">
 		<div class="classy-nav-container breakpoint-off">
 			<div class="container">
@@ -24,6 +26,9 @@
 								<li><a href="${path}/main">Home</a></li>
 								<li><a href="${path}/music">Music</a></li>
 								<li><a href="${path}/show">Show</a></li>
+								 <li>
+							        <a href="javascript:void(0);" onclick="openSubscribeModal()">Subscribe</a>
+							    </li>
 								<c:if test="${sessionScope.loginUser.nickname == 'admin'}">
 									<li><a href="${path}/admin">ADMIN</a></li>
 								</c:if>
@@ -60,6 +65,9 @@
 		</div>
 	</div>
 </header>
+
+<jsp:include page="/WEB-INF/views/common/subscribeModal.jsp"/>
+<script src="${path}/resources/common/js/subscribe.js"></script>
 <!-- ##### Header Area End ##### -->
 
 <%-- 로그인/회원가입, 마이페이지 --%>

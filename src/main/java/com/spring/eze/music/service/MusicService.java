@@ -7,25 +7,37 @@ import com.spring.eze.music.dto.SongDTO;
 
 public interface MusicService {
 
-    // 메인 곡 리스트 (인기순)
-    List<SongDTO> getSongList();
 
-    // 곡 상세
-    SongDTO getSongDetail(int songId);
+    
+    //==========================================
+    //주간 랭킹
+    public List<SongDTO> getweeklyRanking();
+    
+    //오늘의 히트송
+    public List<SongDTO> getTodayHitSongs();
+    
+    //장르랭킹
+    public List<SongDTO> getGenreRanking(int genreId);
 
-    // 유사 곡 리스트 (같은 장르, 자기 자신 제외)
-    List<SongDTO> getSimilarSongs(Map<String, Object> param);
+    //==========================================
 
-    // 검색 (제목 + 아티스트)
-    List<SongDTO> searchSongs(String keyword);
 
-    // 재생 로그 기록
-    void addPlayLog(int songId, int userId);
+    // 재생 시작 점수
+    public void addPlayScore(int songId, int userId);
 
-    // 좋아요 토글 (true → 좋아요, false → 취소)
-    void addLike(int songId, int userId);
+    // 일정 시간 이상 재생 점수
+    public void addIntervalScore(int songId, int userId);
 
-    void removeLike(int songId, int userId);
+    // 좋아요 점수
+    public void addLikeScore(int songId, int userId);
+    
+    
+    //==========================================
+    public SongDTO getSongDetail(int songId);
 
-    boolean isLikedByUser(int songId, int userId);
+    public List<SongDTO> getSimilarSongs(Map<String, Object> param);
+    
+    //노래연결
+    public String getSongPath(int songId);
+   
 }

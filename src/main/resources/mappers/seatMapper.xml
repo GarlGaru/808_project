@@ -3,26 +3,94 @@
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
  <mapper namespace="com.spring.eze.show.dao.Seat.SeatDAO">  <!-- namespace="패키지명.인터페이스" -->
-<!--	<resultMap id="seatMap" type="com.spring.eze.show.dto.Seat.SeatDTO">-->
-<!--		<id property="id" column="id"/>-->
-<!--		<result property="showMe" column="show_me"/>-->
-<!--	</resultMap>-->
 
-<!--	<select id="selectSeatList" parameterType="map" resultType="com.spring.eze.show.dto.Seat.SeatDTO">-->
-<!--	SELECT-->
-<!--       seat_id,-->
-<!--       show_id,-->
-<!--       schedule_id,-->
-<!--       user_id,-->
-<!--       res_seat_label,-->
-<!--       seat_label,-->
-<!--       seat_grade,-->
-<!--       seat_status,-->
-<!--       hold_at-->
-<!--   FROM seat_tbl-->
-<!--   WHERE show_id = #{show_id}-->
-<!--     AND schedule_id = #{schedule_id}-->
-<!--   ORDER BY seat_label-->
-<!--	</select>-->
+	<resultMap id="seatMap" type="com.spring.eze.show.dto.Seat.SeatDTO">
+        <id property="seatId" column="seat_id"/>
+        <result property="showId" column="show_id"/>
+        <result property="scheduleId" column="schedule_id"/>
+        <result property="userId" column="user_id"/>
+        <result property="resSeatLabel" column="res_seat_label"/>
+        <result property="seatLabel" column="seat_label"/>
+        <result property="seatGrade" column="seat_grade"/>
+        <result property="seatStatus" column="seat_status"/>
+        <result property="holdAt" column="hold_at"/>
+    </resultMap>
+	
+	<select id="selectSeatList" parameterType="map" resultMap="seatMap">
+	SELECT 
+		seat_id,
+		show_id,
+		schedule_id,
+		user_id,
+		res_seat_label,
+		seat_label,
+		seat_grade,
+		seat_status,
+		hold_at
+	FROM seat_tbl
+   WHERE show_id = #{showId, jdbcType=VARCHAR}
+     AND schedule_id = #{scheduleId, jdbcType=VARCHAR}
+   ORDER BY seat_label
+	</select>
 
+	<update id="updateHoldSeats">
+		UPDATE seat_tbl
+		SET seat_status = 'HELD',
+			user_id = #{userId},
+            hold_at = SYSDATE
+        WHERE show_id = #{showId}
+          AND schedule_id = #{scheduleId}
+          AND seat_label IN 
+          <foreach collection="seatLabels" item="label" open="(" separator="," close=")">
+              #{label}
+          </foreach>
+          AND (seat_status = 'AVAILABLE' OR (seat_status = 'HELD' AND hold_at &lt; SYSDATE - (5/1440)))
+    </update>
+    
+    <update id="updateReleaseExpiredSeats">
+    	UPDATE seat_tbl
+    	SET seat_status = 'AVAILABLE',
+    		user_id = NULL,
+    		hold_at = NULL
+    	WHERE seat_status = 'HELD'
+    	  AND hold_at &lt; SYSDATE - (5/1440)
+    </update>
+
+	<update id="updateReleaseSeats">
+		UPDATE seat_tbl
+		SET seat_status = 'AVAILABLE',
+			user_id = NULL,
+			hold_at = NULL
+		WHERE show_id = #{showId}
+		  AND schedule_id = #{scheduleId}
+		  AND seat_status = 'HELD'
+		  AND seat_label IN
+		  <foreach collection="seatLabels" item="label" open="(" separator=", " close=")">
+		  	#{label}
+		  </foreach>
+	</update>
+	
+	<select id="selectSeatStatus" parameterType="map" resultMap="seatMap">
+		SELECT seat_label,
+			   seat_status
+		FROM seat_tbl
+		WHERE show_id = #{showId}
+		AND schedule_id = #{scheduleId, jdbcType=VARCHAR}
+		AND seat_status IN ('HELD', 'RESERVED')
+	</select>
+	
+	<select id="lockSeat" resultType="com.spring.eze.show.dto.Seat.SeatDTO">
+		SELECT 
+		seat_label as seatLabel,
+		seat_id as seatId,
+		seat_status as seatStatus
+		FROM seat_tbl
+		WHERE show_id=#{showId, jdbcType=VARCHAR}
+		AND schedule_id = #{scheduleId, jdbcType=INTEGER}
+		AND seat_label = #{seatLabel, jdbcType=VARCHAR}
+		AND seat_status IN ('HELD', 'RESERVED')
+		FOR UPDATE
+	</select>
+	
+	
  </mapper>

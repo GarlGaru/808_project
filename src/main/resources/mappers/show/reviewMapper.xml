@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.spring.eze.show.dao.review.ReviewDAO">
+
+    <!-- ========================= -->
+    <!-- 1. ResultMap -->
+    <!-- ========================= -->
+    <resultMap id="reviewMap" type="com.spring.eze.show.dto.review.ReviewDTO">
+        <id property="reviewId" column="review_id"/>
+        <result property="userNum" column="user_id"/>
+        <result property="showId" column="show_id"/>
+        <result property="rating" column="rating"/>
+        <result property="content" column="content"/>
+        <result property="createdAt" column="created_at"/>
+
+        <!-- JOIN 컬럼 -->
+        <result property="nickname" column="nickname"/>
+        <result property="concertTitle" column="title"/>
+    </resultMap>
+	
+
+    <!-- ========================= -->
+    <!-- 2. 후기 전체 목록 -->
+    <!-- ========================= -->
+    <select id="getReviewPaging" resultMap="reviewMap">
+        SELECT * 
+        FROM (
+        	SELECT
+			  r.review_id,
+			  r.user_id,
+			  r.nickname,
+			  r.rating,
+			  r.content,
+			  r.created_at,
+			  ROW_NUMBER() OVER(
+			  
+			  <choose>
+			  	<when test="sort == 'rating'">
+			  	ORDER BY r.rating DESC
+			  	</when>
+			  
+			  <otherwise>ORDER BY r.created_at DESC</otherwise>
+			  </choose>
+			  ) rn
+			  FROM review_tbl r
+			  WHERE r.show_id = #{showId}       
+        )
+        WHERE rn BETWEEN #{start} AND #{end}
+        
+    </select>
+
+
+
+    <!-- ========================= -->
+    <!-- 4. 전체 개수 -->
+    <!-- ========================= -->
+    <select id="getTotalCount" resultType="int">
+        SELECT COUNT(*) FROM review_tbl
+    </select>
+
+
+    <!-- ========================= -->
+    <!-- 6. 후기 작성 -->
+    <!-- ========================= -->
+    <insert id="insertReview">
+            
+        INSERT INTO review_tbl (
+            review_id,
+            user_id,
+            show_id,
+            rating,
+            content,
+            nickname,
+            created_at
+        )
+        VALUES (
+            review_seq.NEXTVAL,
+            #{userNum},
+            #{showId},
+            #{rating},
+            #{content},
+             #{nickname},
+            SYSDATE
+        )
+    </insert>
+	
+
+	<delete id="deleteReview">
+	DELETE FROM review_tbl
+	WHERE review_id = #{reviewId}
+	AND user_id = #{userNum}
+	</delete>
+
+    <!-- ========================= -->
+    <!-- 7. 후기 수정 -->
+    <!-- ========================= -->
+    <update id="updateReview">
+        UPDATE review_tbl
+        SET
+            content = #{content},
+            rating = #{rating}
+        WHERE review_id = #{reviewId}
+        AND user_id = #{userNum}
+    </update>
+
+
+  <select id="getAvgRating" resultType="double">
+  SELECT
+  NVL(ROUND(AVG(rating),1),0)
+  FROM review_tbl
+  WHERE show_id = #{showId}
+  
+  </select>
+
+
+
+</mapper>

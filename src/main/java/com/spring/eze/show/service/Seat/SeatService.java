@@ -1,12 +1,15 @@
 package com.spring.eze.show.service.Seat;
 
 import java.io.IOException;
+import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.ui.Model;
+
+import com.spring.eze.show.dto.Seat.SeatDTO;
 
 public interface SeatService {
 	
@@ -26,5 +29,9 @@ public interface SeatService {
     public void cancelSelectedSeats(HttpServletRequest request, HttpServletResponse response, Model model)
         throws ServletException, IOException;
 
+    
+    public List<SeatDTO> getSeatStatus(String showId, int scheduleId);
+    
+    public boolean checkAndLockSeats(String showId, int scheduleId, List<String> seats);
 }
 

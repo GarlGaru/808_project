@@ -1,12 +1,12 @@
 package com.spring.eze.music.service;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.spring.eze.common.GlobalVariableHolder;
 import com.spring.eze.music.dao.MusicDAO;
 import com.spring.eze.music.dto.SongDTO;
 
@@ -17,10 +17,34 @@ public class MusicServiceImpl implements MusicService {
     private MusicDAO musicDAO;
 
     @Override
-    public List<SongDTO> getSongList() {
-        return musicDAO.getSongList();
+    public List<SongDTO> getweeklyRanking() {
+        return musicDAO.getWeeklyRanking();
     }
 
+    @Override
+    public List<SongDTO> getTodayHitSongs() {
+        return musicDAO.getTodayHitSongs();
+    }
+
+    @Override
+    public List<SongDTO> getGenreRanking(int genreId) {
+        return musicDAO.getGenreRanking(genreId);
+    }
+
+    @Override
+    public void addPlayScore(int songId, int userId) {
+        musicDAO.insertSongScore(songId, userId, GlobalVariableHolder.GLB_SCORE_PLAY);
+    }
+
+    @Override
+    public void addIntervalScore(int songId, int userId) {
+        musicDAO.insertSongScore(songId, userId, GlobalVariableHolder.GLB_SCORE_INTERVAL);
+    }
+
+    @Override
+    public void addLikeScore(int songId, int userId) {
+        musicDAO.insertSongScore(songId, userId, GlobalVariableHolder.GLB_SCORE_LIKE);
+    }
     @Override
     public SongDTO getSongDetail(int songId) {
         return musicDAO.getSongDetail(songId);
@@ -28,33 +52,14 @@ public class MusicServiceImpl implements MusicService {
 
     @Override
     public List<SongDTO> getSimilarSongs(Map<String, Object> param) {
-       
         return musicDAO.getSimilarSongs(param);
     }
+    //노래연결
+	@Override
+	public String getSongPath(int songId) {
+		return musicDAO.getSongPath(songId);
+	}
 
-    @Override
-    public List<SongDTO> searchSongs(String keyword) {
-        return musicDAO.searchSongs(keyword);
-    }
 
-    @Override
-    public void addPlayLog(int songId, int userId) {
-        musicDAO.insertPlayLog(songId, userId);
-    }
-
-    @Override
-    public void addLike(int songId, int userId) {
-        musicDAO.insertSongLike(songId, userId);
-    }
-
-    @Override
-    public void removeLike(int songId, int userId) {
-        musicDAO.deleteSongLike(songId, userId);
-    }
-
-    @Override
-    public boolean isLikedByUser(int songId, int userId) {
-        int count = musicDAO.existsSongLike(songId, userId);
-        return count > 0;
-    }
+  
 }
