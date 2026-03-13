@@ -12,7 +12,7 @@
     <link rel="stylesheet" href="${path}/resources/common/css/style.css">
     <link rel="stylesheet" href="${path}/resources/common/style.css">
 </head>
-<body class="dark-mode">
+<body class="dark">
     <%@ include file="/WEB-INF/views/common/common.jsp" %>
     <%@ include file="/WEB-INF/views/common/header.jsp" %>
    
