@@ -9,9 +9,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -28,13 +26,35 @@ public class PlaylistController {
 
     private static final Logger log = LoggerFactory.getLogger(PlaylistController.class);
 
+    private static final int SESSION_ERROR = -1;
+
     @Autowired
     private PlaylistServiceImpl service;
 
-    @GetMapping({"", "/"})
-    public String test(HttpServletRequest request, HttpServletResponse response, Model model) {
-        log.info("PlaylistController - test");
-        return "";
+
+//    @GetMapping({"", "/"})
+//    public String test(HttpServletRequest request, HttpServletResponse response, Model model) {
+//        log.info("PlaylistController - test");
+//        return "";
+//    }
+
+    /**
+     * 로그인이 되어있는지 판정
+     * @return 성공시 : userId, 실패시 : SESSION_ERROR
+     * */
+    private int getUserIdFromSession(HttpServletRequest request){
+        UserDTO userDTO = null;
+        try{
+            userDTO = (UserDTO) request.getSession().getAttribute("loginUser");
+        }catch (Exception e){
+            log.error(e.toString());
+            return SESSION_ERROR;
+        }
+        if (userDTO == null) {
+            return SESSION_ERROR;
+        }
+
+        return userDTO.getUserId();
     }
 
     /**
@@ -48,11 +68,10 @@ public class PlaylistController {
     public @ResponseBody List<PlaylistDTO> getPlaylistAll(HttpServletRequest request){
         log.info("PlaylistController - getPlaylistAll");
 
-        UserDTO userDTO = (UserDTO) request.getSession().getAttribute("loginUser");
-        if (userDTO == null) {
+        int userId = this.getUserIdFromSession(request);
+        if (userId == SESSION_ERROR) {
             return new ArrayList<>();
         }
-        int userId = userDTO.getUserId();
         List<PlaylistDTO> list = service.getPlaylistAll(userId);
         return list;
     }
@@ -76,22 +95,43 @@ public class PlaylistController {
      * 좋아요 리스트 가져오기
      * */
     @GetMapping("/like")
-    public @ResponseBody PlaylistDTO getLikes(@RequestParam int playListId){
+    public @ResponseBody PlaylistDTO getLikes(HttpServletRequest request){
         log.info("PlaylistController - getLikes");
-        PlaylistDTO dto = service.getLikes(playListId);
 
-        return dto;
+        int userId = this.getUserIdFromSession(request);
+        if (userId == SESSION_ERROR) {
+            return null;
+        }
+
+        return service.getLikes(userId);
     }
 
     /**
      * 히스토리 리스트 가져오기
      * */
     @GetMapping("/history")
-    public @ResponseBody PlaylistDTO getHistory(@RequestParam int playListId){
+    public @ResponseBody PlaylistDTO getHistory(HttpServletRequest request){
         log.info("PlaylistController - getHistory");
-        PlaylistDTO dto = service.getHistory(playListId);
 
-        return dto;
+        int userId = this.getUserIdFromSession(request);
+        if (userId == SESSION_ERROR) {
+            return null;
+        }
+
+        return service.getHistory(userId);
+    }
+
+    @PostMapping("/playlist/create")
+    public @ResponseBody int createPlaylist(
+            HttpServletRequest request , @RequestBody String title){
+        log.info("PlaylistController - createPlaylist");
+
+        int userId = this.getUserIdFromSession(request);
+        if (userId == SESSION_ERROR) {
+            return 0;
+        }
+
+        return service.createPlaylist(userId, title);
     }
 
 }
