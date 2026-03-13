@@ -98,7 +98,7 @@
                                                 <div class="music-ranking-card-body">
                                                     <div class="music-ranking-card-title">${song.title}</div>
                                                     <div class="music-ranking-card-sub">${song.artistName}</div>
-                                                    <div class="music-ranking-card-meta">점수 ${song.totalScore}</div>
+                                                   
                                                 </div>
                                             </div>
                                         </c:forEach>
@@ -170,7 +170,7 @@
                                                 <div class="music-ranking-card-body">
                                                     <div class="music-ranking-card-title">${song.title}</div>
                                                     <div class="music-ranking-card-sub">${song.artistName}</div>
-                                                    <div class="music-ranking-card-meta">점수 ${song.totalScore}</div>
+                                               
                                                 </div>
                                             </div>
                                         </c:forEach>
@@ -242,7 +242,7 @@
                                                 <div class="music-ranking-card-body">
                                                     <div class="music-ranking-card-title">${song.title}</div>
                                                     <div class="music-ranking-card-sub">${song.artistName}</div>
-                                                    <div class="music-ranking-card-meta">점수 ${song.totalScore}</div>
+                                                   
                                                 </div>
                                             </div>
                                         </c:forEach>
@@ -258,7 +258,7 @@
                 </div>
             </main>
         </div>
-            <%@ include file="/WEB-INF/views/common/footer.jsp" %>
+            
 
         <%@ include file="/WEB-INF/views/music/player.jsp" %>
     </div>
