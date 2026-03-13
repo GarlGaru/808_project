@@ -1,0 +1,80 @@
+/* ============================================================
+   modalCore.css
+   ─────────────────────────────────────────────────────────────
+   authModal / mypageModal 공통 오버레이 기반 스타일
+
+   포함 내용:
+     - .mc-overlay   : position:fixed 오버레이 공통 기반
+     - @keyframes    : mc-fadein / mc-slideup (두 모달 공유)
+
+   사용 방법:
+     각 모달 overlay에 .mc-overlay 클래스 추가 후
+     모달별 CSS에서 세부 스타일 덮어씀
+
+   로드 순서:
+     modalCore.css → authModal.css → mypageModal.css
+   ─────────────────────────────────────────────────────────────
+   ⚠ 전역 리셋(*) 없음 — 모달 내부 격리만 담당
+============================================================ */
+
+/* ── 공통 오버레이 기반 ── */
+.mc-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  display: flex;            /* ModalCore.open() 이 display:flex 로 세팅 */
+  align-items: center;
+  justify-content: center;
+  /* 기본 숨김 — JS에서 display:none 으로 초기화 */
+}
+
+/* ── 공통 닫기 버튼 기반 ──
+   각 모달에서 .mc-close-btn 에 위치/색상 override
+── */
+.mc-close-btn {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  z-index: 20;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: rgba(242, 242, 242, 0.45);
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s, transform 0.2s;
+  /* Bootstrap .close 리셋 */
+  opacity: 1;
+  text-shadow: none;
+  padding: 0;
+  line-height: 1;
+}
+.mc-close-btn:hover {
+  background: rgba(255, 255, 255, 0.13);
+  color: #f2f2f2;
+  transform: rotate(90deg);
+}
+
+/* ════════════════════════════════════
+   공통 애니메이션
+   ════════════════════════════════════ */
+
+/* 오버레이 페이드인 */
+@keyframes mc-fadein {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+/* 카드 슬라이드업 */
+@keyframes mc-slideup {
+  from { opacity: 0; transform: translateY(26px) scale(0.97); }
+  to   { opacity: 1; transform: translateY(0)    scale(1);    }
+}

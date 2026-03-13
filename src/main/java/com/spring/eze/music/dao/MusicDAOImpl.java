@@ -69,4 +69,36 @@ public class MusicDAOImpl implements MusicDAO {
         param.put("userId", userId);
         return sqlSession.selectOne(NS + "existsSongLike", param);
     }
+
+    @Override
+    public List<SongDTO> getWeeklyRanking() {
+        return sqlSession.selectList(NS + "getWeeklyRanking");
+    }
+
+    @Override
+    public List<SongDTO> getTodayHitSongs() {
+        return sqlSession.selectList(NS + "getTodayHitSongs");
+    }
+
+    @Override
+    public List<SongDTO> getGenreRanking(int genreId) {
+        return sqlSession.selectList(NS + "getGenreRanking", genreId);
+    }
+
+    @Override
+    public void insertSongScore(int songId, int userId, int score) {
+        Map<String, Object> map = new HashMap<>();
+        map.put("songId", songId);
+        map.put("userId", userId);
+        map.put("score", score);
+
+        sqlSession.insert(NS + "insertSongScore", map);
+    }
+
+	@Override
+	public String getSongPath(int songId) {
+		
+		 return sqlSession.selectOne(NS + "getSongPath", songId);
+	}
+    
 }

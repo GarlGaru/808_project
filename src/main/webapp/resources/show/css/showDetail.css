@@ -1,0 +1,171 @@
+@charset "UTF-8";
+/* 피그마 입히기 전 공연상세페이지 임시 css */
+/* 전체 컨테이너 여백 */
+.show-detail-wrapper {
+    width: 1200px;
+    margin: 0 auto;
+    padding: 40px 20px 80px;
+}
+
+/* 1. 상단 정보 */
+.detail-top {
+    display: flex;
+    gap: 40px;
+    margin-bottom: 40px;
+    border: 1px solid rgba(255,255,255,0.15);
+    padding: 30px;
+}
+
+.poster-area {
+    width: 320px;
+    flex-shrink: 0;
+}
+
+.poster-area img {
+    width: 100%;
+    display: block;
+    border-radius: 10px;
+}
+
+.info-area {
+    flex: 1;
+}
+
+.show-title {
+    font-size: 40px;
+    font-weight: 700;
+    margin-bottom: 24px;
+}
+
+.info-list {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 24px 0;
+}
+
+.info-list li {
+    margin-bottom: 16px;
+    font-size: 20px;
+}
+
+.info-list strong {
+    display: inline-block;
+    width: 120px;
+}
+
+.btn-group {
+    margin-top: 30px;
+}
+
+.btn-reserve {
+    width: 180px;
+    height: 50px;
+    font-size: 18px;
+    cursor: pointer;
+}
+
+/* 2. 날짜 / 회차 */
+.booking-area {
+    margin-bottom: 40px;
+    border: 1px solid rgba(255,255,255,0.15);
+}
+
+.booking-top {
+    display: flex;
+    min-height: 240px;
+}
+
+.date-area,
+.time-area {
+    width: 50%;
+    padding: 24px;
+}
+
+.date-area {
+    border-right: 1px solid rgba(255,255,255,0.15);
+}
+
+.date-area h3,
+.time-area h3 {
+    margin-bottom: 20px;
+    font-size: 28px;
+}
+
+/* 회차 시간 버튼 */
+.date-btn,
+.time-btn {
+    display: inline-block;
+    margin: 0 10px 10px 0;
+    padding: 10px 16px;
+    font-size: 16px;
+    cursor: pointer;
+    background-color: transparent;
+    border: 1px solid #ccc; /* 기본테두리 */
+    color: #fff;
+    border-radius: 4px; 
+}
+
+/* 회차 버튼 활성화 */
+.time-btn.active {
+    background-color: #000000;
+    border-color: #000000;
+    color: #fff !important;
+}
+
+.booking-bottom {
+    border-top: 1px solid rgba(255,255,255,0.15);
+    padding: 20px 24px;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.btn-booking {
+    width: 200px;
+    height: 56px;
+    font-size: 18px;
+    cursor: pointer;
+}
+
+/* 3. 하단 탭 */
+.detail-bottom {
+    margin-top: 30px;
+}
+
+.tab-menu {
+    display: flex;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    border-bottom: 1px solid rgba(255,255,255,0.2);
+}
+
+.tab-menu li {
+    padding: 16px 28px;
+    cursor: pointer;
+    font-size: 18px;
+}
+
+.tab-menu li.active {
+    border-bottom: 3px solid #fff;
+    font-weight: 700;
+}
+
+.tab-content {
+    min-height: 300px;
+    padding: 30px 20px;
+}
+
+/* 보기 쉽게만 */
+.tab-section {
+    font-size: 18px;
+    line-height: 1.8;
+}
+
+/* 달력에서 선택된 날짜의 배경색과 테두리를 오렌지색으로 변경 (Flatpickr 덮어쓰기) */
+.flatpickr-calendar .flatpickr-day.selected,
+.flatpickr-calendar .flatpickr-day.selected:hover,
+.flatpickr-calendar .flatpickr-day.selected:focus {
+	background: #ED6701 !important;
+	border-color: #ED6701 !important;
+	color: #fff !important;
+}

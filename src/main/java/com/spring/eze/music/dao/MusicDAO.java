@@ -22,4 +22,22 @@ public interface MusicDAO {
     public void deleteSongLike(int songId, int userId);
 
     public int existsSongLike(int songId, int userId);
+    
+    // 랭킹
+    //주간랭킹
+    public List<SongDTO> getWeeklyRanking();
+    
+    
+    //오늘의 최고 히트곡
+    public List<SongDTO> getTodayHitSongs();
+    
+    //장르랭킹
+    public List<SongDTO> getGenreRanking(int genreId);
+    
+    //점수 insert
+    public void insertSongScore(int songId, int userId, int score);
+    
+    //노래 연결
+    public String getSongPath(int songId);
+ 
 }

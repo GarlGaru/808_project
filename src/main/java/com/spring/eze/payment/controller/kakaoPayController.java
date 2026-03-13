@@ -32,18 +32,18 @@ public class kakaoPayController {
 
     /**
      * 1) READY: 결제 준비 요청
-     * - 사용자가 폼에서 itemName/quantity/totalPrice를 POST로 보냄
-     * - 우리는 주문번호(orderId) 만들고 DB에 READY 상태로 저장
-     * - 카카오 ready API 호출 -> 카카오 결제 페이지 URL 받아서 redirect
+     * 사용자가 폼에서 itemName/quantity/totalPrice를 POST로 보냄
+     * 우리는 주문번호(orderId) 만들고 DB에 READY 상태로 저장
+     * 카카오 ready API 호출 -> 카카오 결제 페이지 URL 받아서 redirect
      */
     @PostMapping("/ready")
     public String ready(kakaopayorderRequest req) {
 
-        // ★ 지금은 로그인 안 붙였으니까 임시 userId
+        // 지금은 로그인 안 붙였으니까 임시 userId
         // 나중에 로그인 붙이면 여기서 user_tbl.user_id 가져와서 long으로 넘기면 됨
         long userId = 1L;
 
-        // ★ 지금은 예약도 아직 안 붙였으니까 임시 reservationId
+        // 지금은 예약도 아직 안 붙였으니까 임시 reservationId
         // 예약 붙이면 reservation_tbl에 먼저 insert하고 그 reservation_id를 넘겨야 함
         long reservationId = 0L;
 
@@ -85,7 +85,10 @@ public class kakaoPayController {
         model.addAttribute("orderId", orderId);
 
         // /WEB-INF/views/payment/kakaoPayApprove.jsp
-        return "payment/kakaoPayApprove";
+        // 테스트용
+        //return "payment/kakaoPayApprove";
+        // 실제로 쓸거(현재 메인으로보냄)
+        return "redirect:/main";
     }
 
     /**
@@ -107,4 +110,16 @@ public class kakaoPayController {
         model.addAttribute("orderId", orderId);
         return "payment/kakaoPayFail";
     }
+    
+    
+    //카카오 결제된거 취소(환불)
+    @GetMapping("/request_cancel")
+    @ResponseBody
+    public String cancelRequest(@RequestParam("orderId") String orderId){
+    	
+    	kakaopayService.cancel(orderId, null); // null = 전체취소
+    	
+    	return "OK";
+    }
+    
 }

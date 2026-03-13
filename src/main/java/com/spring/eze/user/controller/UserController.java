@@ -4,6 +4,7 @@ import java.io.IOException;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,97 +24,79 @@ public class UserController {
     @Autowired
     private UserServiceImpl service;
 
-    // 1. 인증 모달창으로 이동 
+    // 1. 로그인/회원가입 통합 모달창 호출
     @RequestMapping("/authModal")
-    public String loginPage(HttpServletRequest request, HttpServletResponse response) 
-            throws ServletException, IOException {
-        
-        logger.info("<<< url => /authModal >>>");
+    public String authModal() {
+        logger.info("<<< url => /user/authModal >>>");
+        // /WEB-INF/views/user/authModal.jsp 파일을 찾아감
         return "user/authModal";
     }
 
-    // 2. 로그인 처리 (모달창에서 보낸 Ajax 요청을 처리함)
+ // 2. 로그인 처리 (AJAX)
     @RequestMapping(value = "/login", method = RequestMethod.POST)
-    @ResponseBody // AJAX 응답을 위해 결과값만 리턴
-    public int login(HttpServletRequest request, HttpServletResponse response) 
-            throws ServletException, IOException {
+    @ResponseBody // 페이지 이동 없이 결과값(int)만 브라우저로 전송
+    public int login(HttpServletRequest request) throws ServletException, IOException {
+        logger.info("<<< url => /user/login >>>");
         
-        logger.info("<<< url => /login >>>");
-        
-        // 서비스에서 파라미터(email, password) 추출 및 세션 저장 로직 수행
-        // getUserByEmail 로직을 서비스 내부에서 호출하여 처리함
-        int result = service.loginAction(request, response);
-        
-        return result; 
+        // 서비스에서 아이디/비번 확인 후 성공 시 세션에 유저 정보 저장
+        return service.loginAction(request); 
     }
 
-    // 3. 로그아웃
+    // 3. 로그아웃 처리
     @RequestMapping("/logout")
-    public String logout(HttpServletRequest request, HttpServletResponse response) 
-            throws ServletException, IOException {
+    public String logout(HttpSession session) {
+        logger.info("<<< url => /user/logout >>>");
         
-        logger.info("<<< url => /logout >>>");
-        
-        // 세션 종료
-        request.getSession().invalidate();
+        // 세션에 저장된 모든 정보 삭제 (로그아웃 처리)
+        session.invalidate();
+        // 로그아웃 후 메인 페이지로 이동
         return "redirect:/main";
     }
 
     // 4. 회원가입 처리
     @RequestMapping(value = "/signup", method = RequestMethod.POST)
     @ResponseBody
-    public int signup(HttpServletRequest request, HttpServletResponse response) 
-            throws ServletException, IOException {
+    public int signup(HttpServletRequest request) throws ServletException, IOException {
+        logger.info("<<< url => /user/signup >>>");
         
-        logger.info("<<< url => /signup >>>");
-        
-        // 서비스 내부에서 정규식 검증 및 DAO 호출
-        return service.insertUser(request, response);
+        // 사용자가 입력한 정보를 DB에 저장
+        return service.insertUser(request);
     }
 
     // 5. 이메일 중복확인
     @RequestMapping(value = "/checkEmail", method = RequestMethod.GET)
     @ResponseBody
-    public int checkEmail(HttpServletRequest request, HttpServletResponse response) 
-            throws ServletException, IOException {
-        
-        logger.info("<<< url => /checkEmail >>>");
-        
-        return service.checkEmail(request, response);
+    public int checkEmail(HttpServletRequest request) throws ServletException, IOException {
+        logger.info("<<< url => /user/checkEmail >>>");
+        // 이메일 존재 여부를 숫자로 반환 (0: 없음, 1: 중복)
+        return service.checkEmail(request);
     }
 
     // 6. 닉네임 중복확인
     @RequestMapping(value = "/checkNickname", method = RequestMethod.GET)
     @ResponseBody
-    public int checkNickname(HttpServletRequest request, HttpServletResponse response) 
-            throws ServletException, IOException {
-        
-        logger.info("<<< url => /checkNickname >>>");
-        
-        return service.checkNickname(request, response);
+    public int checkNickname(HttpServletRequest request) throws ServletException, IOException {
+        logger.info("<<< url => /user/checkNickname >>>");
+        // 닉네임 중복 여부 반환
+        return service.checkNickname(request);
     }
 
     // 7. 이메일 인증 완료 처리
     @RequestMapping(value = "/verifyEmail", method = RequestMethod.POST)
     @ResponseBody
-    public int verifyEmail(HttpServletRequest request, HttpServletResponse response) 
-            throws ServletException, IOException {
-        
-        logger.info("<<< url => /verifyEmail >>>");
-        
-        return service.updateEmailVerified(request, response);
+    public int verifyEmail(HttpServletRequest request) throws ServletException, IOException {
+        logger.info("<<< url => /user/verifyEmail >>>");
+        return service.updateEmailVerified(request);
     }
 
     // 8. 인증코드 저장 및 발송
     @RequestMapping(value = "/sendCode", method = RequestMethod.POST)
     @ResponseBody
-    public String sendCode(HttpServletRequest request, HttpServletResponse response) 
-            throws ServletException, IOException {
-        
-        logger.info("<<< url => /sendCode >>>");
+    public String sendCode(HttpServletRequest request) throws ServletException, IOException {
+        logger.info("<<< url => /user/sendCode >>>");  
         
         // 1. 서비스 실행 (DB 저장 및 세션에 코드 저장)
-        service.insertEmailCode(request, response);
+        service.insertEmailCode(request);
         
         // 2. 서비스 내부에서 저장한 세션 값을 꺼냄
         String generatedCode = (String) request.getSession().getAttribute("sentCode");
@@ -130,49 +113,32 @@ public class UserController {
     @ResponseBody
     public int checkCode(HttpServletRequest request, HttpServletResponse response) 
             throws ServletException, IOException {
-        
         logger.info("<<< url => /checkCode >>>");
         
         // 서비스에서 DB의 코드와 사용자의 입력값을 비교함
         // 결과: 1(일치), 0(만료), -1(불일치)
-        return service.verifyCode(request, response);
+        return service.verifyCode(request);
     }
 
     // 9. 비밀번호 재설정 실행
     @RequestMapping(value = "/updatePw", method = RequestMethod.POST)
     @ResponseBody
-    public int updatePw(HttpServletRequest request, HttpServletResponse response) 
-            throws ServletException, IOException {
-        
-        logger.info("<<< url => /updatePw >>>");
+    public int updatePw(HttpServletRequest request) throws ServletException, IOException {
+        logger.info("<<< url => /user/updatePw >>>");
         
         // 서비스에서 email과 password(나중에 해쉬처리)를 받아서 DB를 업데이트
         // 나중에 해쉬 암호화는 service.updatePw 내부에서 처리
-        return service.updatePw(request, response); 
+        return service.updatePw(request);
     }
     
     
     // 10. 회원탈퇴
     @RequestMapping(value = "/deleteUser", method = RequestMethod.POST)
     @ResponseBody
-    public int deleteUser(HttpServletRequest request, HttpServletResponse response) 
-            throws ServletException, IOException {
-        
-        logger.info("<<< url => /deleteUser >>>");
-        
-        return service.deleteUser(request, response);
+    public int deleteUser(HttpServletRequest request) throws ServletException, IOException {
+        logger.info("<<< url => /user/deleteUser >>>");
+        return service.deleteUser(request);
     }
     
- // 11. 마이페이지
-    @RequestMapping(value = "/mypage", method = RequestMethod.GET)
-    public String mypage(HttpServletRequest request) 
-            throws ServletException, IOException {
-
-        logger.info("<<< url => /mypage >>>");
-
-        // mypage.jsp (또는 mypage.html)로 이동
-        return "user/mypage";
-    }
-
 
 }

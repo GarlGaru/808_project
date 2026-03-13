@@ -4,9 +4,9 @@ import java.util.Date;
 
 public class SeatDTO {
 
-    private int seatId;
+    private Integer seatId;
     private String showId;		//API Id
-    private int scheduleId;	//공연 날짜 및 시간
+    private Integer scheduleId;	//공연 날짜 및 시간
     private String userId;
 
     private String seatLabel;	  // 예 A-10

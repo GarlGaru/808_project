@@ -62,4 +62,35 @@
   ]]>
 </select>
 
+	<!-- 회원정보 -->
+	<select id="selectUserList" resultType="com.spring.eze.admin.dto.AdminUserDTO">
+	  SELECT
+	    user_id        AS userId,
+	    email          AS email,
+	    password       AS password,
+	    nickname       AS nickname,
+	    email_verified AS emailVerified,
+	    created_at     AS createdAt
+	  FROM user_tbl
+	  ORDER BY user_id DESC
+	</select>
+	
+	<!-- 결제정보 -->
+	<select id="selectPayList" resultType="com.spring.eze.admin.dto.AdminPaymentOrderDTO">
+		  SELECT
+		    order_id       AS orderId,
+		    reservation_id AS reservationId,
+		    user_id        AS userId,
+		    item_name      AS itemName,
+		    quantity       AS quantity,
+		    total_amount   AS totalAmount,
+		    tid            AS tid,
+		    status         AS status,
+		    created_at     AS createdAt,
+		    approved_at    AS approvedAt,
+		    fail_reason    AS failReason
+		  FROM payment_order
+		  ORDER BY created_at DESC
+	</select>
+
 </mapper>

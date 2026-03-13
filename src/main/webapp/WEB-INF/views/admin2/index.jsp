@@ -32,7 +32,7 @@
             <div class="sidebar-brand-icon rotate-n-15">
                 <i class="fas fa-laugh-wink"></i>
             </div>
-            <div class="sidebar-brand-text mx-3">ADMIN</div>
+            <div class="sidebar-brand-text mx-3">808 ADMIN</div>
         </a>
 
         <hr class="sidebar-divider my-0">
@@ -70,9 +70,30 @@
         </li>
 
         <li class="nav-item">
-            <a class="nav-link" href="${adminUrl}/tables">
+            <a class="nav-link" href="${adminUrl}/user">
                 <i class="fas fa-fw fa-table"></i>
-                <span>Tables</span>
+                <span>User Admin</span>
+            </a>
+        </li>
+        
+        <li class="nav-item">
+            <a class="nav-link" href="${adminUrl}/pay">
+                <i class="fas fa-fw fa-table"></i>
+                <span>Pay Admin</span>
+            </a>
+        </li>
+        
+        <li class="nav-item">
+            <a class="nav-link" href="${adminUrl}/board">
+                <i class="fas fa-fw fa-table"></i>
+                <span>Board Admin</span>
+            </a>
+        </li>
+        
+        <li class="nav-item">
+            <a class="nav-link" href="${adminUrl}/music">
+                <i class="fas fa-fw fa-table"></i>
+                <span>Music Admin</span>
             </a>
         </li>
 
@@ -86,7 +107,7 @@
 
             <!-- Topbar -->
             <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
-                <span class="navbar-brand">Admin Dashboard</span>
+                <span class="navbar-brand">808 Admin Dashboard</span>
             </nav>
 
             <!-- Page Content -->

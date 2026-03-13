@@ -7,7 +7,6 @@ import java.util.regex.Pattern;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +26,7 @@ public class UserServiceImpl implements UserService {
     private static final String EMAIL_PATTERN    = "^[A-Za-z0-9+_.-]+@(.+)$";
     private static final String NICKNAME_PATTERN = "^[가-힣a-zA-Z0-9]{2,10}$";
 
-    // ── 공통: 파라미터 null 체크 + trim ──
+    // 공통 로직 : 파라미터 꺼낼 때 null 체크 + trim(앞 뒤 공백 제거) 처리
     // null이면 null 반환, 아니면 trim한 값 반환 (빈문자열은 그대로 통과 — 각 메서드에서 처리)
     private String getParam(HttpServletRequest request, String key) {
         String val = request.getParameter(key);
@@ -36,11 +35,11 @@ public class UserServiceImpl implements UserService {
 
     // 1. 회원가입
     @Override
-    public int insertUser(HttpServletRequest request, HttpServletResponse response)
+    public int insertUser(HttpServletRequest request)
             throws ServletException, IOException {
         try {
             String email    = getParam(request, "email");
-            String password = getParam(request, "password");
+            String password = getParam(request, "password"); // 사용자가 입력한 비밀번호(평문)
             String nickname = getParam(request, "nickname");
 
             // 빈값/공백 체크 (getParam이 null 반환)
@@ -48,7 +47,8 @@ public class UserServiceImpl implements UserService {
                 System.out.println(">>> [회원가입 실패] 필수 파라미터 누락 또는 공백");
                 return -100;
             }
-
+            
+            // 백엔드 2차 검증
             if (!Pattern.matches(EMAIL_PATTERN, email))    return -1; // 이메일 형식 오류
             if (!Pattern.matches(NICKNAME_PATTERN, nickname)) return -2; // 닉네임 형식 오류
             if (password.length() < 8)                     return -3; // 비밀번호 길이 부족
@@ -71,7 +71,7 @@ public class UserServiceImpl implements UserService {
 
     // 2. 이메일 중복확인
     @Override
-    public int checkEmail(HttpServletRequest request, HttpServletResponse response)
+    public int checkEmail(HttpServletRequest request)
             throws ServletException, IOException {
 
         String email = getParam(request, "email");
@@ -81,7 +81,7 @@ public class UserServiceImpl implements UserService {
 
     // 3. 닉네임 중복확인
     @Override
-    public int checkNickname(HttpServletRequest request, HttpServletResponse response) {
+    public int checkNickname(HttpServletRequest request) {
         try {
             String nickname = getParam(request, "nickname");
 
@@ -108,21 +108,30 @@ public class UserServiceImpl implements UserService {
 
     // 4. 로그인
     @Override
-    public int loginAction(HttpServletRequest request, HttpServletResponse response)
+    public int loginAction(HttpServletRequest request)
             throws ServletException, IOException {
         try {
             String email    = getParam(request, "email");
-            String password = request.getParameter("password"); // 비밀번호는 trim 하지 않음 (공백 포함 가능)
-
+            String password = request.getParameter("password"); // 비밀번호는 보안상 trim 하지 않음 (공백 포함 가능)
+            
+            // 기본 유효성 검사
             if (email == null || password == null || password.isEmpty()) return 0;
-
+            
+            // DB에서 유저 정보 조회
             UserDTO loginUser = dao.getUserByEmail(email);
             if (loginUser == null)                              return 0; // 이메일 없음
             
+            // 비밀번호 검증 (현재는 equals, 추후 BCrypt.checkpw로 변경 예정 부분)
             String dbPw = loginUser.getPassword();
             if (dbPw == null || !dbPw.equals(password))        return 0; // 비밀번호 불일치
+            
+            // 이메일 인증 여부 확인
             if (loginUser.getEmailVerified() != 1)             return 2; // 이메일 미인증
-
+            
+            // 세션에 저장하기 전, DTO에서 비밀번호 제거
+            loginUser.setPassword(null);
+            
+            // 세션 설정
             HttpSession session = request.getSession();
             session.setAttribute("loginUser", loginUser);
             session.setAttribute("userEmail", email);
@@ -138,7 +147,7 @@ public class UserServiceImpl implements UserService {
 
     // 5. 이메일 인증 완료 처리
     @Override
-    public int updateEmailVerified(HttpServletRequest request, HttpServletResponse response)
+    public int updateEmailVerified(HttpServletRequest request)
             throws ServletException, IOException {
 
         String email = getParam(request, "email");
@@ -148,7 +157,7 @@ public class UserServiceImpl implements UserService {
 
     // 6. 비밀번호 수정
     @Override
-    public int updatePw(HttpServletRequest request, HttpServletResponse response) {
+    public int updatePw(HttpServletRequest request) {
         String email    = getParam(request, "email");
         String password = request.getParameter("password"); // 비밀번호는 trim 하지 않음
 
@@ -167,7 +176,7 @@ public class UserServiceImpl implements UserService {
 
     // 7. 회원탈퇴
     @Override
-    public int deleteUser(HttpServletRequest request, HttpServletResponse response)
+    public int deleteUser(HttpServletRequest request)
             throws ServletException, IOException {
 
         String email = (String) request.getSession().getAttribute("userEmail");
@@ -178,7 +187,7 @@ public class UserServiceImpl implements UserService {
 
     // 8. 인증코드 생성 및 DB 저장
     @Override
-    public int insertEmailCode(HttpServletRequest request, HttpServletResponse response)
+    public int insertEmailCode(HttpServletRequest request)
             throws ServletException, IOException {
 
         String email = getParam(request, "email");
@@ -207,7 +216,7 @@ public class UserServiceImpl implements UserService {
 
     // 9. 인증코드 조회
     @Override
-    public EmailCodeDTO getEmailCode(HttpServletRequest request, HttpServletResponse response)
+    public EmailCodeDTO getEmailCode(HttpServletRequest request)
             throws ServletException, IOException {
 
         String email = getParam(request, "email");
@@ -217,7 +226,7 @@ public class UserServiceImpl implements UserService {
 
     // 10. 인증코드 검증
     @Override
-    public int verifyCode(HttpServletRequest request, HttpServletResponse response)
+    public int verifyCode(HttpServletRequest request)
             throws ServletException, IOException {
 
         String email     = getParam(request, "email");

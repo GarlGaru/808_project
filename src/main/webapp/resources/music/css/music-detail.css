@@ -1,0 +1,388 @@
+/* =========================
+   detail.jsp 전용
+   Spotify 상세 화면 느낌
+   ========================= */
+
+/* 전체 페이지 영역 */
+.music-detail-page {
+    width: 100%;
+    color: #fff;
+    background: linear-gradient(180deg, #3a3a3a 0%, #181818 28%, #121212 100%);
+    border-radius: 18px;
+    overflow: hidden;
+    min-height: calc(100vh - 160px);
+}
+
+/* =========================
+   1) 상단 히어로 영역
+   ========================= */
+.music-detail-hero {
+    position: relative;
+    display: flex;
+    align-items: flex-end;
+    gap: 28px;
+    padding: 42px 36px 28px 36px;
+    min-height: 360px;
+    background: linear-gradient(180deg, rgba(255,255,255,0.08) 0%, rgba(0,0,0,0.12) 100%);
+}
+
+.music-detail-hero-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(255,255,255,0.06) 0%, rgba(0,0,0,0.38) 100%);
+    pointer-events: none;
+}
+
+.music-detail-hero-cover-wrap {
+    position: relative;
+    z-index: 2;
+    width: 250px;
+    min-width: 250px;
+}
+
+.music-detail-hero-cover {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
+    border-radius: 12px;
+    display: block;
+    box-shadow: 0 18px 40px rgba(0, 0, 0, 0.45);
+}
+
+.music-detail-hero-info {
+    position: relative;
+    z-index: 2;
+    flex: 1;
+    min-width: 0;
+}
+
+.music-detail-type {
+    font-size: 13px;
+    font-weight: 700;
+    color: #e5e5e5;
+    margin-bottom: 10px;
+}
+
+.music-detail-main-title {
+    font-size: 4.2rem;
+    line-height: 1.02;
+    font-weight: 900;
+    margin: 0 0 18px 0;
+    color: #fff;
+    letter-spacing: -1px;
+}
+
+.music-detail-sub-line {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: center;
+    font-size: 14px;
+    color: #f2f2f2;
+    margin-bottom: 12px;
+}
+
+.music-detail-artist-name {
+    font-weight: 700;
+    color: #fff;
+}
+
+.music-detail-dot {
+    color: #b3b3b3;
+}
+
+.music-detail-desc {
+    font-size: 14px;
+    color: #d5d5d5;
+    max-width: 900px;
+    line-height: 1.5;
+}
+
+/* =========================
+   2) 액션 버튼 영역
+   ========================= */
+.music-detail-actions {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    padding: 24px 36px 16px 36px;
+}
+
+.music-detail-play-main-btn {
+    width: 58px;
+    height: 58px;
+    border: none;
+    border-radius: 50%;
+    background: #1db954;
+    color: #000;
+    font-size: 22px;
+    font-weight: 900;
+    cursor: pointer;
+    box-shadow: 0 8px 20px rgba(29, 185, 84, 0.25);
+    transition: transform 0.15s ease;
+}
+
+.music-detail-play-main-btn:hover {
+    transform: scale(1.04);
+}
+
+.music-detail-icon-btn {
+    width: 42px;
+    height: 42px;
+    border: none;
+    border-radius: 50%;
+    background: transparent;
+    color: #b3b3b3;
+    font-size: 20px;
+    cursor: pointer;
+    transition: color 0.15s ease, background 0.15s ease;
+}
+
+.music-detail-icon-btn:hover {
+    color: #fff;
+    background: rgba(255,255,255,0.08);
+}
+
+/* =========================
+   3) 메타 카드
+   ========================= */
+.music-detail-meta-box {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 16px;
+    padding: 0 36px 24px 36px;
+}
+
+.music-detail-meta-card {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.05);
+    border-radius: 14px;
+    padding: 18px;
+}
+
+.music-detail-meta-label {
+    font-size: 12px;
+    color: #9f9f9f;
+    margin-bottom: 8px;
+}
+
+.music-detail-meta-value {
+    font-size: 15px;
+    font-weight: 700;
+    color: #fff;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* =========================
+   4) 리스트 섹션
+   ========================= */
+.music-detail-list-section {
+    padding: 8px 36px 40px 36px;
+}
+
+.music-detail-list-header {
+    margin-bottom: 18px;
+}
+
+.music-detail-list-title {
+    font-size: 1.9rem;
+    font-weight: 800;
+    margin: 0 0 8px 0;
+    color: #fff;
+}
+
+.music-detail-list-desc {
+    margin: 0;
+    color: #b3b3b3;
+    font-size: 14px;
+}
+
+/* 테이블 헤더 */
+.music-detail-table-head {
+    display: grid;
+    grid-template-columns: 60px 2fr 1.2fr 120px 90px;
+    align-items: center;
+    column-gap: 18px;
+    padding: 14px 16px;
+    border-bottom: 1px solid #2a2a2a;
+    color: #a9a9a9;
+    font-size: 13px;
+}
+
+/* 테이블 바디 */
+.music-detail-table-body {
+    width: 100%;
+}
+
+.music-detail-row {
+    display: grid;
+    grid-template-columns: 60px 2fr 1.2fr 120px 90px;
+    align-items: center;
+    column-gap: 18px;
+    padding: 12px 16px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: background 0.15s ease;
+}
+
+.music-detail-row:hover {
+    background: rgba(255,255,255,0.06);
+}
+
+.music-detail-col-index {
+    color: #b3b3b3;
+    font-size: 15px;
+}
+
+.music-detail-col-song {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    min-width: 0;
+}
+
+.music-detail-song-thumb-wrap {
+    width: 48px;
+    height: 48px;
+    flex-shrink: 0;
+}
+
+.music-detail-song-thumb {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 6px;
+    display: block;
+}
+
+.music-detail-song-info {
+    min-width: 0;
+}
+
+.music-detail-song-title {
+    font-size: 15px;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 4px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.music-detail-song-artist {
+    font-size: 13px;
+    color: #b3b3b3;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.music-detail-col-album,
+.music-detail-col-genre {
+    font-size: 14px;
+    color: #b3b3b3;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.music-detail-col-play {
+    display: flex;
+    justify-content: center;
+}
+
+.music-detail-row-play-btn {
+    width: 38px;
+    height: 38px;
+    border: none;
+    border-radius: 50%;
+    background: #1db954;
+    color: #000;
+    font-size: 14px;
+    font-weight: 900;
+    cursor: pointer;
+    transition: transform 0.15s ease;
+}
+
+.music-detail-row-play-btn:hover {
+    transform: scale(1.04);
+}
+
+/* =========================
+   반응형
+   ========================= */
+@media (max-width: 1400px) {
+    .music-detail-main-title {
+        font-size: 3.4rem;
+    }
+}
+
+@media (max-width: 1200px) {
+    .music-detail-hero {
+        flex-direction: column;
+        align-items: flex-start;
+        min-height: auto;
+    }
+
+    .music-detail-main-title {
+        font-size: 2.7rem;
+    }
+
+    .music-detail-meta-box {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .music-detail-table-head,
+    .music-detail-row {
+        grid-template-columns: 50px 1.8fr 1fr 100px 80px;
+    }
+}
+
+@media (max-width: 768px) {
+    .music-detail-page {
+        border-radius: 0;
+    }
+
+    .music-detail-hero {
+        padding: 28px 18px 20px 18px;
+        gap: 20px;
+    }
+
+    .music-detail-actions,
+    .music-detail-meta-box,
+    .music-detail-list-section {
+        padding-left: 18px;
+        padding-right: 18px;
+    }
+
+    .music-detail-hero-cover-wrap {
+        width: 180px;
+        min-width: 180px;
+    }
+
+    .music-detail-main-title {
+        font-size: 2rem;
+    }
+
+    .music-detail-meta-box {
+        grid-template-columns: 1fr;
+    }
+
+    .music-detail-table-head {
+        display: none;
+    }
+
+    .music-detail-row {
+        grid-template-columns: 1fr;
+        row-gap: 12px;
+        padding: 16px 14px;
+        background: rgba(255,255,255,0.03);
+        margin-bottom: 10px;
+    }
+
+    .music-detail-col-play {
+        justify-content: flex-start;
+    }
+}
