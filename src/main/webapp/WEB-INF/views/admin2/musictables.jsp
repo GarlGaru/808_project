@@ -121,18 +121,20 @@
                     </div>
                     
                     <div class="d-flex justify-content-end mt-3">
-						    <a href="${adminUrl}/music/admin_artist" class="btn btn-primary">
-						        <i class="fas fa-plus"></i> 아티스트 등록
-						    </a>
-						   	 &nbsp;
-						    <a href="${adminUrl}/music/admin_album" class="btn btn-info">
-						        <i class="fas fa-plus"></i> 앨범 등록
-						    </a>
-						     &nbsp;
-						    <a href="${adminUrl}/music/admin_genre" class="btn btn-warning">
-						        <i class="fas fa-plus"></i> 장르 등록
-						    </a>
-						     &nbsp;
+					    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#artistModal">
+					        <i class="fas fa-plus"></i> 아티스트 등록
+					    </button>
+					    &nbsp;
+					
+					    <button type="button" class="btn btn-info" data-toggle="modal" data-target="#albumModal">
+					        <i class="fas fa-plus"></i> 앨범 등록
+					    </button>
+					    &nbsp;
+					
+					    <button type="button" class="btn btn-warning" data-toggle="modal" data-target="#genreModal">
+					        <i class="fas fa-plus"></i> 장르 등록
+					    </button>
+					    &nbsp;
 					</div>
 					
 					
@@ -218,9 +220,9 @@
                             </table>
                         </div>
                         <div class="d-flex justify-content-end mt-3">
-						    <a href="${adminUrl}/music/write" class="btn btn-success">
+						    <button type="button" class="btn btn-success" data-toggle="modal" data-target="#musicWriteModal">
 						        <i class="fas fa-plus"></i> 음악 등록
-						    </a>
+						    </button>
 						</div>
                     </div>
                 </div>
@@ -237,6 +239,103 @@
     </div>
 
 </div>
+
+<!-- 아티스트 등록 모달 -->
+<div class="modal fade" id="artistModal" tabindex="-1" role="dialog" aria-labelledby="artistModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl" role="document" style="max-width: 1200px;">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h5 class="modal-title" id="artistModalLabel">아티스트 등록</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="닫기">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <div class="modal-body p-0">
+                <iframe
+                    src="${adminUrl}/music/admin_artist"
+                    style="width:100%; height:750px; border:0;"
+                    loading="lazy">
+                </iframe>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<!-- 앨범 등록 모달 -->
+<div class="modal fade" id="albumModal" tabindex="-1" role="dialog" aria-labelledby="albumModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl" role="document" style="max-width: 1200px;">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h5 class="modal-title" id="albumModalLabel">앨범 등록</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="닫기">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <div class="modal-body p-0">
+                <iframe
+                    src="${adminUrl}/music/admin_album"
+                    style="width:100%; height:750px; border:0;"
+                    loading="lazy">
+                </iframe>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<!-- 장르 등록 모달 -->
+<div class="modal fade" id="genreModal" tabindex="-1" role="dialog" aria-labelledby="genreModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl" role="document" style="max-width: 1200px;">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h5 class="modal-title" id="genreModalLabel">장르 등록</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="닫기">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <div class="modal-body p-0">
+                <iframe
+                    src="${adminUrl}/music/admin_genre"
+                    style="width:100%; height:750px; border:0;"
+                    loading="lazy">
+                </iframe>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<!-- 음악 등록 모달 -->
+<div class="modal fade" id="musicWriteModal" tabindex="-1" role="dialog" aria-labelledby="musicWriteModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl" role="document" style="max-width: 1200px;">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h5 class="modal-title" id="musicWriteModalLabel">음악 등록</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="닫기">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <div class="modal-body p-0">
+                <iframe
+                    src="${adminUrl}/music/write"
+                    style="width:100%; height:850px; border:0;"
+                    loading="lazy">
+                </iframe>
+            </div>
+
+        </div>
+    </div>
+</div>
+
 
 <a class="scroll-to-top rounded" href="#page-top">
     <i class="fas fa-angle-up"></i>

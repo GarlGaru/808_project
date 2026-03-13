@@ -10,6 +10,7 @@ public class AdminUserDTO {
 	    private String nickname;
 	    private int emailVerified;
 	    private Date createdAt;
+	    
 		public int getUserId() {
 			return userId;
 		}
