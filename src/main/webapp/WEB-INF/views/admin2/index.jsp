@@ -23,80 +23,56 @@
 <div id="wrapper">
 
     <!-- Sidebar -->
-    <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
+    <!-- Sidebar -->
+<ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
 
-        <a class="sidebar-brand d-flex align-items-center justify-content-center" href="${adminUrl}">
-            <div class="sidebar-brand-icon rotate-n-15">
-                <i class="fas fa-laugh-wink"></i>
-            </div>
-            <div class="sidebar-brand-text mx-3">808 ADMIN</div>
+    <a class="sidebar-brand d-flex align-items-center justify-content-center" href="${adminUrl}">
+        <div class="sidebar-brand-icon">
+            <i class="fas fa-user-shield"></i>
+        </div>
+        <div class="sidebar-brand-text mx-3">808 ADMIN</div>
+    </a>
+
+    <hr class="sidebar-divider my-0">
+
+    <li class="nav-item active">
+        <a class="nav-link" href="${adminUrl}">
+            <i class="fas fa-fw fa-tachometer-alt"></i>
+            <span>Dashboard</span>
         </a>
+    </li>
 
-        <hr class="sidebar-divider my-0">
+    <li class="nav-item">
+        <a class="nav-link" href="${adminUrl}/user">
+            <i class="fas fa-fw fa-users"></i>
+            <span>User Admin</span>
+        </a>
+    </li>
 
-        <li class="nav-item active">
-            <a class="nav-link" href="${adminUrl}">
-                <i class="fas fa-fw fa-tachometer-alt"></i>
-                <span>Dashboard</span>
-            </a>
-        </li>
+    <li class="nav-item">
+        <a class="nav-link" href="${adminUrl}/pay">
+            <i class="fas fa-fw fa-credit-card"></i>
+            <span>Pay Admin</span>
+        </a>
+    </li>
 
-        <hr class="sidebar-divider">
+    <li class="nav-item">
+        <a class="nav-link" href="${adminUrl}/board">
+            <i class="fas fa-fw fa-clipboard-list"></i>
+            <span>Board Admin</span>
+        </a>
+    </li>
 
-        <div class="sidebar-heading">Components</div>
+    <li class="nav-item">
+        <a class="nav-link" href="${adminUrl}/music">
+            <i class="fas fa-fw fa-music"></i>
+            <span>Music Admin</span>
+        </a>
+    </li>
 
-        <li class="nav-item">
-            <a class="nav-link" href="${adminUrl}/buttons">
-                <i class="fas fa-fw fa-cog"></i>
-                <span>Buttons</span>
-            </a>
-        </li>
+    <hr class="sidebar-divider d-none d-md-block">
 
-        <li class="nav-item">
-            <a class="nav-link" href="${adminUrl}/cards">
-                <i class="fas fa-fw fa-layer-group"></i>
-                <span>Cards</span>
-            </a>
-        </li>
-
-        <li class="nav-item">
-            <a class="nav-link" href="${adminUrl}/charts">
-                <i class="fas fa-fw fa-chart-area"></i>
-                <span>Charts</span>
-            </a>
-        </li>
-
-        <li class="nav-item">
-            <a class="nav-link" href="${adminUrl}/user">
-                <i class="fas fa-fw fa-table"></i>
-                <span>User Admin</span>
-            </a>
-        </li>
-        
-        <li class="nav-item">
-            <a class="nav-link" href="${adminUrl}/pay">
-                <i class="fas fa-fw fa-table"></i>
-                <span>Pay Admin</span>
-            </a>
-        </li>
-        
-        <li class="nav-item">
-            <a class="nav-link" href="${adminUrl}/board">
-                <i class="fas fa-fw fa-table"></i>
-                <span>Board Admin</span>
-            </a>
-        </li>
-        
-        <li class="nav-item">
-            <a class="nav-link" href="${adminUrl}/music">
-                <i class="fas fa-fw fa-table"></i>
-                <span>Music Admin</span>
-            </a>
-        </li>
-
-        <hr class="sidebar-divider d-none d-md-block">
-
-    </ul>
+</ul>
     <!-- End Sidebar -->
 
     <div id="content-wrapper" class="d-flex flex-column">
@@ -218,7 +194,7 @@
         <!-- Footer -->
         <footer class="sticky-footer bg-white">
             <div class="container my-auto text-center">
-                <span>Copyright &copy; Admin 2026</span>
+                <span>808 &copy; Admin 2026</span>
             </div>
         </footer>
 
