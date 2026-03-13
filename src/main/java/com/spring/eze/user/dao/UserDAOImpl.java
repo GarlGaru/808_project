@@ -64,13 +64,13 @@ public class UserDAOImpl implements UserDAO {
         return updateCnt;
     }
     
-    // 7. 회원탈퇴
-    @Override
-    public int deleteUser(String email) {
-        UserDAO dao = sqlSession.getMapper(UserDAO.class);
-        int deleteCnt = dao.deleteUser(email);
-        return deleteCnt;
-    }
+//    // 7. 회원탈퇴
+//    @Override
+//    public int deleteUser(String email) {
+//        UserDAO dao = sqlSession.getMapper(UserDAO.class);
+//        int deleteCnt = dao.deleteUser(email);
+//        return deleteCnt;
+//    }
 
     // 8. 인증코드 저장
     @Override

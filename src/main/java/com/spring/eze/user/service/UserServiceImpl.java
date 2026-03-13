@@ -194,16 +194,16 @@ public class UserServiceImpl implements UserService {
         return dao.updatePw(map);
     }
 
-    // 7. 회원탈퇴
-    @Override
-    public int deleteUser(HttpServletRequest request)
-            throws ServletException, IOException {
-
-        String email = (String) request.getSession().getAttribute("userEmail");
-        int deleteCnt = dao.deleteUser(email);
-        if (deleteCnt == 1) request.getSession().invalidate();
-        return deleteCnt;
-    }
+//    // 7. 회원탈퇴
+//    @Override
+//    public int deleteUser(HttpServletRequest request)
+//            throws ServletException, IOException {
+//
+//        String email = (String) request.getSession().getAttribute("userEmail");
+//        int deleteCnt = dao.deleteUser(email);
+//        if (deleteCnt == 1) request.getSession().invalidate();
+//        return deleteCnt;
+//    }
 
     // 8. 인증코드 생성 및 DB 저장
     @Override

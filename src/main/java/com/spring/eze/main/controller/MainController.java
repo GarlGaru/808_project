@@ -29,7 +29,6 @@ public class MainController {
     public String main(HttpServletRequest request, HttpServletResponse response, Model model)
 			throws ServletException, IOException {
 		log.info("Welecome");
-
         
 		return "common/main";
     }
@@ -52,7 +51,6 @@ public class MainController {
     public String board(HttpServletRequest request, HttpServletResponse response, Model model)
 			throws ServletException, IOException {
 		log.info("board");
-
         
 		return "common/board";
     }

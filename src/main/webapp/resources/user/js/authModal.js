@@ -6,18 +6,20 @@
      - 오버레이 open/close/ESC/외부클릭 → ModalCore 위임
      - 닫기버튼 id: modal-close-btn → auth-close-btn
      - 로그인 입력 필드(l-email, l-pw) 엔터키 → doLogin() 실행
+     - resetLoginPanel / resetSignupPanel 분리 → 중복 제거
+     - ModalCore.bindOnClose 훅으로 닫힘 시 자동 초기화
 ──────────────────────────────────────────── */
 (function () {
 
   /* ────────────────────────────────────────────
      ① EL — DOM 요소 참조
   ──────────────────────────────────────────── */
-  let EL;
+  var EL;
 
   /* ────────────────────────────────────────────
      ② STATE
   ──────────────────────────────────────────── */
-  const STATE = {
+  var STATE = {
     nickChecked:         false,
     codeVerified:        false,
     serverGeneratedCode: "",
@@ -27,16 +29,16 @@
   /* ────────────────────────────────────────────
      ③ API
   ──────────────────────────────────────────── */
-  const CP = window.__AUTH_CP || "";
+  var CP = window.__AUTH_CP || "";
   console.log("[authModal] ContextPath:", CP);
 
-  const API = {
+  var API = {
 
     async login(email, pw) {
-      const params = new URLSearchParams();
+      var params = new URLSearchParams();
       params.append("email", email);
       params.append("password", pw);
-      const res = await fetch(CP + "/login", {
+      var res = await fetch(CP + "/login", {
         method: "POST",
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
         body: params,
@@ -45,19 +47,19 @@
     },
 
     async checkNick(nick) {
-      const res = await fetch(CP + "/checkNickname?nickname=" + encodeURIComponent(nick));
+      var res = await fetch(CP + "/checkNickname?nickname=" + encodeURIComponent(nick));
       return await res.json();
     },
 
     async _sendCode(email) {
-      const params = new URLSearchParams();
+      var params = new URLSearchParams();
       params.append("email", email);
-      const res = await fetch(CP + "/sendCode", {
+      var res = await fetch(CP + "/sendCode", {
         method: "POST",
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
         body: params,
       });
-      const serverCode = await res.json();
+      var serverCode = await res.json();
       if (serverCode && serverCode.toString().trim().length === 6) {
         return { ok: true, code: serverCode.toString().trim() };
       }
@@ -65,30 +67,30 @@
     },
 
     async sendSignupCode(email) {
-      const dupRes = await fetch(CP + "/checkEmail?email=" + encodeURIComponent(email));
-      const dupCnt = await dupRes.json();
+      var dupRes = await fetch(CP + "/checkEmail?email=" + encodeURIComponent(email));
+      var dupCnt = await dupRes.json();
       if (dupCnt > 0) return { ok: false, message: "이미 사용 중인 이메일입니다." };
       return this._sendCode(email);
     },
 
     async sendResetCode(email) {
-      const dupRes = await fetch(CP + "/checkEmail?email=" + encodeURIComponent(email));
-      const cnt = await dupRes.json();
+      var dupRes = await fetch(CP + "/checkEmail?email=" + encodeURIComponent(email));
+      var cnt = await dupRes.json();
       if (cnt === 0) return { ok: false, message: "가입되지 않은 이메일입니다." };
       return this._sendCode(email);
     },
 
     async signup(nick, email, pw) {
-      const params = new URLSearchParams();
+      var params = new URLSearchParams();
       params.append("nickname", nick);
       params.append("email", email);
       params.append("password", pw);
-      const res = await fetch(CP + "/signup", {
+      var res = await fetch(CP + "/signup", {
         method: "POST",
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
         body: params,
       });
-      const result = await res.json();
+      var result = await res.json();
       if (result === 1) {
         await fetch(CP + "/verifyEmail", {
           method: "POST",
@@ -101,15 +103,15 @@
     },
 
     async resetPw(email, pw) {
-      const params = new URLSearchParams();
+      var params = new URLSearchParams();
       params.append("email", email);
       params.append("password", pw);
-      const res = await fetch(CP + "/updatePw", {
+      var res = await fetch(CP + "/updatePw", {
         method: "POST",
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
         body: params,
       });
-      const result = await res.json();
+      var result = await res.json();
       return result === 1 ? { ok: true } : { ok: false, message: "비밀번호 변경에 실패했습니다." };
     },
   };
@@ -135,10 +137,10 @@
     if (errorEl) errorEl.style.display = "none";
   }
 
-  const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  var EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   function isValidEmail(val) { return EMAIL_RE.test(val); }
 
-  const NICK_RE = /^[가-힣a-zA-Z0-9]+$/;
+  var NICK_RE = /^[가-힣a-zA-Z0-9]+$/;
   function isValidNick(val) { return NICK_RE.test(val); }
 
   function handleEmailInput(input, errorEl) {
@@ -151,9 +153,9 @@
 
   function startTimer(timerEl, stateKey) {
     if (STATE.timers[stateKey]) clearInterval(STATE.timers[stateKey]);
-    let sec = 300;
-    STATE.timers[stateKey] = setInterval(() => {
-      const m = Math.floor(sec / 60), s = sec % 60;
+    var sec = 300;
+    STATE.timers[stateKey] = setInterval(function() {
+      var m = Math.floor(sec / 60), s = sec % 60;
       timerEl.textContent = m + ":" + String(s).padStart(2, "0");
       if (--sec < 0) { clearInterval(STATE.timers[stateKey]); timerEl.textContent = "만료됨"; }
     }, 1000);
@@ -164,7 +166,7 @@
     timerEl.textContent = "5:00";
   }
 
-  const PW_RULES = [
+  var PW_RULES = [
     { key: "letter",  re: /[a-zA-Z]/ },
     { key: "num",     re: /[0-9]/ },
     { key: "special", re: /[!@#$%^&*]/ },
@@ -205,10 +207,71 @@
   }
 
   /* ────────────────────────────────────────────
-     ⑤ 기능 함수
+     ⑤ 패널별 초기화
+     resetLoginPanel  : 로그인 + 비밀번호 재설정 패널
+     resetSignupPanel : 회원가입 패널
+     resetAuthModal   : 전체 (위 두 함수 재사용) + 패널 위치 복구
   ──────────────────────────────────────────── */
 
-  /* ── 오버레이 열기 — ModalCore 위임 ── */
+  function resetLoginPanel() {
+    /* 로그인 입력 */
+    EL.lEmail.value = ""; EL.lEmail.classList.remove("valid", "invalid");
+    EL.lPw.value    = ""; EL.lPw.type = "password"; EL.lPw.classList.remove("valid", "invalid");
+
+    /* 비밀번호 재설정 뷰 */
+    EL.resetView.classList.remove("active");
+    EL.loginView.style.display = "flex";
+    EL.rEmail.value = ""; EL.rEmail.classList.remove("valid", "invalid");
+    EL.rEmailError.textContent = ""; EL.rEmailError.style.display = "none";
+    EL.rCodeField.style.display = "none";
+    EL.rCode.value = ""; EL.rCode.classList.remove("valid", "invalid");
+    EL.rPw.value   = ""; EL.rPw.type = "password"; EL.rPw.classList.remove("valid", "invalid");
+    EL.rPwEye.innerHTML = '<i class="fa-solid fa-eye-slash"></i>';
+    resetPwChecklist(EL.rPwChecklist, "r-");
+    stopTimer(EL.rTimer, "reset");
+  }
+
+  function resetSignupPanel() {
+    /* 회원가입 입력 */
+    EL.nickname.value = ""; EL.nickname.classList.remove("valid", "invalid");
+    EL.nickError.textContent = ""; EL.nickError.style.display = "none";
+    EL.sEmail.value   = ""; EL.sEmail.classList.remove("valid", "invalid");
+    EL.sEmailError.textContent = ""; EL.sEmailError.style.display = "none";
+    EL.sCodeField.style.display = "none";
+    EL.sCode.value = ""; EL.sCode.classList.remove("valid", "invalid");
+    EL.sPw.value   = ""; EL.sPw.type = "password"; EL.sPw.classList.remove("valid", "invalid");
+    EL.sPwEye.innerHTML = '<i class="fa-solid fa-eye-slash"></i>';
+    resetPwChecklist(EL.sPwChecklist, "");
+    stopTimer(EL.sTimer, "signup");
+
+    /* 회원가입 성공 뷰 */
+    EL.signupSuccess.classList.remove("active", "slide-out");
+    EL.signupView.style.display = "flex";
+
+    /* 회원가입 관련 STATE */
+    STATE.nickChecked         = false;
+    STATE.codeVerified        = false;
+    STATE.serverGeneratedCode = "";
+  }
+
+  function resetAuthModal() {
+    resetLoginPanel();
+    resetSignupPanel();
+
+    /* 패널 전환 상태 → 로그인(초기) 위치로 */
+    if (EL.switchCtn.classList.contains("is-txr")) {
+      EL.switchCtn.classList.remove("is-txr", "is-gx");
+      EL.switchC1.classList.remove("is-hidden");
+      EL.switchC2.classList.add("is-hidden");
+      EL.aContainer.classList.remove("is-txl");
+      EL.bContainer.classList.remove("is-txl", "is-z200");
+    }
+  }
+
+  /* ────────────────────────────────────────────
+     ⑥ 기능 함수
+  ──────────────────────────────────────────── */
+
   function openModal(mode) {
     ModalCore.open("auth-overlay");
     if (mode === "register" && !EL.switchCtn.classList.contains("is-txr")) {
@@ -216,7 +279,6 @@
     }
   }
 
-  /* ── 오버레이 닫기 — ModalCore 위임 ── */
   function closeModal() {
     ModalCore.close("auth-overlay");
   }
@@ -230,6 +292,13 @@
     EL.aContainer.classList.toggle("is-txl");
     EL.bContainer.classList.toggle("is-txl");
     EL.bContainer.classList.toggle("is-z200");
+
+    /* 떠나는 패널 초기화 */
+    if (EL.switchCtn.classList.contains("is-txr")) {
+      resetLoginPanel();   /* 로그인 → 회원가입: 로그인 패널 초기화 */
+    } else {
+      resetSignupPanel();  /* 회원가입 → 로그인: 회원가입 패널 초기화 */
+    }
   }
 
   function socialPopup(platform) { alert("현재 준비 중입니다 :)"); }
@@ -369,13 +438,7 @@
     var result = await API.resetPw(email, pw);
     if (!result.ok) { alert(result.message); return; }
 
-    EL.rPw.value   = "";
-    EL.rCode.value = "";
-    fieldReset(EL.rPw, null);
-    fieldReset(EL.rEmail, EL.rEmailError);
-    EL.rCodeField.style.display = "none";
-    stopTimer(EL.rTimer, "reset");
-    resetPwChecklist(EL.rPwChecklist, "r-");
+    resetLoginPanel();
     STATE.codeVerified        = false;
     STATE.serverGeneratedCode = "";
     hideReset();
@@ -383,13 +446,13 @@
   }
 
   /* ────────────────────────────────────────────
-     ⑥ INIT
+     ⑦ INIT
   ──────────────────────────────────────────── */
   window.addEventListener("load", function() {
 
     EL = {
       overlay:   document.getElementById("auth-overlay"),
-      closeBtn:  document.getElementById("auth-close-btn"),   // ← id 변경
+      closeBtn:  document.getElementById("auth-close-btn"),
 
       switchCtn:  document.getElementById("switch-cnt"),
       switchC1:   document.getElementById("switch-c1"),
@@ -431,6 +494,7 @@
     ModalCore.bindCloseBtn(EL.closeBtn, "auth-overlay");
     ModalCore.bindOutsideClick("auth-overlay", ".auth-main");
     ModalCore.bindEscKey("auth-overlay");
+    ModalCore.bindOnClose("auth-overlay", resetAuthModal);
 
     /* ── 폼 submit 기본 동작 방지 ── */
     EL.submitBtns.forEach(function(b) {
@@ -442,7 +506,7 @@
       b.addEventListener("click", changeForm);
     });
 
-    /* ── 로그인 엔터키 — l-email / l-pw 모두 Enter → doLogin() ── */
+    /* ── 로그인 엔터키 ── */
     function onLoginEnter(e) {
       if (e.key === "Enter") doLogin();
     }
@@ -479,7 +543,7 @@
   });
 
   /* ────────────────────────────────────────────
-     ⑦ 외부 노출
+     ⑧ 외부 노출
   ──────────────────────────────────────────── */
   window.openAuthModal  = function(mode) { openModal(mode || "login"); };
   window.closeAuthModal = closeModal;

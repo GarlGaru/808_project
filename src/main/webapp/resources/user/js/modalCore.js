@@ -41,12 +41,20 @@
   /* ── 외부클릭 핸들러 맵 ── */
   var _outsideHandlers = {};
 
+  /* ── onClose 콜백 맵 ── */
+  var _closeCallbacks = {};
+
+  /* ── 열린 오버레이 카운터 (버그2: scroll 복구 안전화) ── */
+  var _openCount = 0;
+
   /* ────────────────────────────────────────────
      open — 오버레이 표시 + body 스크롤 잠금
   ──────────────────────────────────────────── */
   function open(overlayId) {
     var ov = getOverlay(overlayId);
     if (!ov) return;
+    /* 버그2: 이미 열려있으면 카운트 중복 방지 */
+    if (ov.style.display !== 'flex') { _openCount++; }
     ov.style.opacity    = '';
     ov.style.transition = '';
     ov.style.display    = 'flex';
@@ -60,6 +68,8 @@
   function close(overlayId, ms) {
     var ov = getOverlay(overlayId);
     if (!ov) return;
+    /* 버그2: 이미 닫혀있으면 카운트 차감 안 함 */
+    if (ov.style.display === 'flex') { _openCount = Math.max(0, _openCount - 1); }
     var duration = (ms !== undefined) ? ms : 250;
     ov.style.transition = 'opacity ' + duration + 'ms ease';
     ov.style.opacity    = '0';
@@ -67,7 +77,14 @@
       ov.style.display    = 'none';
       ov.style.opacity    = '';
       ov.style.transition = '';
-      document.body.style.overflow = '';
+      /* 버그2: 다른 모달이 열려있으면 scroll 복구 안 함 */
+      if (_openCount === 0) {
+        document.body.style.overflow = '';
+      }
+      /* onClose 콜백 실행 */
+      if (_closeCallbacks[overlayId]) {
+        _closeCallbacks[overlayId]();
+      }
     }, duration);
   }
 
@@ -101,15 +118,16 @@
      이미 열려있는 오버레이에만 반응
   ──────────────────────────────────────────── */
   function bindEscKey(overlayId) {
-    /* 이전 핸들러 제거 */
-    if (_escHandlers[overlayId]) {
-      document.removeEventListener('keydown', _escHandlers[overlayId]);
-    }
+    /* 버그1 수정: 이미 등록된 핸들러 있으면 재등록 안 함 */
+    if (_escHandlers[overlayId]) return;
+
+    /* 버그4 수정: overlay를 클로저에 한 번만 캐싱 — 매 keydown마다 getElementById 호출 방지 */
+    var ov = getOverlay(overlayId);
+    if (!ov) return;
 
     var handler = function (e) {
       if (e.key !== 'Escape') return;
-      var ov = getOverlay(overlayId);
-      if (ov && ov.style.display !== 'none' && ov.style.display !== '') {
+      if (ov.style.display !== 'none' && ov.style.display !== '') {
         close(overlayId);
       }
     };
@@ -128,6 +146,17 @@
     });
   }
 
+  /* ────────────────────────────────────────────
+     bindOnClose — 닫힌 후 실행할 콜백 등록
+     overlayId : 오버레이 id
+     fn        : 콜백 함수
+  ──────────────────────────────────────────── */
+  function bindOnClose(overlayId, fn) {
+    if (typeof fn === 'function') {
+      _closeCallbacks[overlayId] = fn;
+    }
+  }
+
   /* ── 전역 노출 ── */
   window.ModalCore = {
     open:             open,
@@ -135,6 +164,7 @@
     bindOutsideClick: bindOutsideClick,
     bindEscKey:       bindEscKey,
     bindCloseBtn:     bindCloseBtn,
+    bindOnClose:      bindOnClose,
   };
 
 }());

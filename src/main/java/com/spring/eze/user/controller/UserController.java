@@ -132,13 +132,13 @@ public class UserController {
     }
     
     
-    // 10. 회원탈퇴
-    @RequestMapping(value = "/deleteUser", method = RequestMethod.POST)
-    @ResponseBody
-    public int deleteUser(HttpServletRequest request) throws ServletException, IOException {
-        logger.info("<<< url => /user/deleteUser >>>");
-        return service.deleteUser(request);
-    }
+//    // 10. 회원탈퇴
+//    @RequestMapping(value = "/deleteUser", method = RequestMethod.POST)
+//    @ResponseBody
+//    public int deleteUser(HttpServletRequest request) throws ServletException, IOException {
+//        logger.info("<<< url => /user/deleteUser >>>");
+//        return service.deleteUser(request);
+//    }
     
 
 }

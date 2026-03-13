@@ -34,9 +34,9 @@ public interface UserService {
     public int updatePw(HttpServletRequest request)
 			throws ServletException, IOException;
     
-    // 회원탈퇴
-    public int deleteUser(HttpServletRequest request)
-			throws ServletException, IOException;
+//    // 회원탈퇴
+//    public int deleteUser(HttpServletRequest request)
+//			throws ServletException, IOException;
 
     // 인증코드 저장
     public int insertEmailCode(HttpServletRequest request)

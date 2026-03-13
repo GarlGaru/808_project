@@ -74,11 +74,11 @@
      WHERE email = #{email}
 	</update>
 
-    <!-- 7. 회원탈퇴 -->
+<!--     7. 회원탈퇴
     <delete id="deleteUser" parameterType="String">
         DELETE FROM user_tbl
          WHERE email = #{email}
-    </delete>
+    </delete> -->
 
     <!-- 8. 인증코드 저장 -->
 	<insert id="insertEmailCode" parameterType="com.spring.eze.user.dto.EmailCodeDTO">

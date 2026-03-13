@@ -25,8 +25,8 @@ public interface UserDAO {
     // 비밀번호 수정
     public int updatePw(Map<String, Object> map);
 
-    // 회원탈퇴
-    public int deleteUser(String email);
+//    // 회원탈퇴
+//    public int deleteUser(String email);
 
     // 인증코드 저장
     public int insertEmailCode(EmailCodeDTO dto);
