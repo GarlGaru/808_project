@@ -16,11 +16,12 @@
     <%@ include file="/WEB-INF/views/common/common.jsp" %>
     <%@ include file="/WEB-INF/views/common/header.jsp" %>
    
+    <br><br><br><br><br><br>
     <!-- ##### Hero Area Start ##### -->
     <section class="hero-area">
-        <div class="hero-slides owl-carousel">
+        <!-- <div class="hero-slides owl-carousel"> -->
             <!-- Single Hero Slide -->
-            <div class="single-hero-slide d-flex align-items-center justify-content-center">
+            <div class="d-flex align-items-center justify-content-center">
                 <!-- Slide Img -->
                 <!-- <div class="slide-img bg-img" style="background-image: url(img/bg-img/bg-1.jpg);"></div> -->
                 <!-- Slide Content -->
@@ -37,7 +38,7 @@
                 </div>
             </div>
 
-        </div>
+        <!-- </div> -->
     </section>
     <!-- ##### Hero Area End ##### -->
 
