@@ -145,7 +145,7 @@
                         <div class="music-detail-table-head">
                             <div class="music-detail-col-index">#</div>
                             <div class="music-detail-col-song">제목</div>
-                           
+                           	<div class="music-detail-col-artist">아티스트</div>
                             <div class="music-detail-col-album">앨범</div>
                             <div class="music-detail-col-genre">장르</div>
                             <div class="music-detail-col-play">재생</div>
@@ -179,10 +179,14 @@
 
                                         <div class="music-detail-song-info">
                                             <div class="music-detail-song-title">${sim.title}</div>
-                                            <div class="music-detail-song-artist">${sim.artistName}</div>
                                         </div>
-                                    </div>
-
+										
+									</div>
+									
+									<div class="music-detail-col-artist">
+										${sim.artistName}
+										</div>
+										
                                     <div class="music-detail-col-album">
                                         ${sim.albumTitle}
                                     </div>
@@ -211,7 +215,7 @@
                 </div>
             </main>
         </div>
-		<%@ include file="/WEB-INF/views/common/footer.jsp" %>
+	
         <%@ include file="/WEB-INF/views/music/player.jsp" %>
     </div>
 
