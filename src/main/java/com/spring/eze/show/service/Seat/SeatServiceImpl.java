@@ -15,6 +15,7 @@ import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 
 import com.spring.eze.show.dao.Seat.SeatDAO;
@@ -79,7 +80,7 @@ public class SeatServiceImpl implements SeatService {
 	@Override
 	public void selectSeats(HttpServletRequest request, HttpServletResponse response, Model model)
 			throws ServletException, IOException {
-		String showId = request.getParameter("show_id");
+		String showId = request.getParameter("showId");
 		int scheduleId = Integer.parseInt(request.getParameter("scheduleId"));
 		String[] selectedSeats = request.getParameterValues("selectedSeats");
 		
@@ -127,12 +128,32 @@ public class SeatServiceImpl implements SeatService {
 
 	@Override
 	public List<SeatDTO> getSeatStatus(String showId, int scheduleId) {
-		Map<String, Object> map = new HashMap<String, Object>();
+		Map<String, Object> map = new HashMap<>();
 		map.put("showId", showId);
 		map.put("scheduleId", scheduleId);
 		
 		return dao.selectSeatStatus(map);
 		
+	}
+	@Override
+	@Transactional
+	public boolean checkAndLockSeats(String showId, int scheduleId, List<String> seats){
+		
+//	    boolean isAvailable = dao.checkAndLockSeats(showId, scheduleId, seats);
+//	    
+//	    if (!isAvailable) return false;
+
+	    Map<String, Object> map = new HashMap<>();
+	    map.put("showId", showId);
+	    map.put("scheduleId", scheduleId);
+	    map.put("userId", "TEMP_USER"); // 실제로는 세션의 loginUserId 사용
+	    map.put("seatLabels", seats);
+
+//	    int result = dao.updateHoldSeats(map);
+//	    
+//	    return result == seats.size();
+	    
+	    return true; //발표용 return
 	}
 
 }

@@ -16,5 +16,15 @@ public interface ShowDAO {
 	public List<ShowDTO> selectShowUpcoming();
 	
 	//장르별 상세페이지 가져오기
-	public List<ShowDTO> getShowListByCategory(@Param("category") String category);
+	public List<ShowDTO> getShowListByCategory(@Param("category") String category, @Param("subCategory") String subCategory);
+	
+	//개별 상세페이지 가져오기
+	public ShowDTO getShowDetail(@Param("showId") String showId);
+	
+	//날짜,회차 리스트만 가져오도록 
+	public List<ShowDTO> getShowSchedule(@Param("showID") String showId, @Param("playDate") String playDate);
+
+	//랭킹 페이지
+	public List<ShowDTO> getShowRanking(String genre);
+	
 }

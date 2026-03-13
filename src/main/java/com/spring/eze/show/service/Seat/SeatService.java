@@ -31,5 +31,7 @@ public interface SeatService {
 
     
     public List<SeatDTO> getSeatStatus(String showId, int scheduleId);
+    
+    public boolean checkAndLockSeats(String showId, int scheduleId, List<String> seats);
 }
 
