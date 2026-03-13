@@ -153,14 +153,6 @@
             <form action="${adminUrl}/music/admin_artist" method="post" enctype="multipart/form-data">
 
                 <div class="form-group">
-                    <label for="artistId">
-                        아티스트 ID
-                        <span class="required-mark">*</span>
-                    </label>
-                    <input type="number" id="artistId" name="artistId" class="form-control" required>
-                </div>
-
-                <div class="form-group">
                     <label for="artistName">
                         아티스트명
                         <span class="required-mark">*</span>
