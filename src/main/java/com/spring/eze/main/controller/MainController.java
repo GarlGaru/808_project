@@ -33,7 +33,7 @@ public class MainController {
 		return "common/main";
     }
 
-	@RequestMapping({"/main/test","/test", "", "*.java"})
+	@RequestMapping({"/main/test","/test", "","/"})
     public String testDBConnection(
     		Locale locale, HttpServletRequest request, HttpServletResponse response, Model model)
 			throws ServletException, IOException {
@@ -50,11 +50,18 @@ public class MainController {
             service.testDBconnection(request, response, model);
         }catch (Exception e){
             e.printStackTrace();
-            System.out.println("이 메세지를 보고 있다면 DB에 문제가 생긴겁니다");
+            String errorMsg = "DB에 연결에 문제가 발생했습니다.";
+            System.out.println(errorMsg);
             System.out.println("Message : \n" + e.getMessage());
+
+    		model.addAttribute("showMe", errorMsg );
         }
 		return "home";
     }
 
+    @RequestMapping("/error/404")
+    public String pageNotFound(){
+        return "common/error/404";
+    }
 
 }
