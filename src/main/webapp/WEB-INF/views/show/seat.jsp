@@ -21,11 +21,8 @@
 </head>
 <body class="dark-mode">
     <%@ include file="/WEB-INF/views/common/common.jsp" %>
-    <%@ include file="/WEB-INF/views/common/header.jsp" %>
-    
-    <br><br><br><br>
-
-    
+    <%-- <%@ include file="/WEB-INF/views/common/header.jsp" %>
+     --%>
 
 <div class="step-header">
 		<div class="step-title">
@@ -35,9 +32,9 @@
 	</div>
 
 <form id="reserveForm" action="${pageContext.request.contextPath}/show/reserve" method="post">
-    <input type="hidden" name="showId" value="1"> <%-- ${showId} --%>
-    <input type="hidden" name="scheduleId" value="1">		<%-- ${scheduleId} --%>
-    <input type="hidden" name="show_title" value="뮤지컬 <한복입은 남자>">
+    <input type="hidden" name="showId" value="${showId}"> <%-- ${showId} --%>
+    <input type="hidden" name="scheduleId" value="${scheduleId}">		<%-- ${scheduleId} --%>
+    <input type="hidden" name="show_title" value="${dto.title}">
 
         <div class="seat-wrapper">
         	<div class="seat-box">
@@ -108,6 +105,10 @@
            		 <div class="seat-right">
                 <div class="price-box">
                 
+                	<h5>공연명</h5>
+                	<p>${dto.title}</p>
+                	<hr>
+                
                     <h5>좌석 등급별 가격</h5>
                     <p><span class="grade vip"></span> VIP : 150,000원</p>
                     <p><span class="grade r"></span> R : 120,000원</p>
@@ -130,7 +131,7 @@
         </div>
     </form>
 
-		<%@ include file="/WEB-INF/views/common/footer.jsp" %>
+	<%-- 	<%@ include file="/WEB-INF/views/common/footer.jsp" %> --%>
   
 
     <script src="${path}/resources/common/js/jquery/jquery-2.2.4.min.js"></script>
@@ -196,7 +197,7 @@
                 type: "POST",
                 traditional: true,
                 data: {
-                    show_id: showId,
+                    showId: showId,
                     scheduleId: scheduleId,
                     selectedSeats: selectedSeats
                 },
@@ -207,8 +208,8 @@
                     	console.log("7. success 분기 진입");
                     	
                         const popupName = "seatPopup";
-                        const popupWidth = 900;
-                        const popupHeight = 700;
+                        const popupWidth = 800;
+                        const popupHeight = 600;
                         const left = (window.screen.width - popupWidth) / 2;
                         const top = (window.screen.height - popupHeight) / 2;
                         const specs = 'width=' + popupWidth + ',height=' + popupHeight + ',left=' + left + ',top=' + top;
@@ -218,10 +219,13 @@
                         const $form = $("#reserveForm");
                         $form.attr("target", popupName);
                         $form.submit();
-
-                    }else{
+                        
+                    }else if(res === "login_required") {
+                    	alert("로그인 후 이용해주세요.");
+                    	 
+                    }else {
                     	console.log("8. fail 분기 진입");
-                        alert("이미 선택된 좌석입니다.");
+                        alert("이미 선택된 좌석입니다. 다시 선택해주세요.");
                         location.reload();
                     }
 

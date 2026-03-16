@@ -55,60 +55,85 @@
 	</div>
 	
 	<script src="${path}/resources/common/js/jquery/jquery-2.2.4.min.js"></script>
-<script>
-	$(document).ready(function(){
-		let timeLeft = 300;	//5분=300초 맞지
-		const $timerDisplay = $('#timer');
 		
-		const timerInterval = setInterval(function(){
-			let minutes = Math.floor(timeLeft / 60);
-			let seconds = timeLeft % 60;
-			
-			//00:00형식
-			minutes = minutes < 10 ? '0' + minutes : minutes;
-			seconds = seconds < 10 ? '0' + seconds : seconds;
-			
-			$timerDisplay.text(minutes + ":" + seconds);
-			
-			if(timeLeft <= 0) {
-				clearInterval(timerInterval);
-				
-				$.ajax({
-					url: "${path}/show/release",
-					type: "POST",
-					traditional: true,
-					data: {
-						showId: "${param.show_id}",
-						scheduleId: "${param.schedule_id}",
-						"seatLabels[]": [
-							<c:forEach var="s" items="${paramValues.selectedSeats}" varStatus="status">
-								"${s}"${!status.last ? ',' : ''}
-							</c:forEach>
-						]
-					},
-					success: function() {
-						alert("결제시간 초과로 이전 페이지로 돌아갑니다.")
-						window.close();
-					},
-					error: function() {
-						window.close(); //에러나도 일단 창닫아
-					}
-				});
-			}
-			timeLeft--;
-		}, 1000);
+		<script>
+		$(document).ready(function(){
+		    let timeLeft = 300;
+		    const $timerDisplay = $('#timer');
+		    
+		    const timerInterval = setInterval(function(){
+		        let minutes = Math.floor(timeLeft / 60);
+		        let seconds = timeLeft % 60;
+		        
+		        minutes = minutes < 10 ? '0' + minutes : minutes;
+		        seconds = seconds < 10 ? '0' + seconds : seconds;
+		        
+		        $timerDisplay.text(minutes + ":" + seconds);
+		        
+		        if(timeLeft <= 0) {
+		            clearInterval(timerInterval);
+		            
+		            $.ajax({
+		                url: "${path}/show/release",
+		                type: "POST",
+		                traditional: true,
+		                data: {
+		                    showId: "${param.showId}",
+		                    scheduleId: "${param.scheduleId}",
+		                    "seatLabels[]": [
+		                        <c:forEach var="s" items="${paramValues.selectedSeats}" varStatus="status">
+		                            "${s}"${!status.last ? ',' : ''}
+		                        </c:forEach>
+		                    ]
+		                },
+		                success: function(res) {
+		                    alert("결제시간 초과로 이전 페이지로 돌아갑니다.")
+		                    location.href="${path}/show/seat?showId=${param.showId}&scheduleId=${param.scheduleId}";
+		                },
+		                alert("오류가 발생했습니다. 다시 시도해주세요.");
+		                location.href = "${path}/show/seat?showId=${param.showId}&scheduleId=${param.scheduleId}";
+		                }
+		            });
+		        }
+		        timeLeft--;
+		    }, 1000);
+		    
+		    $('.btn-next').on('click', function(){
+		        if(!$('#chk-agree').is(':checked')) {
+		            alert("예매 및 환불 안내 확인 후 체크해주세요.");
+		            return;
+		        }
+		        location.href = "${path}/show/payment";
+		    });
+		    
+		    $('.btn-prev').on('click', function(){
+		        $.ajax({
+		            url: "${path}/show/release",
+		            type: "POST",
+		            traditional: true,
+		            async: false,
+		            data: {
+		                showId: "${param.showId}",
+		                scheduleId: "${param.scheduleId}",
+		                "seatLabels[]": [
+		                    <c:forEach var="s" items="${paramValues.selectedSeats}" varStatus="status">
+		                        "${s}"${!status.last ? ',' : ''}
+		                    </c:forEach>
+		                ]
+		            },
+		            success: function(res) {
+		                console.log("좌석 해제:", res);
+		                
+		                location.href = "${path}/show/seat?showId=${param.showId}&scheduleId=${param.scheduleId}";
+		            },
+		            error: function(xhr) {
+		                window.close();
+		            }
+		        });
+		    });
 		
-		$('.btn-next').on('click', function(){
-			if(!$('#chk-agree').is(':checked')) {
-				alert("예매 및 환불 안내 확인 후 체크해주세요.");
-				return;
-			}
-			location.href = "${path}/show/payment"; //이동경로 추후 변경
 		});
-	});
-
-</script>
-	
+		</script>
 	
 	<div class="wrapper">
 		<div class="left-side">
@@ -148,7 +173,7 @@
 			</div>
 
 			<div class="footer-btns">
-				<button class="btn btn-prev" onclick="window.close()">이전</button>
+				<button class="btn btn-prev" >이전</button> 	<!-- onclick="window.close()" -->
 				<button class="btn btn-next" onclick="alert('결제 페이지로 이동합니다.')">다음단계</button>
 			</div>
 		</div>

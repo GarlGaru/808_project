@@ -115,6 +115,20 @@
   
   </select>
 
-
+<!-- 중복예매 방지  -->
+	<insert id="insertReservation" parameterType="map">
+		INSERT INTO reservation_tbl
+		(reservation_id, user_id, seat_id, show_id, schedule_id, status)
+		SELECT reservation_seq.NEXTVAL, #{userId}, #{seatId}, #{showId}, #{scheduleId}, 'PENDING'
+		FROM dual
+		WHERE NOT EXISTS (
+			SELECT 1
+			FROM reservation_tbl
+			WHERE schedule_id = #{scheduleId}
+			AND seat_id = #{seatId}
+			AND status IN ('PENDING', 'CONFIRMED')
+		)
+	
+	</insert>
 
 </mapper>

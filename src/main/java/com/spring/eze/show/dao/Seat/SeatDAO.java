@@ -25,6 +25,8 @@ public interface SeatDAO {
 	
 	public int updateReleaseExpiredSeats();
 	
-	public boolean checkAndLockSeats(String showId, int scheduleId, List<String> seats);
+	public int lockAndHoldSeats(Map<String, Object> map);
+	
+	public int holdSeatsNow(Map<String, Object> map);
 	
 }

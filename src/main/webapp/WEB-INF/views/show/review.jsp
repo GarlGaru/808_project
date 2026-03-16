@@ -25,12 +25,6 @@
    
     <!-- ##### Hero Area Start ##### -->
 	<h2>공연 리뷰</h2>
-	
-	
-	
-	<div>
-	평균 별점 : ⭐ <span id="avgRating">0</span>
-	</div>
 
 	<hr>
 	
@@ -63,10 +57,12 @@
 	<hr>
 	
 	<h3 style="margin-top: 40px;">리뷰 목록</h3>
+	
 		<select id="sortSelect">
 		<option value="latest">최신순</option>
 		<option value="rating">평점순</option>
 		</select>
+		<span class="avg-rating-label">평균 별점 : ⭐ <span id="avgRating">0</span></span>
 	
 	<hr>
 	<div id="reviewList"></div>

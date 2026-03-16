@@ -4,6 +4,7 @@ package com.spring.eze.show.controller;
 import com.spring.eze.main.service.MainService;
 import com.spring.eze.show.dao.Show.ShowDAO;
 import com.spring.eze.show.dto.Seat.SeatDTO;
+import com.spring.eze.show.dto.Show.ShowDTO;
 import com.spring.eze.show.dto.review.ReviewDTO;
 import com.spring.eze.show.service.Seat.SeatService;
 
@@ -306,6 +307,8 @@ public class ShowController {
 		model.addAttribute("scheduleId",scheduleId);
 		model.addAttribute("showId",showId);
 		
+		showservice.getShowDetail(showId, model);
+		
 		seatService.getSeatList(request, response, model);
 		return "show/seat";
     }
@@ -329,12 +332,18 @@ public class ShowController {
     @ResponseBody
     @PostMapping("/reserveCheck")
     public String reserveCheck(
-            @RequestParam("show_id") String showId,
+            @RequestParam("showId") String showId,
             @RequestParam("scheduleId") int scheduleId,
-            @RequestParam("selectedSeats") List<String> seats) {
+            @RequestParam("selectedSeats") List<String> seats, HttpSession session) {
 
-        boolean result = seatService.checkAndLockSeats(showId, scheduleId, seats);
-
+    	UserDTO loginUser = (UserDTO)session.getAttribute("loginUser");
+    	if(loginUser == null) {
+    		return "login_required";
+    	}
+    	
+    	String userId = String.valueOf(loginUser.getUserId());
+    	
+        boolean result = seatService.checkAndLockSeats(showId, scheduleId, seats, userId);
         return result ? "success" : "fail";
     }
     
