@@ -151,32 +151,46 @@
                             <div class="music-detail-col-play">재생</div>
                         </div>
 
-                        <!-- 추천곡 목록 -->
-                        <div class="music-detail-table-body">
-                            <c:forEach var="sim" items="${similarList}" varStatus="st">
-                                <div class="music-detail-row"
-                                     onclick="location.href='${path}/music/detail?songId=${sim.songId}'">
-
-                                    <div class="music-detail-col-index">
-                                        ${st.index + 1}
-                                    </div>
-
-                                    <div class="music-detail-col-song">
-                                        <div class="music-detail-song-thumb-wrap">
-                                            <c:choose>
-                                                <c:when test="${not empty sim.coverImageUrl}">
-                                                    <img src="${path}${sim.coverImageUrl}"
-                                                         alt="${sim.title}"
-                                                         class="music-detail-song-thumb">
-                                                </c:when>
-                                                <c:otherwise>
-                                                    <img src="${path}/resources/music/img/default_album.jpg"
-                                                         alt="default album"
-                                                         class="music-detail-song-thumb">
-                                                </c:otherwise>
-                                            </c:choose>
-                                        </div>
-
+             			<!-- 추천곡들이 들어가는 전체 박스 -->
+						<div class="music-detail-table-body">
+						
+						    <!-- similarList 안의 곡들을 하나씩 반복 -->
+						    <c:forEach var="sim" items="${similarList}" varStatus="st">
+						
+						        <!-- 곡 한 줄 / 클릭 시 상세페이지 이동 -->
+						        <div class="music-detail-row"
+						             onclick="location.href='${path}/music/detail?songId=${sim.songId}'">
+						
+						            <!-- 몇 번째 곡인지 번호 표시 -->
+						            <div class="music-detail-col-index">
+						                ${st.index + 1}
+						            </div>
+						
+						            <!-- 곡 정보가 들어가는 칸 -->
+						            <div class="music-detail-col-song">
+						
+						                <!-- 앨범 썸네일 박스 -->
+						                <div class="music-detail-song-thumb-wrap">
+						
+						                    <!-- 이미지 존재 여부 확인 -->
+						                    <c:choose>
+						
+						                        <!-- 이미지가 있으면 실제 앨범 이미지 출력 -->
+						                        <c:when test="${not empty sim.coverImageUrl}">
+						                            <img src="${path}${sim.coverImageUrl}"
+						                                 alt="${sim.title}"
+						                                 class="music-detail-song-thumb">
+						                        </c:when>
+						
+						                        <!-- 이미지가 없으면 기본 앨범 이미지 출력 -->
+						                        <c:otherwise>
+						                            <img src="${path}/resources/music/img/default_album.jpg"
+						                                 alt="default album"
+						                                 class="music-detail-song-thumb">
+						                        </c:otherwise>
+						
+						                    </c:choose>
+						                </div>
                                         <div class="music-detail-song-info">
                                             <div class="music-detail-song-title">${sim.title}</div>
                                         </div>
