@@ -116,7 +116,7 @@ public class kakaoPayController {
     @GetMapping("/request_cancel")
     @ResponseBody
     public String cancelRequest(@RequestParam("orderId") String orderId){
-    	
+    	System.out.println("컨트롤러 orderId = [" + orderId + "]");
     	kakaopayService.cancel(orderId, null); // null = 전체취소
     	
     	return "OK";
