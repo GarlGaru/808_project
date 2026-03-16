@@ -24,5 +24,7 @@ public class MainServiceImpl implements MainService {
 			throws ServletException, IOException {
 		TestDTO dto = dao.testDBConnection();
 		System.out.println(dto);
+
+		model.addAttribute("showMe", dto.getShowMe() );
 	}
 }

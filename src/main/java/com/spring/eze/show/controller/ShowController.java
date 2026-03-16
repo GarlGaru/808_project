@@ -175,7 +175,6 @@ public class ShowController {
      }
 
    
-	// 1. 이 주소는 '화면(JSP)'을 띄워주는 용도야! (@ResponseBody 쓰면 안 돼!)
 	@GetMapping("/review")
 	public String reviewPage(Model model) {
 	    log.info("리뷰 테스트 페이지 접속");

@@ -29,35 +29,22 @@
     <%@ include file="/WEB-INF/views/common/common.jsp" %>
     <%@ include file="/WEB-INF/views/common/header.jsp" %>
 
-    <!-- 
-        music-layout-page
-        : 음악 페이지 전체를 감싸는 최상위 래퍼
-    -->
+    <!--  music-layout-page: 음악 페이지 전체를 감싸는 최상위 래퍼-->
     <div class="music-layout-page">
 
-        <!-- 
-            music-layout-content
-            : 사이드바 + 메인 콘텐츠를 가로로 배치하는 영역
-        -->
+        <!-- music-layout-content: 사이드바 + 메인 콘텐츠를 가로로 배치하는 영역-->
         <div class="music-layout-content">
 
-            <!-- 
-                music-layout-aside
-                : 왼쪽 사이드바 고정 폭 영역
-            -->
+            <!-- music-layout-aside : 왼쪽 사이드바 고정 폭 영역-->
             <aside class="music-layout-aside">
                 <%@ include file="/WEB-INF/views/music/aside.jsp" %>
             </aside>
 
-            <!-- 
-                music-layout-main
-                : 메인 콘텐츠가 들어가는 영역
-                현재는 mainstory.jsp를 포함
-            -->
+            <!-- music-layout-main: 메인 콘텐츠가 들어가는 영역 현재는 mainstory.jsp를 포함-->
             <main class="music-layout-main">
-            
                 <%@ include file="/WEB-INF/views/music/mainstory.jsp" %>
             </main>
+        
         </div>
 
         <!-- 하단 고정 플레이어 -->
