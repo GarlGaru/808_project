@@ -5,8 +5,8 @@ import java.sql.Date;
 public class MypageBoardDTO {
 	
 	private int    bno;     // 게시글 번호
-	private String title;   // 제목
-	private String content; // 내용
+	private String title;   // 게시글 제목
+	private String content; // 게시글 내용
 	private Date   regdate;	// 작성일
 	private int    viewcnt; // 조회수
 	

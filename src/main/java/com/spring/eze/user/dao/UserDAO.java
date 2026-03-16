@@ -9,6 +9,9 @@ public interface UserDAO {
 
     // 회원가입
     public int insertUser(UserDTO dto);
+    
+    // 프로필 생성
+    public int insertProfile(int userId);
 
     // 이메일 중복확인
     public int checkEmail(String email);

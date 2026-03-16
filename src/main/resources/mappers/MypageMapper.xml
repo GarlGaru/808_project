@@ -2,327 +2,324 @@
 <!DOCTYPE mapper
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-  
+
 <mapper namespace="com.spring.eze.user.dao.MypageDAO">
-  
+
 <!-- ────────────────────────────────────────────
-       유저 + 프로필 조회
-     ──────────────────────────────────────────── -->
+     유저 + 프로필 조회
+──────────────────────────────────────────── -->
   <!-- association: UserDTO 안의 ProfileDTO 1:1 중첩 매핑 -->
   <!-- 내정보 수정 후 세션 갱신용 유저+프로필 재조회 -->
   <resultMap id="userWithProfileMap" type="com.spring.eze.user.dto.UserDTO">
-	  <id	  property="userId"     column="user_id"/>
-	  <result property="email"	    column="email"/>
-	  <result property="nickname"	column="nickname"/>
-	  <result property="createdAt"  column="created_at"/>
-  	  <association property="profile"
-  	  			   javaType="com.spring.eze.user.dto.ProfileDTO">
-  	  		<result property="membershipType" column="membership_type"/>
-  	  		<result property="birthDate"	  column="birth_date"/>
-  	  		<result property="bio"			  column="bio"/>
-  	  		<result property="photoUrl"	      column="photo_url"/>
-  	  		<result property="updateAt"		  column="updated_at"/>
-  	   </association>		
-  </resultMap>		
-	  
-  <!-- 마이페지이 진입 시 유저 기본정보 + 세션 userId로 프로필 한번에 조회 -->
+    <id     property="userId"    column="user_id"/>
+    <result property="email"     column="email"/>
+    <result property="nickname"  column="nickname"/>
+    <result property="password"  column="password"/>
+    <result property="createdAt" column="created_at"/>
+    <association property="profile"
+                 javaType="com.spring.eze.user.dto.ProfileDTO">
+      <result property="membershipType" column="membership_type"/>
+      <result property="birthDate"      column="birth_date"/>
+      <result property="bio"            column="bio"/>
+      <result property="photoUrl"       column="photo_url"/>
+      <result property="updateAt"       column="updated_at"/>
+    </association>
+  </resultMap>
+
+  <!-- 마이페이지 진입 시 유저 기본정보 + 프로필 한번에 조회 -->
   <!-- LEFT JOIN 이유: 프로필 미등록 유저도 조회 가능해야 함 -->
+  <!-- [수정] password 컬럼 추가 — updatePw에서 BCrypt matches() 비교용 -->
   <select id="selectUserWithProfile" parameterType="int" resultMap="userWithProfileMap">
-	     SELECT U.USER_ID
-	          , U.EMAIL
-	          , U.NICKNAME
-	          , U.CREATED_AT
-	          , P.MEMBERSHIP_TYPE
-	          , P.BIRTH_DATE
-	          , P.BIO
-	          , P.PHOTO_URL
-	          , P.UPDATED_AT
-	       FROM USER_TBL U
-	       LEFT JOIN PROFILE_TBL P ON U.USER_ID = P.USER_ID
-	      WHERE U.USER_ID = #{userId}
+    SELECT U.USER_ID
+         , U.EMAIL
+         , U.NICKNAME
+         , U.PASSWORD
+         , U.CREATED_AT
+         , P.MEMBERSHIP_TYPE
+         , P.BIRTH_DATE
+         , P.BIO
+         , P.PHOTO_URL
+         , P.UPDATED_AT
+      FROM USER_TBL U
+      LEFT JOIN PROFILE_TBL P ON U.USER_ID = P.USER_ID
+     WHERE U.USER_ID = #{userId}
   </select>
-  
+
+
 <!-- ────────────────────────────────────────────
-	 내가 쓴 글
-     ──────────────────────────────────────────── --> 
-  <!-- 더 보기 방식 10개씩 로드, map 파라미터: userId, startRow, endRow  -->
+     내가 쓴 글
+──────────────────────────────────────────── -->
+  <!-- 더보기 방식 10개씩 로드 -->
+  <!-- map 파라미터: userId, startRow, endRow -->
   <select id="selectMyBoardList" parameterType="map" resultType="com.spring.eze.user.dto.MypageBoardDTO">
-	  	SELECT * FROM (
-	  		SELECT ROWNUM AS RNUM, A.*
-	  		FROM (
-	  			 SELECT B.BNO
-	  			 	  , B.TITLE
-	  			 	  , B.CONTENT
-	  			 	  , B.REGDATE
-	  			 	  , B.VIEWCNT
-	 			   FROM FREE_BOARD_TBL B
-	 			  WHERE B.USER_ID = #{userId}
-	 			  ORDER BY B.BNO DESC
-	  			  ) A
-			WHERE ROWNUM &lt;= #{endRow}
-	  	)
-	  	 WHERE RNUM &gt;= #{starRow}
+    SELECT * FROM (
+      SELECT ROWNUM AS RNUM, A.*
+        FROM (
+              SELECT B.BNO
+                   , B.TITLE
+                   , B.CONTENT
+                   , B.REGDATE
+                   , B.VIEWCNT
+                FROM FREE_BOARD_TBL B
+               WHERE B.USER_ID = #{userId}
+               ORDER BY B.BNO DESC
+             ) A
+       WHERE ROWNUM &lt;= #{endRow}
+    )
+    WHERE RNUM &gt;= #{startRow}
   </select>
-  
+
+
 <!-- ────────────────────────────────────────────
-	 내가 쓴 댓글
-     ──────────────────────────────────────────── --> 
-     <!-- 내가 쓴 댓글, 더보기 방식 10개씩 로드, 원글제목 같이 조회,  -->
-     <select id="selectMyCommentList" parameterType="map" resultType="com.spring.eze.user.dto.MypageCommentDTO">
-         SELECT * FROM (
-         SELECT ROWNUM AS RNUM, A.*
-           FROM (
-                 SELECT C.CNO
-                      , C.BNO
-                      , B.TITLE  AS boardTitle
-                      , C.CONTENT
-                      , C.REGDATE
-                   FROM FREE_COMMENT_TBL C
-                   JOIN FREE_BOARD_TBL   B ON C.BNO = B.BNO
-                  WHERE C.USER_ID = #{userId}
-                  ORDER BY C.CNO DESC
-                ) A
-          WHERE ROWNUM &lt;= #{endRow}
-     )
-      WHERE RNUM &gt;= #{startRow}
-     </select>
-      
+     내가 쓴 댓글
+──────────────────────────────────────────── -->
+  <!-- 더보기 방식 10개씩 로드, 원글 제목 JOIN -->
+  <select id="selectMyCommentList" parameterType="map" resultType="com.spring.eze.user.dto.MypageCommentDTO">
+    SELECT * FROM (
+      SELECT ROWNUM AS RNUM, A.*
+        FROM (
+              SELECT C.CNO
+                   , C.BNO
+                   , B.TITLE  AS boardTitle
+                   , C.CONTENT
+                   , C.REGDATE
+                FROM FREE_COMMENT_TBL C
+                JOIN FREE_BOARD_TBL   B ON C.BNO = B.BNO
+               WHERE C.USER_ID = #{userId}
+               ORDER BY C.CNO DESC
+             ) A
+       WHERE ROWNUM &lt;= #{endRow}
+    )
+    WHERE RNUM &gt;= #{startRow}
+  </select>
+
+
 <!-- ────────────────────────────────────────────
-	 예매 내역
-     ──────────────────────────────────────────── --> 
-      
+     예매 내역 — 예매팀 연동 전 미사용
+──────────────────────────────────────────── -->
+  <!-- 예매팀 연동 후 주석 해제 예정 -->
+  <!--
+  <select id="selectMyReservationList" parameterType="int"
+          resultType="com.spring.eze.user.dto.MypageReservationDTO">
+      ...
+  </select>
+  -->
+
+
 <!-- ────────────────────────────────────────────
-	 결제 내역, 최신순 전체 조회, 월별 지출 합계
-     ──────────────────────────────────────────── --> 
-     <!-- 결제내역 최신순 조회 -->
-    <select id="selectMyPaymentList" parameterType="int" resultType="com.spring.eze.user.dto.MypagePaymentDTO">
-        SELECT ORDER_ID     AS orderId
-             , ITEM_NAME    AS itemName
-             , TOTAL_AMOUNT AS totalAmount
-             , APPROVED_AT  AS approvedAt
-             , CREATED_AT   AS createdAt
-             , STATUS       AS status
-             , PAYMENT_TYPE AS paymentType
-          FROM PAYMENT_ORDER
-         WHERE USER_ID = #{userId}
-         ORDER BY CREATED_AT DESC
-    </select>
-     
-        <!-- 월별 지출 합계, Chart.js 막대그래프용, 최근 12개월 APPROVED 상태만 GROUP BY 월별 합산 -->
-    <select id="selectMonthlyStats" parameterType="int" resultType="com.spring.eze.user.dto.MypageMonthlyStatDTO">
-        SELECT TO_CHAR(APPROVED_AT, 'YYYY-MM') AS yearMonth
-             , SUM(TOTAL_AMOUNT)               AS totalAmount
-          FROM PAYMENT_ORDER
-         WHERE USER_ID     = #{userId}
-           AND STATUS      = 'APPROVED'
-           AND APPROVED_AT >= ADD_MONTHS(SYSDATE, -12)
-         GROUP BY TO_CHAR(APPROVED_AT, 'YYYY-MM')
-         ORDER BY yearMonth ASC
-    </select>
-     
+     결제 내역 / 월별 지출 합계
+──────────────────────────────────────────── -->
+  <!-- 결제 내역 최신순 전체 조회 -->
+  <select id="selectMyPaymentList" parameterType="int" resultType="com.spring.eze.user.dto.MypagePaymentDTO">
+    SELECT ORDER_ID     AS orderId
+         , ITEM_NAME    AS itemName
+         , TOTAL_AMOUNT AS totalAmount
+         , APPROVED_AT  AS approvedAt
+         , CREATED_AT   AS createdAt
+         , STATUS       AS status
+         , PAYMENT_TYPE AS paymentType
+      FROM PAYMENT_ORDER
+     WHERE USER_ID = #{userId}
+     ORDER BY CREATED_AT DESC
+  </select>
+
+  <!-- 월별 지출 합계 — Chart.js 막대그래프용 -->
+  <!-- 최근 12개월, APPROVED 상태만, 월별 GROUP BY -->
+  <select id="selectMonthlyStats" parameterType="int" resultType="com.spring.eze.user.dto.MypageMonthlyStatDTO">
+    SELECT TO_CHAR(APPROVED_AT, 'YYYY-MM') AS yearMonth
+         , SUM(TOTAL_AMOUNT)               AS totalAmount
+      FROM PAYMENT_ORDER
+     WHERE USER_ID     = #{userId}
+       AND STATUS      = 'APPROVED'
+       AND APPROVED_AT >= ADD_MONTHS(SYSDATE, -12)
+     GROUP BY TO_CHAR(APPROVED_AT, 'YYYY-MM')
+     ORDER BY yearMonth ASC
+  </select>
+
+
 <!-- ────────────────────────────────────────────
-	 808 플레이 리포트
-	  SCORE=1  → 재생 시작 row
-      SCORE=5  → 10초 청취 row
-      이번달   → TRUNC(SYSDATE, 'MM') 이번달 1일 00:00
-      전월     → ADD_MONTHS(TRUNC(SYSDATE,'MM'),-1) ~ 이번달 1일 전날
-      NVL로 데이터 없을 때 0 반환
-     ──────────────────────────────────────────── --> 
-      <!-- 사용자 재생 통계 => 총 재생 횟수, 총 재생 시간, 지난달 재생 시간, 들은 곡 종류 수 -->
-        <select id="selectPlaySummary"
-            parameterType="int"
-            resultType="com.spring.eze.user.dto.MypagePlayReportDTO">
-        SELECT NVL(COUNT(CASE WHEN SCORE = 1 THEN 1 END), 0)
-                   AS totalPlayCount
+     808 플레이 리포트
+     SCORE=1  → 재생 시작 row
+     SCORE=5  → 10초 청취 row
+──────────────────────────────────────────── -->
 
-             , NVL(COUNT(CASE WHEN SCORE = 5 THEN 1 END) * 10, 0)
-                   AS totalPlayTimeSec
+  <!-- 사용자 재생 통계 요약 -->
+  <!-- 총 재생횟수(SCORE=1), 총 청취시간(SCORE=5 * 10초), 전월 청취시간, 고유 트랙 수 -->
+  <select id="selectPlaySummary" parameterType="int"
+          resultType="com.spring.eze.user.dto.MypagePlayReportDTO">
+    SELECT NVL(COUNT(CASE WHEN SCORE = 1 THEN 1 END), 0)
+               AS totalPlayCount
 
-             , NVL(COUNT(CASE WHEN SCORE = 5
-                               AND CREATED_AT >= ADD_MONTHS(TRUNC(SYSDATE, 'MM'), -1)
-                               AND CREATED_AT  &lt; TRUNC(SYSDATE, 'MM')
-                          THEN 1 END) * 10, 0)
-                   AS prevMonthPlayTimeSec
+         , NVL(COUNT(CASE WHEN SCORE = 5 THEN 1 END) * 10, 0)
+               AS totalPlayTimeSec
 
-             , NVL(COUNT(DISTINCT CASE WHEN SCORE = 1 THEN SONG_ID END), 0)
-                   AS uniqueTrackCount
+         , NVL(COUNT(CASE WHEN SCORE = 5
+                           AND CREATED_AT >= ADD_MONTHS(TRUNC(SYSDATE, 'MM'), -1)
+                           AND CREATED_AT  &lt; TRUNC(SYSDATE, 'MM')
+                      THEN 1 END) * 10, 0)
+               AS prevMonthPlayTimeSec
 
-          FROM SONG_SCORE_TBL
-         WHERE USER_ID = #{userId}
-    </select>
+         , NVL(COUNT(DISTINCT CASE WHEN SCORE = 1 THEN SONG_ID END), 0)
+               AS uniqueTrackCount
+
+      FROM SONG_SCORE_TBL
+     WHERE USER_ID = #{userId}
+  </select>
 
 
-    <!-- 요일별 재생수
-         SCORE=5 기준 — 실제 청취가 일어난 시간 기준이 더 의미있음
-         TO_CHAR(CREATED_AT, 'D') → Oracle 요일 인덱스 (1=일 ~ 7=토)
-         데이터 없는 요일은 row 자체가 안나옴
-         → Service에서 1~7 배열 0채움 후 dayName 변환해서 Chart.js 전달 -->
-    <select id="selectPlayCountByDay"
-            parameterType="int"
-            resultType="com.spring.eze.user.dto.MypageDayStatDTO">
-        SELECT TO_NUMBER(TO_CHAR(CREATED_AT, 'D')) AS dayIndex
-             , COUNT(*)                             AS playCount
-          FROM SONG_SCORE_TBL
-         WHERE USER_ID = #{userId}
-           AND SCORE   = 5
-         GROUP BY TO_CHAR(CREATED_AT, 'D')
-         ORDER BY TO_NUMBER(TO_CHAR(CREATED_AT, 'D')) ASC
-    </select>
+  <!-- 요일별 재생수 -->
+  <!-- SCORE=5 기준 — 실제 청취 행 카운트 -->
+  <!-- TO_CHAR(CREATED_AT, 'D') → Oracle 요일 인덱스 (1=일 ~ 7=토) -->
+  <!-- 데이터 없는 요일은 row 안나옴 → Service에서 1~7 배열 0채움 처리 -->
+  <select id="selectPlayCountByDay" parameterType="int"
+          resultType="com.spring.eze.user.dto.MypageDayStatDTO">
+    SELECT TO_NUMBER(TO_CHAR(CREATED_AT, 'D')) AS dayIndex
+         , COUNT(*)                             AS playCount
+      FROM SONG_SCORE_TBL
+     WHERE USER_ID = #{userId}
+       AND SCORE   = 5
+     GROUP BY TO_CHAR(CREATED_AT, 'D')
+     ORDER BY TO_NUMBER(TO_CHAR(CREATED_AT, 'D')) ASC
+  </select>
 
 
-    <!-- 탑 장르 — Top4
-         30초 이상 들은 곡 기준 (Spotify 방식)
-         SCORE=5 가 3개 이상인 song_id = 최소 30초(10초*3) 청취
-         3단계 서브쿼리:
-           1단계: song_id별 30초 이상 필터 (HAVING COUNT(*) >= 3)
-           2단계: 장르별 집계 + OVER() 윈도우함수로 퍼센트 계산
-           3단계: Oracle 11g ROWNUM으로 Top4 제한
-         SONG_GENRE_TBL 경유: SONGS_TBL에 genre_id 없음(DROP됨) -->
-    <select id="selectTopGenres"
-            parameterType="int"
-            resultType="com.spring.eze.user.dto.MypageGenreStatDTO">
-        SELECT *
-          FROM (
-                <!-- 2단계: 장르별 집계 + 퍼센트 -->
-                SELECT G.NAME                                              AS genreName
-                     , COUNT(*)                                            AS playCount
-                     , ROUND(COUNT(*) * 100 / SUM(COUNT(*)) OVER(), 0)    AS percentage
-                  FROM (
-                        <!-- 1단계: 30초 이상 청취한 song_id 필터 -->
-                        SELECT SONG_ID
-                          FROM SONG_SCORE_TBL
-                         WHERE USER_ID = #{userId}
-                           AND SCORE   = 5
-                         GROUP BY SONG_ID
-                        HAVING COUNT(*) &gt;= 3
-                       ) VALID_SONGS
-                  JOIN SONGS_TBL      S  ON VALID_SONGS.SONG_ID = S.SONG_ID
-                  JOIN SONG_GENRE_TBL SG ON S.SONG_ID            = SG.SONG_ID
-                  JOIN GENRES_TBL     G  ON SG.GENRE_ID          = G.GENRE_ID
-                 GROUP BY G.NAME
-                 ORDER BY playCount DESC
-               )
-         <!-- 3단계: Oracle 11g ROWNUM Top4 제한 -->
-         WHERE ROWNUM &lt;= 4
-    </select>
+  <!-- 탑 장르 Top4 -->
+  <!-- HAVING COUNT(*) >= 3 → song_id당 SCORE=5가 3회 이상 = 최소 30초 청취 곡만 집계 -->
+  <!-- SONG_GENRE_TBL: 스키마에 존재하는 테이블 — songs_tbl.genre_id와 중복이지만 정규화 테이블 사용 -->
+  <!-- [주의] SONG_GENRE_TBL에 더미 데이터도 INSERT 필요 (dummy_data 참고) -->
+  <!-- XML 내부 주석은 SQL 안에 두면 안 됨 → 쿼리 외부로 이동 처리 -->
+  <select id="selectTopGenres" parameterType="int"
+          resultType="com.spring.eze.user.dto.MypageGenreStatDTO">
+    SELECT *
+      FROM (
+            SELECT G.NAME                                           AS genreName
+                 , COUNT(*)                                         AS playCount
+                 , ROUND(COUNT(*) * 100 / SUM(COUNT(*)) OVER(), 0) AS percentage
+              FROM (
+                    SELECT SONG_ID
+                      FROM SONG_SCORE_TBL
+                     WHERE USER_ID = #{userId}
+                       AND SCORE   = 5
+                     GROUP BY SONG_ID
+                    HAVING COUNT(*) &gt;= 3
+                   ) VALID_SONGS
+              JOIN SONGS_TBL      S  ON VALID_SONGS.SONG_ID = S.SONG_ID
+              JOIN SONG_GENRE_TBL SG ON S.SONG_ID            = SG.SONG_ID
+              JOIN GENRES_TBL     G  ON SG.GENRE_ID          = G.GENRE_ID
+             GROUP BY G.NAME
+             ORDER BY playCount DESC
+           )
+     WHERE ROWNUM &lt;= 4
+  </select>
 
 
-    <!-- 탑 곡 — Top10
-         기간 필터: THIS_MONTH / LAST_MONTH / 3MONTH
-         SCORE=1 기준 재생횟수 집계
-         SONGS_TBL JOIN ARTISTS_TBL → 곡 제목 + 아티스트명
-         <choose>로 periodType에 따라 날짜 조건 분기
-         Oracle 11g ROWNUM Top10 제한 -->
-    <select id="selectTopSongs"
-            parameterType="map"
-            resultType="com.spring.eze.user.dto.MypageTopSongDTO">
-        SELECT *
-          FROM (
-                SELECT S.SONG_ID    AS songId
-                     , S.TITLE      AS title
-                     , A.NAME       AS artistName
-                     , COUNT(*)     AS playCount
-                  FROM SONG_SCORE_TBL SS
-                  JOIN SONGS_TBL      S  ON SS.SONG_ID   = S.SONG_ID
-                  JOIN ARTISTS_TBL    A  ON S.ARTIST_ID  = A.ARTIST_ID
-                 WHERE SS.USER_ID = #{userId}
-                   AND SS.SCORE   = 1
-                   <!-- 기간 필터 분기 -->
-                   <choose>
-                       <when test="periodType == 'THIS_MONTH'">
-                           AND SS.CREATED_AT >= TRUNC(SYSDATE, 'MM')
-                       </when>
-                       <when test="periodType == 'LAST_MONTH'">
-                           AND SS.CREATED_AT >= ADD_MONTHS(TRUNC(SYSDATE, 'MM'), -1)
-                           AND SS.CREATED_AT  &lt; TRUNC(SYSDATE, 'MM')
-                       </when>
-                       <when test="periodType == '3MONTH'">
-                           AND SS.CREATED_AT >= ADD_MONTHS(TRUNC(SYSDATE, 'MM'), -3)
-                       </when>
-                   </choose>
-                 GROUP BY S.SONG_ID, S.TITLE, A.NAME
-                 ORDER BY playCount DESC
-               )
-         WHERE ROWNUM &lt;= 10
-    </select>
+  <!-- 탑 곡 Top10 -->
+  <!-- 기간 필터: THIS_MONTH / LAST_MONTH / 3MONTH -->
+  <!-- SCORE=1 기준 재생횟수 집계 -->
+  <!-- periodType 기본값 없으면 THIS_MONTH 처리 (Service에서 보정) -->
+  <select id="selectTopSongs" parameterType="map"
+          resultType="com.spring.eze.user.dto.MypageTopSongDTO">
+    SELECT *
+      FROM (
+            SELECT S.SONG_ID    AS songId
+                 , S.TITLE      AS title
+                 , A.NAME       AS artistName
+                 , COUNT(*)     AS playCount
+              FROM SONG_SCORE_TBL SS
+              JOIN SONGS_TBL      S  ON SS.SONG_ID  = S.SONG_ID
+              JOIN ARTISTS_TBL    A  ON S.ARTIST_ID = A.ARTIST_ID
+             WHERE SS.USER_ID = #{userId}
+               AND SS.SCORE   = 1
+               <choose>
+                 <when test="periodType == 'THIS_MONTH'">
+                   AND SS.CREATED_AT >= TRUNC(SYSDATE, 'MM')
+                 </when>
+                 <when test="periodType == 'LAST_MONTH'">
+                   AND SS.CREATED_AT >= ADD_MONTHS(TRUNC(SYSDATE, 'MM'), -1)
+                   AND SS.CREATED_AT  &lt; TRUNC(SYSDATE, 'MM')
+                 </when>
+                 <when test="periodType == '3MONTH'">
+                   AND SS.CREATED_AT >= ADD_MONTHS(TRUNC(SYSDATE, 'MM'), -3)
+                 </when>
+               </choose>
+             GROUP BY S.SONG_ID, S.TITLE, A.NAME
+             ORDER BY playCount DESC
+           )
+     WHERE ROWNUM &lt;= 10
+  </select>
 
 
-    <!-- 탑 아티스트 — Top10
-         SCORE=1 기준 COUNT(DISTINCT SONG_ID) → 재생한 고유 곡 수
-         coverImageUrl: 해당 아티스트의 가장 최근 앨범 커버
-           → MAX(RELEASE_DATE) 서브쿼리로 최신 앨범 1개 특정
-         Oracle 11g ROWNUM Top10 제한 -->
-    <select id="selectTopArtists"
-            parameterType="int"
-            resultType="com.spring.eze.user.dto.MypageTopArtistDTO">
-        SELECT *
-          FROM (
-                SELECT A.ARTIST_ID   AS artistId
-                     , A.NAME        AS name
-                     , (
-                         <!-- 가장 최근 앨범의 커버 이미지 서브쿼리 -->
-                         SELECT AL.COVER_IMAGE_URL
-                           FROM ALBUMS_TBL AL
-                          WHERE AL.ARTIST_ID   = A.ARTIST_ID
-                            AND AL.RELEASE_DATE = (
-                                SELECT MAX(AL2.RELEASE_DATE)
-                                  FROM ALBUMS_TBL AL2
-                                 WHERE AL2.ARTIST_ID = A.ARTIST_ID
+  <!-- 탑 아티스트 Top10 -->
+  <!-- COUNT(DISTINCT SS.SONG_ID) → 재생한 고유 곡 수 기준 -->
+  <!-- coverImageUrl: 가장 최근 앨범 커버 (MAX RELEASE_DATE 서브쿼리) -->
+  <select id="selectTopArtists" parameterType="int"
+          resultType="com.spring.eze.user.dto.MypageTopArtistDTO">
+    SELECT *
+      FROM (
+            SELECT A.ARTIST_ID  AS artistId
+                 , A.NAME       AS name
+                 , (
+                     SELECT AL.COVER_IMAGE_URL
+                       FROM ALBUMS_TBL AL
+                      WHERE AL.ARTIST_ID    = A.ARTIST_ID
+                        AND AL.RELEASE_DATE = (
+                              SELECT MAX(AL2.RELEASE_DATE)
+                                FROM ALBUMS_TBL AL2
+                               WHERE AL2.ARTIST_ID = A.ARTIST_ID
                             )
-                            AND ROWNUM = 1
-                       )              AS coverImageUrl
-                     , COUNT(DISTINCT SS.SONG_ID) AS playCount
-                  FROM SONG_SCORE_TBL SS
-                  JOIN SONGS_TBL      S  ON SS.SONG_ID  = S.SONG_ID
-                  JOIN ARTISTS_TBL    A  ON S.ARTIST_ID = A.ARTIST_ID
-                 WHERE SS.USER_ID = #{userId}
-                   AND SS.SCORE   = 1
-                 GROUP BY A.ARTIST_ID, A.NAME
-                 ORDER BY playCount DESC
-               )
-         WHERE ROWNUM &lt;= 10
-    </select>
-      
+                        AND ROWNUM = 1
+                   ) AS coverImageUrl
+                 , COUNT(DISTINCT SS.SONG_ID) AS playCount
+              FROM SONG_SCORE_TBL SS
+              JOIN SONGS_TBL      S  ON SS.SONG_ID  = S.SONG_ID
+              JOIN ARTISTS_TBL    A  ON S.ARTIST_ID = A.ARTIST_ID
+             WHERE SS.USER_ID = #{userId}
+               AND SS.SCORE   = 1
+             GROUP BY A.ARTIST_ID, A.NAME
+             ORDER BY playCount DESC
+           )
+     WHERE ROWNUM &lt;= 10
+  </select>
+
+
 <!-- ────────────────────────────────────────────
-	 내 정보 수정
-     ──────────────────────────────────────────── --> 
-      <!-- 닉네임 수정 -->
-    <update id="updateNickname" parameterType="map">
-        UPDATE USER_TBL
-           SET NICKNAME = #{nickname}
-         WHERE USER_ID  = #{userId}
-    </update>
+     내 정보 수정
+──────────────────────────────────────────── -->
+  <!-- 닉네임 수정 -->
+  <update id="updateNickname" parameterType="map">
+    UPDATE USER_TBL
+       SET NICKNAME = #{nickname}
+     WHERE USER_ID  = #{userId}
+  </update>
 
-    <!-- 생년월일, 소개 수정, null인 필드는 UPDATE 제외 — 기존값 유지 -->
-    <update id="updateProfile" parameterType="map">
-        UPDATE PROFILE_TBL
-        <set>
-            UPDATED_AT = SYSDATE,
-            <if test="birthDate != null">BIRTH_DATE = #{birthDate},</if>
-            <if test="bio != null">BIO = #{bio}</if>
-        </set>
-         WHERE USER_ID = #{userId}
-    </update>
+  <!-- 생년월일/소개 수정 -->
+  <!-- <set> 태그: null인 필드는 UPDATE 제외 → 기존값 유지 -->
+  <!-- bio="" 빈문자열은 null이 아니므로 UPDATE 됨 (소개 지우기 허용) -->
+  <update id="updateProfile" parameterType="map">
+    UPDATE PROFILE_TBL
+    <set>
+      UPDATED_AT = SYSDATE,
+      <if test="birthDate != null">BIRTH_DATE = TO_DATE(#{birthDate}, 'YYYY-MM-DD'),</if>
+      <if test="bio != null">BIO = #{bio}</if>
+    </set>
+    WHERE USER_ID = #{userId}
+  </update>
 
-    <!-- 프로필 사진 경로 수정
-         파일 자체는 서버 로컬 저장, 경로만 DB에 저장 -->
-    <update id="updatePhotoUrl" parameterType="map">
-        UPDATE PROFILE_TBL
-           SET PHOTO_URL  = #{photoUrl}
-             , UPDATED_AT = SYSDATE
-         WHERE USER_ID    = #{userId}
-    </update>
+  <!-- 프로필 사진 경로 수정 -->
+  <!-- 파일 자체는 Controller에서 서버 로컬 저장, 경로만 DB 저장 -->
+  <update id="updatePhotoUrl" parameterType="map">
+    UPDATE PROFILE_TBL
+       SET PHOTO_URL  = #{photoUrl}
+         , UPDATED_AT = SYSDATE
+     WHERE USER_ID    = #{userId}
+  </update>
 
-    <!-- 계정 탈퇴
-         user_tbl CASCADE → profile_tbl 자동 삭제
-         세션 invalidate는 Service에서 처리 -->
-    <delete id="deleteUser" parameterType="int">
-        DELETE FROM USER_TBL
-         WHERE USER_ID = #{userId}
-    </delete>
-      
-      
- </mapper>
+  <!-- 계정 탈퇴 -->
+  <!-- USER_TBL DELETE → CASCADE로 PROFILE_TBL 자동 삭제 -->
+  <!-- 세션 invalidate는 Service에서 처리 -->
+  <delete id="deleteUser" parameterType="int">
+    DELETE FROM USER_TBL
+     WHERE USER_ID = #{userId}
+  </delete>
 
- 
- 
+</mapper>

@@ -23,6 +23,14 @@ public class UserDAOImpl implements UserDAO {
         int insertCnt = dao.insertUser(dto);
         return insertCnt;
     }
+    
+    // 프로필 생성
+	@Override
+	public int insertProfile(int userId) {
+        UserDAO dao = sqlSession.getMapper(UserDAO.class);
+        int insertCnt = dao.insertProfile(userId);
+        return insertCnt;
+	}
 
     // 2. 이메일 중복확인
     @Override
@@ -87,5 +95,7 @@ public class UserDAOImpl implements UserDAO {
         EmailCodeDTO dto = dao.getEmailCode(email);
         return dto;
     }
+
+
 
 }

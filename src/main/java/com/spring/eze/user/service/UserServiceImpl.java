@@ -69,7 +69,14 @@ public class UserServiceImpl implements UserService {
             dto.setPassword(encodedPw);
             dto.setNickname(nickname);
 
+            // 유저 생성
             int insertCnt = dao.insertUser(dto);
+            
+            if(insertCnt == 1){
+                // profile 생성 (user_id 연동)
+                dao.insertProfile(dto.getUserId());
+            }
+            
             System.out.println(">>> [회원가입 완료] 이메일: " + email);
             return insertCnt;
 

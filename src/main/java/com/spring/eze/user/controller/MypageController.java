@@ -23,7 +23,7 @@ import com.spring.eze.user.dto.MypagePaymentDTO;
 import com.spring.eze.user.dto.MypagePlayReportDTO;
 import com.spring.eze.user.dto.MypageReservationDTO;
 import com.spring.eze.user.dto.UserDTO;
-import com.spring.eze.user.service.MypageService;
+import com.spring.eze.user.service.MypageServiceImpl;
 
 @Controller
 public class MypageController {
@@ -31,12 +31,12 @@ public class MypageController {
     private static final Logger logger = LoggerFactory.getLogger(MypageController.class);
 
     // 프로필 사진 저장 경로
-    private static final String UPLOAD_PATH = "C:/808_upload/profile/";
+    private static final String UPLOAD_PATH = "/resources/upload/profile/";
 
     // MypageService 인터페이스 타입으로 주입
     // 실제 동작은 MypageServiceImpl이 하지만 인터페이스로 받는 게 올바른 방식
     @Autowired
-    private MypageService mypageService;
+    private MypageServiceImpl mypageService;
 
     // ── 공통 헬퍼 ──────────────────────────────────
     // 매 메서드마다 세션에서 loginUser 꺼내는 코드가 반복되므로
@@ -191,7 +191,7 @@ public class MypageController {
             file.transferTo(new File(UPLOAD_PATH + fileName));
 
             // DB에 저장할 웹 접근 경로
-            String photoUrl = "/upload/profile/" + fileName;
+            String photoUrl = UPLOAD_PATH + fileName;
 
             return mypageService.updatePhotoUrl(loginUser.getUserId(), photoUrl, session);
 
