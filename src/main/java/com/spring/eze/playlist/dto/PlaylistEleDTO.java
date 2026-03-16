@@ -6,6 +6,15 @@ public class PlaylistEleDTO {
     private int playlistId;
     private int songId;
 
+    public PlaylistEleDTO() {
+    }
+
+    public PlaylistEleDTO(int eleId, int playlistId, int songId) {
+        this.eleId = eleId;
+        this.playlistId = playlistId;
+        this.songId = songId;
+    }
+
     public int getEleId() {
         return eleId;
     }

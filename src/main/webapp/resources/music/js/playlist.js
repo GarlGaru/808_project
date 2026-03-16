@@ -2,8 +2,8 @@ import { getPlaylistAll, getPlaylist, getLikes, getHistory } from './api.js'
 
 document.addEventListener("DOMContentLoaded", async () => {
 
-    const btnLike = document.getElementById("btnLike");
-    const btnHistory = document.getElementById("btnHistory");
+    const btnLike = document.getElementById("btnGetLikeList");
+    const btnHistory = document.getElementById("btnGetHistoryList");
     const normalContainer = document.getElementById("normalPlaylistContainer");
 
     // --- 좋아요 클릭 ---
@@ -20,6 +20,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     // --- NORMAL 플레이리스트 동적 렌더링 ---
     const playlistAllList = await getPlaylistAll();
+    console.log(playlistAllList);
 
     normalContainer.innerHTML = playlistAllList.map(playlist => `
         <div class="music-side-item" data-value="${playlist.playlistId}">

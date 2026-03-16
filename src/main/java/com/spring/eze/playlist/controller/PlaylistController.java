@@ -79,13 +79,13 @@ public class PlaylistController {
     /**
      * url = /playlist?playListId=
      * 플레이리스트 하나 가져오기
-     * @param playListId 유저의 플레이리스트 ID
+     * @param playlistId 유저의 플레이리스트 ID
      * */
     @GetMapping("/playlist")
-    public @ResponseBody List<PlaylistEleDTO> getPlaylist(@RequestParam int playListId){
+    public @ResponseBody List<PlaylistEleDTO> getPlaylist(@RequestParam int playlistId){
         log.info("PlaylistController - getPlaylist");
-        log.info("Requested Playlist ID : {}", playListId);
-        List<PlaylistEleDTO> dto = service.getPlaylist(playListId);
+        log.info("Requested Playlist ID : {}", playlistId);
+        List<PlaylistEleDTO> dto = service.getPlaylist(playlistId);
         log.info("Response Size : {}", dto.size());
 
         return dto;
