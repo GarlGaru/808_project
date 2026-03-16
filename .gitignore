@@ -54,11 +54,17 @@ tmp/
 *.swp
 *~.nib
 local.properties
-.settings/
 .loadpath
 .recommenders
 target/
+
+#### 이 3개는 절대 포함 시키지 않기 ####
+.settings/
 .classpath
+.project
+####
+
+
 
 # External tool builders
 .externalToolBuilders/
