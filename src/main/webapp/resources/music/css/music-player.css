@@ -1,83 +1,66 @@
 @charset "UTF-8";
 
 /* =========================
-   Spotify-like Bottom Player
+   Bottom Player - Clean Version
    ========================= */
 
 :root {
-    --sp-black: #000000;
-    --sp-bg: #121212;
-    --sp-surface: #181818;
-    --sp-surface-hover: #282828;
+    --sp-black: #111111;
     --sp-border: #2a2a2a;
     --sp-text: #ffffff;
     --sp-text-sub: #b3b3b3;
-    --sp-green: #1db954;
+    --sp-green: #ff8000;
+    --sp-bar-bg: #444444;
+    --action-primary-bg: linear-gradient(90deg, #DF8845 0%, #ED6701 100%);
 }
 
-/* 하단 플레이어 */
-.bottom-player {
+/* 하단 플레이어 전체 */
+.music-player-fixed {
     position: fixed;
     left: 0;
+    right: 0;
     bottom: 0;
     width: 100%;
     height: 90px;
     background: var(--sp-black);
-    border-top: 1px solid var(--sp-border);
+    color: var(--sp-text);
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 0 16px;
+    padding: 0 24px;
     box-sizing: border-box;
     z-index: 9999;
+    border-top: 1px solid var(--sp-border);
 }
 
-/* 좌/중/우 */
+/* 좌 / 중 / 우 공통 */
 .player-left,
 .player-center,
 .player-right {
     display: flex;
     align-items: center;
+    box-sizing: border-box;
 }
 
+/* 왼쪽 영역 */
 .player-left {
     width: 30%;
     min-width: 240px;
-    gap: 12px;
+    gap: 14px;
 }
 
-.player-center {
-    width: 40%;
-    flex-direction: column;
-    justify-content: center;
-    gap: 10px;
+.player-cover-wrap {
+    flex-shrink: 0;
 }
 
-.player-right {
-    width: 30%;
-    min-width: 220px;
-    justify-content: flex-end;
-    gap: 12px;
-}
-
-/* 커버 */
-.player-cover {
+#playerCover {
     width: 56px;
     height: 56px;
-    border-radius: 4px;
-    overflow: hidden;
-    flex-shrink: 0;
-    background: #2a2a2a;
-}
-
-.player-cover img {
-    width: 100%;
-    height: 100%;
     object-fit: cover;
+    border-radius: 8px;
     display: block;
 }
 
-/* 트랙 정보 */
 .player-track-info {
     display: flex;
     flex-direction: column;
@@ -85,161 +68,141 @@
 }
 
 .player-track-title {
-    color: var(--sp-text);
     font-size: 14px;
-    font-weight: 500;
-    line-height: 1.2;
+    font-weight: 700;
+    color: var(--sp-text);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
 }
 
 .player-track-artist {
-    color: var(--sp-text-sub);
     font-size: 12px;
+    color: var(--sp-text-sub);
     margin-top: 4px;
-    line-height: 1.2;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
 }
 
-/* 중앙 컨트롤 */
+/* 가운데 영역 */
+.player-center {
+    width: 40%;
+    flex-direction: column;
+    justify-content: center;
+    gap: 8px;
+}
+
 .player-controls {
     display: flex;
     align-items: center;
-    gap: 14px;
+    gap: 12px;
 }
 
-.bottom-player .music-player-btn {
-    width: 32px;
-    height: 32px;
+.player-btn {
+    width: 36px;
+    height: 36px;
     border: none;
     border-radius: 50%;
     background: transparent;
-    color: var(--sp-text-sub);
+    color: var(--sp-text);
+    cursor: pointer;
+    font-size: 18px;
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    cursor: pointer;
-    font-size: 16px;
-    transition: color 0.15s ease, transform 0.15s ease;
+    transition: transform 0.15s ease, opacity 0.15s ease;
 }
 
-.bottom-player .music-player-btn:hover {
-    color: var(--sp-text);
-    transform: scale(1.06);
+.player-btn:hover {
+    transform: scale(1.05);
+    opacity: 0.9;
 }
 
-.bottom-player .music-player-btn.main {
-    width: 32px;
-    height: 32px;
-    background: var(--sp-text);
+.player-btn-main {
+    background: var(--sp-green);
     color: #000;
-    font-size: 16px;
+    font-weight: bold;
 }
 
-.bottom-player .music-player-btn.main:hover {
-    background: #fff;
-    transform: scale(1.08);
-}
-
-/* 진행바 */
-.player-progress-row {
+.player-progress-area {
     width: 100%;
-    max-width: 520px;
     display: flex;
     align-items: center;
     gap: 10px;
 }
 
 .player-time {
+    font-size: 12px;
     color: var(--sp-text-sub);
-    font-size: 11px;
     min-width: 40px;
     text-align: center;
 }
 
 .player-progress {
     flex: 1;
-    height: 4px;
-    background: #4d4d4d;
+    height: 6px;
+    background: var(--sp-bar-bg);
     border-radius: 999px;
-    position: relative;
-    overflow: hidden;
     cursor: pointer;
-}
-
-.player-progress:hover .player-progress-fill {
-    background: var(--sp-green);
+    overflow: hidden;
 }
 
 .player-progress-fill {
     width: 0%;
     height: 100%;
-    background: #ffffff;
+    background: var(--sp-green);
     border-radius: 999px;
-    transition: background 0.15s ease;
 }
 
-/* 오른쪽 아이콘 */
-.icon-btn {
-    border: none;
-    background: transparent;
-    color: var(--sp-text-sub);
-    font-size: 15px;
-    cursor: pointer;
-    padding: 4px 6px;
-    transition: color 0.15s ease, transform 0.15s ease;
+/* 오른쪽 영역 */
+.player-right {
+    width: 30%;
+    min-width: 220px;
+    justify-content: flex-end;
+    gap: 12px;
 }
 
-.icon-btn:hover {
-    color: var(--sp-text);
-    transform: scale(1.05);
-}
-
-/* 볼륨 */
 .player-volume-wrap {
     display: flex;
     align-items: center;
     gap: 8px;
 }
 
+.player-volume-icon {
+    font-size: 14px;
+    line-height: 1;
+}
+
 .player-volume-bar {
-    width: 96px;
-    height: 4px;
-    background: #4d4d4d;
+    width: 100px;
+    height: 6px;
+    background: var(--sp-bar-bg);
     border-radius: 999px;
     overflow: hidden;
     cursor: pointer;
 }
 
-.player-volume-bar:hover .player-volume-fill {
-    background: var(--sp-green);
-}
-
 .player-volume-fill {
-    width: 65%;
+    width: 70%;
     height: 100%;
-    background: #ffffff;
+    background: var(--sp-green);
     border-radius: 999px;
-    transition: background 0.15s ease;
 }
 
-/* 본문이 플레이어에 안 가리게 */
+/* 오디오 숨김 */
+.music-player-fixed audio {
+    display: none;
+}
+
+/* 본문이 플레이어에 가리지 않도록 */
 body {
     padding-bottom: 90px;
 }
 
-/* 오디오 숨김 */
-.bottom-player audio,
-.bottom-player .audioplayer {
-    display: none !important;
-}
-
 /* 반응형 */
 @media only screen and (max-width: 991px) {
-    .bottom-player {
+    .music-player-fixed {
         height: auto;
         padding: 12px;
         flex-wrap: wrap;
@@ -251,10 +214,6 @@ body {
     .player-right {
         width: 100%;
         min-width: 0;
-    }
-
-    .player-center {
-        order: 3;
     }
 
     .player-right {

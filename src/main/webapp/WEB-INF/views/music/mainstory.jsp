@@ -2,30 +2,27 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <c:set var="path" value="${pageContext.request.contextPath}" />
 
-<!-- 
-    music-home-wrap
-    : 메인스토리 전체 래퍼
--->
 <div class="music-home-wrap">
 
-    <!-- =========================
-         1) 주간 인기곡
-         ========================= -->
+    <!-- ========================= 1) 주간 인기곡 ========================= -->
     <section class="music-home-block">
-
-        <!-- 제목 + 좌우 버튼 -->
         <div class="music-home-header">
-            <h2 class="music-home-title">주간 인기곡</h2>
+            <div>
+                <h2 class="music-home-title">주간 인기곡</h2>
+                <p class="music-home-desc">이번 주 가장 많이 사랑받은 곡들이에요.</p>
+            </div>
 
             <div class="music-home-controls">
                 <button type="button"
                         class="music-home-arrow"
-                        onclick="moveSlider('weeklySlider', -1)">
+                        onclick="moveSlider('weeklySlider', -1)"
+                        aria-label="주간 인기곡 이전">
                     ‹
                 </button>
                 <button type="button"
                         class="music-home-arrow"
-                        onclick="moveSlider('weeklySlider', 1)">
+                        onclick="moveSlider('weeklySlider', 1)"
+                        aria-label="주간 인기곡 다음">
                     ›
                 </button>
             </div>
@@ -33,23 +30,12 @@
 
         <c:choose>
             <c:when test="${not empty weeklyRanking}">
-
-                <!-- 
-                    slider-viewport
-                    : 화면에 보이는 영역
-                -->
                 <div class="music-home-viewport" id="weeklySlider">
-
-                    <!-- 
-                        slider-track
-                        : 좌우 이동되는 실제 카드 줄
-                    -->
                     <div class="music-home-track">
                         <c:forEach var="song" items="${weeklyRanking}">
                             <div class="music-home-card"
                                  onclick="location.href='${path}/music/detail?songId=${song.songId}'">
 
-                                <!-- 앨범 이미지 영역 -->
                                 <div class="music-home-thumb-wrap">
                                     <c:choose>
                                         <c:when test="${not empty song.coverImageUrl}">
@@ -64,55 +50,53 @@
                                         </c:otherwise>
                                     </c:choose>
 
-                                    <!-- 
-                                        카드 안의 작은 재생 버튼
-                                        카드 전체 클릭과 분리하기 위해 stopPropagation 사용
-                                    -->
                                     <button type="button"
                                             class="music-home-play"
                                             onclick="playFromCard(event, this)"
                                             data-song-id="${song.songId}"
                                             data-title="${song.title}"
                                             data-artist="${song.artistName}"
-                                            data-cover="${song.coverImageUrl}"
-                                            >
+                                            data-cover="${empty song.coverImageUrl ? '/resources/music/img/default_album.jpg' : song.coverImageUrl}"
+                                            aria-label="${song.title} 재생">
                                         ▶
                                     </button>
                                 </div>
 
-                                <!-- 곡 정보 -->
                                 <div class="music-home-body">
                                     <div class="music-home-song">${song.title}</div>
                                     <div class="music-home-artist">${song.artistName}</div>
+                                    <div class="music-home-score">주간 인기곡</div>
                                 </div>
                             </div>
                         </c:forEach>
                     </div>
                 </div>
             </c:when>
-
             <c:otherwise>
                 <div class="music-home-empty">주간 인기곡 데이터가 없습니다.</div>
             </c:otherwise>
         </c:choose>
     </section>
 
-    <!-- =========================
-         2) 오늘의 히트곡
-         ========================= -->
+    <!-- ========================= 2) 오늘의 히트곡 ========================= -->
     <section class="music-home-block">
         <div class="music-home-header">
-            <h2 class="music-home-title">오늘의 히트곡</h2>
+            <div>
+                <h2 class="music-home-title">오늘의 히트곡</h2>
+                <p class="music-home-desc">오늘 많이 재생된 곡들을 모아봤어요.</p>
+            </div>
 
             <div class="music-home-controls">
                 <button type="button"
                         class="music-home-arrow"
-                        onclick="moveSlider('todaySlider', -1)">
+                        onclick="moveSlider('todaySlider', -1)"
+                        aria-label="오늘의 히트곡 이전">
                     ‹
                 </button>
                 <button type="button"
                         class="music-home-arrow"
-                        onclick="moveSlider('todaySlider', 1)">
+                        onclick="moveSlider('todaySlider', 1)"
+                        aria-label="오늘의 히트곡 다음">
                     ›
                 </button>
             </div>
@@ -146,8 +130,8 @@
                                             data-song-id="${song.songId}"
                                             data-title="${song.title}"
                                             data-artist="${song.artistName}"
-                                            data-cover="${song.coverImageUrl}"
-                                           >
+                                            data-cover="${empty song.coverImageUrl ? '/resources/music/img/default_album.jpg' : song.coverImageUrl}"
+                                            aria-label="${song.title} 재생">
                                         ▶
                                     </button>
                                 </div>
@@ -155,35 +139,38 @@
                                 <div class="music-home-body">
                                     <div class="music-home-song">${song.title}</div>
                                     <div class="music-home-artist">${song.artistName}</div>
+                                    <div class="music-home-score">오늘의 히트곡</div>
                                 </div>
                             </div>
                         </c:forEach>
                     </div>
                 </div>
             </c:when>
-
             <c:otherwise>
                 <div class="music-home-empty">오늘의 히트곡 데이터가 없습니다.</div>
             </c:otherwise>
         </c:choose>
     </section>
 
-    <!-- =========================
-         3) 장르 인기곡
-         ========================= -->
+    <!-- ========================= 3) 장르 인기곡 ========================= -->
     <section class="music-home-block">
         <div class="music-home-header">
-            <h2 class="music-home-title">장르 인기곡</h2>
+            <div>
+                <h2 class="music-home-title">장르 인기곡</h2>
+                <p class="music-home-desc">지금 인기 있는 장르별 추천 곡이에요.</p>
+            </div>
 
             <div class="music-home-controls">
                 <button type="button"
                         class="music-home-arrow"
-                        onclick="moveSlider('genreSlider', -1)">
+                        onclick="moveSlider('genreSlider', -1)"
+                        aria-label="장르 인기곡 이전">
                     ‹
                 </button>
                 <button type="button"
                         class="music-home-arrow"
-                        onclick="moveSlider('genreSlider', 1)">
+                        onclick="moveSlider('genreSlider', 1)"
+                        aria-label="장르 인기곡 다음">
                     ›
                 </button>
             </div>
@@ -217,8 +204,8 @@
                                             data-song-id="${song.songId}"
                                             data-title="${song.title}"
                                             data-artist="${song.artistName}"
-                                            data-cover="${song.coverImageUrl}"
-                                            >
+                                            data-cover="${empty song.coverImageUrl ? '/resources/music/img/default_album.jpg' : song.coverImageUrl}"
+                                            aria-label="${song.title} 재생">
                                         ▶
                                     </button>
                                 </div>
@@ -226,49 +213,32 @@
                                 <div class="music-home-body">
                                     <div class="music-home-song">${song.title}</div>
                                     <div class="music-home-artist">${song.artistName}</div>
+                                    <div class="music-home-score">장르 인기곡</div>
                                 </div>
                             </div>
                         </c:forEach>
                     </div>
                 </div>
             </c:when>
-
             <c:otherwise>
                 <div class="music-home-empty">장르 인기곡 데이터가 없습니다.</div>
             </c:otherwise>
         </c:choose>
     </section>
-    <%@ include file="/WEB-INF/views/common/footer.jsp" %>
+
 </div>
 
 <script>
-    /* 
-        슬라이더 현재 위치를 저장하는 객체
-        예: weeklySlider -> 현재 몇 칸 이동했는지
-    */
     const sliderState = {};
 
-    /* 
-        화면 너비에 따라 한 번에 보일 카드 수 결정
-        - 큰 화면: 8개
-        - 중간: 6개
-        - 태블릿: 4개
-        - 모바일: 2개
-    */
     function getVisibleCount() {
         const width = window.innerWidth;
-
         if (width <= 768) return 2;
         if (width <= 1200) return 4;
         if (width <= 1600) return 6;
         return 8;
     }
 
-    /* 
-        좌우 버튼 클릭 시 슬라이더 이동
-        sliderId  : 어떤 슬라이더인지
-        direction : -1 왼쪽, 1 오른쪽
-    */
     function moveSlider(sliderId, direction) {
         const viewport = document.getElementById(sliderId);
         if (!viewport) return;
@@ -280,7 +250,7 @@
         const visibleCount = getVisibleCount();
         const maxIndex = Math.max(0, cards.length - visibleCount);
 
-        if (!sliderState[sliderId]) {
+        if (sliderState[sliderId] == null) {
             sliderState[sliderId] = 0;
         }
 
@@ -296,10 +266,6 @@
         track.style.transform = 'translateX(-' + moveX + 'px)';
     }
 
-    /* 
-        브라우저 크기가 바뀌면 슬라이더 위치 초기화
-        화면 폭이 바뀌면 카드 개수 계산이 달라지기 때문
-    */
     window.addEventListener('resize', function() {
         Object.keys(sliderState).forEach(function(sliderId) {
             sliderState[sliderId] = 0;
@@ -308,22 +274,25 @@
             if (!viewport) return;
 
             const track = viewport.querySelector('.music-home-track');
-            track.style.transform = 'translateX(0)';
+            if (track) {
+                track.style.transform = 'translateX(0)';
+            }
         });
     });
 
-    /* 
-        카드 안 재생 버튼 클릭 시
-        - 카드 전체 클릭(상세 이동)은 막고
-        - 플레이어에 현재 곡 정보만 세팅
-    */
     function playFromCard(event, btn) {
         event.stopPropagation();
 
         const songId = btn.dataset.songId;
         const title = btn.dataset.title;
         const artist = btn.dataset.artist;
-        const cover = btn.dataset.cover;
+        let cover = btn.dataset.cover;
+
+        if (cover && !cover.startsWith('/resources')) {
+            cover = '${path}' + cover;
+        } else if (cover && cover.startsWith('/resources')) {
+            cover = '${path}' + cover;
+        }
 
         $.ajax({
             url: '${path}/music/songPath',

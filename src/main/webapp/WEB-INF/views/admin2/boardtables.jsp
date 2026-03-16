@@ -6,21 +6,16 @@
 <c:set var="adminUrl" value="${ctx}/admin" />
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko">
 <head>
 
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Admin - Tables</title>
 
-    <!-- FontAwesome -->
     <link href="${adminRes}/vendor/fontawesome-free/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Nunito:200,300,400,600,700,800,900" rel="stylesheet">
-
-    <!-- SB Admin CSS -->
     <link href="${adminRes}/css/sb-admin-2.min.css" rel="stylesheet">
-
-    <!-- DataTables CSS -->
     <link href="${adminRes}/vendor/datatables/dataTables.bootstrap4.min.css" rel="stylesheet">
 
 </head>
@@ -30,13 +25,13 @@
 <div id="wrapper">
 
     <!-- Sidebar -->
-    <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion">
+    <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
 
         <a class="sidebar-brand d-flex align-items-center justify-content-center" href="${adminUrl}">
-            <div class="sidebar-brand-icon rotate-n-15">
-                <i class="fas fa-table"></i>
+            <div class="sidebar-brand-icon">
+                <i class="fas fa-user-shield"></i>
             </div>
-            <div class="sidebar-brand-text mx-3">Admin</div>
+            <div class="sidebar-brand-text mx-3">808 ADMIN</div>
         </a>
 
         <hr class="sidebar-divider my-0">
@@ -49,16 +44,30 @@
         </li>
 
         <li class="nav-item">
-            <a class="nav-link" href="${adminUrl}/charts">
-                <i class="fas fa-fw fa-chart-area"></i>
-                <span>Charts</span>
+            <a class="nav-link" href="${adminUrl}/user">
+                <i class="fas fa-fw fa-users"></i>
+                <span>User Admin</span>
             </a>
         </li>
-
-        <li class="nav-item active">
-            <a class="nav-link" href="${adminUrl}/tables">
-                <i class="fas fa-fw fa-table"></i>
-                <span>Tables</span>
+        
+        <li class="nav-item">
+            <a class="nav-link" href="${adminUrl}/pay">
+                <i class="fas fa-fw fa-credit-card"></i>
+                <span>Pay Admin</span>
+            </a>
+        </li>
+        
+        <li class="nav-item">
+            <a class="nav-link" href="${adminUrl}/board">
+                <i class="fas fa-fw fa-clipboard-list"></i>
+                <span>Board Admin</span>
+            </a>
+        </li>
+        
+        <li class="nav-item">
+            <a class="nav-link" href="${adminUrl}/music">
+                <i class="fas fa-fw fa-music"></i>
+                <span>Music Admin</span>
             </a>
         </li>
 
@@ -144,22 +153,17 @@
 
 </div>
 
-<!-- Scroll Top -->
 <a class="scroll-to-top rounded" href="#page-top">
     <i class="fas fa-angle-up"></i>
 </a>
 
-<!-- JS -->
 <script src="${adminRes}/vendor/jquery/jquery.min.js"></script>
 <script src="${adminRes}/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
 <script src="${adminRes}/vendor/jquery-easing/jquery.easing.min.js"></script>
 <script src="${adminRes}/js/sb-admin-2.min.js"></script>
-
-<!-- DataTables JS -->
 <script src="${adminRes}/vendor/datatables/jquery.dataTables.min.js"></script>
 <script src="${adminRes}/vendor/datatables/dataTables.bootstrap4.min.js"></script>
 
-<!-- Init -->
 <script>
     $(document).ready(function() {
         $('#dataTable').DataTable();

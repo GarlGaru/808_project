@@ -3,126 +3,80 @@
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.spring.eze.admin.dao.AdminMusicMapper">
+<mapper namespace="com.spring.eze.admin.dao.AdminMusicDAO">
 
-	<!-- 음악 목록 조회 -->
+    <!-- 음악 목록 조회 -->
     <select id="selectMusicList"
-        resultType="com.spring.eze.admin.dto.AdminMusicDTO">
-	
-	    SELECT
-	        s.song_id AS songId,
-	        s.title AS songTitle,
-	        s.song_path AS songPath,
-	        s.artist_id AS artistId,
-	        s.album_id AS albumId,
-	        ar.name AS artistName,
-	        a.title AS albumTitle,
-	        (
-	            SELECT LISTAGG(g.name, ', ') WITHIN GROUP (ORDER BY g.name)
-	            FROM song_genre_tbl sg
-	            JOIN genres_tbl g
-	              ON sg.genre_id = g.genre_id
-	            WHERE sg.song_id = s.song_id
-	        ) AS genreName,
-	        ar.profile_image_url AS profileImageUrl,
-	        a.cover_image_url AS coverImageUrl,
-	        a.release_date AS releaseDate
-	    FROM songs_tbl s
-	    JOIN albums_tbl a
-	      ON s.album_id = a.album_id
-	    JOIN artists_tbl ar
-	      ON s.artist_id = ar.artist_id
-	    ORDER BY s.song_id DESC
-	
-	</select>
-	
-    
-    <!-- 여기부턴 4개순차적으로 insert하는곳이기 때문에 조심 또 조심 그냥 또 조심 
-    	 바꾸면 찾아가서 고쳐놓으라할거임 못 고치면 집 안보냄 
-    	 건드렸으면(수정) 팀장 부팀장호출 -->
-    	 
-    <!-- 아티스트 등록 -->
-	<insert id="insertArtist"
-	        parameterType="com.spring.eze.admin.dto.AdminMusicDTO">
-	
-	    INSERT INTO artists_tbl
-	    (
-	        artist_id,
-	        name,
-	        profile_image_url
-	    )
-	    VALUES
-	    (
-	        #{artistId},
-	        #{artistName},
-	        #{profileImageUrl}
-	    )
-	
-	</insert>
-	
-	<!-- 앨범 등록 -->
-	<insert id="insertAlbum"
-	        parameterType="com.spring.eze.admin.dto.AdminMusicDTO">
-	
-	    INSERT INTO albums_tbl
-	    (
-	        album_id,
-	        artist_id,
-	        title,
-	        cover_image_url,
-	        release_date
-	    )
-	    VALUES
-	    (
-	        #{albumId},
-	        #{artistId},
-	        #{albumTitle},
-	        #{coverImageUrl},
-	        #{releaseDate}
-	    )
-	
-	</insert>
-	
-	<!-- 장르 등록 -->
-	<insert id="insertGenre"
-	        parameterType="com.spring.eze.admin.dto.AdminMusicDTO">
-	
-	    INSERT INTO genres_tbl
-	    (
-	        genre_id,
-	        name
-	    )
-	    VALUES
-	    (
-	        #{genreId},
-	        #{genreName}
-	    )
-	
-	</insert>
-	
-	<!-- 노래 등록 -->
-	<insert id="insertSong"
-	        parameterType="com.spring.eze.admin.dto.AdminMusicDTO">
-	
-	    INSERT INTO songs_tbl
-	    (
-	        song_id,
-	        album_id,
-	        artist_id,
-	        genre_id,
-	        title,
-	        song_path
-	    )
-	    VALUES
-	    (
-	        #{songId},
-	        #{albumId},
-	        #{artistId},
-	        #{genreId},
-	        #{songTitle},
-	        #{songPath}
-	    )
-	
-	</insert>
+            resultType="com.spring.eze.admin.dto.AdminMusicDTO">
+
+        SELECT
+            s.song_id AS songId,
+            s.title AS songTitle,
+            s.song_path AS songPath,
+            s.artist_id AS artistId,
+            s.album_id AS albumId,
+            ar.name AS artistName,
+            a.title AS albumTitle,
+            (
+                SELECT LISTAGG(g.name, ', ') WITHIN GROUP (ORDER BY g.name)
+                FROM song_genre_tbl sg
+                JOIN genres_tbl g
+                  ON sg.genre_id = g.genre_id
+                WHERE sg.song_id = s.song_id
+            ) AS genreName,
+            ar.profile_image_url AS profileImageUrl,
+            a.cover_image_url AS coverImageUrl,
+            a.release_date AS releaseDate
+        FROM songs_tbl s
+        JOIN albums_tbl a
+          ON s.album_id = a.album_id
+        JOIN artists_tbl ar
+          ON s.artist_id = ar.artist_id
+        ORDER BY s.song_id DESC
+
+    </select>
+
+    <!-- 노래 등록 -->
+    <insert id="insertSong"
+            parameterType="com.spring.eze.admin.dto.AdminMusicDTO">
+        INSERT INTO songs_tbl
+        (
+            album_id,
+            artist_id,
+            title,
+            song_path,
+            detail,
+            lyrics
+        )
+        VALUES
+        (
+            #{albumId},
+            #{artistId},
+            #{songTitle},
+            #{songPath},
+            #{detail},
+            #{lyrics}
+        )
+    </insert>
+
+    <!-- 마지막 song_id 조회 -->
+    <select id="selectLastSongId" resultType="int">
+        SELECT MAX(song_id) FROM songs_tbl
+    </select>
+
+    <!-- 노래-장르 연결 -->
+    <insert id="insertSongGenre"
+            parameterType="com.spring.eze.admin.dto.AdminMusicDTO">
+        INSERT INTO song_genre_tbl
+        (
+            song_id,
+            genre_id
+        )
+        VALUES
+        (
+            #{songId},
+            #{genreId}
+        )
+    </insert>
 
 </mapper>

@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.spring.eze.admin.dao.AdminMetaMapper">
+
+    <!-- 아티스트 목록 -->
+    <select id="selectArtistList"
+            resultType="com.spring.eze.admin.dto.AdminMusicDTO">
+        SELECT
+            artist_id AS artistId,
+            name AS artistName,
+            profile_image_url AS profileImageUrl
+        FROM artists_tbl
+        ORDER BY artist_id DESC
+    </select>
+
+    <!-- 아티스트 등록 -->
+    <insert id="insertArtist"
+            parameterType="com.spring.eze.admin.dto.AdminMusicDTO">
+        INSERT INTO artists_tbl
+        (
+            name,
+            profile_image_url
+        )
+        VALUES
+        (
+            #{artistName},
+            #{profileImageUrl}
+        )
+    </insert>
+
+    <!-- 앨범 목록 -->
+    <select id="selectAlbumList"
+            resultType="com.spring.eze.admin.dto.AdminMusicDTO">
+        SELECT
+            al.album_id AS albumId,
+            al.artist_id AS artistId,
+            ar.name AS artistName,
+            al.title AS albumTitle,
+            al.cover_image_url AS coverImageUrl,
+            al.release_date AS releaseDate
+        FROM albums_tbl al
+        JOIN artists_tbl ar
+          ON al.artist_id = ar.artist_id
+        ORDER BY al.album_id DESC
+    </select>
+
+    <!-- 앨범 등록 -->
+    <insert id="insertAlbum"
+            parameterType="com.spring.eze.admin.dto.AdminMusicDTO">
+        INSERT INTO albums_tbl
+        (
+            artist_id,
+            title,
+            cover_image_url,
+            release_date
+        )
+        VALUES
+        (
+            #{artistId},
+            #{albumTitle},
+            #{coverImageUrl},
+            #{releaseDate}
+        )
+    </insert>
+
+    <!-- 장르 목록 -->
+    <select id="selectGenreList"
+            resultType="com.spring.eze.admin.dto.AdminMusicDTO">
+        SELECT
+            genre_id AS genreId,
+            name AS genreName
+        FROM genres_tbl
+        ORDER BY genre_id DESC
+    </select>
+
+    <!-- 장르 등록 -->
+    <insert id="insertGenre"
+            parameterType="com.spring.eze.admin.dto.AdminMusicDTO">
+        INSERT INTO genres_tbl
+        (
+            name
+        )
+        VALUES
+        (
+            #{genreName}
+        )
+    </insert>
+    
+    
+
+</mapper>
