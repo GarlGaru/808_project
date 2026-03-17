@@ -200,6 +200,8 @@ public class kakaopayServiceImpl implements kakaopayService {
 	@Override
 	public KakaoPayCancelResponse cancel(String orderId, Integer cancelAmount) {
 		
+		System.out.println("서비스 진입 orderId = [" + orderId + "]");
+		
 		PaymentOrderDTO order = paymentDAO.selectOrder(orderId);
 		if(order == null) {
 			//IllegalArgumentException orderId가 있는지없는지만 체크하는 내장함수
@@ -229,6 +231,10 @@ public class kakaopayServiceImpl implements kakaopayService {
 		body.put("tid", order.getTid());
 		body.put("cancel_amount", amount);
 		body.put("cancel_tax_free_amount", 0); 	//카카오가요청하는 수수료? 무조건넣어야받음
+		
+		System.out.println("조회된 orderId = [" + order.getOrderId() + "]");
+	    System.out.println("조회된 tid = [" + order.getTid() + "]");
+	    System.out.println("조회된 status = [" + order.getStatus() + "]");
 		
 		HttpHeaders h = headers();
 		HttpEntity<Map<String, Object>> entity = new HttpEntity<>(body, h);
