@@ -131,6 +131,8 @@ public class ShowController {
 	                              @RequestParam("playDate") String playDate, Model model)
 		throws ServletException, IOException {
     log.info("ShowController - 날짜별 시간 목록 Ajax 요청: " + showId + ", " + playDate); 
+    log.info("showId= " + showId);
+    log.info("playDate= " + playDate);
     
     // 1. 서비스에서 해당 날짜의 시간 리스트만 가져오도록 별도 메서드 호출
     showservice.getScheduleByDate(showId, playDate, model);
