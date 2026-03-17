@@ -183,7 +183,11 @@
 	   WHERE  show_id = #{showId}
 	   ORDER BY start_time 	
 	</select>
+
 	<!-- AND  TO_CHAR(play_date, 'YYYY-MM-DD') = #{playDate} -->
+
+	<!--  AND  TO_CHAR(play_date, 'YYYY-MM-DD') = #{playDate} -->
+
 	<!-- 랭킹페이지 -->
 	<select id="getShowRanking" parameterType="String" resultType="com.spring.eze.show.dto.Show.ShowDTO">
 		SELECT

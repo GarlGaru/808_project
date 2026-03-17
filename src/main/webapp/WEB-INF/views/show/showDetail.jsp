@@ -108,6 +108,7 @@
 	function loadKakaoVenueMap() {
 	    const mapContainer = document.getElementById("kakaoMap");
 	    const keywordInput = document.getElementById("venueKeyword");
+	    const addressText = document.getElementById("venueDetailAddress");
 	
 	    if (!mapContainer || !keywordInput) return;
 	
@@ -120,7 +121,6 @@
 	    };
 	
 	    const map = new kakao.maps.Map(mapContainer, mapOption);
-	
 	    map.setDraggable(true);
 	    map.setZoomable(true);
 	
@@ -131,23 +131,37 @@
 	
 	    ps.keywordSearch(venueKeyword, function(data, status) {
 	        if (status === kakao.maps.services.Status.OK) {
-	            const coords = new kakao.maps.LatLng(data[0].y, data[0].x);
+	            const place = data[0];
+	            const coords = new kakao.maps.LatLng(place.y, place.x);
 	
 	            const marker = new kakao.maps.Marker({
 	                map: map,
 	                position: coords
 	            });
 	
+	            const detailAddress = place.road_address_name && place.road_address_name.trim() !== ""
+	                ? place.road_address_name
+	                : place.address_name;
+	
 	            const infowindow = new kakao.maps.InfoWindow({
-	                content: '<div style="padding:6px 10px; font-size:13px; color:#000; background:#fff; white-space:nowrap;">'
-	                       + data[0].place_name +
-	                       '</div>'
+	                content:
+	                    '<div style="padding:6px 10px; font-size:13px; color:#000; background:#fff; white-space:nowrap;">'
+	                    + place.place_name +
+	                    '<br><span style="font-size:12px;">' + detailAddress + '</span>'
+	                    + '</div>'
 	            });
 	
 	            infowindow.open(map, marker);
 	            map.setCenter(coords);
+	
+	            if (addressText) {
+	                addressText.textContent = "상세주소: " + detailAddress;
+	            }
 	        } else {
 	            console.log("장소 검색 실패:", venueKeyword);
+	            if (addressText) {
+	                addressText.textContent = "상세주소를 찾을 수 없습니다.";
+	            }
 	        }
 	
 	        setTimeout(function() {

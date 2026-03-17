@@ -18,6 +18,7 @@ public class KakaoPayCancelResponse {
         private Integer vat;
         private Integer point;
         private Integer discount;
+        
 		public Integer getTotal() {
 			return total;
 		}

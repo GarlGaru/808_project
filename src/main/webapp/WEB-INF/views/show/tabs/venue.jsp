@@ -4,5 +4,7 @@
     <p>${dto.venueName}</p>
 
     <input type="hidden" id="venueKeyword" value="${dto.venueName} ${dto.area}">
+    <p id="venueDetailAddress" style="margin-top:10px; color:#ddd;"></p>
+
     <div id="kakaoMap" style="width:100%; height:400px; margin-top:20px; border-radius:12px; overflow:hidden;"></div>
 </div>

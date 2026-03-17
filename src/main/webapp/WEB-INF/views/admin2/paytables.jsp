@@ -46,6 +46,16 @@
             color: #858796;
             margin-bottom: 1.5rem;
         }
+
+        .badge {
+            font-size: 0.85rem;
+            padding: 0.45em 0.7em;
+            border-radius: 0.35rem;
+        }
+
+        .btn-cancel-pay {
+            min-width: 90px;
+        }
     </style>
 
 </head>
@@ -79,21 +89,21 @@
                 <span>User Admin</span>
             </a>
         </li>
-        
+
         <li class="nav-item active">
             <a class="nav-link" href="${adminUrl}/pay">
                 <i class="fas fa-fw fa-credit-card"></i>
                 <span>Pay Admin</span>
             </a>
         </li>
-        
+
         <li class="nav-item">
             <a class="nav-link" href="${adminUrl}/board">
                 <i class="fas fa-fw fa-clipboard-list"></i>
                 <span>Board Admin</span>
             </a>
         </li>
-        
+
         <li class="nav-item">
             <a class="nav-link" href="${adminUrl}/music">
                 <i class="fas fa-fw fa-music"></i>
@@ -110,12 +120,10 @@
 
         <div id="content">
 
-            <!-- Topbar -->
             <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 shadow">
                 <span class="h5 mb-0 text-gray-800">결제 관리</span>
             </nav>
 
-            <!-- Page Content -->
             <div class="container-fluid">
 
                 <h1 class="h3 mb-2 text-gray-800">PAY Tables</h1>
@@ -129,34 +137,69 @@
                         <div class="table-responsive">
                             <table class="table table-bordered" id="dataTable" width="100%">
                                 <thead>
-                                    <tr>
-                                        <th>결제번호</th>
-                                        <th>결제한회원</th>
-                                        <th>상품명</th>
-                                        <th>구매수량</th>
-                                        <th>총결제금액</th>
-                                        <th>카카오페이 결제 고유번호</th>
-                                        <th>결제상태</th>
-                                        <th>주문생성시간</th>
-                                        <th>결제승인시간</th>
-                                        <th>결제실패사유</th>
-                                    </tr>
+                                <tr>
+                                    <th>결제번호</th>
+                                    <th>결제한회원</th>
+                                    <th>상품명</th>
+                                    <th>구매수량</th>
+                                    <th>총결제금액</th>
+                                    <th>카카오페이 결제 고유번호</th>
+                                    <th>결제상태</th>
+                                    <th>주문생성시간</th>
+                                    <th>결제승인시간</th>
+                                    <th>결제실패사유</th>
+                                    <th>관리</th>
+                                </tr>
                                 </thead>
                                 <tbody>
-                                    <c:forEach var="p" items="${payList}">
-                                        <tr>
-                                            <td>${p.orderId}</td>
-                                            <td>${p.userId}</td>
-                                            <td>${p.itemName}</td>
-                                            <td>${p.quantity}</td>
-                                            <td>${p.totalAmount}</td>
-                                            <td>${p.tid}</td>
-                                            <td>${p.status}</td>
-                                            <td>${p.createdAt}</td>
-                                            <td>${p.approvedAt}</td>
-                                            <td>${p.failReason}</td>
-                                        </tr>
-                                    </c:forEach>
+                                <c:forEach var="p" items="${payList}">
+                                    <tr data-status="${p.status}">
+                                        <td>${p.orderId}</td>
+                                        <td>${p.userId}</td>
+                                        <td>${p.itemName}</td>
+                                        <td>${p.quantity}</td>
+                                        <td>${p.totalAmount}</td>
+                                        <td>${p.tid}</td>
+
+                                        <td>
+                                            <c:choose>
+                                                <c:when test="${p.status eq 'READY'}">
+                                                    <span class="badge badge-secondary">READY</span>
+                                                </c:when>
+                                                <c:when test="${p.status eq 'APPROVED'}">
+                                                    <span class="badge badge-success">APPROVED</span>
+                                                </c:when>
+                                                <c:when test="${p.status eq 'CANCEL'}">
+                                                    <span class="badge badge-warning">CANCEL</span>
+                                                </c:when>
+                                                <c:when test="${p.status eq 'FAIL'}">
+                                                    <span class="badge badge-danger">FAIL</span>
+                                                </c:when>
+                                                <c:otherwise>
+                                                    <span class="badge badge-dark">${p.status}</span>
+                                                </c:otherwise>
+                                            </c:choose>
+                                        </td>
+
+                                        <td>${p.createdAt}</td>
+                                        <td>${p.approvedAt}</td>
+                                        <td>${p.failReason}</td>
+
+                                        <td>
+                                            <c:if test="${p.status eq 'APPROVED'}">
+                                                <button type="button"
+												        class="btn btn-sm btn-danger btn-cancel-pay cancel-btn"
+												        data-toggle="modal"
+												        data-target="#cancelModal"
+												        data-orderid="${p.orderId}"
+												        data-itemname="${p.itemName}"
+												        data-tid="${p.tid}">
+												    결제취소
+												</button>
+                                            </c:if>
+                                        </td>
+                                    </tr>
+                                </c:forEach>
                                 </tbody>
                             </table>
                         </div>
@@ -167,7 +210,6 @@
 
         </div>
 
-        <!-- Footer -->
         <footer class="sticky-footer bg-white">
             <div class="container my-auto text-center">
                 <span>Copyright &copy; Admin 2026</span>
@@ -182,6 +224,38 @@
     <i class="fas fa-angle-up"></i>
 </a>
 
+<!-- 결제 취소 모달 -->
+<div class="modal fade" id="cancelModal" tabindex="-1" role="dialog" aria-labelledby="cancelModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+
+        <input type="hidden" id="modalOrderId">
+		<input type="hidden" id="modalTid">
+
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="cancelModalLabel">결제 취소 확인</h5>
+                <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <div class="modal-body text-left">
+                <p class="mb-2 font-weight-bold">정말 이 결제를 취소하시겠습니까?</p>
+                <div class="small text-gray-700">
+                    <div>주문번호 : <span id="modalOrderIdText"></span></div>
+                    <div>상품명 : <span id="modalItemNameText"></span></div>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button class="btn btn-secondary" type="button" data-dismiss="modal">아니오</button>
+                <button class="btn btn-danger" type="button" id="confirmCancelBtn">예</button>
+            </div>
+        </div>
+
+    </div>
+</div>
+
 <script src="${adminRes}/vendor/jquery/jquery.min.js"></script>
 <script src="${adminRes}/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
 <script src="${adminRes}/vendor/jquery-easing/jquery.easing.min.js"></script>
@@ -191,7 +265,24 @@
 
 <script>
     $(document).ready(function() {
-        $('#dataTable').DataTable({
+
+        $.fn.dataTable.ext.search.push(function(settings, data, dataIndex) {
+            if (settings.nTable.id !== 'dataTable') {
+                return true;
+            }
+
+            var selectedStatus = $('#statusFilter').val();
+            if (!selectedStatus) {
+                return true;
+            }
+
+            var rowNode = settings.aoData[dataIndex].nTr;
+            var rowStatus = $(rowNode).attr('data-status');
+
+            return rowStatus === selectedStatus;
+        });
+
+        var table = $('#dataTable').DataTable({
             "pageLength": 10,
             "lengthMenu": [10, 25, 50, 100],
             "ordering": true,
@@ -208,8 +299,64 @@
                 },
                 "zeroRecords": "검색 결과가 없습니다.",
                 "infoEmpty": "데이터가 없습니다."
+            },
+            "initComplete": function () {
+                var filterHtml =
+                    '<label style="margin-left:10px;">' +
+                    '상태:' +
+                    '<select id="statusFilter" class="custom-select custom-select-sm form-control form-control-sm" ' +
+                    'style="width:auto; display:inline-block; margin-left:5px;">' +
+                    '<option value="">전체</option>' +
+                    '<option value="READY">READY</option>' +
+                    '<option value="APPROVED">APPROVED</option>' +
+                    '<option value="CANCEL">CANCEL</option>' +
+                    '<option value="FAIL">FAIL</option>' +
+                    '</select>' +
+                    '</label>';
+
+                $('#dataTable_filter').append(filterHtml);
+
+                $('#statusFilter').on('change', function () {
+                    table.draw();
+                });
             }
         });
+
+        $(document).on('click', '.cancel-btn', function() {
+            var orderId = $(this).data('orderid');
+            var itemName = $(this).data('itemname');
+            var tid = $(this).data('tid');
+
+            $('#modalOrderId').val(orderId);
+            $('#modalTid').val(tid);
+
+            $('#modalOrderIdText').text(orderId);
+            $('#modalItemNameText').text(itemName);
+        });
+
+        //카카오 결제취소
+        $('#confirmCancelBtn').on('click', function() {
+            var orderId = $('#modalOrderId').val();
+
+            $.ajax({
+                url: '${ctx}/kakaopay/request_cancel',
+                type: 'get',
+                data: { orderId: orderId },
+                success: function(response) {
+                    if (response === 'OK') {
+                        $('#cancelModal').modal('hide');
+                        alert('결제취소가 완료되었습니다.');
+                        location.reload();
+                    } else {
+                        alert('취소 요청은 갔는데 응답이 이상함: ' + response);
+                    }
+                },
+                error: function() {
+                    alert('결제취소 중 오류가 발생했습니다.');
+                }
+            });
+        });
+
     });
 </script>
 

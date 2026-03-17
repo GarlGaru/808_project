@@ -168,7 +168,7 @@
 	background: #ED6701 !important;
 	border-color: #ED6701 !important;
 	color: #fff !important;
-	
+
 	
 /* 공연후기 */
 /* 피그마 입히기 전 공연상세페이지 임시 css */
@@ -645,4 +645,20 @@
     font-size: 1rem;
 }
 
+
+}
+
+/* 예매안내 show_notice.png */
+.show-notice-wrap {
+    width: 100%;
+    text-align: left;
+    margin: 30px 0;
+}
+
+.show-notice-img {
+    width: 100%;
+    max-width: 702px;
+    height: auto;
+    display: inline-block;
+}
 
