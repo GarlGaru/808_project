@@ -169,3 +169,17 @@
 	border-color: #ED6701 !important;
 	color: #fff !important;
 }
+
+/* 예매안내 show_notice.png */
+.show-notice-wrap {
+    width: 100%;
+    text-align: left;
+    margin: 30px 0;
+}
+
+.show-notice-img {
+    width: 100%;
+    max-width: 702px;
+    height: auto;
+    display: inline-block;
+}
