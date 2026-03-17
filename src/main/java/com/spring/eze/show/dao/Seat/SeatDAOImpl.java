@@ -63,6 +63,13 @@ public class SeatDAOImpl implements SeatDAO {
 		return sqlSession.update("com.spring.eze.show.dao.Seat.SeatDAO.holdSeatsNow", map);
 	}
 
+	@Override
+	public List<SeatDTO> selectSeatLayout(String venueName) {
+		
+		System.out.println("=== selectVenueName 결과: " + venueName);
+		return sqlSession.selectList("com.spring.eze.show.dao.Seat.SeatDAO.selectSeatLayout", venueName);
+	}
+
 	
 }
 

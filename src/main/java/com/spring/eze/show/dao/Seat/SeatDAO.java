@@ -29,4 +29,6 @@ public interface SeatDAO {
 	
 	public int holdSeatsNow(Map<String, Object> map);
 	
+	public List<SeatDTO> selectSeatLayout(String venueName);
+	
 }

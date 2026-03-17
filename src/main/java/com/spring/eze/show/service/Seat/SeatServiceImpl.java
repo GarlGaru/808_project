@@ -171,4 +171,12 @@ public class SeatServiceImpl implements SeatService {
 	    return updated == seats.size(); //발표용 return
 	}
 
+	@Override
+	public List<SeatDTO> getSeatLayout(String venueName) {
+		 System.out.println("=== getSeatLayout venueName: " + venueName);
+		 List<SeatDTO> list = dao.selectSeatLayout(venueName);
+		 System.out.println("=== getSeatLayout list size: " + (list != null ? list.size() : "null"));
+		 return list;
+	}
+
 }

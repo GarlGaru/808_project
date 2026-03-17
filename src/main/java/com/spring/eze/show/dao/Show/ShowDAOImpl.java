@@ -78,4 +78,9 @@ public class ShowDAOImpl implements ShowDAO{
 		return sqlSession.selectList("com.spring.eze.show.dao.Show.ShowDAO.getShowRanking", genre);
 	}
 
+	@Override
+	public String selectVenueName(String showId) {
+		return sqlSession.selectOne("com.spring.eze.show.dao.Show.ShowDAO.selectVenueName", showId);
+	}
+
 }
