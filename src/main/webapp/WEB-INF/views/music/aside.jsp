@@ -50,7 +50,7 @@
         <div class="music-side-section" id="sidePlaylist">
 
             <!-- 좋아요 리스트 -->
-            <div class="music-side-item" id="btnLike">
+            <div class="music-side-item" id="btnGetLikeList">
                 <div class="music-side-icon">
                     <i class="bi bi-heart-fill"></i>
                 </div>
@@ -60,7 +60,7 @@
                 </div>
             </div>
             <!-- 최근 재생 -->
-            <div class="music-side-item" id="btnHistory">
+            <div class="music-side-item" id="btnGetHistoryList">
                 <div class="music-side-icon">
                     <i class="bi bi-clock-history"></i>
                 </div>

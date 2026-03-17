@@ -26,7 +26,7 @@
 
 
     <select id="getPlaylistAll" parameterType="int" resultMap="PlaylistDTO">
-        SELECT PLAYLIST_ID, TITLE
+        SELECT PLAYLIST_ID, TITLE, LIST_TYPE
         FROM PLAYLISTS_TBL
         WHERE USER_ID = #{userId}
     </select>
@@ -37,7 +37,7 @@
             (SELECT NVL(MAX(PLAYLIST_ID), 0) + 1 FROM PLAYLISTS_TBL),
             #{userId},
             #{title},
-            #{listType)
+            #{listType}
         FROM DUAL
         WHERE NOT EXISTS (
             SELECT 1
