@@ -42,7 +42,7 @@
 
             <!-- music-layout-main: 메인 콘텐츠가 들어가는 영역 현재는 mainstory.jsp를 포함-->
             <main class="music-layout-main">
-                <%@ include file="/WEB-INF/views/music/mainstory.jsp" %>
+               <div id="main-content-area"></div>
             </main>
         
         </div>
@@ -55,6 +55,12 @@
     <script src="${path}/resources/common/js/jquery/jquery-2.2.4.min.js"></script>
     <script src="${path}/resources/common/bootstrap-4.6.2-dist/js/bootstrap.bundle.min.js"></script>
     <script src="${path}/resources/common/js/main.js"></script>
+	
 
+	<script src="${path}/resources/music/js/music.js"></script>
+	<script >	window.addEventListener("DOMContentLoaded", function() {
+    	loadMainContent("${path}/music/mainstory");
+	});
+	</script>
 </body>
 </html>

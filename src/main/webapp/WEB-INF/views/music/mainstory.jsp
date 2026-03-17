@@ -34,7 +34,7 @@
                     <div class="music-home-track">
                         <c:forEach var="song" items="${weeklyRanking}">
                             <div class="music-home-card"
-                                 onclick="location.href='${path}/music/detail?songId=${song.songId}'">
+                                 onclick="loadMainContent('${path}/music/detail?songId=${song.songId}')">
 
                                 <div class="music-home-thumb-wrap">
                                     <c:choose>
@@ -49,17 +49,15 @@
                                                  alt="default album">
                                         </c:otherwise>
                                     </c:choose>
-
-                                    <button type="button"
-                                            class="music-home-play"
-                                            onclick="playFromCard(event, this)"
-                                            data-song-id="${song.songId}"
-                                            data-title="${song.title}"
-                                            data-artist="${song.artistName}"
-                                            data-cover="${empty song.coverImageUrl ? '/resources/music/img/default_album.jpg' : song.coverImageUrl}"
-                                            aria-label="${song.title} 재생">
-                                        ▶
-                                    </button>
+									  <button type="button"
+									        class="music-home-play-btn js-play-song"
+									        data-song-id="${song.songId}"
+									        data-title="${song.title}"
+									        data-artist="${song.artistName}"
+									        data-cover="${song.coverImageUrl}">
+									    ▶
+									</button>
+                              
                                 </div>
 
                                 <div class="music-home-body">
@@ -108,7 +106,7 @@
                     <div class="music-home-track">
                         <c:forEach var="song" items="${todayHitSongs}">
                             <div class="music-home-card"
-                                 onclick="location.href='${path}/music/detail?songId=${song.songId}'">
+                                 onclick="loadMainContent('${path}/music/detail?songId=${song.songId}')">
 
                                 <div class="music-home-thumb-wrap">
                                     <c:choose>
@@ -124,16 +122,14 @@
                                         </c:otherwise>
                                     </c:choose>
 
-                                    <button type="button"
-                                            class="music-home-play"
-                                            onclick="playFromCard(event, this)"
-                                            data-song-id="${song.songId}"
-                                            data-title="${song.title}"
-                                            data-artist="${song.artistName}"
-                                            data-cover="${empty song.coverImageUrl ? '/resources/music/img/default_album.jpg' : song.coverImageUrl}"
-                                            aria-label="${song.title} 재생">
-                                        ▶
-                                    </button>
+                                   <button type="button"
+									        class="music-home-play-btn js-play-song"
+									        data-song-id="${song.songId}"
+									        data-title="${song.title}"
+									        data-artist="${song.artistName}"
+									        data-cover="${song.coverImageUrl}">
+									    ▶
+									</button>
                                 </div>
 
                                 <div class="music-home-body">
@@ -182,7 +178,7 @@
                     <div class="music-home-track">
                         <c:forEach var="song" items="${genreRanking}">
                             <div class="music-home-card"
-                                 onclick="location.href='${path}/music/detail?songId=${song.songId}'">
+                                 onclick="loadMainContent('${path}/music/detail?songId=${song.songId}')">
 
                                 <div class="music-home-thumb-wrap">
                                     <c:choose>
@@ -280,47 +276,4 @@
         });
     });
 
-    function playFromCard(event, btn) {
-        event.stopPropagation();
-
-        const songId = btn.dataset.songId;
-        const title = btn.dataset.title;
-        const artist = btn.dataset.artist;
-        let cover = btn.dataset.cover;
-
-        if (cover && !cover.startsWith('/resources')) {
-            cover = '${path}' + cover;
-        } else if (cover && cover.startsWith('/resources')) {
-            cover = '${path}' + cover;
-        }
-
-        $.ajax({
-            url: '${path}/music/songPath',
-            type: 'GET',
-            data: { songId: songId },
-            success: function(songPath) {
-                if (!songPath || songPath.trim() === '') {
-                    alert('이 곡의 재생 파일 경로가 없습니다.');
-                    return;
-                }
-
-                const song = {
-                    songId: songId,
-                    title: title,
-                    artistName: artist,
-                    coverImageUrl: cover,
-                    songPath: songPath
-                };
-
-                if (window.setPlayerSong) {
-                    window.setPlayerSong(song);
-                } else {
-                    alert('플레이어 함수가 연결되지 않았습니다.');
-                }
-            },
-            error: function() {
-                alert('곡 경로를 불러오지 못했습니다.');
-            }
-        });
-    }
-</script>
+    </script>
