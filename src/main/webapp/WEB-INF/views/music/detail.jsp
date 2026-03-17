@@ -10,28 +10,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>${song.title}</title>
 
-    <!-- 공통 CSS -->
-    <link rel="stylesheet" href="${path}/resources/common/css/style.css">
-    <link rel="stylesheet" href="${path}/resources/common/style.css">
+
 
     <!-- 음악 페이지 전용 CSS -->
-    <link rel="stylesheet" href="${path}/resources/music/css/music-layout.css">
-    <link rel="stylesheet" href="${path}/resources/music/css/music-sidebar.css">
-    <link rel="stylesheet" href="${path}/resources/music/css/music-player.css">
+
     <link rel="stylesheet" href="${path}/resources/music/css/music-detail.css">
 </head>
 <body class="dark-mode">
 
-    <%@ include file="/WEB-INF/views/common/common.jsp" %>
-    <%@ include file="/WEB-INF/views/common/header.jsp" %>
-
     <div class="music-layout-page">
         <div class="music-layout-content">
 
-            <!-- 왼쪽 사이드바 -->
-            <aside class="music-layout-aside">
-                <%@ include file="/WEB-INF/views/music/aside.jsp" %>
-            </aside>
+
 
             <!-- 상세 본문 -->
             <main class="music-layout-main">
@@ -85,11 +75,14 @@
                          ========================= -->
                     <section class="music-detail-actions">
                         <!-- 큰 재생 버튼 -->
-                        <button type="button"
-                                class="music-detail-play-main-btn"
-                                onclick="playDetailSong()">
-                            ▶
-                        </button>
+                    <button type="button"
+				        class="music-detail-row-play-btn js-play-song"
+				        data-song-id="${sim.songId}"
+				        data-title="${sim.title}"
+				        data-artist="${sim.artistName}"
+				        data-cover="${sim.coverImageUrl}">
+					    ▶
+					</button>
 
                         <!-- 좋아요 -->
                         <button type="button" class="music-detail-icon-btn" title="좋아요">
@@ -159,7 +152,8 @@
 						
 						        <!-- 곡 한 줄 / 클릭 시 상세페이지 이동 -->
 						        <div class="music-detail-row"
-						             onclick="location.href='${path}/music/detail?songId=${sim.songId}'">
+						             onclick="loadMainContent('${path}/music/detail?songId=${sim.songId}')">
+
 						
 						            <!-- 몇 번째 곡인지 번호 표시 -->
 						            <div class="music-detail-col-index">
@@ -172,23 +166,18 @@
 						                <!-- 앨범 썸네일 박스 -->
 						                <div class="music-detail-song-thumb-wrap">
 						
-						                    <!-- 이미지 존재 여부 확인 -->
+						                 
 						                    <c:choose>
-						
-						                        <!-- 이미지가 있으면 실제 앨범 이미지 출력 -->
 						                        <c:when test="${not empty sim.coverImageUrl}">
 						                            <img src="${path}${sim.coverImageUrl}"
 						                                 alt="${sim.title}"
 						                                 class="music-detail-song-thumb">
 						                        </c:when>
-						
-						                        <!-- 이미지가 없으면 기본 앨범 이미지 출력 -->
 						                        <c:otherwise>
 						                            <img src="${path}/resources/music/img/default_album.jpg"
 						                                 alt="default album"
 						                                 class="music-detail-song-thumb">
 						                        </c:otherwise>
-						
 						                    </c:choose>
 						                </div>
                                         <div class="music-detail-song-info">
@@ -210,109 +199,26 @@
                                     </div>
 
                                     <div class="music-detail-col-play">
-                                        <button type="button"
-                                                class="music-detail-row-play-btn"
-                                                onclick="playSimilarSong(event, this)"
-                                                data-song-id="${sim.songId}"
-                                                data-title="${sim.title}"
-                                                data-artist="${sim.artistName}"
-                                                data-cover="${sim.coverImageUrl}"
-                                              >
-                                            ▶
-                                        </button>
+                                   <button type="button"
+								        class="music-detail-hero-play-btn js-play-song"
+								        data-song-id="${song.songId}"
+								        data-title="${song.title}"
+								        data-artist="${song.artistName}"
+								        data-cover="${song.coverImageUrl}">
+									    ▶ 재생
+									</button>
                                     </div>
                                 </div>
                             </c:forEach>
                         </div>
                     </section>
-
                 </div>
             </main>
         </div>
-	
-        <%@ include file="/WEB-INF/views/music/player.jsp" %>
     </div>
-
     <script src="${path}/resources/common/js/jquery/jquery-2.2.4.min.js"></script>
     <script src="${path}/resources/common/bootstrap-4.6.2-dist/js/bootstrap.bundle.min.js"></script>
     <script src="${path}/resources/common/js/main.js"></script>
 
-    <script>
-        /* 현재 곡을 플레이어에 세팅 */
-        function playDetailSong() {
-		    const songId = '${song.songId}';
-		    const title = '${song.title}';
-		    const artist = '${song.artistName}';
-		    const cover = '${song.coverImageUrl}';
-		
-		    $.ajax({
-		        url: '${path}/music/songPath',
-		        type: 'GET',
-		        data: { songId: songId },
-		        success: function(songPath) {
-		            if (!songPath || songPath.trim() === '') {
-		                alert('이 곡의 재생 파일 경로가 없습니다.');
-		                return;
-		            }
-		
-		            const song = {
-		                songId: songId,
-		                title: title,
-		                artistName: artist,
-		                coverImageUrl: cover,
-		                songPath: songPath
-		            };
-		
-		            if (window.setPlayerSong) {
-		                window.setPlayerSong(song);
-		            } else {
-		                alert('플레이어 함수가 연결되지 않았습니다.');
-		            }
-		        },
-		        error: function() {
-		            alert('곡 경로를 불러오지 못했습니다.');
-		        }
-		    });
-		}
-
-        /* 추천곡 재생 버튼 */
-        function playSimilarSong(event, btn) {
-		    event.stopPropagation();
-		
-		    const songId = btn.dataset.songId;
-		    const title = btn.dataset.title;
-		    const artist = btn.dataset.artist;
-		    const cover = btn.dataset.cover;
-		
-		    $.ajax({
-		        url: '${path}/music/songPath',
-		        type: 'GET',
-		        data: { songId: songId },
-		        success: function(songPath) {
-		            if (!songPath || songPath.trim() === '') {
-		                alert('이 곡의 재생 파일 경로가 없습니다.');
-		                return;
-		            }
-		
-		            const song = {
-		                songId: songId,
-		                title: title,
-		                artistName: artist,
-		                coverImageUrl: cover,
-		                songPath: songPath
-		            };
-		
-		            if (window.setPlayerSong) {
-		                window.setPlayerSong(song);
-		            } else {
-		                alert('플레이어 함수가 연결되지 않았습니다.');
-		            }
-		        },
-		        error: function() {
-		            alert('곡 경로를 불러오지 못했습니다.');
-		        }
-		    });
-		}
-    </script>
 </body>
 </html>

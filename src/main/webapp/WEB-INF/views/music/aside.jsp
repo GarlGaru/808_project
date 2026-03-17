@@ -23,21 +23,21 @@
             <!-- 메인 홈으로 이동 -->
             <button type="button"
                     class="music-side-btn"
-                    onclick="location.href='${path}/music'">
+                    onclick="loadMainContent('${path}/music/mainstory')">
                 MUSIC HOME
             </button>
 
             <!-- 추천 페이지로 이동 -->
             <button type="button"
                     class="music-side-btn"
-                    onclick="location.href='${path}/music/recommend'">
+                    onclick="loadMainContent('${path}/music/recommend')">
                 추천별 보기
             </button>
 
             <!-- 랭킹 페이지로 이동 -->
             <button type="button"
                     class="music-side-btn"
-                    onclick="location.href='${path}/music/ranking'">
+                    onclick="loadMainContent('${path}/music/ranking')">
                 랭킹별 보기
             </button>
         </div>
