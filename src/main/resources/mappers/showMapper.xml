@@ -179,11 +179,11 @@
 	          show_id as showId,
 	          play_date as playDate
 	    FROM  schedule_tbl
-	    AND  TO_CHAR(play_date, 'YYYY-MM-DD') = #{playDate}
 	   WHERE  show_id = #{showId}
 	   ORDER BY start_time 	
 	</select>
 
+	
 	<!-- AND  TO_CHAR(play_date, 'YYYY-MM-DD') = #{playDate} -->
 
 	<!--  AND  TO_CHAR(play_date, 'YYYY-MM-DD') = #{playDate} -->

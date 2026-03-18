@@ -168,8 +168,10 @@
                         const popupHeight = 900;
                         const left = (window.screen.width - popupWidth) / 2;
                         const top = (window.screen.height - popupHeight) / 2;
-                        const specs = 'width=' + popupWidth + ',height=' + popupHeight + ',left=' + left + ',top=' + top;
-                        window.open("", popupName, specs);
+                        /* const specs = 'width=' + popupWidth + ',height=' + popupHeight + ',left=' + left + ',top=' + top;
+                        window.open("", popupName, specs); */
+                        const specs = "width=1200,height=850,top=50,left=100,scrollbars=yes";
+                        window.open(url, popupName, specs);
                         const $form = $("#reserveForm");
                         $form.attr("target", popupName);
                         $form.submit();
