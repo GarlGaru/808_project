@@ -11,6 +11,7 @@ import javax.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.spring.eze.user.dao.MypageDAO;
 import com.spring.eze.user.dao.UserDAO;
@@ -225,19 +226,29 @@ public class MypageServiceImpl implements MypageService {
     }
 
     // 프로필 사진 수정
+    @Transactional
     @Override
     public int updatePhotoUrl(int userId, String photoUrl, HttpSession session) {
         Map<String, Object> map = new HashMap<>();
         map.put("userId",   userId);
         map.put("photoUrl", photoUrl);
+        
+        // DB 업데이트
         int result = mypageDAO.updatePhotoUrl(map);
         if (result < 1) return 0;
 
         // 세션 갱신
         UserDTO updated = mypageDAO.selectUserWithProfile(userId);
-        session.setAttribute("loginUser", updated);
-
-        return 1;
+        if (updated != null) {
+            // 3. [본인 규칙 적용] 세션에는 비밀번호를 들고 다니지 않으므로 null 처리
+            updated.setPassword(null); 
+            
+            // 4. 최신 프로필 정보가 포함된 객체로 세션 덮어쓰기
+            session.setAttribute("loginUser", updated);
+            return 1;
+        }
+        
+        return 0;
     }
 
  // 비밀번호 변경

@@ -154,8 +154,8 @@
             </div>
 			
             <p class="auth-terms">
-              가입 시 서비스 <a href="#">이용약관</a> 및 <br />
-              <a href="#">개인정보 처리방침</a>에 동의하게 됩니다.
+              가입 시 서비스 <a href="${pageContext.request.contextPath}/terms" target="_blank">이용약관</a> 및 <br />
+              <a href="${pageContext.request.contextPath}/terms" target="_blank">개인정보 처리방침</a>에 동의하게 됩니다.
             </p>
             <button class="auth-btn submit" onclick="doSignup()">Sign Up</button>
           </div>

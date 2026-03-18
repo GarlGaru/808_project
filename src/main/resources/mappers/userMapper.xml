@@ -6,14 +6,22 @@
 <mapper namespace="com.spring.eze.user.dao.UserDAO">
 
     <!-- ResultMap -->
-    <resultMap id="userMap" type="com.spring.eze.user.dto.UserDTO">
-        <id     property="userId"        column="user_id"/>
-        <result property="email"         column="email"/>
-        <result property="password"      column="password"/>
-        <result property="nickname"      column="nickname"/>
-        <result property="emailVerified" column="email_verified"/>
-        <result property="createdAt"     column="created_at"/>
-    </resultMap>
+	   <resultMap id="userMap" type="com.spring.eze.user.dto.UserDTO">
+	    <id     property="userId"        column="user_id"/>
+	    <result property="email"         column="email"/>
+	    <result property="password"      column="password"/>
+	    <result property="nickname"      column="nickname"/>
+	    <result property="emailVerified" column="email_verified"/>
+	    <result property="createdAt"     column="created_at"/>
+	    <association property="profile"
+	                 javaType="com.spring.eze.user.dto.ProfileDTO">
+	        <result property="membershipType" column="membership_type"/>
+	        <result property="birthDate"      column="birth_date"/>
+	        <result property="bio"            column="bio"/>
+	        <result property="photoUrl"       column="photo_url"/>
+	        <result property="updateAt"       column="updated_at"/>
+	    </association>
+	</resultMap>
 
     <resultMap id="emailCodeMap" type="com.spring.eze.user.dto.EmailCodeDTO">
         <id     property="emailCodeId" column="email_code_id"/>
@@ -24,10 +32,9 @@
     </resultMap>
     
 	<!-- 회원가입 -->
-	<insert id="insertUser" parameterType="com.spring.eze.user.dto.UserDTO">
-	    <selectKey keyProperty="userId" resultType="int" order="AFTER">
-	        SELECT user_tbl.CURRVAL FROM DUAL
-	    </selectKey>
+	<insert id="insertUser" parameterType="com.spring.eze.user.dto.UserDTO"
+	        useGeneratedKeys="true" keyProperty="userId" keyColumn="user_id">
+	    <!-- 유저 기본 정보 등록 (IDENTITY 값 회수 포함) -->
 	    INSERT INTO user_tbl (
 	        email,
 	        password,
@@ -40,12 +47,12 @@
 	</insert>
 	
 	<!-- 유저ID 매칭 프로필 생성 -->
-	<insert id="insertProfile" parameterType="com.spring.eze.user.dto.UserDTO">
+	<insert id="insertProfile" parameterType="int">
         <!-- 위에서 생성된 userId를 그대로 사용하여 프로필 레코드 생성 --> 
         INSERT INTO profile_tbl (
             user_id,
             bio
-            <!-- membership_type, updated_at은 DB DEFAULT 값이 자동으로 들어감 --> 
+            <!-- membership_type(FREE), updated_at은 DB DEFAULT 값이 자동으로 들어감 --> 
         ) VALUES (
             #{userId}, 
             '반갑습니다:)'
@@ -67,16 +74,22 @@
     </select>
 
     <!-- 로그인 시 유저 조회 -->
-    <select id="getUserByEmail" parameterType="String" resultMap="userMap">
-        SELECT user_id,
-               email,
-               password,
-               nickname,
-               email_verified,
-               created_at
-          FROM user_tbl
-         WHERE email = #{email}
-    </select>
+	 <select id="getUserByEmail" parameterType="String" resultMap="userMap">
+	    SELECT U.USER_ID
+	         , U.EMAIL
+	         , U.PASSWORD
+	         , U.NICKNAME
+	         , U.EMAIL_VERIFIED
+	         , U.CREATED_AT
+	         , P.MEMBERSHIP_TYPE
+	         , P.BIRTH_DATE
+	         , P.BIO
+	         , P.PHOTO_URL
+	         , P.UPDATED_AT
+	      FROM USER_TBL U
+	      LEFT JOIN PROFILE_TBL P ON U.USER_ID = P.USER_ID
+	     WHERE U.EMAIL = #{email}
+	</select>
 
     <!-- 이메일 인증 완료 처리 -->
     <update id="updateEmailVerified" parameterType="String">

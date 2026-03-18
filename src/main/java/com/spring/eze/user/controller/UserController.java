@@ -131,6 +131,12 @@ public class UserController {
         return service.updatePw(request);
     }
     
+    // 서비스 약관 및 개인정보 처리 방침
+    @RequestMapping(value = "/terms", method = RequestMethod.GET)
+    public String terms( ) {
+    	return "user/terms";
+    }
+    
     
 //    // 10. 회원탈퇴
 //    @RequestMapping(value = "/deleteUser", method = RequestMethod.POST)

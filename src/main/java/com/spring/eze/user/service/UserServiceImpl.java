@@ -12,6 +12,7 @@ import javax.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder; // 암호화 라이브러리
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.spring.eze.user.dto.UserDTO;
 import com.spring.eze.user.dao.UserDAO;
@@ -37,7 +38,8 @@ public class UserServiceImpl implements UserService {
         return val == null ? null : val.trim();
     }
 
-    // 1. 회원가입 (BCrypt 암호화 적용)
+    // 회원가입 (BCrypt 암호화 적용)
+    @Transactional
     @Override
     public int insertUser(HttpServletRequest request)
             throws ServletException, IOException {
@@ -87,7 +89,7 @@ public class UserServiceImpl implements UserService {
         }
     }
 
-    // 2. 이메일 중복확인
+    // 이메일 중복확인
     @Override
     public int checkEmail(HttpServletRequest request)
             throws ServletException, IOException {
@@ -97,7 +99,7 @@ public class UserServiceImpl implements UserService {
         return dao.checkEmail(email);
     }
 
-    // 3. 닉네임 중복확인
+    // 닉네임 중복확인
     @Override
     public int checkNickname(HttpServletRequest request) {
         try {
@@ -124,7 +126,7 @@ public class UserServiceImpl implements UserService {
         }
     }
 
-    // 4. 로그인(암호화된 비밀번호 비교 방식)
+    // 로그인(암호화된 비밀번호 비교 방식)
     @Override
     public int loginAction(HttpServletRequest request)
             throws ServletException, IOException {
@@ -156,6 +158,9 @@ public class UserServiceImpl implements UserService {
             // 로그인 성공 처리 => 보안을 위해 세션에 담기 전 비번 정보는 삭제
             loginUser.setPassword(null);
             
+            System.out.println(">>> profile: " + loginUser.getProfile());
+            System.out.println(">>> photoUrl: " + (loginUser.getProfile() != null ? loginUser.getProfile().getPhotoUrl() : "null"));
+            
             // 세션 설정
             HttpSession session = request.getSession();
             session.setAttribute("loginUser", loginUser); // 세션에 유저 객체 통째로 저장(비번x)
@@ -170,7 +175,7 @@ public class UserServiceImpl implements UserService {
         }
     }
 
-    // 5. 이메일 인증 완료 처리
+    // 이메일 인증 완료 처리
     @Override
     public int updateEmailVerified(HttpServletRequest request)
             throws ServletException, IOException {
@@ -180,7 +185,7 @@ public class UserServiceImpl implements UserService {
         return dao.updateEmailVerified(email);
     }
 
-    // 6. 비밀번호 수정
+    // 비밀번호 수정
     @Override
     public int updatePw(HttpServletRequest request) {
         String email    = getParam(request, "email");
@@ -201,7 +206,7 @@ public class UserServiceImpl implements UserService {
         return dao.updatePw(map);
     }
 
-//    // 7. 회원탈퇴
+//    // 회원탈퇴
 //    @Override
 //    public int deleteUser(HttpServletRequest request)
 //            throws ServletException, IOException {
@@ -212,7 +217,7 @@ public class UserServiceImpl implements UserService {
 //        return deleteCnt;
 //    }
 
-    // 8. 인증코드 생성 및 DB 저장
+    // 인증코드 생성 및 DB 저장
     @Override
     public int insertEmailCode(HttpServletRequest request)
             throws ServletException, IOException {
@@ -241,7 +246,7 @@ public class UserServiceImpl implements UserService {
         return result;
     }
 
-    // 9. 인증코드 조회
+    // 인증코드 조회
     @Override
     public EmailCodeDTO getEmailCode(HttpServletRequest request)
             throws ServletException, IOException {
@@ -251,7 +256,7 @@ public class UserServiceImpl implements UserService {
         return dao.getEmailCode(email);
     }
 
-    // 10. 인증코드 검증
+    // 인증코드 검증
     @Override
     public int verifyCode(HttpServletRequest request)
             throws ServletException, IOException {

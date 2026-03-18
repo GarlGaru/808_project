@@ -30,8 +30,8 @@ public class MypageController {
 
     private static final Logger logger = LoggerFactory.getLogger(MypageController.class);
 
-    // 프로필 사진 저장 경로
-    private static final String UPLOAD_PATH = "/resources/upload/profile/";
+    // 프로필 사진 저장 경로 — 실제 파일 저장 절대경로 / 웹 접근 경로 분리
+    private static final String UPLOAD_WEB_PATH  = "/resources/upload/profile/";
 
     // MypageService 인터페이스 타입으로 주입
     // 실제 동작은 MypageServiceImpl이 하지만 인터페이스로 받는 게 올바른 방식
@@ -39,8 +39,7 @@ public class MypageController {
     private MypageServiceImpl mypageService;
 
     // ── 공통 헬퍼 ──────────────────────────────────
-    // 매 메서드마다 세션에서 loginUser 꺼내는 코드가 반복되므로
-    // private 메서드로 분리해서 중복 제거
+    // 매 메서드마다 세션에서 loginUser 꺼내는 코드가 반복되므로 private 메서드로 분리해서 중복 제거
     private UserDTO getLoginUser(HttpSession session) {
         return (UserDTO) session.getAttribute("loginUser");
     }
@@ -158,48 +157,54 @@ public class MypageController {
     }
 
 
-    // ── 프로필 사진 수정 ───────────────────────────
-    // multipart/form-data 방식 — 파일 업로드
-    // @RequestParam("photoFile") → JS FormData.append("photoFile", file)과 키 이름 일치해야 함
-    // 파일 저장은 Controller에서, DB저장 + 세션갱신은 Service에서
-    @ResponseBody
-    @RequestMapping(value = "/mypage/updatePhoto", method = RequestMethod.POST)
-    public int updatePhoto(
-            @RequestParam("photoFile") MultipartFile file,
-            HttpSession session) {
-        logger.info("<<< url => /mypage/updatePhoto >>>");
-
-        UserDTO loginUser = getLoginUser(session);
-        if (loginUser == null) return -999;
-
-        try {
-            // 업로드 디렉토리 없으면 자동 생성
-            File dir = new File(UPLOAD_PATH);
-            if (!dir.exists()) dir.mkdirs();
-
-            // 서버단 확장자 검증 — JS 검증은 우회 가능하므로 필수
-            String originalName = file.getOriginalFilename();
-            String ext = originalName.substring(originalName.lastIndexOf(".") + 1).toLowerCase();
-            if (!ext.matches("jpg|jpeg|png|gif")) {
-                logger.warn("허용되지 않는 파일 확장자: userId={}, ext={}", loginUser.getUserId(), ext);
-                return 0;
-            }
-
-            // 파일명 — userId 기반 고정명 (재업로드 시 덮어쓰기)
-            // ex) user_1.jpg
-            String fileName = "user_" + loginUser.getUserId() + "." + ext;
-            file.transferTo(new File(UPLOAD_PATH + fileName));
-
-            // DB에 저장할 웹 접근 경로
-            String photoUrl = UPLOAD_PATH + fileName;
-
-            return mypageService.updatePhotoUrl(loginUser.getUserId(), photoUrl, session);
-
-        } catch (Exception e) {
-            logger.error("프로필 사진 저장 실패: userId={}", loginUser.getUserId(), e);
-            return -1;
-        }
-    }
+		 // ── 프로필 사진 수정 ───────────────────────────
+		 // multipart/form-data 방식 — 파일 업로드
+		 // @RequestParam("photoFile") → JS FormData.append("photoFile", file)과 키 이름 일치해야 함
+		 // 파일 저장은 Controller에서, DB저장 + 세션갱신은 Service에서
+	    @ResponseBody
+	    @RequestMapping(value = "/mypage/updatePhoto", method = RequestMethod.POST)
+	    public int updatePhoto(@RequestParam("photoFile") MultipartFile file, HttpSession session) {
+	        logger.info("<<< url => /mypage/updatePhoto (Tomcat Mode) >>>");
+	        
+	        UserDTO loginUser = getLoginUser(session);
+	        if (loginUser == null) return -999;
+	        
+	        try {
+	            // 1. [핵심] 톰캣 서버의 실제 배포 경로를 가져옴
+	            // /resources/upload/profile/ 폴더가 실제로 저장된 서버 내의 주소를 알아냄
+	            String realPath = session.getServletContext().getRealPath(UPLOAD_WEB_PATH);
+	            
+	            // 2. 디렉토리가 없으면 자동 생성
+	            File dir = new File(realPath);
+	            if (!dir.exists()) dir.mkdirs();
+	
+	            // 3. 서버단 파일 확장자 검증
+	            String originalName = file.getOriginalFilename();
+	            if (originalName == null || !originalName.contains(".")) return 0;
+	
+	            String ext = originalName.substring(originalName.lastIndexOf(".") + 1).toLowerCase();
+	            if (!ext.matches("jpg|jpeg|png|gif")) {
+	                logger.warn("허용되지 않는 확장자: {}", ext);
+	                return 0;
+	            }
+	
+	            // 4. 파일명 생성 (유저 ID 기반 고정명으로 덮어쓰기 유도)
+	            String fileName = "user_" + loginUser.getUserId() + "." + ext;
+	
+	            // 5. 실제 파일 저장 (배포 경로에 저장해야 브라우저가 바로 읽음)
+	            file.transferTo(new File(realPath + File.separator + fileName));
+	
+	            // 6. DB에 저장할 웹 접근 경로 (프로젝트 시작 루트부터의 경로)
+	            String photoUrl = UPLOAD_WEB_PATH + fileName;
+	
+	            // 7. DB 업데이트 및 세션 최신화는 Service에서 처리
+	            return mypageService.updatePhotoUrl(loginUser.getUserId(), photoUrl, session);
+	            
+	        } catch (Exception e) {
+	            logger.error("프로필 이미지 업로드 에러: userId={}", loginUser.getUserId(), e);
+	            return -1;
+	        }
+	    }
 
 
     // ── 비밀번호 변경 ──────────────────────────────

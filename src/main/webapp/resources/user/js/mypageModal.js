@@ -310,7 +310,7 @@
       success: function (result) {
         if (result === 1) {
           alert('탈퇴가 완료되었습니다.');
-          location.href = CP + '/';
+          location.href = CP + '/main';
         } else if (result === -999) {
           alert('로그인 정보가 없습니다. 다시 로그인해주세요.');
         } else {

@@ -2,6 +2,7 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %> 
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<c:set var="now" value="<%=System.currentTimeMillis()%>" />
 <%--
   mypageModal.jsp — 헤더 include 전용 fragment
   열기: <button onclick="openMypage()">마이페이지</button>
@@ -34,7 +35,7 @@
           <div class="av" id="mpAv" onclick="document.getElementById('mpAvFile').click()">
             <c:choose>
               <c:when test="${not empty loginUser.profile.photoUrl}">
-                <img src="${loginUser.profile.photoUrl}" alt="프로필">
+                <img src="${path}${loginUser.profile.photoUrl}?v=${now}" alt="프로필">
               </c:when>
               <c:otherwise>
                 ${fn:substring(loginUser.nickname, 0, 1)}
@@ -61,6 +62,8 @@
           <span class="level-badge" id="mpLevelBadge">🎵 Lv.24</span>
         </div>
       </div>
+      
+      
 
       <nav class="sb-nav">
         <div class="nav-item active"
@@ -341,4 +344,4 @@
 </div><%-- /mpOverlay --%>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
-<script src="${pageContext.request.contextPath}/resources/user/js/mypageModal.js"></script>
+<script src="${path}/resources/user/js/mypageModal.js"></script>
