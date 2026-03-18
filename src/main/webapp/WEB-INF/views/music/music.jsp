@@ -52,15 +52,19 @@
     </div>
 
     <!-- 공통 JS -->
+    <script>
+        window.APP_PATH = '${pageContext.request.contextPath}';
+    </script>
+
     <script src="${path}/resources/common/js/jquery/jquery-2.2.4.min.js"></script>
     <script src="${path}/resources/common/bootstrap-4.6.2-dist/js/bootstrap.bundle.min.js"></script>
     <script src="${path}/resources/common/js/main.js"></script>
-	
+    <script src="${path}/resources/music/js/music.js"></script>
 
-	<script src="${path}/resources/music/js/music.js"></script>
-	<script >	window.addEventListener("DOMContentLoaded", function() {
-    	loadMainContent("${path}/music/mainstory");
-	});
-	</script>
+    <script>
+    window.addEventListener("DOMContentLoaded", function() {
+        loadMainContent("${path}/music/mainstory");
+    });
+    </script>
 </body>
 </html>

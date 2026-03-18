@@ -5,7 +5,7 @@
 
 <link rel="stylesheet" href="${path}/resources/music/css/player.css">
 
-<div class="music-player-fixed">
+<div class="music-player-fixed" id="globalPlayerRoot">
 
     <!-- 왼쪽: 현재 곡 정보 -->
     <div class="player-left">
