@@ -76,13 +76,13 @@
                     <section class="music-detail-actions">
                         <!-- 큰 재생 버튼 -->
                     <button type="button"
-				        class="music-detail-row-play-btn js-play-song"
-				        data-song-id="${sim.songId}"
-				        data-title="${sim.title}"
-				        data-artist="${sim.artistName}"
-				        data-cover="${sim.coverImageUrl}">
-					    ▶
-					</button>
+                        class="music-detail-row-play-btn js-play-song"
+                        data-song-id="${song.songId}"
+                        data-title="${song.title}"
+                        data-artist="${song.artistName}"
+                        data-cover="${song.coverImageUrl}">
+                        ▶
+                    </button>
 
                         <!-- 좋아요 -->
                         <button type="button" class="music-detail-icon-btn" title="좋아요">
@@ -201,10 +201,10 @@
                                     <div class="music-detail-col-play">
                                    <button type="button"
 								        class="music-detail-hero-play-btn js-play-song"
-								        data-song-id="${song.songId}"
-								        data-title="${song.title}"
-								        data-artist="${song.artistName}"
-								        data-cover="${song.coverImageUrl}">
+								        data-song-id="${sim.songId}"
+								        data-title="${sim.title}"
+								        data-artist="${sim.artistName}"
+								        data-cover="${sim.coverImageUrl}">
 									    ▶ 재생
 									</button>
                                     </div>
