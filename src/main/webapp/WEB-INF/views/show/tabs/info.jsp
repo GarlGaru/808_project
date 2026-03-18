@@ -4,4 +4,13 @@
     <p>러닝타임 : ${dto.runtime}</p>
     <p>관람연령 : ${dto.ageLimit}</p>
     <p>티켓가격 : ${dto.ticketPrice}</p>
+	<br><br>
+		
+    <h3>예매 안내</h3>
+
+    <div class="show-notice-wrap">
+        <img src="${pageContext.request.contextPath}/resources/show/images/show_notice.png" 
+             alt="예매 전 확인 안내"
+             class="show-notice-img">
+    </div>
 </div>

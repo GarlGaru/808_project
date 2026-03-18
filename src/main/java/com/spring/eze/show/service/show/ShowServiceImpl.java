@@ -107,6 +107,8 @@ public class ShowServiceImpl implements ShowService{
 		System.out.println("ShowServiceImpl - getScheduleByDate()");
 		
 		List<ShowDTO> list = dao.getShowSchedule(showId, playDate);
+		System.out.println("showId = " + showId);
+		System.out.println("playDate = " + playDate);
 		
 		model.addAttribute("list", list);
 	}
