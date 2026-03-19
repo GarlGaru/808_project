@@ -16,13 +16,16 @@ public class SeatDTO {
    
     private Date holdAt;        // 선점 시작 시간
 	
+    private int rowNo;
+    private int colNo;
+    
     public SeatDTO() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
 
-	public SeatDTO(int seatId, String showId, int scheduleId, String userId, String seatLabel, String resSeatLabel,
-			String seatGrade, String seatStatus, Date holdAt) {
+	public SeatDTO(Integer seatId, String showId, Integer scheduleId, String userId, String seatLabel,
+			String resSeatLabel, String seatGrade, String seatStatus, Date holdAt, int rowNo, int colNo) {
 		super();
 		this.seatId = seatId;
 		this.showId = showId;
@@ -33,6 +36,8 @@ public class SeatDTO {
 		this.seatGrade = seatGrade;
 		this.seatStatus = seatStatus;
 		this.holdAt = holdAt;
+		this.rowNo = rowNo;
+		this.colNo = colNo;
 	}
 
 	public int getSeatId() {
@@ -106,11 +111,37 @@ public class SeatDTO {
 	public void setHoldAt(Date holdAt) {
 		this.holdAt = holdAt;
 	}
+	
+
+
+	public int getRowNo() {
+		return rowNo;
+	}
+
+	public void setRowNo(int rowNo) {
+		this.rowNo = rowNo;
+	}
+
+	public int getColNo() {
+		return colNo;
+	}
+
+	public void setColNo(int colNo) {
+		this.colNo = colNo;
+	}
+
+	public void setSeatId(Integer seatId) {
+		this.seatId = seatId;
+	}
+
+	public void setScheduleId(Integer scheduleId) {
+		this.scheduleId = scheduleId;
+	}
 
 	@Override
 	public String toString() {
 		return "SeatDTO [seatId=" + seatId + ", showId=" + showId + ", scheduleId=" + scheduleId + ", userId=" + userId
 				+ ", seatLabel=" + seatLabel + ", resSeatLabel=" + resSeatLabel + ", seatGrade=" + seatGrade
-				+ ", seatStatus=" + seatStatus + ", holdAt=" + holdAt + "]";
+				+ ", seatStatus=" + seatStatus + ", holdAt=" + holdAt + ", rowNo=" + rowNo + ", colNo=" + colNo + "]";
 	}
 }

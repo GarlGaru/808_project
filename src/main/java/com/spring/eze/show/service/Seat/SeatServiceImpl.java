@@ -35,11 +35,11 @@ public class SeatServiceImpl implements SeatService {
 		
 		
 		 System.out.println("===== 파라미터 확인 =====");
-		    System.out.println("show_id: " + request.getParameter("showId"));
+		    System.out.println("showId: " + request.getParameter("showId"));
 		    System.out.println("schedule_id: " + request.getParameter("scheduleId"));
 		    System.out.println("========================");
 		
-		String showId = request.getParameter("show_id");
+		String showId = request.getParameter("showId");
 		//int scheduleId = Integer.parseInt(request.getParameter("schedule_id"));
 		String scheduleIdStr = request.getParameter("scheduleId"); 
 
@@ -54,7 +54,7 @@ public class SeatServiceImpl implements SeatService {
 	    }
 		
 		
-		System.out.println("getSeatLiest() - show_id" + showId);
+		System.out.println("getSeatLiest() - showId" + showId);
 		System.out.println("getSeatList() - schedule_id" + scheduleId);
 		//DAO에 넘길 map 생성
 		Map<String, Object> map = new HashMap<String, Object>();
@@ -115,13 +115,23 @@ public class SeatServiceImpl implements SeatService {
 		String scheduleId = request.getParameter("scheduleId");
 		String[] seatLabels = request.getParameterValues("seatLabels[]"); //ajax배열 명칭 주의
 		
+		System.out.println("=== cancelSelectedSeats 디버그 ===");
+	    System.out.println("showId: " + showId);
+	    System.out.println("scheduleId: " + scheduleId);
+	    System.out.println("scheduleId type: " + scheduleId.getClass().getName());
+	    System.out.println("seatLabels: " + Arrays.toString(seatLabels));
+		
 		if(seatLabels != null && seatLabels.length > 0) {
 			Map<String, Object> map = new HashMap<>();
 			map.put("showId", showId);
 			map.put("scheduleId", Integer.parseInt(scheduleId));
 			map.put("seatLabels", Arrays.asList(seatLabels));
-			
-			dao.updateReleaseSeats(map);
+
+			int result = dao.updateReleaseSeats(map);
+			System.out.println("updateReleaseSeats result:" + result);
+			}else {
+				System.out.println("seatLabels가 null이거나 비어있음.");
+			//dao.updateReleaseSeats(map);
 		}
 		
 	}
@@ -137,7 +147,7 @@ public class SeatServiceImpl implements SeatService {
 	}
 	@Override
 	@Transactional
-	public boolean checkAndLockSeats(String showId, int scheduleId, List<String> seats){
+	public boolean checkAndLockSeats(String showId, int scheduleId, List<String> seats, String userId){
 		
 //	    boolean isAvailable = dao.checkAndLockSeats(showId, scheduleId, seats);
 //	    
@@ -146,14 +156,27 @@ public class SeatServiceImpl implements SeatService {
 	    Map<String, Object> map = new HashMap<>();
 	    map.put("showId", showId);
 	    map.put("scheduleId", scheduleId);
-	    map.put("userId", "TEMP_USER"); // 실제로는 세션의 loginUserId 사용
+	    map.put("userId", userId); // 실제로는 세션의 loginUserId 사용
 	    map.put("seatLabels", seats);
 
-//	    int result = dao.updateHoldSeats(map);
-//	    
-//	    return result == seats.size();
+	    int updated = dao.holdSeatsNow(map);
 	    
-	    return true; //발표용 return
+	    System.out.println("=== checkAndLockSeats 디버그 ===");
+	    System.out.println("showId: " + showId);
+	    System.out.println("scheduleId: " + scheduleId);
+	    System.out.println("seats: " + seats);
+	    System.out.println("updated:" + updated);
+	    System.out.println("seats.size(): " + seats.size());
+	    
+	    return updated == seats.size(); //발표용 return
+	}
+
+	@Override
+	public List<SeatDTO> getSeatLayout(String venueName) {
+		 System.out.println("=== getSeatLayout venueName: " + venueName);
+		 List<SeatDTO> list = dao.selectSeatLayout(venueName);
+		 System.out.println("=== getSeatLayout list size: " + (list != null ? list.size() : "null"));
+		 return list;
 	}
 
 }

@@ -145,4 +145,10 @@ public class ShowServiceImpl implements ShowService{
 		model.addAttribute("currentCategory", genre);
 	}
 
+	//seat용 추가
+	@Override
+	public String getVenueName(String showId) {
+		return dao.selectVenueName(showId);
+	}
+
 }

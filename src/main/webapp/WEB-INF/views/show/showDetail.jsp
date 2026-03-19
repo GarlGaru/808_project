@@ -298,7 +298,7 @@
        const contextPath = $('#contextPath').val();
        const url = contextPath + "/show/seat?showId=" + showId + "&scheduleId=" + scheduleId;
        const popupName = "seatPopup";
-       const specs = "width=1100,height=850,top=50,left=100,scrollbars=yes";
+       const specs = "width=850,height=750,top=50,left=100,scrollbars=yes";
        
        window.open(url, popupName, specs);
    });
