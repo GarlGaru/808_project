@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.spring.eze.board.dao.BoardDAO">
+
+	<insert id="insertBoard"
+		parameterType="com.spring.eze.board.dto.BoardDTO">
+		INSERT INTO FREE_BOARD_TBL (
+		BNO, USER_ID, TITLE,
+		CONTENT, REGDATE, VIEWCNT, YOUTUBE_URL, BOARD_IMAGE
+		) VALUES (
+		SEQ_FREE_BOARD.NEXTVAL, #{userId}, #{title}, #{content}, SYSDATE, 0,
+		#{youtubeUrl,
+		jdbcType=VARCHAR}, #{board_image, jdbcType=VARCHAR}
+		)
+	</insert>
+
+	<update id="updateBoard"
+		parameterType="com.spring.eze.board.dto.BoardDTO">
+		UPDATE FREE_BOARD_TBL
+		SET
+		TITLE = #{title,
+		jdbcType=VARCHAR},
+		CONTENT = #{content, jdbcType=CLOB},
+		YOUTUBE_URL =
+		#{youtubeUrl, jdbcType=VARCHAR},
+		BOARD_IMAGE = #{board_image,
+		jdbcType=VARCHAR}
+		WHERE BNO = #{bno}
+		AND USER_ID = #{userId}
+	</update>
+
+	<delete id="deleteBoard"
+		parameterType="com.spring.eze.board.dto.BoardDTO">
+		DELETE FROM FREE_BOARD_TBL
+		WHERE BNO = #{bno}
+		AND USER_ID
+		= #{userId}
+	</delete>
+
+	<select id="getBoardDetail"
+		resultType="com.spring.eze.board.dto.BoardDTO" parameterType="int">
+		SELECT
+		B.BNO,
+		B.USER_ID AS userId,
+		B.TITLE,
+		B.CONTENT,
+		B.REGDATE,
+		B.VIEWCNT,
+		B.YOUTUBE_URL AS youtubeUrl,
+		B.BOARD_IMAGE AS board_image, U.NICKNAME
+		AS nickname
+		FROM FREE_BOARD_TBL B
+		JOIN user_tbl U ON B.USER_ID =
+		U.user_id
+		WHERE B.BNO = #{bno}
+	</select>
+
+	<select id="boardList"
+		resultType="com.spring.eze.board.dto.BoardDTO" parameterType="map">
+		SELECT * FROM (
+		SELECT ROWNUM AS RNUM, A.* FROM (
+		SELECT
+		B.BNO,
+		B.USER_ID
+		AS userId,
+		U.NICKNAME AS nickname,
+		B.TITLE,
+		B.CONTENT, B.REGDATE AS
+		regdate,
+		B.VIEWCNT AS viewcnt,
+		B.YOUTUBE_URL AS youtubeUrl,
+		(SELECT
+		COUNT(*) FROM BOARD_LIKE_TBL L WHERE L.BNO = B.BNO) AS likeCount
+		FROM
+		FREE_BOARD_TBL B
+		JOIN user_tbl U ON B.USER_ID = U.user_id
+		<where>
+			<if test="keyword != null and keyword != ''">
+				<choose>
+					<when test="searchType == 'title'">AND B.TITLE LIKE '%' || #{keyword} || '%'</when>
+					<when test="searchType == 'content'">AND B.CONTENT LIKE '%' || #{keyword} || '%'</when>
+					<when test="searchType == 'writer'">AND U.NICKNAME LIKE '%' || #{keyword} || '%'</when>
+				</choose>
+			</if>
+		</where>
+
+		<choose>
+			<when test="sort == 'view'">ORDER BY B.VIEWCNT DESC, B.BNO DESC</when>
+			<when test="sort == 'like'">ORDER BY likeCount DESC, B.BNO DESC</when>
+			<otherwise>ORDER BY B.BNO DESC</otherwise>
+		</choose>
+
+		) A WHERE ROWNUM &lt;= #{endRow}
+		) WHERE RNUM &gt;= #{startRow}
+	</select>
+
+	<select id="boardListAll"
+		resultType="com.spring.eze.board.dto.BoardDTO">
+		SELECT
+		B.BNO,
+		B.USER_ID AS userId,
+		U.NICKNAME AS nickname,
+		B.TITLE,
+		B.CONTENT,
+		B.REGDATE AS regdate,
+		B.VIEWCNT AS viewcnt,
+		B.YOUTUBE_URL AS youtubeUrl,
+		(SELECT COUNT(*) FROM BOARD_LIKE_TBL L WHERE L.BNO = B.BNO) AS likeCount
+		FROM FREE_BOARD_TBL B
+		JOIN user_tbl U ON B.USER_ID = U.user_id
+		ORDER BY B.BNO DESC
+	</select>
+
+	<select id="boardCnt" resultType="int" parameterType="map">
+		SELECT COUNT(*) FROM FREE_BOARD_TBL B
+		JOIN user_tbl U ON B.USER_ID =
+		U.user_id
+		<where>
+			<if test="keyword != null and keyword != ''">
+				<choose>
+					<when test="searchType == 'title'">AND B.TITLE LIKE '%' || #{keyword} || '%'</when>
+					<when test="searchType == 'content'">AND B.CONTENT LIKE '%' || #{keyword} || '%'</when>
+					<when test="searchType == 'writer'">AND U.NICKNAME LIKE '%' || #{keyword} || '%'</when>
+				</choose>
+			</if>
+		</where>
+	</select>
+
+	<select id="getBestList"
+		resultType="com.spring.eze.board.dto.BoardDTO">
+    <![CDATA[
+    SELECT * FROM (
+        SELECT 
+            B.BNO, 
+            B.USER_ID AS userId, 
+            U.NICKNAME AS nickname,
+            B.TITLE, 
+            B.REGDATE AS regdate,
+            B.VIEWCNT AS viewcnt,
+            B.YOUTUBE_URL AS youtubeUrl,
+            (SELECT COUNT(*) FROM BOARD_LIKE_TBL L WHERE L.BNO = B.BNO) AS likeCount,   
+            (B.VIEWCNT + ((SELECT COUNT(*) FROM BOARD_LIKE_TBL L WHERE L.BNO = B.BNO) * 5)) AS score
+        FROM FREE_BOARD_TBL B
+        JOIN user_tbl U ON B.USER_ID = U.user_id
+        WHERE B.REGDATE >= SYSDATE - 7 
+        ORDER BY score DESC, B.BNO DESC
+    )
+    WHERE ROWNUM <= 3
+    ]]>
+	</select>
+
+
+	<update id="plusReadCnt">
+		UPDATE FREE_BOARD_TBL
+		SET VIEWCNT = VIEWCNT + 1
+		WHERE
+		BNO = #{bno}
+	</update>
+
+</mapper>
