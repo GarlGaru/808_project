@@ -82,18 +82,19 @@
     
     .review-box{
     background: #181818;
-    border-radius: 14px;
+    border-radius: 24px;
     padding: 24px;
     margin-bottom: 20px;
-    border: 1px solid transparent; /* 기본은 투명하게 */
+    border: 1px solid #2e2e2e; 
     transition: all 0.3s ease;
     cursor: default;
     }
     
     .review-box:hover {
     background: #222222;
-    border-color: #DF8845;
+    border-color: #ED6701;
     transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(237, 103, 1, 0.2);
     }
     
     .review-box{
@@ -166,14 +167,19 @@
     }
     
     #moreBtn{
-    background: #222;
-    border: 1px solid #333;
+    background: linear-gradient(135deg, #DF8845, #ED6701);;
+    border: none;
     width: 100%;
     margin: 40px 0;
+    font-size: 0.85rem;
+    padding: 10px 20px;
+    border-radius: 50px;
     }
     
-    #moreBtn:hover{background: #282828;
-    border-color: #666;}
+    #moreBtn:hover{
+    background: linear-gradient(135deg, #ED6701, #DF8845);
+    box-shadow: 0 8px 20px rgba(237, 103, 1, 0.4);
+    }
     
     .sort-bar {
     display: flex;
@@ -187,14 +193,31 @@
 
 .sort-bar + hr { display: none; }
 
+.review-sort-select {
+    background: #1e1e1e;
+    color: #e0e0e0;
+    border: 1px solid #ED6701;
+    border-radius: 20px;
+    padding: 6px 14px;
+    font-size: 0.85rem;
+    cursor: pointer;
+    outline: none;
+    appearance: none;
+    -webkit-appearance: none;
+}
+
+.review-sort-select:focus {
+    box-shadow: 0 0 8px rgba(237, 103, 1, 0.4);
+}
+
 .avg-rating-label {
-    color: ##DF8845;
+    color: #DF8845;
     font-size: 1.05rem;
     font-weight: 600;
 }
 
 #avgRating{
-    color:##ED6701;
+    color:#ED6701;
     font-size: 1.2rem;
     font-weight:800;
 }
@@ -202,9 +225,10 @@
 #sortSelect {
     background: #222;
     color: #e0e0e0;
-    border: 1px solid #282828;
+    border: 1px solid #ED6701; 
     border-radius: 8px;
-    padding: 6px 12px;
+    padding: 4px 10px;
+    font-size: 0.85rem;
 }
 
 

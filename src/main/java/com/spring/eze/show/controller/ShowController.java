@@ -135,7 +135,8 @@ public class ShowController {
 								 @RequestParam("tabName") String tabName, Model model)
 		 throws ServletException, IOException {
 	  log.info("ShowController - Ajax 데이터 요청 화면");	
-		
+	
+	  model.addAttribute("showId", showId);
 	  showservice.getTabContent(showId, tabName, model);
 	  return "show/tabs/" + tabName;
 	}
@@ -383,6 +384,12 @@ public class ShowController {
 		model.addAttribute("showId", showId);
 		model.addAttribute("scheduleId",scheduleId);
 		
+
+		seatService.getScheduleInfo(scheduleId, model);
+
+		showservice.getScheduleInfo(scheduleId, model);
+		
+
 	    return "show/seatres"; 
 	    
 		}catch(Exception e) {

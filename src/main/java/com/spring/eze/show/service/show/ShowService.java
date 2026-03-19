@@ -40,4 +40,7 @@ public interface ShowService {
 	// 마이티켓
 	public void getMyTicketList(long userId, Model model)
 			throws ServletException, IOException;
+	
+	//좌석 선택 및 예매확인시 공연 회차정보따라오게
+	public void getScheduleInfo(String scheduleId, Model model);
 }

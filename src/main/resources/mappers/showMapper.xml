@@ -179,9 +179,9 @@
 	          show_id as showId,
 	          play_date as playDate
 	    FROM  schedule_tbl
-
-	    AND  TO_CHAR(play_date, 'YYYY-MM-DD') = #{playDate}
+	   
 	   WHERE  show_id = #{showId}
+	    AND  TO_CHAR(play_date, 'YYYY-MM-DD') = #{playDate}
 	   ORDER BY start_time 	
 	</select>
 
@@ -256,6 +256,14 @@
 		   AND p.payment_type = 'TICKET'
 		   AND p.approved_at IS NOT NULL
 	</select>
- </mapper> 
-
-
+	<!-- seat회차 넘기는거때문에 추가합니다 -->
+	<select id="selectScheduleInfo" parameterType="String" resultType="map">
+		SELECT schedule_id,
+			   show_id,
+			   TO_CHAR(play_date, 'YYYY-MM-DD') AS play_date,
+           	   TO_CHAR(play_date, 'DY', 'NLS_DATE_LANGUAGE=KOREAN') AS play_day,
+			   start_time
+		FROM   schedule_tbl
+		WHERE  schedule_id = #{scheduleId}
+	</select>
+ </mapper>

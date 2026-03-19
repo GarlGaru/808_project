@@ -100,4 +100,9 @@ public class ShowDAOImpl implements ShowDAO{
 
 	}
 
+	@Override
+	public Map<String, Object> selectScheduleInfo(String scheduleId) {
+		return sqlSession.selectOne("com.spring.eze.show.dao.Show.ShowDAO.selectScheduleInfo" ,scheduleId);
+	}
+
 }

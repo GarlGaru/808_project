@@ -36,5 +36,6 @@ public interface SeatService {
     
     public List<SeatDTO> getSeatLayout(String venueName);
     
+    public void getScheduleInfo(String scheduleId, Model model);
 }
 

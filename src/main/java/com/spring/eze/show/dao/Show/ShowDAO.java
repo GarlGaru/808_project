@@ -38,4 +38,7 @@ public interface ShowDAO {
 	public int getMyTicketCount(long userId);
 
 	
+	//seat 팝업에 공연회차 가져오랴거 만듦
+	public Map<String, Object> selectScheduleInfo(String scheduleId);
+	
 }
