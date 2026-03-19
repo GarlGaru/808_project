@@ -294,11 +294,13 @@
     EL.bContainer.classList.toggle("is-z200");
 
     /* 떠나는 패널 초기화 */
+   setTimeout(() => {
     if (EL.switchCtn.classList.contains("is-txr")) {
       resetLoginPanel();   /* 로그인 → 회원가입: 로그인 패널 초기화 */
     } else {
       resetSignupPanel();  /* 회원가입 → 로그인: 회원가입 패널 초기화 */
     }
+   }, 1250); // ← CSS transition 시간 맞추기
   }
 
   function socialPopup(platform) { alert("현재 준비 중입니다 :)"); }
@@ -398,6 +400,7 @@
     }
   }
 
+// ── 가입 완료 → 로그인 탭으로 ──
   function goLogin() {
     EL.signupSuccess.classList.add("slide-out");
     if (EL.switchCtn.classList.contains("is-txr")) changeForm();
@@ -408,6 +411,7 @@
     }, 1250);
   }
 
+// ── 비밀번호 재설정 코드 발송 ──
   async function sendReset() {
     var email = EL.rEmail.value.trim();
     if (!email)               { fieldError(EL.rEmail, EL.rEmailError, "이메일을 입력해주세요."); return; }
@@ -558,5 +562,8 @@
   window.goLogin       = goLogin;
   window.sendReset     = sendReset;
   window.doReset       = doReset;
+
+  /* mypageModal.js 에서 재사용 — checkNick / sendResetCode / resetPw */
+  window.AuthAPI = API;
 
 }());
