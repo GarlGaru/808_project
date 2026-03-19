@@ -165,7 +165,7 @@ public class UserServiceImpl implements UserService {
             HttpSession session = request.getSession();
             session.setAttribute("loginUser", loginUser); // 세션에 유저 객체 통째로 저장(비번x)
             session.setAttribute("userEmail", email);
-            
+
             System.out.println(">>> [로그인 성공] " + email);
             return 1;
 

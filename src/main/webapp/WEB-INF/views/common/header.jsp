@@ -39,9 +39,7 @@
 								</c:if>
 								<c:if test="${sessionScope.loginUser.nickname != 'admin'}">
 
-									<li><a href="${path}/board/list">Board</a></li>
-									<li><a href="${path}/main/board">Community</a></li>
-
+									<li><a href="${path}/board/list">Community</a></li>
 								</c:if>
 							</ul>
 							<div class="login-register-cart-button d-flex align-items-center">

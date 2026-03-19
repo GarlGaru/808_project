@@ -90,10 +90,11 @@ public class ReviewServiceImpl implements ReviewService {
 	}
 
 
-	@Override
-	public void reviewListAction(HttpServletRequest request, HttpServletResponse response, Model model) {
-		// TODO Auto-generated method stub
-		
+    @Override
+    public void reviewListAction(HttpServletRequest request, HttpServletResponse response, Model model) {
+
+    }
+
+
 	}
-}
 
