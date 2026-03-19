@@ -559,4 +559,7 @@
   window.sendReset     = sendReset;
   window.doReset       = doReset;
 
+  /* mypageModal.js 에서 재사용 — checkNick / sendResetCode / resetPw */
+  window.AuthAPI = API;
+
 }());
