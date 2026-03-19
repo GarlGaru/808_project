@@ -3,7 +3,7 @@
     <h3>공연후기</h3>
 </div>
 <%String path = request.getContextPath(); %>
-
+<link rel="stylesheet" href="<%=request.getContextPath()%>/resources/show/css/review.css">
 <div class="tab-section review-tab-wrap">
 
     <%-- 리뷰 작성 영역 --%>
