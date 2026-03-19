@@ -9,6 +9,9 @@ public interface UserDAO {
 
     // 회원가입
     public int insertUser(UserDTO dto);
+    
+    // 프로필 생성
+    public int insertProfile(int userId);
 
     // 이메일 중복확인
     public int checkEmail(String email);
@@ -25,8 +28,8 @@ public interface UserDAO {
     // 비밀번호 수정
     public int updatePw(Map<String, Object> map);
 
-    // 회원탈퇴
-    public int deleteUser(String email);
+//    // 회원탈퇴
+//    public int deleteUser(String email);
 
     // 인증코드 저장
     public int insertEmailCode(EmailCodeDTO dto);
