@@ -63,6 +63,10 @@
   transform: rotate(90deg);
 }
 
+/* 플랫폼별 호버 색상 */
+.form_icon.google:hover { color: #ea4335; }
+.form_icon.naver:hover  { color: #03c75a; }
+
 /* ════════════════════════════════════
    공통 애니메이션
    ════════════════════════════════════ */

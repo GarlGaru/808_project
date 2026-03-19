@@ -44,8 +44,7 @@ public class SeatDAOImpl implements SeatDAO {
 
 	@Override
 	public int updateReleaseSeats(Map<String, Object> map) {
-		// TODO Auto-generated method stub
-		return 0;
+		return sqlSession.update("com.spring.eze.show.dao.Seat.SeatDAO.updateReleaseSeats", map);
 	}
 
 	@Override
@@ -55,23 +54,23 @@ public class SeatDAOImpl implements SeatDAO {
 	}
 
 	@Override
-	public boolean checkAndLockSeats(String showId, int scheduleId, List<String> seats) {
+	public int lockAndHoldSeats(Map<String, Object> map) {
+		return sqlSession.selectOne("com.spring.eze.show.dao.Seat.SeatDAO.lockAndHoldSeats", map);
+	}
+
+	@Override
+	public int holdSeatsNow(Map<String, Object> map) {
+		return sqlSession.update("com.spring.eze.show.dao.Seat.SeatDAO.holdSeatsNow", map);
+	}
+
+	@Override
+	public List<SeatDTO> selectSeatLayout(String venueName) {
 		
-			// 1. 안전하게 주머니(Map)를 직접 만들기
-		        Map<String, Object> map = new HashMap<>();
-		        map.put("showId", showId);
-		        map.put("scheduleId", scheduleId);
-		        map.put("userId", "TEMP_USER"); // 나중에 세션 userId
-		        map.put("seatLabels", seats);
+		System.out.println("=== selectVenueName 결과: " + venueName);
+		return sqlSession.selectList("com.spring.eze.show.dao.Seat.SeatDAO.selectSeatLayout", venueName);
+	}
 
-		       int result = sqlSession.selectOne(
-		            "com.spring.eze.show.dao.Seat.SeatDAO.lockSeat",
-		            map
-		        );
-
-		    return result == seats.size();
-		}
-
+	
 }
 
 
