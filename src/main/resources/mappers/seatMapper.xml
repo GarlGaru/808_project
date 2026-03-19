@@ -14,24 +14,18 @@
         <result property="seatGrade" column="seat_grade"/>
         <result property="seatStatus" column="seat_status"/>
         <result property="holdAt" column="hold_at"/>
+        <result property="rowNo" column="row_no"/>
+    	<result property="colNo" column="col_no"/>
     </resultMap>
 	
 	<select id="selectSeatList" parameterType="map" resultMap="seatMap">
-	SELECT 
-		seat_id,
-		show_id,
-		schedule_id,
-		user_id,
-		res_seat_label,
-		seat_label,
-		seat_grade,
-		seat_status,
-		hold_at
-	FROM seat_tbl
-   WHERE show_id = #{showId, jdbcType=VARCHAR}
-     AND schedule_id = #{scheduleId, jdbcType=VARCHAR}
-   ORDER BY seat_label
-	</select>
+    SELECT seat_label, seat_status
+    FROM seat_tbl
+    WHERE show_id = #{showId}
+      AND schedule_id = #{scheduleId}
+      AND seat_status IN ('HELD', 'RESERVED')
+    ORDER BY seat_label
+</select>
 
 	<update id="updateHoldSeats">
 		UPDATE seat_tbl
@@ -61,12 +55,12 @@
 		SET seat_status = 'AVAILABLE',
 			user_id = NULL,
 			hold_at = NULL
-		WHERE show_id = #{showId}
-		  AND schedule_id = #{scheduleId}
+		WHERE show_id = #{showId, jdbcType=VARCHAR}
+		  AND schedule_id = #{scheduleId, jdbcType=INTEGER}
 		  AND seat_status = 'HELD'
 		  AND seat_label IN
 		  <foreach collection="seatLabels" item="label" open="(" separator=", " close=")">
-		  	#{label}
+		  	#{label, jdbcType=VARCHAR}
 		  </foreach>
 	</update>
 	
@@ -79,18 +73,53 @@
 		AND seat_status IN ('HELD', 'RESERVED')
 	</select>
 	
-	<select id="lockSeat" resultType="com.spring.eze.show.dto.Seat.SeatDTO">
-		SELECT 
-		seat_label as seatLabel,
-		seat_id as seatId,
-		seat_status as seatStatus
-		FROM seat_tbl
-		WHERE show_id=#{showId, jdbcType=VARCHAR}
-		AND schedule_id = #{scheduleId, jdbcType=INTEGER}
-		AND seat_label = #{seatLabel, jdbcType=VARCHAR}
-		AND seat_status IN ('HELD', 'RESERVED')
-		FOR UPDATE
+	<!-- <select id="lockAndHoldSeats" parameterType="map" resultType="int">
+		SELECT COUNT(*) 
+		FROM   seat_tbl
+		WHERE show_id = #{showId}
+			AND schedule_id = #{scheduleId}
+			AND seat_label IN
+			<foreach collection="seatLabels" item="label" open="(" separator="," close=")">
+				#{label}
+			</foreach>
+			AND seat_status = 'AVAILABLE'
 	</select>
+	 -->
+	<update id="holdSeatsNow" parameterType="map">
+		UPDATE seat_tbl
+		SET seat_status = 'HELD',
+			user_id = #{userId},
+			hold_at = SYSDATE
+		WHERE show_id = #{showId}
+		  AND schedule_id = #{scheduleId}
+		  AND seat_label IN
+		  <foreach collection="seatLabels" item="label" open="(" separator="," close=")">
+		  	#{label}
+		  </foreach>
+		  AND (seat_status = 'AVAILABLE'
+		   OR (seat_status = 'HELD' AND hold_at &lt; SYSDATE - (5/1440)))
+	</update>
 	
+	<select id="selectSeatLayout" parameterType="String" resultMap="seatMap">
+	SELECT venue_name,
+		   row_no,
+		   col_no,
+		   seat_label,
+		   section AS seat_grade
+	FROM   seat_layout_tbl
+	WHERE  venue_name = #{venueName}
+	ORDER BY row_no, col_no
+	</select>
+
+	<select id="selectScheduleInfo" parameterType="String" resultType="map">
+    SELECT schedule_id,
+           show_id,
+           TO_CHAR(play_date, 'YYYY-MM-DD') AS play_date,
+           TO_CHAR(play_date, 'DY', 'NLS_DATE_LANGUAGE=KOREAN') AS play_day,
+           start_time
+    FROM schedule_tbl
+    WHERE schedule_id = #{scheduleId}
+</select>
+
 	
  </mapper>

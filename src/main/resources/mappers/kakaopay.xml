@@ -64,11 +64,19 @@
      WHERE ORDER_ID = #{orderId}
   </update>
   
-  <!-- 결제 취소 -->
-  <update id="updateFailReason" parameterType="com.spring.eze.payment.dto.PaymentOrderDTO">
-  UPDATE payment_order
-     SET fail_reason = #{failReason}
-   WHERE order_id = #{orderId}
-</update>
+  	<!-- 결제 취소 -->
+  	<update id="updateFailReason" parameterType="com.spring.eze.payment.dto.PaymentOrderDTO">
+	  UPDATE payment_order
+	     SET fail_reason = #{failReason}
+	   WHERE order_id = #{orderId}
+	</update>
+	
+	<!-- 구독 결제취소시 상태값 업데이트 -->
+	<update id="downgradeMembershipToFree" parameterType="long">
+	    UPDATE profile_tbl
+	       SET membership_type = 'FREE',
+	           updated_at = SYSDATE
+	     WHERE user_id = #{userId}
+	</update>
 
 </mapper>

@@ -4,6 +4,7 @@ package com.spring.eze.show.controller;
 import com.spring.eze.main.service.MainService;
 import com.spring.eze.show.dao.Show.ShowDAO;
 import com.spring.eze.show.dto.Seat.SeatDTO;
+import com.spring.eze.show.dto.Show.ShowDTO;
 import com.spring.eze.show.dto.review.ReviewDTO;
 import com.spring.eze.show.service.Seat.SeatService;
 
@@ -69,16 +70,6 @@ public class ShowController {
 
 ////리 뷰 긔!!!!!!!!!!!!////////////////////////////////////////////////////////////
 	
-   //리뷰 목록 조회
-//   @ResponseBody
-//   @GetMapping("/reviewList")
-//   public List<ReviewDTO> reviewList(
-//		   @RequestParam String showId, 
-//		   @RequestParam int page, 
-//		   @RequestParam String sort) {
-//	   return reviewService.getReviewPaging(showId, page, sort);
-//     }
-
 	
 	// [공연장르상세페이지] <방법A> 장르 탭  -------------
 	@RequestMapping("/showList")
@@ -120,10 +111,12 @@ public class ShowController {
 								 @RequestParam("tabName") String tabName, Model model)
 		 throws ServletException, IOException {
 	  log.info("ShowController - Ajax 데이터 요청 화면");	
-		
+	
+	  model.addAttribute("showId", showId);
 	  showservice.getTabContent(showId, tabName, model);
 	  return "show/tabs/" + tabName;
 	}
+	
 	
 	// [공연상세페이지] 날짜 선택 시 해당 날짜의 '시간 목록'만 가져오는 Ajax -----
 	@RequestMapping("/getScheduleAjax")
@@ -163,20 +156,7 @@ public class ShowController {
         return "show/rankingContent";
     }
 
-   //후기 목록 조회
-   @RequestMapping("/reviewList")
-   public String reviewList(HttpServletRequest request, HttpServletResponse response, Model model)
-     throws ServletException, IOException {
-         
-         log.info("ShowController - reviewList");
-         
-         reviewService.reviewListAction(request, response, model);
-         
-          return "show/review";
-     }
-
    
-	// 1. 이 주소는 '화면(JSP)'을 띄워주는 용도야! (@ResponseBody 쓰면 안 돼!)
 	@GetMapping("/review")
 	public String reviewPage(Model model) {
 	    log.info("리뷰 테스트 페이지 접속");
@@ -192,7 +172,7 @@ public class ShowController {
 	    @RequestParam(value="page", required=false, defaultValue="1") int page, 
 	    @RequestParam(value="sort", required=false, defaultValue="latest") String sort) {
 	    
-	    log.info("리뷰 목록 요청 - showId: {}, page: {}, sort: {}", showId, page);
+		log.info("리뷰 목록 요청 - showId=" + showId + ", page=" + page + ", sort=" + sort);
 	    return reviewService.getReviewPaging(showId, page, sort);
 	}
 	
@@ -308,7 +288,19 @@ public class ShowController {
 		model.addAttribute("scheduleId",scheduleId);
 		model.addAttribute("showId",showId);
 		
+		showservice.getShowDetail(showId, model);
 		seatService.getSeatList(request, response, model);
+		
+		//공연장 레이아웃뜨
+		String venueName = showservice.getVenueName(showId);
+		System.out.println("=== venueName 확인: " + venueName);
+		
+		List<SeatDTO> layoutList = seatService.getSeatLayout(venueName);
+		System.out.println("=== layoutList 사이즈: " + (layoutList != null ? layoutList.size() : "null"));
+		    
+		
+		model.addAttribute("layoutList", layoutList);
+		
 		return "show/seat";
     }
 
@@ -331,12 +323,18 @@ public class ShowController {
     @ResponseBody
     @PostMapping("/reserveCheck")
     public String reserveCheck(
-            @RequestParam("show_id") String showId,
+            @RequestParam("showId") String showId,
             @RequestParam("scheduleId") int scheduleId,
-            @RequestParam("selectedSeats") List<String> seats) {
+            @RequestParam("selectedSeats") List<String> seats, HttpSession session) {
 
-        boolean result = seatService.checkAndLockSeats(showId, scheduleId, seats);
-
+    	UserDTO loginUser = (UserDTO)session.getAttribute("loginUser");
+    	if(loginUser == null) {
+    		return "login_required";
+    	}
+    	
+    	String userId = String.valueOf(loginUser.getUserId());
+    	
+        boolean result = seatService.checkAndLockSeats(showId, scheduleId, seats, userId);
         return result ? "success" : "fail";
     }
     
@@ -360,6 +358,12 @@ public class ShowController {
 		model.addAttribute("showId", showId);
 		model.addAttribute("scheduleId",scheduleId);
 		
+
+		seatService.getScheduleInfo(scheduleId, model);
+
+		showservice.getScheduleInfo(scheduleId, model);
+		
+
 	    return "show/seatres"; 
 	    
 		}catch(Exception e) {

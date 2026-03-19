@@ -55,60 +55,85 @@
 	</div>
 	
 	<script src="${path}/resources/common/js/jquery/jquery-2.2.4.min.js"></script>
-<script>
-	$(document).ready(function(){
-		let timeLeft = 300;	//5분=300초 맞지
-		const $timerDisplay = $('#timer');
 		
-		const timerInterval = setInterval(function(){
-			let minutes = Math.floor(timeLeft / 60);
-			let seconds = timeLeft % 60;
-			
-			//00:00형식
-			minutes = minutes < 10 ? '0' + minutes : minutes;
-			seconds = seconds < 10 ? '0' + seconds : seconds;
-			
-			$timerDisplay.text(minutes + ":" + seconds);
-			
-			if(timeLeft <= 0) {
-				clearInterval(timerInterval);
-				
-				$.ajax({
-					url: "${path}/show/release",
-					type: "POST",
-					traditional: true,
-					data: {
-						showId: "${param.show_id}",
-						scheduleId: "${param.schedule_id}",
-						"seatLabels[]": [
-							<c:forEach var="s" items="${paramValues.selectedSeats}" varStatus="status">
-								"${s}"${!status.last ? ',' : ''}
-							</c:forEach>
-						]
-					},
-					success: function() {
-						alert("결제시간 초과로 이전 페이지로 돌아갑니다.")
-						window.close();
-					},
-					error: function() {
-						window.close(); //에러나도 일단 창닫아
-					}
-				});
-			}
-			timeLeft--;
-		}, 1000);
-		
-		$('.btn-next').on('click', function(){
-			if(!$('#chk-agree').is(':checked')) {
-				alert("예매 및 환불 안내 확인 후 체크해주세요.");
-				return;
-			}
-			location.href = "${path}/show/payment"; //이동경로 추후 변경
+		<script>
+		$(document).ready(function(){
+		    let timeLeft = 300;
+		    const $timerDisplay = $('#timer');
+		    let isMovingToPayment = false; // 결제 이동 시 beforeunload 방지 플래그
+		    
+		    // ✅ 좌석 해제 공통 함수 (sendBeacon용 FormData 생성)
+		    function buildReleaseFormData() {
+		        const data = new FormData();
+		        data.append("showId", "${param.showId}");
+		        data.append("scheduleId", "${param.scheduleId}");
+		        <c:forEach var="s" items="${paramValues.selectedSeats}">
+		        data.append("seatLabels[]", "${s}");
+		        </c:forEach>
+		        return data;
+		    }
+		    
+		    function releaseSeatsAjax(callback) {
+		        $.ajax({
+		            url: "${path}/show/release",
+		            type: "POST",
+		            traditional: true,
+		            async: false,
+		            data: {
+		                showId: "${param.showId}",
+		                scheduleId: "${param.scheduleId}",
+		                "seatLabels[]": [
+		                    <c:forEach var="s" items="${paramValues.selectedSeats}" varStatus="status">
+		                        "${s}"${!status.last ? ',' : ''}
+		                    </c:forEach>
+		                ]
+		            },
+		            complete: function() {
+		                if(callback) callback();
+		            }
+		        });
+		    }
+		    
+		    window.addEventListener("beforeunload", function() {
+		        if(isMovingToPayment) return; // 결제 페이지 이동 시엔 해제 안 함
+		        navigator.sendBeacon("${path}/show/release", buildReleaseFormData());
+		    });
+		    
+		    const timerInterval = setInterval(function(){
+		        let minutes = Math.floor(timeLeft / 60);
+		        let seconds = timeLeft % 60;
+		        
+		        minutes = minutes < 10 ? '0' + minutes : minutes;
+		        seconds = seconds < 10 ? '0' + seconds : seconds;
+		        $timerDisplay.text(minutes + ":" + seconds);
+		        
+		        if(timeLeft <= 0) {
+		            clearInterval(timerInterval);
+		            releaseSeatsAjax(function() {
+		                alert("결제시간 초과로 이전 페이지로 돌아갑니다.");
+		                location.href = "${path}/show/seat?showId=${param.showId}&scheduleId=${param.scheduleId}";
+		            });
+		            return;
+		        }
+		        timeLeft--;
+		    }, 1000);
+		    
+		    $('.btn-next').on('click', function(){
+		        if(!$('#chk-agree').is(':checked')) {
+		            alert("예매 및 환불 안내 확인 후 체크해주세요.");
+		            return;
+		        }
+		        isMovingToPayment = true; 
+		        location.href = "${path}/show/payment";
+		    });
+		    
+		    $('.btn-prev').on('click', function(){
+		        releaseSeatsAjax(function() {
+		            location.href = "${path}/show/seat?showId=${param.showId}&scheduleId=${param.scheduleId}";
+		        });
+		    });
 		});
-	});
-
-</script>
-	
+		</script>
 	
 	<div class="wrapper">
 		<div class="left-side">
@@ -148,7 +173,7 @@
 			</div>
 
 			<div class="footer-btns">
-				<button class="btn btn-prev" onclick="window.close()">이전</button>
+				<button class="btn btn-prev" >이전</button> 	<!-- onclick="window.close()" -->
 				<button class="btn btn-next" onclick="alert('결제 페이지로 이동합니다.')">다음단계</button>
 			</div>
 		</div>
@@ -159,8 +184,10 @@
 				<p>
 					<strong>${param.show_title != null ? param.show_title : '선택하신 공연'}</strong>
 				</p>
-				<p style="font-size: 13px; color: #aaa;">날짜: 2026-03-20 (금)</p>
-				<p style="font-size: 13px; color: #aaa;">시간: 19:30</p>
+				<p style="font-size: 13px; color: #aaa;">
+    				날짜: ${scheduleInfo.PLAY_DATE} (${scheduleInfo.PLAY_DAY})
+				</p>
+				<p style="font-size: 13px; color: #aaa;">시간: ${scheduleInfo.START_TIME}</p>
 
 				<h3 style="margin-top: 30px;">결제 금액</h3>
 				<div class="info-row">

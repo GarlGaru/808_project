@@ -55,6 +55,11 @@
 			<artifactId>slf4j-api</artifactId>
 			<version>${org.slf4j-version}</version>
 		</dependency>
+		<dependency>
+		    <groupId>org.slf4j</groupId>
+		    <artifactId>slf4j-jdk14</artifactId>
+		    <version>${org.slf4j-version}</version>
+		</dependency>
 
 <!--		<dependency>-->
 <!--			<groupId>org.slf4j</groupId>-->
@@ -168,6 +173,13 @@
             <version>2.9.0</version>
         </dependency>
 
+		<!-- BCrypt 암호 라이브러리 -->
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-crypto</artifactId>
+			<version>5.7.11</version>
+		</dependency>
+		
 		<!-- Test -->
 		<dependency>
 			<groupId>junit</groupId>

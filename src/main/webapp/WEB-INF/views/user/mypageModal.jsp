@@ -2,6 +2,7 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %> 
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<c:set var="now" value="<%=System.currentTimeMillis()%>" />
 <%--
   mypageModal.jsp — 헤더 include 전용 fragment
   열기: <button onclick="openMypage()">마이페이지</button>
@@ -9,6 +10,7 @@
   로드 의존성:
     modalCore.css → mypageModal.css → modalCore.js → mypageModal.js
 --%>
+<script>if (!window.__AUTH_CP) window.__AUTH_CP = "${path}";</script>
 <%-- modalCore.css는 authModal.jsp에서 이미 로드됨 — 중복 방지 주석 --%>
 <link rel="stylesheet" href="${path}/resources/user/css/mypageModal.css">
 
@@ -33,7 +35,7 @@
           <div class="av" id="mpAv" onclick="document.getElementById('mpAvFile').click()">
             <c:choose>
               <c:when test="${not empty loginUser.profile.photoUrl}">
-                <img src="${loginUser.profile.photoUrl}" alt="프로필">
+                <img src="${path}${loginUser.profile.photoUrl}?v=${now}" alt="프로필">
               </c:when>
               <c:otherwise>
                 ${fn:substring(loginUser.nickname, 0, 1)}
@@ -57,9 +59,11 @@
               <span class="grade-badge free">🎵 Free</span>
             </c:otherwise>
           </c:choose>
-          <span class="level-badge">🎵 Lv.24 Audiophile</span>
+          <span class="level-badge" id="mpLevelBadge">🎵 Lv.24</span>
         </div>
       </div>
+      
+      
 
       <nav class="sb-nav">
         <div class="nav-item active"
@@ -104,40 +108,35 @@
           <div class="stat-grid">
             <div class="stat-card">
               <div class="stat-label">총 청취 시간</div>
-              <div class="stat-num">142h</div>
-              <div class="stat-sub">전월 대비 +12%</div>
+              <div class="stat-num" id="mpStatTime">-</div>
+              <div class="stat-sub" id="mpStatTimeSub">-</div>
             </div>
             <div class="stat-card">
               <div class="stat-label">재생한 곡</div>
-              <div class="stat-num">847</div>
-              <div class="stat-sub">280개 고유 트랙</div>
+              <div class="stat-num" id="mpStatPlay">-</div>
+              <div class="stat-sub" id="mpStatPlaySub">-</div>
             </div>
             <div class="stat-card">
               <div class="stat-label">활발한 요일</div>
-              <div class="stat-num" style="font-size:17px">금요일</div>
-              <div class="stat-sub">평균 3.2h</div>
+              <div class="stat-num" id="mpStatDay" style="font-size:17px">-</div>
+              <div class="stat-sub">최다 청취 요일</div>
             </div>
           </div>
           <div class="two-col">
             <div>
               <div class="row-between" style="margin-bottom:9px">
                 <div class="sec-title">TOP 10</div>
-                <select class="mp-select" onchange="mpShuffleSongs()">
-                  <option>이번 달</option>
-                  <option>지난 달</option>
-                  <option>최근 3개월</option>
+                <select class="mp-select" id="mpSongPeriod" onchange="mpLoadTopSongs(this.value)">
+                  <option value="THIS_MONTH">이번 달</option>
+                  <option value="LAST_MONTH">지난 달</option>
+                  <option value="3MONTH">최근 3개월</option>
                 </select>
               </div>
               <div id="mpTopList"></div>
             </div>
             <div>
               <div class="sec-title">TOP 장르</div>
-              <div class="genre-grid">
-                <div class="genre-tag"><div class="genre-name">Pop</div><div class="genre-pct">34%</div></div>
-                <div class="genre-tag"><div class="genre-name">R&amp;B</div><div class="genre-pct">22%</div></div>
-                <div class="genre-tag"><div class="genre-name">Hip-Hop</div><div class="genre-pct">18%</div></div>
-                <div class="genre-tag"><div class="genre-name">Dance</div><div class="genre-pct">14%</div></div>
-              </div>
+              <div class="genre-grid" id="mpTopGenres"></div>
               <div class="sec-title" style="margin-top:12px">TOP 아티스트</div>
               <div id="mpTopArtists"></div>
             </div>
@@ -260,18 +259,75 @@
               </span>
             </div>
 
+            <div class="danger-zone">
+              <div class="danger-label">위험 구역</div>
+              <button class="danger-btn" onclick="mpWithdraw()">계정 탈퇴</button>
+            </div>
+          </div><%-- /mpPvView --%>
+
+          <div id="mpPvEdit" style="display:none">
+            <div class="row-between" style="margin-bottom:14px">
+              <div class="pv-title">기본 정보 수정</div>
+              <div style="display:flex;gap:7px">
+                <button class="outline-btn" onclick="mpEditCancel()">취소</button>
+                <button class="primary-btn" onclick="mpEditSave()">저장</button>
+              </div>
+            </div>
+
+            <%-- 닉네임 + 중복확인 --%>
+            <div class="f-group">
+              <label>닉네임</label>
+              <div class="code-row">
+                <input type="text" class="f-input" id="eNick"
+                       value="<c:out value='${loginUser.nickname}'/>"
+                       oninput="mpResetNickCheck()">
+                <button type="button" class="code-btn" id="nickCheckBtn"
+                        onclick="mpCheckNick()">중복확인</button>
+              </div>
+              <div id="nickCheckMsg" style="font-size:11px;margin-top:4px;display:none"></div>
+            </div>
+
+            <div class="f-group">
+              <label>생년월일</label>
+              <input type="date" class="f-input" id="eBirth"
+                     value="<fmt:formatDate value='${loginUser.profile.birthDate}' pattern='yyyy-MM-dd'/>">
+            </div>
+            <div class="f-group">
+              <label>이메일 (변경 불가)</label>
+              <input type="email" class="f-input"
+                     value="<c:out value='${loginUser.email}'/>" disabled>
+            </div>
+            <div class="f-group">
+              <label>소개</label>
+              <textarea class="f-input f-textarea" id="eBio" rows="3"
+                placeholder="자신을 소개해주세요..."><c:out value="${loginUser.profile.bio}"/></textarea>
+            </div>
+
+            <%-- 비밀번호 변경 — 수정 폼 안으로 이동 --%>
             <div class="pw-box">
               <div class="pw-title">🔐 비밀번호 변경</div>
               <div class="f-group">
                 <label>현재 비밀번호</label>
-                <input type="password" class="f-input" id="pwCurrent" placeholder="현재 비밀번호">
+                <input type="password" class="f-input" id="pwCurrent" placeholder="현재 비밀번호 입력">
               </div>
               <div class="f-group">
                 <label>이메일 인증</label>
                 <div class="code-row">
-                  <input type="text" class="f-input" id="pwCode" placeholder="인증코드">
-                  <button class="code-btn"
+                  <input type="text" class="f-input f-input--readonly" id="pwEmail" readonly
+                    value="<c:out value='${loginUser.email}'/>">
+                  <button class="code-btn" id="pwSendBtn"
                     onclick="mpSendCode('<c:out value="${loginUser.email}"/>')">코드 발송</button>
+                </div>
+              </div>
+              <div class="f-group pw-code-field" id="pwCodeField" style="display:none">
+                <label>인증코드</label>
+                <div class="code-row">
+                  <input type="text" class="f-input" id="pwCode" placeholder="인증코드 6자리" maxlength="6">
+                  <div class="code-addon">
+                    <span class="pw-timer" id="pwTimer">5:00</span>
+                    <button type="button" class="code-btn sm"
+                      onclick="mpSendCode('<c:out value="${loginUser.email}"/>')">재발송</button>
+                  </div>
                 </div>
               </div>
               <div class="f-row">
@@ -284,45 +340,9 @@
                   <input type="password" class="f-input" id="pwConfirm" placeholder="다시 입력">
                 </div>
               </div>
-              <div class="danger-zone">
-                <div class="danger-label">위험 구역</div>
-                <button class="danger-btn" onclick="mpWithdraw()">계정 탈퇴</button>
-              </div>
+              <button type="button" class="primary-btn pw-change-btn" onclick="mpChangePw()">비밀번호 변경</button>
             </div>
-          </div>
-
-          <div id="mpPvEdit" style="display:none">
-            <div class="row-between" style="margin-bottom:14px">
-              <div class="pv-title">기본 정보 수정</div>
-              <div style="display:flex;gap:7px">
-                <button class="outline-btn" onclick="mpEditCancel()">취소</button>
-                <button class="primary-btn" onclick="mpEditSave()">저장</button>
-              </div>
-            </div>
-            <div class="f-row">
-              <div class="f-group">
-                <label>닉네임</label>
-                <input type="text" class="f-input" id="eNick"
-                       value="<c:out value='${loginUser.nickname}'/>">
-              </div>
-              <div class="f-group">
-                <label>생년월일</label>
-                <input type="date" class="f-input" id="eBirth"
-                       value="<fmt:formatDate value='${loginUser.profile.birthDate}' pattern='yyyy-MM-dd'/>">
-              </div>
-            </div>
-            <div class="f-group">
-              <label>이메일 (변경 불가)</label>
-              <input type="email" class="f-input"
-                     value="<c:out value='${loginUser.email}'/>" disabled>
-            </div>
-            <div class="f-group">
-              <label>소개</label>
-              <input type="text" class="f-input" id="eBio"
-                     placeholder="자신을 소개해주세요..."
-                     value="<c:out value='${loginUser.profile.bio}'/>">
-            </div>
-          </div>
+          </div><%-- /mpPvEdit --%>
 
         </div><%-- /tab-profile --%>
 
@@ -333,4 +353,4 @@
 </div><%-- /mpOverlay --%>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
-<script src="${pageContext.request.contextPath}/resources/user/js/mypageModal.js"></script>
+<script src="${path}/resources/user/js/mypageModal.js"></script>

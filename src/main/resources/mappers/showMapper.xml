@@ -182,7 +182,12 @@
 	   WHERE  show_id = #{showId}
 	   ORDER BY start_time 	
 	</select>
+
+	
+	<!-- AND  TO_CHAR(play_date, 'YYYY-MM-DD') = #{playDate} -->
+
 	<!--  AND  TO_CHAR(play_date, 'YYYY-MM-DD') = #{playDate} -->
+
 	<!-- 랭킹페이지 -->
 	<select id="getShowRanking" parameterType="String" resultType="com.spring.eze.show.dto.Show.ShowDTO">
 		SELECT
@@ -196,6 +201,24 @@
 	   FROM show_tbl
 	  WHERE genre = #{genre}
 	ORDER BY show_id DESC
+	</select>
+	
+	<!--Seat 공연별 좌석도 때문에 추가합니다  -->
+	<select id="selectVenueName" parameterType="String" resultType="String">
+		SELECT venue_name
+		FROM   show_tbl
+		WHERE  show_id = #{showId}
+	</select>
+	
+	<!-- seat회차 넘기는거때문에 추가합니다 -->
+	<select id="selectScheduleInfo" parameterType="String" resultType="map">
+		SELECT schedule_id,
+			   show_id,
+			   TO_CHAR(play_date, 'YYYY-MM-DD') AS play_date,
+           	   TO_CHAR(play_date, 'DY', 'NLS_DATE_LANGUAGE=KOREAN') AS play_day,
+			   start_time
+		FROM   schedule_tbl
+		WHERE  schedule_id = #{scheduleId}
 	</select>
  </mapper> 
 

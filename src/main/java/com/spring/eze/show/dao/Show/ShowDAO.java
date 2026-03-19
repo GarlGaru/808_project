@@ -27,4 +27,10 @@ public interface ShowDAO {
 	//랭킹 페이지
 	public List<ShowDTO> getShowRanking(String genre);
 	
+	//seat용 추가
+	public String selectVenueName(String showId);
+	
+	//seat 팝업에 공연회차 가져오랴거 만듦
+	public Map<String, Object> selectScheduleInfo(String scheduleId);
+	
 }

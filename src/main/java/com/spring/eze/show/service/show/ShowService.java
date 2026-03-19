@@ -27,4 +27,10 @@ public interface ShowService {
 	
 	public void getShowRanking(HttpServletRequest request, HttpServletResponse resposne, Model model)
 			throws ServletException, IOException;
+	
+	//seat 좌석용 추가
+	public String getVenueName(String showId);
+	
+	//좌석 선택 및 예매확인시 공연 회차정보따라오게
+	public void getScheduleInfo(String scheduleId, Model model);
 }

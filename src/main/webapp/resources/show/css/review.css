@@ -32,6 +32,15 @@
     }
     .star:hover{transform: scale(1.2) rotate(-5deg);}
     
+    #writeArea{
+    	border-left: 4px solid #ED6701;
+    	padding-left: 20px;
+    }
+    
+    textarea::placeholder{
+    	color:#777;
+    }
+    
     textarea{
     width: 100%;
     background: #222222;
@@ -49,6 +58,7 @@
     border-color: #DF8845;
     background: #282828;
     box-shadow: 0 0 10px rgba(223, 136, 69, 0.1);
+    transform: scale(1.01);
     }
     
     button{
@@ -72,20 +82,35 @@
     
     .review-box{
     background: #181818;
-    border-radius: 14px;
+    border-radius: 24px;
     padding: 24px;
     margin-bottom: 20px;
-    border: 1px solid transparent; /* 기본은 투명하게 */
+    border: 1px solid transparent; 
     transition: all 0.3s ease;
     cursor: default;
     }
     
     .review-box:hover {
     background: #222222;
-    border-color: #DF8845;
+    border-color: #ED6701;
     transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(237, 103, 1, 0.2);
     }
     
+    .review-box{
+    	animation: reviewFade 0.8s ease;
+    }
+
+	@keyframes reviewFade{
+		from{
+			opacity:0;
+			transform: translateY(10px);
+		}
+		to{
+			opacity:1;
+			transform:translateY(0);
+		}
+	}    
     .review-header{
     display: flex;
     justify-content: space-between;
@@ -142,11 +167,52 @@
     }
     
     #moreBtn{
-    background: #222;
-    border: 1px solid #333;
+    background: linear-gradient(135deg, #DF8845, #ED6701);;
+    border: none;
     width: 100%;
     margin: 40px 0;
+    font-size: 0.85rem;
+    padding: 10px 20px;
+    border-radius: 50px;
     }
     
-    #moreBtn:hover{background: #282828;
-    border-color: #666;}
+    #moreBtn:hover{
+    background: linear-gradient(135deg, #ED6701, #DF8845);
+    box-shadow: 0 8px 20px rgba(237, 103, 1, 0.4);
+    }
+    
+    .sort-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 15px;
+    border-bottom: 1px solid #333;
+    margin-bottom: 20px;
+}
+
+
+.sort-bar + hr { display: none; }
+
+.avg-rating-label {
+    color: #DF8845;
+    font-size: 1.05rem;
+    font-weight: 600;
+}
+
+#avgRating{
+    color:#ED6701;
+    font-size: 1.2rem;
+    font-weight:800;
+}
+
+#sortSelect {
+    background: #222;
+    color: #e0e0e0;
+    border: 1px solid #ED6701; 
+    border-radius: 8px;
+    padding: 4px 10px;
+    font-size: 0.85rem;
+}
+
+
+    

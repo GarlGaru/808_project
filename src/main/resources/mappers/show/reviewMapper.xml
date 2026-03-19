@@ -66,26 +66,25 @@
     <!-- 6. 후기 작성 -->
     <!-- ========================= -->
     <insert id="insertReview">
-            
-        INSERT INTO review_tbl (
-            review_id,
-            user_id,
-            show_id,
-            rating,
-            content,
-            nickname,
-            created_at
-        )
-        VALUES (
-            review_seq.NEXTVAL,
-            #{userNum},
-            #{showId},
-            #{rating},
-            #{content},
-             #{nickname},
-            SYSDATE
-        )
-    </insert>
+    INSERT INTO review_tbl (
+        review_id,
+        user_id,
+        show_id,
+        rating,
+        content,
+        nickname,
+        created_at
+    )
+    VALUES (
+        EZE.REVIEW_SEQ.NEXTVAL,
+        #{userNum},
+        #{showId},
+        #{rating},
+        #{content},
+        #{nickname},
+        SYSDATE
+    )
+	</insert>
 	
 
 	<delete id="deleteReview">
@@ -115,6 +114,20 @@
   
   </select>
 
-
+<!-- 중복예매 방지  -->
+	<insert id="insertReservation" parameterType="map">
+		INSERT INTO reservation_tbl
+		(reservation_id, user_id, seat_id, show_id, schedule_id, status)
+		SELECT reservation_seq.NEXTVAL, #{userId}, #{seatId}, #{showId}, #{scheduleId}, 'PENDING'
+		FROM dual
+		WHERE NOT EXISTS (
+			SELECT 1
+			FROM reservation_tbl
+			WHERE schedule_id = #{scheduleId}
+			AND seat_id = #{seatId}
+			AND status IN ('PENDING', 'CONFIRMED')
+		)
+	
+	</insert>
 
 </mapper>

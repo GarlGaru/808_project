@@ -32,7 +32,7 @@ public class UserController {
         return "user/authModal";
     }
 
- // 2. 로그인 처리 (AJAX)
+    // 2. 로그인 처리 (AJAX)
     @RequestMapping(value = "/login", method = RequestMethod.POST)
     @ResponseBody // 페이지 이동 없이 결과값(int)만 브라우저로 전송
     public int login(HttpServletRequest request) throws ServletException, IOException {
@@ -131,14 +131,20 @@ public class UserController {
         return service.updatePw(request);
     }
     
-    
-    // 10. 회원탈퇴
-    @RequestMapping(value = "/deleteUser", method = RequestMethod.POST)
-    @ResponseBody
-    public int deleteUser(HttpServletRequest request) throws ServletException, IOException {
-        logger.info("<<< url => /user/deleteUser >>>");
-        return service.deleteUser(request);
+    // 서비스 약관 및 개인정보 처리 방침
+    @RequestMapping(value = "/terms", method = RequestMethod.GET)
+    public String terms( ) {
+    	return "user/terms";
     }
+    
+    
+//    // 10. 회원탈퇴
+//    @RequestMapping(value = "/deleteUser", method = RequestMethod.POST)
+//    @ResponseBody
+//    public int deleteUser(HttpServletRequest request) throws ServletException, IOException {
+//        logger.info("<<< url => /user/deleteUser >>>");
+//        return service.deleteUser(request);
+//    }
     
 
 }
