@@ -2,8 +2,8 @@
 
 
 .step-header{
-	max-width: 900px;
-	margin: 0 auto 15px auto;
+	max-width: 1200px;
+	margin: 20 auto 15px auto;
 	background: #1e1e1e;
 	border: 1px solid #ED6701;
 	border-radius: 10px;
@@ -19,13 +19,13 @@
 	align-items: center;
 }
     
-    
 .seat-container {
-    display: grid;
-    grid-template-columns: repeat(10, 38px); 
-    gap: 6px; 
-    justify-content: center;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    justify-content: flex-start;
     margin-top: 30px;
+    max-width: 100%;
 }
 
 .seat {
@@ -74,17 +74,22 @@
     display: flex;
     justify-content: center;
     align-items: flex-start;
-    gap: 40px;
+    gap: 20px;
     margin-top: 40px;
+    padding: 0 20px;
+    width: 100%;
+    box-sizing: border-box;
 }
 
 /* 왼쪽 좌석 */
 .seat-left {
+	flex: 1;
 }
 
 /* 오른쪽 영역 */
 .seat-right {
-    width: 250px;
+    width: 280px;
+    min-width: 280px;
 }
 
 /* 가격 박스 */
@@ -94,6 +99,10 @@
     border-radius: 10px;
     color: #000;
     box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+}
+
+.selected-info-text{
+	color: #000;
 }
 
 /* 등급 컬러 표시 */
@@ -133,6 +142,8 @@
 	border-radius: 12px;
 	padding: 40px;
 	box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+	overflow-x: visible;
+	flex: 1;
 }
 
 /* 가격표 박스 */
@@ -142,6 +153,8 @@
 	border-radius: 12px;
 	padding: 25px;
 	height: fit-content;
+	position: sticky;
+	top: 20px;
 }
 
 .stage{
@@ -156,3 +169,5 @@
 	margin-bottom: 30px;
 	letter-spacing: 3px;
 }
+
+

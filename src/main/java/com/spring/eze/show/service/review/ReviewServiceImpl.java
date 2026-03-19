@@ -89,12 +89,11 @@ public class ReviewServiceImpl implements ReviewService {
 		return dao.getReviewPaging(map);
 	}
 
+
 	@Override
 	public void reviewListAction(HttpServletRequest request, HttpServletResponse response, Model model) {
 		// TODO Auto-generated method stub
 		
 	}
-
-
-
 }
+

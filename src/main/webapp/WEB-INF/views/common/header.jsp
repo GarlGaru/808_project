@@ -26,9 +26,14 @@
 								<li><a href="${path}/main">Home</a></li>
 								<li><a href="${path}/music">Music</a></li>
 								<li><a href="${path}/show">Show</a></li>
-								 <li>
-							        <a href="javascript:void(0);" onclick="openSubscribeModal()">Subscribe</a>
-							    </li>
+								<c:choose>
+									<%-- 로그인완료시 --%>
+									<c:when test="${not empty sessionScope.loginUser}">
+								 	<li>
+							        	<a href="javascript:void(0);" onclick="openSubscribeModal()">Subscribe</a>
+							    	</li>
+							   		</c:when>
+							   	</c:choose>
 								<c:if test="${sessionScope.loginUser.nickname == 'admin'}">
 									<li><a href="${path}/admin">ADMIN</a></li>
 								</c:if>

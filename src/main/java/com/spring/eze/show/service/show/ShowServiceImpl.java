@@ -107,6 +107,8 @@ public class ShowServiceImpl implements ShowService{
 		System.out.println("ShowServiceImpl - getScheduleByDate()");
 		
 		List<ShowDTO> list = dao.getShowSchedule(showId, playDate);
+		System.out.println("showId = " + showId);
+		System.out.println("playDate = " + playDate);
 		
 		model.addAttribute("list", list);
 	}
@@ -141,6 +143,12 @@ public class ShowServiceImpl implements ShowService{
 		
 		model.addAttribute("list", list);
 		model.addAttribute("currentCategory", genre);
+	}
+
+	//seat용 추가
+	@Override
+	public String getVenueName(String showId) {
+		return dao.selectVenueName(showId);
 	}
 
 }

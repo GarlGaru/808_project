@@ -25,11 +25,15 @@ public class PaymentDAOImpl implements PaymentDAO{
 	//유저프로필에도 구독상태값 같이 저장
 	@Override
 	public void updateMembershipType(Map<String, Object> param) {
+		System.out.println("updateMembershipType");
+		System.out.println("param"+ param);
+		
 	    sqlSession.update(NS + "updateMembershipType", param);
 	}
 	
 	@Override
 	public int updateTid(PaymentOrderDTO dto) {
+		System.out.println("PaymentOrderDTO");
 		
 		 return sqlSession.update(NS + "updateTid", dto);	
 	
@@ -55,6 +59,11 @@ public class PaymentDAOImpl implements PaymentDAO{
 	@Override
 	public int updateFailReason(PaymentOrderDTO dto) {
 		return sqlSession.update(NS + "updateFailReason", dto);
+	}
+
+	@Override
+	public int downgradeMembershipToFree(long userId) {
+	    return sqlSession.update(NS + "downgradeMembershipToFree", userId);
 	}
 
 	

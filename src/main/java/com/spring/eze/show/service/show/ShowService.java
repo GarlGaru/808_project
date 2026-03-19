@@ -27,4 +27,7 @@ public interface ShowService {
 	
 	public void getShowRanking(HttpServletRequest request, HttpServletResponse resposne, Model model)
 			throws ServletException, IOException;
+	
+	//seat 좌석용 추가
+	public String getVenueName(String showId);
 }

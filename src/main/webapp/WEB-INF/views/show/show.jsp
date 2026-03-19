@@ -33,7 +33,6 @@
 	    <a href="${path}/show/showList?category=musical&subCategory=all">뮤지컬</a>
 	    <a href="${path}/show/showList?category=play&subCategory=all">연극</a>
 	    <a href="${path}/show/ranking">랭킹</a>
-	    <a href="#">후기</a>
 	</div>
 
         <div class="section">

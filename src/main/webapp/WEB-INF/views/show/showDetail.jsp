@@ -1,6 +1,7 @@
 ﻿<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ include file="/WEB-INF/views/common/setting.jsp" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <!DOCTYPE html>
 <html lang="ko">
 <%@ include file="/WEB-INF/views/common/common.jsp" %>
@@ -19,9 +20,8 @@
 <body class="dark-mode">
 	<input type="hidden" id="showId" value="${dto.showId}">
 	<input type="hidden" id="contextPath" value="${pageContext.request.contextPath}">
+    <!-- 상단 공연 상세 페이지 -->
     <div class="show-detail-wrapper">
-         <!-- 상단 공연 상세 페이지 -->
-       <div class="show-detail-wrapper">
 
     <!-- 상단 공연 기본정보 -->
     <section class="detail-top">
@@ -98,6 +98,79 @@
     <script src="${path}/resources/show/js/show.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 	<script src="https://npmcdn.com/flatpickr/dist/l10n/ko.js"></script>
+	<!-- 카카오 지도 api 추가 -->
+    <script type="text/javascript" 
+    src="//dapi.kakao.com/v2/maps/sdk.js?appkey=394bafcd3005391aa7325bac6f719474&libraries=services">
+    </script>
+
+	<!-- 카카오맵 api 함수 -->
+	<script>
+	function loadKakaoVenueMap() {
+	    const mapContainer = document.getElementById("kakaoMap");
+	    const keywordInput = document.getElementById("venueKeyword");
+	    const addressText = document.getElementById("venueDetailAddress");
+	
+	    if (!mapContainer || !keywordInput) return;
+	
+	    const venueKeyword = keywordInput.value.trim();
+	    if (!venueKeyword) return;
+	
+	    const mapOption = {
+	        center: new kakao.maps.LatLng(37.566826, 126.9786567),
+	        level: 3
+	    };
+	
+	    const map = new kakao.maps.Map(mapContainer, mapOption);
+	    map.setDraggable(true);
+	    map.setZoomable(true);
+	
+	    const zoomControl = new kakao.maps.ZoomControl();
+	    map.addControl(zoomControl, kakao.maps.ControlPosition.RIGHT);
+	
+	    const ps = new kakao.maps.services.Places();
+	
+	    ps.keywordSearch(venueKeyword, function(data, status) {
+	        if (status === kakao.maps.services.Status.OK) {
+	            const place = data[0];
+	            const coords = new kakao.maps.LatLng(place.y, place.x);
+	
+	            const marker = new kakao.maps.Marker({
+	                map: map,
+	                position: coords
+	            });
+	
+	            const detailAddress = place.road_address_name && place.road_address_name.trim() !== ""
+	                ? place.road_address_name
+	                : place.address_name;
+	
+	            const infowindow = new kakao.maps.InfoWindow({
+	                content:
+	                    '<div style="padding:6px 10px; font-size:13px; color:#000; background:#fff; white-space:nowrap;">'
+	                    + place.place_name +
+	                    '<br><span style="font-size:12px;">' + detailAddress + '</span>'
+	                    + '</div>'
+	            });
+	
+	            infowindow.open(map, marker);
+	            map.setCenter(coords);
+	
+	            if (addressText) {
+	                addressText.textContent = "상세주소: " + detailAddress;
+	            }
+	        } else {
+	            console.log("장소 검색 실패:", venueKeyword);
+	            if (addressText) {
+	                addressText.textContent = "상세주소를 찾을 수 없습니다.";
+	            }
+	        }
+	
+	        setTimeout(function() {
+	            map.relayout();
+	        }, 200);
+	    });
+	}
+	</script>
+    <!-- 카카오 맵 api 종료 -->
 
     <script>
     function selectTime(startTime) {
@@ -105,6 +178,7 @@
     }
     </script>
     
+   <!-- 상세페이지 -->
     <script>
 	 // 4. 상세페이지 탭 전환
 	$(document).on('click', '.tab-menu li', function() {
@@ -130,6 +204,12 @@
         success: function(res) {
             console.log("ajax 성공");
             $('#tab-content-area').html(res);
+            
+            if (tabName === 'venue') {
+            	setTimeout(function(){
+            		loadKakaoVenueMap();
+            	}, 100);
+            }
         },
         error: function(xhr) {
             console.log("탭 ajax 실패");
@@ -144,11 +224,14 @@
 	// 3. 날짜, 회차 호출 코드 - show.js 에서 임시용
 	$(document).ready(function() {
     // 1. 페이지가 열리자마자 바로 달력을 그리기
-    const startDate = "${dto.startDate}";
-    const endDate = "${dto.endDate}";
+    const startDate = "<fmt:formatDate value='${dto.startDate}' pattern='yyyy-MM-dd'/>";
+    const endDate = "<fmt:formatDate value='${dto.endDate}' pattern='yyyy-MM-dd'/>";
     
     function getScheduleByDate(dateStr) {
     	let showId = $("#showId").val();
+    	
+    	console.log("ajax 요청 showID: ", showId);
+    	console.log("ajax 요청 playDate: ", dateStr);
     	
 	   	 $.ajax({
 	            url: $("#contextPath").val() + "/show/getScheduleAjax",
@@ -160,8 +243,9 @@
 	            success: function(res) {
 	                $("#schedule-area").html(res);
 	            },
-	            error: function() {
+	            error: function(xhr) {
 	                console.error("회차 조회 실패");
+	                console.error(xhr.responseText);
 	            }
 	        });
     	}
@@ -169,12 +253,12 @@
     flatpickr("#datePicker", {
         locale: "ko",       // 한국어 설정
         inline: true,
+        dateFormat: "Y-m-d",
         enable: [{from: startDate, to: endDate}],
         defaultDate: startDate,
-        
         onChange: function(selectedDates, dateStr, instance) {
             // 2. 달력에서 날짜를 클릭후 실행
-            getScheduleByDate(dateStr)
+            getScheduleByDate(dateStr);
           }
        });
     getScheduleByDate(startDate);
@@ -214,10 +298,11 @@
        const contextPath = $('#contextPath').val();
        const url = contextPath + "/show/seat?showId=" + showId + "&scheduleId=" + scheduleId;
        const popupName = "seatPopup";
-       const specs = "width=1100,height=850,top=50,left=100,scrollbars=yes";
+       const specs = "width=850,height=750,top=50,left=100,scrollbars=yes";
        
        window.open(url, popupName, specs);
    });
    </script>
+   
 </body>
 </html>
