@@ -1,6 +1,8 @@
 package com.spring.eze.board.controller;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -13,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.spring.eze.board.service.BoardService;
 
@@ -91,7 +94,7 @@ public class BoardController {
 
 	    // 4. 결정된 경로로 리다이렉트
 	    return "redirect:" + redirectPath + "?pageNum=" + pageNum + "&pageSize=" + pageSize;
-	}
+	}	
 	@RequestMapping("/plusReadCnt")
 	public String plusReadCnt(HttpServletRequest request, HttpServletResponse response, Model model)
 			throws ServletException, IOException {
@@ -148,5 +151,19 @@ public class BoardController {
 		// 2. 변경된 필드명 적용
 		boardservice.BoardList(request, response, model);
 		return "/admin2/boardtables";
+	}
+	@RequestMapping("/admin/api/stats/boardTotalCnt")
+	@ResponseBody 
+	public int getBoardTotalCnt(HttpServletRequest request, Model model)
+			throws ServletException, IOException {
+	
+	    java.util.Map<String, Object> map = new java.util.HashMap<>();
+	    return boardservice.getTotalCnt(map); 
+	}
+	@RequestMapping("/admin/api/stats/boardTodayCnt")
+	@ResponseBody 
+	public int getBoardTodayCnt() {
+	    // 오늘 올라온 글자 수만 서비스에서 가져와서 대답해줘요.
+	    return boardservice.getTodayCount(); 
 	}
 }
