@@ -2,23 +2,29 @@
 /* 피그마 입히기 전 공연상세페이지 임시 css */
 /* 전체 컨테이너 여백 */
 .show-detail-wrapper {
-    width: 1200px;
+    width: 900px;
     margin: 0 auto;
-    padding: 40px 20px 80px;
+    padding: 80px 40px 100px;
 }
 
-/* 1. 상단 정보 */
+/* 1. 상단 정보 구역 */
 .detail-top {
+    /* 기존 구조 */
     display: flex;
     gap: 40px;
     margin-bottom: 40px;
-    border: 1px solid rgba(255,255,255,0.15);
     padding: 30px;
+    
+    /* 변경된 디자인: 호버 없이 주황색 테두리 고정 */
+    background: #181818;
+    border: 1px solid #DF8845;
+    border-radius: 14px;
 }
 
+/* 포스터 및 글씨 색상 유지 */
 .poster-area {
-    width: 320px;
-    flex-shrink: 0;
+    width: 280px;
+    flex-shrink: 10;
 }
 
 .poster-area img {
@@ -32,25 +38,28 @@
 }
 
 .show-title {
-    font-size: 40px;
+    font-size: 30px;
     font-weight: 700;
     margin-bottom: 24px;
+    color: #ffffff;
 }
 
 .info-list {
     list-style: none;
     padding: 0;
     margin: 0 0 24px 0;
+    color: #cccccc;
 }
 
 .info-list li {
     margin-bottom: 16px;
-    font-size: 20px;
+    font-size: 15px;
 }
 
 .info-list strong {
     display: inline-block;
     width: 120px;
+    color: #ffffff;
 }
 
 .btn-group {
@@ -64,10 +73,16 @@
     cursor: pointer;
 }
 
-/* 2. 날짜 / 회차 */
+/* 2. 날짜 / 회차 선택 구역 */
 .booking-area {
+    /* 기존 구조 */
     margin-bottom: 40px;
-    border: 1px solid rgba(255,255,255,0.15);
+    
+    /* 변경된 디자인: 상단 정보 구역과 동일하게 세팅 */
+    background: #181818;
+    border: 1px solid #DF8845;
+    border-radius: 14px;
+    overflow: hidden; /* 모서리가 둥글 때 내부 콘텐츠가 삐져나가지 않게 처리 */
 }
 
 .booking-top {
@@ -75,20 +90,44 @@
     min-height: 240px;
 }
 
-.date-area,
+.date-area{
+    width: 70%;
+    padding: 20px;
+    display: flex;
+    flex-direction: column; /* 제목(h3) 아래에 달력/버튼이 세로로 배치되도록 설정 */
+    align-items: center; /* 가로 기준으로 완벽하게 가운데 정렬 */
+    text-align: center;
+}
+
 .time-area {
-    width: 50%;
-    padding: 24px;
+    width: 70%;
+    padding: 20px;
+    display: flex;
+    flex-direction: column; /* 제목(h3) 아래에 달력/버튼이 세로로 배치되도록 설정 */
+    align-items: left; /* 가로 기준으로 완벽하게 가운데 정렬 */
+    text-align: left;
 }
 
 .date-area {
-    border-right: 1px solid rgba(255,255,255,0.15);
+    /* 내부 세로 구분선은 은은하게 */
+    border-right: 1px solid rgba(255,255,255,0.08);
 }
 
 .date-area h3,
 .time-area h3 {
     margin-bottom: 20px;
     font-size: 28px;
+    color: #ffffff;
+    width: 80%;
+    text-align: left;
+}
+
+.booking-bottom {
+    /* 예매하기 버튼이 있는 하단 가로 구분선도 은은하게 */
+    border-top: 1px solid rgba(255,255,255,0.08);
+    padding: 20px 24px;
+    display: flex;
+    justify-content: flex-end;
 }
 
 /* 회차 시간 버튼 */
@@ -107,23 +146,20 @@
 
 /* 회차 버튼 활성화 */
 .time-btn.active {
-    background-color: #000000;
-    border-color: #000000;
+    background-color: #ED6701;
+    border-color: #ED6701;
     color: #fff !important;
 }
 
-.booking-bottom {
-    border-top: 1px solid rgba(255,255,255,0.15);
-    padding: 20px 24px;
-    display: flex;
-    justify-content: flex-end;
-}
-
 .btn-booking {
-    width: 200px;
-    height: 56px;
-    font-size: 18px;
+    margin: 0 10px 10px 0;
+    padding: 10px 16px;
+    font-size: 16px;
     cursor: pointer;
+    background-color: #ED6701;
+    border: 1px solid #ED6701;
+    color: #fff;
+    border-radius: 4px;
 }
 
 /* 3. 하단 탭 */
@@ -169,16 +205,106 @@
 	border-color: #ED6701 !important;
 	color: #fff !important;
 
+
+
+
+/* 예비용) 1. 상단 정보 */
+/* .detail-top {
+    display: flex;
+    gap: 40px;
+    margin-bottom: 40px;
+    border: 1px solid rgba(255,255,255,0.15);
+    padding: 30px;
+}
+
+.poster-area {
+    width: 320px;
+    flex-shrink: 0;
+}
+
+.poster-area img {
+    width: 100%;
+    display: block;
+    border-radius: 10px;
+}
+
+.info-area {
+    flex: 1;
+}
+
+.show-title {
+    font-size: 40px;
+    font-weight: 700;
+    margin-bottom: 24px;
+}
+
+.info-list {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 24px 0;
+}
+
+.info-list li {
+    margin-bottom: 16px;
+    font-size: 20px;
+}
+
+.info-list strong {
+    display: inline-block;
+    width: 120px;
+}
+
+.btn-group {
+    margin-top: 30px;
+}
+
+.btn-reserve {
+    width: 180px;
+    height: 50px;
+    font-size: 18px;
+    cursor: pointer;
+} */
+
+
+
+/* 2. 날짜 / 회차 */
+/* .booking-area {
+    margin-bottom: 40px;
+    border: 1px solid rgba(255,255,255,0.15);
+}
+
+.booking-top {
+    display: flex;
+    min-height: 240px;
+}
+
+.date-area,
+.time-area {
+    width: 50%;
+    padding: 24px;
+}
+
+.date-area {
+    border-right: 1px solid rgba(255,255,255,0.15);
+}
+
+.date-area h3,
+.time-area h3 {
+    margin-bottom: 20px;
+    font-size: 28px;
+} */
+
+
 	
 /* 공연후기 */
 /* 피그마 입히기 전 공연상세페이지 임시 css */
 /* 전체 컨테이너 여백 */
-.show-detail-wrapper {
+/* .show-detail-wrapper {
     width: 1200px;
     margin: 0 auto;
     padding: 40px 20px 80px;
 }
-/* 1. 상단 정보 */
+1. 상단 정보
 .detail-top {
     display: flex;
     gap: 40px;
@@ -225,7 +351,7 @@
     font-size: 18px;
     cursor: pointer;
 }
-/* 2. 날짜 / 회차 */
+2. 날짜 / 회차
 .booking-area {
     margin-bottom: 40px;
     border: 1px solid rgba(255,255,255,0.15);
@@ -247,7 +373,7 @@
     margin-bottom: 20px;
     font-size: 28px;
 }
-/* 회차 시간 버튼 */
+회차 시간 버튼
 .date-btn,
 .time-btn {
     display: inline-block;
@@ -260,7 +386,7 @@
     color: #fff;
     border-radius: 4px;
 }
-/* 회차 버튼 활성화 */
+회차 버튼 활성화
 .time-btn.active {
     background-color: #000000;
     border-color: #000000;
@@ -278,7 +404,7 @@
     font-size: 18px;
     cursor: pointer;
 }
-/* 3. 하단 탭 */
+3. 하단 탭
 .detail-bottom {
     margin-top: 30px;
 }
@@ -307,7 +433,7 @@
     line-height: 1.8;
 }
 
-/* 달력선택 */
+달력선택
 .flatpickr-calendar .flatpickr-day.selected,
 .flatpickr-calendar .flatpickr-day.selected:hover,
 .flatpickr-calendar .flatpickr-day.selected:focus {
@@ -316,7 +442,7 @@
     color: #fff !important;
 }
 
-
+ */
 /* =====================================================
    공연 리뷰 탭 스타일
    ===================================================== */
@@ -657,7 +783,7 @@
 
 .show-notice-img {
     width: 100%;
-    max-width: 702px;
+    max-width: 502px;
     height: auto;
     display: inline-block;
 }

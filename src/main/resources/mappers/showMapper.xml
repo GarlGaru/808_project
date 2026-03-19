@@ -179,14 +179,15 @@
 	          show_id as showId,
 	          play_date as playDate
 	    FROM  schedule_tbl
+<<<<<<< Updated upstream
+	   
+=======
+
+>>>>>>> Stashed changes
 	   WHERE  show_id = #{showId}
+	    AND  TO_CHAR(play_date, 'YYYY-MM-DD') = #{playDate}
 	   ORDER BY start_time 	
 	</select>
-
-	
-	<!-- AND  TO_CHAR(play_date, 'YYYY-MM-DD') = #{playDate} -->
-
-	<!--  AND  TO_CHAR(play_date, 'YYYY-MM-DD') = #{playDate} -->
 
 	<!-- 랭킹페이지 -->
 	<select id="getShowRanking" parameterType="String" resultType="com.spring.eze.show.dto.Show.ShowDTO">
@@ -202,14 +203,63 @@
 	  WHERE genre = #{genre}
 	ORDER BY show_id DESC
 	</select>
-	
+
 	<!--Seat 공연별 좌석도 때문에 추가합니다  -->
 	<select id="selectVenueName" parameterType="String" resultType="String">
 		SELECT venue_name
 		FROM   show_tbl
 		WHERE  show_id = #{showId}
 	</select>
+
+	<!-- 마이티켓 목록 -->
+	<select id="getMyPageTicket" parameterType="long" resultType="com.spring.eze.show.dto.Myticket.MyticketDTO">
+	SELECT
+	        u.email AS email,
 	
+	        p.reservation_id AS reservationId,
+	        p.user_id AS userId,
+	        p.order_id AS orderId,
+	        TO_CHAR(p.approved_at, 'YYYY.MM.DD') AS approvedAt,
+	        p.quantity AS quantity,
+	        p.status AS status,
+	
+	        r.total_price AS totalPrice,
+	        r.payment_status AS paymentStatus,
+	        r.payment_method AS paymentMethod,
+	
+	        s.title AS title,
+	        s.poster_url AS posterUrl,
+	        s.venue_name AS venueName,
+	        s.start_date AS startDate,
+	        s.end_date AS endDate,
+	        s.start_date AS playDate,
+	
+	        CASE
+	            WHEN s.start_date >= TRUNC(SYSDATE) THEN '가능'
+	            ELSE '불가'
+	        END AS cancelAvailable
+	
+	    FROM payment_order p
+	    JOIN reservation_tbl r
+	      ON p.reservation_id = r.reservation_id
+	    JOIN user_tbl u
+	      ON p.user_id = u.user_id
+	    JOIN show_tbl s
+	      ON r.show_id = s.show_id
+	    WHERE p.user_id = #{userId}
+	      AND p.payment_type = 'TICKET'
+	      AND p.approved_at IS NOT NULL
+	    ORDER BY p.approved_at DESC
+	</select>
+	
+	<!-- 마이티켓 예매내역 카운팅 -->
+	<select id="getMyTicketCount" parameterType="long" resultType="int">
+		SELECT COUNT(*)
+		  FROM payment_order p
+		 WHERE p.user_id = #{userId}
+		   AND p.payment_type = 'TICKET'
+		   AND p.approved_at IS NOT NULL
+	</select>
 	<!-- seat회차 넘기는거때문에 추가합니다 -->
 	<select id="selectScheduleInfo" parameterType="String" resultType="map">
 		SELECT schedule_id,
@@ -220,6 +270,4 @@
 		FROM   schedule_tbl
 		WHERE  schedule_id = #{scheduleId}
 	</select>
- </mapper> 
-
-
+ </mapper>

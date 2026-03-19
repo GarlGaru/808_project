@@ -15,46 +15,85 @@
     <%@ include file="/WEB-INF/views/common/common.jsp" %>
     <%@ include file="/WEB-INF/views/common/header.jsp" %>
 
-    <br><br><br><br><br><br>
+    <!-- <br><br><br><br><br><br> -->
 
-    <br><br><br><br>
-    <br><br><br><br>
 <%-- 
 	<div class="section" style="justify-content-center">
 		<a href="${path}/show/seat-detail">
 			<img src="${path}/resources/presentation/show.png">
 		</a>
     </div> --%>
- 
+ 	<br><br>
 
     <div class="show-wrap">
-        <div class="genre-bar">
-	    <a href="${path}/show/showList?category=concert&subCategory=all">콘서트</a>
-	    <a href="${path}/show/showList?category=musical&subCategory=all">뮤지컬</a>
-	    <a href="${path}/show/showList?category=play&subCategory=all">연극</a>
-	    <a href="${path}/show/ranking">랭킹</a>
+	      <div class="show-top-menu-wrap">
+		    <nav class="show-top-menu">
+		        <a href="${path}/show/showList?category=concert&subCategory=all"
+		           class="menu-item ${menu eq 'concert' ? 'active' : ''}">콘서트</a>
+		
+		        <a href="${path}/show/showList?category=musical&subCategory=all"
+		           class="menu-item ${menu eq 'musical' ? 'active' : ''}">뮤지컬</a>
+		
+		        <a href="${path}/show/showList?category=play&subCategory=all"
+		           class="menu-item ${menu eq 'play' ? 'active' : ''}">연극</a>
+		
+		        <a href="${path}/show/ranking"
+		           class="menu-item ${menu eq 'ranking' ? 'active' : ''}">랭킹</a>
+		
+		        <a href="${path}/show/mypage/myTicket"
+		           class="menu-item ${menu eq 'myticket' ? 'active' : ''}">마이티켓
+		        </a>
+		        
+		       <!--  <a href="javascript:void(0)" onclick="openAuthModal()" -->
+		    </nav>
+		</div>
+			<br>
+	       <div class="main-show-section-full">
+	    <div class="section">
+	        <h2 class="section-title" id="main-section-title">공연</h2>
+	
+	        <div id="mainShowCarousel" class="carousel slide main-show-carousel" data-ride="carousel" data-interval="false">
+	            <div class="carousel-inner">
+	
+	                <c:forEach var="s" items="${list}" varStatus="st">
+	                    <c:if test="${st.index % 4 == 0}">
+	                        <div class="carousel-item ${st.first ? 'active' : ''}">
+	                            <div class="main-show-row">
+	                    </c:if>
+	
+	                                <div class="main-show-col">
+	                                    <a href="${path}/show/showDetail?showId=${s.showId}" class="main-show-link">
+	                                        <div class="main-show-card">
+	                                            <img class="main-show-poster" src="${s.posterUrl}" alt="${s.title}">
+	                                            <div class="main-show-title">${s.title}</div>
+	                                            <div class="main-show-sub">${s.venueName}</div>
+	                                        </div>
+	                                    </a>
+	                                </div>
+	
+	                    <c:if test="${st.index % 4 == 3 || st.last}">
+	                            </div>
+	                        </div>
+	                    </c:if>
+	                </c:forEach>
+	
+	            </div>
+	
+	            <a class="carousel-control-prev main-show-control" href="#mainShowCarousel" role="button" data-slide="prev">
+	                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+	                <span class="sr-only">이전</span>
+	            </a>
+	
+	            <a class="carousel-control-next main-show-control" href="#mainShowCarousel" role="button" data-slide="next">
+	                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+	                <span class="sr-only">다음</span>
+	            </a>
+	        </div>
+	    </div>
 	</div>
 
-        <div class="section">
-            <h2 class="section-title" id="main-section-title">공연</h2>
-            <div class="slider">
-                <button type="button" class="nav-btn nav-left" onclick="scrollTrack('mainTrack', -1)"></button>
-                <div id="mainTrack" class="track">
-                    <c:forEach var="s" items="${list}">
-                        <a href="${path}/show/showDetail?showId=${s.showId}"> 
-                            <div class="card-item"> 
-                                <img class="poster" src="${s.posterUrl}" alt="${s.title}"> 
-                                <div class="title">${s.title}</div> 
-                                <div class="sub">${s.venueName}</div> 
-                            </div> 
-                        </a>
-                    </c:forEach>
-                </div> 
-                <button type="button" class="nav-btn nav-right" onclick="scrollTrack('mainTrack', 1)"></button>
-            </div>
-        </div>
 
-        <div id="sub-category-area" style="display:none;">
+       <!--  <div id="sub-category-area" style="display:none;">
             <div class="divider"></div>
             <div class="category-tabs text-center mb-4" id="sub-category-tabs">
                 <button class='tab-btn sub-tab-btn active' onclick="loadSubCategory('all', this)">전체</button>
@@ -65,28 +104,49 @@
                 <button class='tab-btn sub-tab-btn' onclick="loadSubCategory('gugak', this)">국악</button>
             </div>
             <div id="showList" class="container row mx-auto justify-content-center"></div>
-        </div>
+        </div> -->
 
-        <div id="upcoming-section" class="section">
-            <div class="divider"></div>
-            <h2 class="section-title">오픈 예정 공연</h2>
-            <div class="slider">
-                <button type="button" class="nav-btn nav-left" onclick="scrollTrack('upcomingTrack', -1)"></button>
-                <div id="upcomingTrack" class="track">
-                    <c:forEach var="u" items="${upcomingList}">
-                        <a href="${path}/show/showDetail?showId=${u.showId}">
-                            <div class="card-item">
-                                <img class="poster" src="${u.posterUrl}" alt="${u.title}">
-                                <div class="sub">${u.startDate}</div>
-                            </div>
-                        </a>
-                    </c:forEach>
-                </div>
-                <button type="button" class="nav-btn nav-right" onclick="scrollTrack('upcomingTrack', 1)"></button>
-            </div>
-        </div>
-    </div> 
+       <div id="upcoming-section" class="section">
+    <div class="divider"></div>
+    <h2 class="section-title">오픈 예정 공연</h2>
 
+    <div id="upcomingShowCarousel" class="carousel slide upcoming-show-carousel" data-ride="carousel" data-interval="false">
+	        <div class="carousel-inner">
+	
+	            <c:forEach var="u" items="${upcomingList}" varStatus="st">
+	                <c:if test="${st.index % 4 == 0}">
+	                    <div class="carousel-item ${st.first ? 'active' : ''}">
+	                        <div class="upcoming-show-row">
+	                </c:if>
+	
+	                            <div class="upcoming-show-col">
+	                                <a href="${path}/show/showDetail?showId=${u.showId}" class="upcoming-show-link">
+	                                    <div class="upcoming-show-card">
+	                                        <img class="upcoming-show-poster" src="${u.posterUrl}" alt="${u.title}">
+	                                        <div class="upcoming-show-date">${u.startDate}</div>
+	                                    </div>
+	                                </a>
+	                            </div>
+	
+	                <c:if test="${st.index % 4 == 3 || st.last}">
+	                        </div>
+	                    </div>
+	                </c:if>
+	            </c:forEach>
+	
+	        </div>
+	
+	        <a class="carousel-control-prev upcoming-show-control" href="#upcomingShowCarousel" role="button" data-slide="prev">
+	            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+	            <span class="sr-only">이전</span>
+	        </a>
+	
+	        <a class="carousel-control-next upcoming-show-control" href="#upcomingShowCarousel" role="button" data-slide="next">
+	            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+	            <span class="sr-only">다음</span>
+	        </a>
+	    </div>
+	</div>
 
     <br><br><br><br>
     <%@ include file="/WEB-INF/views/common/footer.jsp" %>
