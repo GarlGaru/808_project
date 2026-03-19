@@ -179,11 +179,6 @@
 	          show_id as showId,
 	          play_date as playDate
 	    FROM  schedule_tbl
-<<<<<<< Updated upstream
-	   
-=======
-
->>>>>>> Stashed changes
 	   WHERE  show_id = #{showId}
 	    AND  TO_CHAR(play_date, 'YYYY-MM-DD') = #{playDate}
 	   ORDER BY start_time 	
