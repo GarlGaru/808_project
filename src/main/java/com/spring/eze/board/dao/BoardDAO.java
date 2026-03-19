@@ -11,7 +11,7 @@ public interface BoardDAO {
     public List<BoardDTO> boardList(Map<String, Object> map);
 
     // 게시글 총 개수
-    public int boardCnt();
+    public int boardCnt(Map<String, Object> map);
     
     // 조회수 증가 (bno로 이름 통일)
     public void plusReadCnt(int bno);
@@ -26,6 +26,15 @@ public interface BoardDAO {
     public void deleteBoard(BoardDTO dto);
     //게시글 추가
     public void insertBoard(BoardDTO dto);
+
+	public List<BoardDTO> getBestList();
+
+	public static List<BoardDTO> boardListAll() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	
+	
 
 
 }

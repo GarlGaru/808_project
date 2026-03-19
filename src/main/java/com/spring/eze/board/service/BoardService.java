@@ -1,12 +1,15 @@
 package com.spring.eze.board.service;
 
 import java.io.IOException;
+import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.ui.Model;
+
+import com.spring.eze.board.dto.BoardDTO;
 
 public interface BoardService {
 	
@@ -28,6 +31,8 @@ public interface BoardService {
 	
 	public void boardInsert(HttpServletRequest request, HttpServletResponse response, Model model) 
 	         throws ServletException, IOException;
+
+	public List<BoardDTO> getList();
 	   
 
 }

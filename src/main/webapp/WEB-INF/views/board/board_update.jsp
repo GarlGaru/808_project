@@ -1,414 +1,300 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
-
-pageEncoding="UTF-8"%>
-
+	pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
-
-<%@ include file="/WEB-INF/views/common/setting.jsp" %>
-
-
+<%@ include file="/WEB-INF/views/common/setting.jsp"%>
 
 <!DOCTYPE html>
-
 <html lang="ko">
-
 <head>
-
 <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<title>Premium Orange Board - 수정 및 상세</title>
 
-<meta name="description" content="Bootstrap 4 Spotify-style buttons sample">
-
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-
-
-
-
-
-<title>게시글 상세 및 수정</title>
-
-
-
- <link rel="stylesheet" href="${path}/resources/common/css/style.css">
-
- <link rel="stylesheet" href="${path}/resources/common/style.css">
-
- <link rel="stylesheet" href="${path}/resources/common/board.css">
-
-
-
-
-
+<link rel="stylesheet" href="${path}/resources/common/css/style.css">
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
 <style>
-
-    /* 1. 배경 및 전체 레이아웃 */
-
-    body {
-
-        /* 어두운 배경에서 하얀색 글씨가 돋보이도록 설정 */
-
-        background: linear-gradient(135deg, #121212 0%, #1e1e1e 100%) !important;
-
-        padding-top: 130px !important;
-
-        margin: 0;
-
-        color: #ffffff !important; /* 전체 기본 글자색 하얀색 */
-
-    }
-
-
-
-    /* 2. 컨테이너 박스 (유리 효과) */
-
-    .table_div {
-
-        margin: 0 auto !important;
-
-        max-width: 900px;
-
-        background: rgba(255, 255, 255, 0.03);
-
-        backdrop-filter: blur(15px);
-
-        padding: 40px;
-
-        border-radius: 20px;
-
-        border: 1px solid rgba(255, 255, 255, 0.1);
-
-        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
-
-    }
-
-
-
-    h2 { color: #ffffff !important; margin-bottom: 30px; text-align: center; }
-
-
-
-    /* 3. 테이블 내 텍스트 하얀색 강제 */
-
-    .update-table {
-
-        width: 100%;
-
-        border-collapse: collapse;
-
-        margin-bottom: 20px;
-
-    }
-
-    .update-table th {
-
-        width: 120px;
-
-        padding: 15px;
-
-        color: #03c75a !important; /* 제목(항목)은 포인트 컬러 */
-
-        text-align: left;
-
-        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-
-    }
-
-    .update-table td {
-
-        padding: 15px;
-
-        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-
-        color: #ffffff !important; /* 데이터 텍스트 무조건 하얀색 */
-
-    }
-
-
-
-    /* 4. 입력창 스타일 (★여기서 하얀색 글씨 강제★) */
-
-    input[type="text"], 
-
-    input[type="password"],
-
-    textarea {
-
-        width: 100%;
-
-        background: rgba(255, 255, 255, 0.07) !important;
-
-        border: 1px solid rgba(255, 255, 255, 0.2) !important;
-
-        border-radius: 8px;
-
-        padding: 12px !important;
-
-        color: #FFFFFF !important; /* 입력하는 글자색을 하얀색으로 강제 */
-
-        font-size: 15px;
-
-        box-sizing: border-box;
-
-    }
-
-    
-
-    /* 입력창 클릭 시(포커스) 스타일 */
-
-    input[type="text"]:focus, 
-
-    textarea:focus {
-
-        outline: none;
-
-        border-color: #03c75a !important;
-
-        background: rgba(255, 255, 255, 0.1) !important;
-
-        color: #FFFFFF !important;
-
-    }
-
-
-
-    /* 5. 버튼 그룹 스타일 */
-
-    .btn-group {
-
-        text-align: center;
-
-        margin-top: 30px;
-
-        display: flex;
-
-        justify-content: center;
-
-        gap: 10px;
-
-    }
-
-
-
-    .inputButton {
-
-        padding: 12px 25px;
-
-        border-radius: 8px;
-
-        font-weight: bold;
-
-        cursor: pointer;
-
-        border: none;
-
-        color: #FFFFFF !important; /* 버튼 글자도 하얀색 */
-
-        transition: 0.3s;
-
-    }
-
-
-
-    .btn-update { background-color: #03c75a !important; }
-
-    .btn-delete { background-color: #ff4757 !important; }
-
-    .btn-cancel { background-color: #555 !important; }
-
+/* [스타일 섹션은 기존 디자인 유지를 위해 생략하지 않고 포함합니다] */
+body {
+	background-color: #141414 !important;
+	background-image: radial-gradient(circle at top, rgba(255, 107, 19, 0.4)
+		0%, transparent 60%),
+		linear-gradient(180deg, #1d120a 0%, #141414 100%) !important;
+	border-top: 5px solid #ff6b13 !important;
+	box-shadow: inset 0 10px 30px -10px rgba(255, 107, 19, 0.5) !important;
+	padding-top: 130px !important;
+	margin: 0;
+	min-height: 100vh;
+	font-family: 'Pretendard', -apple-system, sans-serif;
+	color: #ffffff;
+	background-attachment: fixed;
+}
+
+.table_div {
+	margin: 0 auto !important;
+	max-width: 1000px;
+	background: rgba(255, 255, 255, 0.05);
+	backdrop-filter: blur(20px);
+	padding: 40px;
+	border-radius: 20px;
+	border: 1px solid rgba(255, 255, 255, 0.12);
+	box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+}
+
+h2 {
+	color: #ffffff !important;
+	margin-bottom: 40px;
+	text-align: center;
+	font-weight: 800;
+	letter-spacing: 2px;
+	text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.update-table {
+	width: 100%;
+	border-collapse: collapse;
+	margin-bottom: 20px;
+}
+
+.update-table th {
+	width: 120px;
+	padding: 18px 15px;
+	color: #ffcc00 !important;
+	text-align: left;
+	font-weight: 700;
+	border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+	font-size: 14px;
+	text-transform: uppercase;
+}
+
+.update-table td {
+	padding: 15px;
+	border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+	color: #ffffff !important;
+	font-size: 15px;
+}
+
+input[type="text"], textarea {
+	width: 100%;
+	background: rgba(0, 0, 0, 0.3) !important;
+	border: 1px solid rgba(255, 255, 255, 0.2) !important;
+	border-radius: 12px;
+	padding: 12px 15px !important;
+	color: #FFFFFF !important;
+	font-size: 15px;
+	box-sizing: border-box;
+	outline: none;
+}
+
+input[type="text"]:focus, textarea:focus {
+	border-color: #ffcc00 !important;
+	box-shadow: 0 0 15px rgba(255, 204, 0, 0.2);
+}
+
+.image-edit-section {
+	background: rgba(255, 255, 255, 0.03);
+	padding: 20px;
+	border-radius: 15px;
+	border: 1px dashed rgba(255, 204, 0, 0.3);
+	text-align: center;
+}
+
+.preview-img {
+	max-width: 100%;
+	max-height: 400px;
+	border-radius: 10px;
+	margin-bottom: 15px;
+	box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+}
+
+.btn-container {
+	display: flex;
+	justify-content: center;
+	gap: 12px;
+	margin-top: 40px;
+	flex-wrap: wrap;
+}
+
+.pill-button {
+	padding: 12px 35px;
+	border-radius: 50px;
+	font-weight: 800;
+	cursor: pointer;
+	border: none;
+	color: #ffffff !important;
+	font-size: 15px;
+	transition: 0.3s;
+}
+
+.btn-save {
+	background: linear-gradient(135deg, #ffcc00 0%, #ff6b13 100%) !important;
+	color: #2b1407 !important;
+}
+
+.btn-delete {
+	background-color: #ff4757 !important;
+}
+
+.btn-dark {
+	background: rgba(255, 255, 255, 0.1) !important;
+	border: 1px solid rgba(255, 255, 255, 0.2) !important;
+}
+
+.pill-button:hover {
+	transform: translateY(-3px);
+	filter: brightness(1.1);
+}
 </style>
 
 <script>
+	$(function() {
+		// 1. 목록 버튼
+		$('#btnList').click(function() {
+			location.href = "${path}/board/list";
+		});
 
-$(function() {
+		// 2. 폼 제출 유효성 검사
+		$('#updateForm').submit(function() {
+			var fileInput = $("#file");
+			if (fileInput.val()) {
+				var ext = fileInput.val().split('.').pop().toLowerCase();
+				if ($.inArray(ext, [ 'jpg', 'jpeg', 'png', 'gif' ]) == -1) {
+					alert('이미지 파일(jpg, jpeg, png, gif)만 업로드 가능합니다.');
+					return false;
+				}
+			}
 
-    // 1. 목록 버튼
+			if (confirm("변경사항을 저장하시겠습니까?")) {
+				return true;
+			}
+			return false;
+		});
 
-    $('#btnList').click(function() {
+		// 3. 삭제 버튼 (컨트롤러 board_delete 매핑 확인)
+		$('#btnDelete').click(
+				function() {
+					if (confirm("정말 삭제하시겠습니까? 삭제 후에는 복구할 수 없습니다.")) {
+						var bno = $("input[name='bno']").val();
+						var userId = $("input[name='user_id']").val();
+						location.href = "${path}/board/board_delete?bno=" + bno
+								+ "&user_id=" + userId;
+					}
+				});
 
-        location.href = "${pageContext.request.contextPath}/board/list";
-
-    });
-
-
-
-    // 2. 수정 완료 (submit 발생 시)
-
-    $('#updateForm').submit(function() {
-
-        if (confirm("수정하시겠습니까?")) {
-
-            return true;
-
-        }
-
-        return false;
-
-    });
-
-
-
-    // 3. 삭제 버튼 클릭 시 (새로 추가!)
-
- // 3. 삭제 버튼 클릭 시 스크립트 수정
-
-    $('#btnDelete').click(function() {
-
-        if (confirm("정말 삭제하시겠습니까? 삭제 후에는 복구할 수 없습니다.")) {
-
-            var bno = $("input[name='bno']").val();
-
-            
-
-            // name='user_Id'가 아니라 'user_id'를 읽어오도록 수정
-
-            var userId = $("input[name='user_id']").val(); 
-
-            
-
-            // 컨트롤러로 데이터 전송
-
-            location.href = "${pageContext.request.contextPath}/board/board_delete?bno=" + bno + "&user_id=" + userId;
-
-        }
-
-    });
-
-});
-
+		// 4. 새 이미지 선택 시 미리보기 (UX 개선)
+		$("#file")
+				.change(
+						function(e) {
+							var file = e.target.files[0];
+							if (file && file.type.match('image.*')) {
+								var reader = new FileReader();
+								reader.onload = function(e) {
+									if ($(".preview-img").length > 0) {
+										$(".preview-img").attr("src",
+												e.target.result);
+									} else {
+										$(".image-edit-section")
+												.prepend(
+														'<img src="'+e.target.result+'" class="preview-img" alt="새 이미지">');
+									}
+								}
+								reader.readAsDataURL(file);
+							}
+						});
+	});
 </script>
-
 </head>
-
 <body>
-
-<div class="wrap">
-
-<%@ include file="/WEB-INF/views/common/header.jsp"%>
-
-<br><br><br><br>
-
-<hr>
-
-
-
-<div id="container">
-
-<div align="center">
-
-<h2>상세보기 및 수정</h2>
-
-</div>
-
-
-
-<div id="right" style="width: 800px; margin: 0 auto;">
-
-<form id="updateForm"
-
-action="${pageContext.request.contextPath}/board/board_update"
-
-method="post">
-
-<input type="hidden" name="bno" value="${dto.bno}"> <input
-
-type="hidden" name="user_id" value="${dto.userId}">
-
-
-
-<table border="1" style="width: 100%; border-collapse: collapse;">
-
-<tr>
-
-<th>글번호</th>
-
-<td>${dto.bno}</td>
-
-<th>조회수</th>
-
-<td>${dto.viewcnt}</td>
-
-</tr>
-
-<tr>
-
-<th>작성자</th>
-
-<td>${sessionScope.loginUser.nickname}</td>
-
-<th>등록일</th>
-
-<td><fmt:formatDate value="${dto.regdate}"
-
-pattern="yyyy-MM-dd HH:mm" /></td>
-
-</tr>
-
-<tr>
-
-<th>글제목</th>
-
-<td colspan="3"><input type="text" name="title"
-
-value="${dto.title}" style="width: 90%"></td>
-
-</tr>
-
-<tr>
-
-<th>글내용</th>
-
-<td colspan="3"><textarea name="content" rows="10"
-
-style="width: 90%">${dto.content}</textarea></td>
-
-</tr>
-
-</table>
-
-
-
-<div style="text-align: center; margin-top: 20px;">
-
-<button type="submit">수정완료</button>
-
-<button type="button" id="btnDelete">삭제완료</button>
-
-<button type="button" id="btnList">목록으로</button>
-
-<button type="button" onclick="history.back()">취소</button>
-
-</div>
-
-</form>
-
-</div>
-
-</div>
-
-</div>
-
-<br><br><br><br>
-
-<br><br><br><br>
-
-<br><br><br><br>
-
-<%@ include file="/WEB-INF/views/common/footer.jsp" %>
-
-    <script src="${path}/resources/common/bootstrap-4.6.2-dist/js/bootstrap.bundle.min.js"></script>
-
-    <script src="${path}/resources/common/js/plugins/plugins.js"></script>
-
-    <script src="${path}/resources/common/js/active.js"></script>
-
-    <script src="${path}/resources/common/js/main.js"></script>
-
-
+	<%@ include file="/WEB-INF/views/common/header.jsp"%>
+
+	<div class="wrap">
+		<div class="table_div">
+			<h2>상세보기 및 수정</h2>
+
+			<form id="updateForm" action="${path}/board/board_update"
+				method="post" enctype="multipart/form-data">
+				<input type="hidden" name="bno" value="${dto.bno}"> <input
+					type="hidden" name="user_id" value="${dto.userId}"> <input
+					type="hidden" name="board_image" value="${dto.board_image}">
+
+				<table class="update-table">
+					<tr>
+						<th>글번호</th>
+						<td style="color: #ffcc00 !important; font-weight: bold;">#
+							${dto.bno}</td>
+						<th>조회수</th>
+						<td>${dto.viewcnt}</td>
+					</tr>
+					<tr>
+						<th>작성자</th>
+						<td>${dto.nickname}</td>
+						<th>등록일</th>
+						<td><fmt:formatDate value="${dto.regdate}"
+								pattern="yyyy-MM-dd HH:mm" /></td>
+					</tr>
+					<tr>
+						<th>글제목</th>
+						<td colspan="3"><input type="text" name="title"
+							value="${dto.title}" required></td>
+					</tr>
+					<tr>
+						<th>유튜브 링크</th>
+						<td colspan="3"><input type="text" name="youtubeUrl"
+							value="${dto.youtubeUrl}" placeholder="유튜브 주소를 입력하세요"></td>
+					</tr>
+
+					<tr>
+						<th>첨부 이미지</th>
+						<td colspan="3">
+							<div class="image-edit-section">
+								<c:if test="${not empty dto.board_image}">
+									<p
+										style="margin-bottom: 10px; font-size: 14px; color: #ffcc00;">[
+										현재 등록된 이미지 ]</p>
+									<img
+										src="${path}/resources/images/board-image/${dto.board_image}"
+										class="preview-img" alt="첨부 이미지">
+								</c:if>
+								<c:if test="${empty dto.board_image}">
+									<p style="margin-bottom: 10px; font-size: 14px; color: #666;">등록된
+										이미지가 없습니다.</p>
+								</c:if>
+
+								<div class="file-custom-input">
+									<input type="file" name="file" id="file" accept="image/*">
+									<p style="margin-top: 8px; color: #888;">* 새로운 이미지를 선택하면 기존
+										사진이 교체됩니다.</p>
+								</div>
+							</div>
+						</td>
+					</tr>
+
+					<tr>
+						<th>글내용</th>
+						<td colspan="3"><textarea name="content" rows="12" required>${dto.content}</textarea>
+						</td>
+					</tr>
+				</table>
+
+				<div class="btn-container">
+					<c:if
+						test="${(sessionScope.loginUser.userId eq dto.userId) or (sessionScope.loginUser.role eq 'ADMIN')}">
+						<button type="submit" class="pill-button btn-save">수정완료</button>
+						<button type="button" id="btnDelete"
+							class="pill-button btn-delete">삭제하기</button>
+					</c:if>
+
+					<button type="button" id="btnList" class="pill-button btn-dark">목록으로</button>
+					<button type="button" class="pill-button btn-dark"
+						onclick="history.back()">이전으로</button>
+				</div>
+			</form>
+		</div>
+	</div>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+	<%@ include file="/WEB-INF/views/common/footer.jsp"%>
 </body>
-
 </html>

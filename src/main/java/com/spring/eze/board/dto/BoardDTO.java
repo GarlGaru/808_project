@@ -16,7 +16,8 @@ public class BoardDTO {
     private int likeCount;
     
     private String nickname;
-    
+    private String youtubeUrl;
+    private String board_image;
     
 	public int getBno() {
 		return bno;
@@ -67,12 +68,32 @@ public class BoardDTO {
     public void setLikeCount(int likeCount) {
         this.likeCount = likeCount;
     }
+    
+    
+    
+	public String getYoutubeUrl() {
+		return youtubeUrl;
+	}
+	public void setYoutubeUrl(String youtubeUrl) {
+		this.youtubeUrl = youtubeUrl;
+	}
+	
+	
+	
+	
+	public String getBoard_image() {
+		return board_image;
+	}
+	public void setBoard_image(String board_image) {
+		this.board_image = board_image;
+	}
 	@Override
 	public String toString() {
 		return "BoardDTO [bno=" + bno + ", userId=" + userId + ", title=" + title + ", content=" + content
 				+ ", regdate=" + regdate + ", viewcnt=" + viewcnt + ", likeCount=" + likeCount + ", nickname="
-				+ nickname + "]";
+				+ nickname + ", youtubeUrl=" + youtubeUrl + ", board_image=" + board_image + "]";
 	}
+	
 	
 
     

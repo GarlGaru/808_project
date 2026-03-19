@@ -1,44 +1,81 @@
 package com.spring.eze.board.pageing;
 
-
 public class Pageing {
-	
-	private int pageSize = 10;	// 1page당 게시글의 갯수를 지정
-	private int count = 0;		// 전체글의 갯수를 저장하는 변수
-	private int number = 0;		// 페이지번호
-	private String pageNum;     
-	
-	private int startRow;		// 페이지별 시작번호
-	private int endRow;			// 페이지별 끝번호
-	
-	private int currentPage;	// 현재페이지
-	private int pageCount;
-	private int startPage;
-	private int pageRed;
-	private int endPage;
-	
-	private int prev;			// 이전
-	private int next;			// 다음
-	
-	// 생성자
-	public Pageing() {}
-	
-	public Pageing(String pageNum) {
-		 
-		if(pageNum == null) {
-			pageNum = "1";
-		}
-		
-		this.pageNum = pageNum;
-		
-		currentPage = Integer.parseInt(pageNum);  // 현재페이지
-		
-		System.out.println("=====================");
-		System.out.println("pageNum => " + pageNum);
-		System.out.println("currentPage => " + currentPage);
-	}
+    
+    private int pageSize = 10;    
+    private int count = 0;        
+    private int number = 0;       
+    private String pageNum;       
+    
+    private int startRow;         
+    private int endRow;           
+    
+    private int currentPage;      
+    private int pageCount;        // 전체 페이지 수
+    private int totalPage;        // JSP에서 사용하는 전체 페이지 수
+    private int startPage;
+    private int pageRed = 10;     // 한 블록당 보여줄 페이지 개수
+    private int endPage;
+    
+    private int prev;             
+    private int next;    
+    private int totalCount;       
 
-	// getter setter ---------------
+    public Pageing() {}
+    
+    public Pageing(String pageNum) {
+        if(pageNum == null || pageNum.isEmpty()) {
+            pageNum = "1";
+        }
+        this.pageNum = pageNum;
+        this.currentPage = Integer.parseInt(pageNum);	
+    }
+
+    public void setTotalCount(int totalCount) {  
+        this.totalCount = totalCount; 
+        this.count = totalCount;      
+        
+        // 데이터 시작과 끝 행 계산
+        this.startRow = (currentPage - 1) * pageSize + 1;
+        this.endRow = currentPage * pageSize;
+        this.number = totalCount - (currentPage - 1) * pageSize;
+        
+        // 개수가 세팅될 때마다 페이징 계산기 실행
+        pageCalculator();
+    }
+
+    public void pageCalculator() {
+        if(count > 0) {
+            // 1. 전체 페이지 수 계산
+            this.pageCount = count / pageSize + (count % pageSize == 0 ? 0 : 1);
+            this.totalPage = this.pageCount; 
+            
+            // 2. 시작 페이지 계산 (1, 11, 21...)
+            this.startPage = ((currentPage - 1) / pageRed) * pageRed + 1;
+            
+            // 3. 끝 페이지 계산 (일단 블록 끝으로 설정)
+            this.endPage = startPage + pageRed - 1;
+            
+            // 4. [핵심] 실제 페이지 수보다 끝 페이지가 크면 실제 페이지 수로 맞춤
+            if(this.endPage > this.pageCount) {
+                this.endPage = this.pageCount;
+            }
+            
+            // 5. 이전/다음 버튼 값 세팅 (0이면 버튼 안나옴)
+            this.prev = (startPage > 1) ? startPage - 1 : 0;
+            this.next = (endPage < pageCount) ? endPage + 1 : 0;
+            
+        } else {
+            // 검색 결과가 0개일 때 모든 값을 1 또는 0으로 초기화
+            this.pageCount = 1;
+            this.totalPage = 1;
+            this.startPage = 1;
+            this.endPage = 1;
+            this.prev = 0;
+            this.next = 0;
+        }
+    }
+
 	public int getPageSize() {
 		return pageSize;
 	}
@@ -103,6 +140,14 @@ public class Pageing {
 		this.pageCount = pageCount;
 	}
 
+	public int getTotalPage() {
+		return totalPage;
+	}
+
+	public void setTotalPage(int totalPage) {
+		this.totalPage = totalPage;
+	}
+
 	public int getStartPage() {
 		return startPage;
 	}
@@ -142,52 +187,11 @@ public class Pageing {
 	public void setNext(int next) {
 		this.next = next;
 	}
-	
-	public void setTotalCount(int count) {  
-		this.count = count;  // 전체 게시글 건수
-		
-		startRow = (currentPage - 1) * pageSize + 1;   // 페이지별 시작번호 => start에 해당 (1)
-		endRow =  currentPage * pageSize;    // 페이지별 끝번호 => end에 해당(10)
-		
-		System.out.println("startRow => " + startRow);
-		System.out.println("endRow => " + endRow);
-		
-		this.number = count - (currentPage - 1) * pageSize;  // 페이지번호(1)
-		
-		// 페이지 계산
-		pageCalculator();
+
+	public int getTotalCount() {
+		return totalCount;
 	}
 
-	// 페이지 계산
-	public void pageCalculator() {
-		if(count > 0) {
-			pageCount = count / pageSize + (count % pageSize == 0 ? 0 : 1);
-			System.out.println("pageCount : " + pageCount);
-			
-			startPage = 1;
-			
-			if(currentPage % 10 != 0) {
-				startPage = (int)(currentPage / 10) * 10 + 1;
-			}
-			else {
-				startPage = ((int)(currentPage / 10) - 1) * 10 + 1;
-			}
-			
-			pageRed = 10;
-			endPage = startPage + pageRed - 1;
-			
-			if(endPage > pageCount) endPage = pageCount;
-			
-			// 이전
-			if(startPage > pageSize) {
-				prev = startPage - 10;
-			}
-			
-			// 다음
-			if(startPage < pageCount) {
-				next = startPage + 10;
-			}		
-		}
-	}
+    // --- Getter & Setter ---
+
 }
-
