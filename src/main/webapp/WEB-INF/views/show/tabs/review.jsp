@@ -52,8 +52,9 @@
   
     const path = "<%=path%>";
     // 공연 상세 페이지에서는 아래 showId를 실제 값으로 교체하세요.
-    // 예: const showId = "${show.showId}";
-    const showId = "PF281626";
+    
+    const showId = $('#showId').val();
+    //const showId = "${show.showId}";
     const loginUserId = "${sessionScope.loginUser.userId}";
 
     let reviewPage = 1;

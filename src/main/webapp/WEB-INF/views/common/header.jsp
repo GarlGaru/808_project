@@ -8,8 +8,8 @@
 		<div class="classy-nav-container breakpoint-off">
 			<div class="container">
 				<nav class="classy-navbar justify-content-between" id="oneMusicNav">
-					<a href="#" class="nav-brand"> <img
-						src="${path}/resources/common/img/core-img/logo.png"
+					<a href="${path}/main" class="nav-brand"> <img
+						src="${path}/resources/common/img/core-img/808_logo(white).png"
 						alt="808 logo">
 					</a>
 					<div class="classy-navbar-toggler">
@@ -38,7 +38,10 @@
 									<li><a href="${path}/admin">ADMIN</a></li>
 								</c:if>
 								<c:if test="${sessionScope.loginUser.nickname != 'admin'}">
+
 									<li><a href="${path}/board/list">Board</a></li>
+									<li><a href="${path}/main/board">Community</a></li>
+
 								</c:if>
 							</ul>
 							<div class="login-register-cart-button d-flex align-items-center">
@@ -55,11 +58,11 @@
 									<%-- 로그인 안 된 상태 --%>
 									<c:otherwise>
 										<div class="login-register-btn mr-15">
-											<a href="javascript:void(0)" onclick="openAuthModal()">Login</a>
+											<a href="javascript:void(0)" onclick="openAuthModal()">Join</a>
 										</div>
-										<div class="login-register-btn">
+							<!-- 			<div class="login-register-btn">
 											<a href="javascript:void(0)" onclick="openAuthModal('register')">Register</a>
-										</div>
+										</div> -->
 									</c:otherwise>
 								</c:choose>
 							</div>
