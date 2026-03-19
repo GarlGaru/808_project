@@ -2,6 +2,10 @@ package com.spring.eze.music.controller;
 
 import com.spring.eze.music.service.MusicService;
 import com.spring.eze.user.dto.UserDTO;
+
+
+
+import com.spring.eze.music.dto.ArtistDTO;
 import com.spring.eze.music.dto.SongDTO;
 
 import java.util.HashMap;
@@ -28,6 +32,8 @@ public class MusicController {
 
     private static final Logger log = LoggerFactory.getLogger(MusicController.class);
 
+
+	
     @Autowired
     private MusicService musicService;
 
@@ -94,6 +100,35 @@ public class MusicController {
 
         log.info("<<< url => /ranking >>>");
         return "/music/ranking";
+    }
+    //아티스트 페이지
+    @GetMapping("/artist")
+    public String artistDetail(@RequestParam("artistId") int artistId, Model model) {
+        model.addAttribute("artistId", artistId);
+
+        ArtistDTO artist = musicService.getArtistDetail(artistId);
+        List<SongDTO> artistSongs = musicService.getSongsByArtist(artistId);
+        model.addAttribute("artist", artist);
+        model.addAttribute("artistSongs", artistSongs);
+        
+        
+        log.info("artistId = {}", artistId);
+        log.info("artist = {}", artist);
+
+        if (artist != null) {
+            log.info("artist.name = {}", artist.getName());
+            log.info("artist.profileImageUrl = {}", artist.getProfileImageUrl());
+        }
+
+        if (artistSongs != null && !artistSongs.isEmpty()) {
+            log.info("first song title = {}", artistSongs.get(0).getTitle());
+            log.info("first song coverImageUrl = {}", artistSongs.get(0).getCoverImageUrl());
+        } else {
+            log.info("artistSongs is empty");
+        }
+        
+        System.out.println("artistDetail 진입, artistId = " + artistId);
+        return "music/artist";
     }
 
     // 재생 시작 점수

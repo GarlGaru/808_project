@@ -64,7 +64,11 @@
 	                            <div class="music-home-body"
 	                                 onclick="loadMainContent('${path}/music/detail?songId=${song.songId}')">
 	                                <div class="music-home-song">${song.title}</div>
-	                                <div class="music-home-artist">${song.artistName}</div>
+	                              <button type="button"
+									        class="music-artist-link"
+									        onclick="event.stopPropagation(); loadMainContent('${path}/music/artist?artistId=${song.artistId}');">
+									    ${song.artistName}
+									</button>
 	                                <div class="music-home-score">주간 인기곡</div>
 	                            </div>
 	
@@ -138,7 +142,11 @@
 
                                 <div class="music-home-body">
                                     <div class="music-home-song">${song.title}</div>
-                                    <div class="music-home-artist">${song.artistName}</div>
+				                         <button type="button"
+										        class="music-artist-link"
+										        onclick="event.stopPropagation(); loadMainContent('${path}/music/artist?artistId=${song.artistId}');">
+										    ${song.artistName}
+										</button>
                                     <div class="music-home-score">오늘의 히트곡</div>
                                 </div>
                             </div>
@@ -212,7 +220,11 @@
 	                            <div class="music-home-body"
 	                                 onclick="loadMainContent('${path}/music/detail?songId=${song.songId}')">
 	                                <div class="music-home-song">${song.title}</div>
-	                                <div class="music-home-artist">${song.artistName}</div>
+	                                <button type="button"
+									        class="music-artist-link"
+									        onclick="event.stopPropagation(); loadMainContent('${path}/music/artist?artistId=${song.artistId}');">
+									    ${song.artistName}
+									</button>
 	                                <div class="music-home-score">장르 인기곡</div>
 	                            </div>
 	
@@ -229,56 +241,3 @@
 	<!--=======================================================================================  -->
 </div>
 
-<script>
-    const sliderState = {};
-
-    function getVisibleCount() {
-        const width = window.innerWidth;
-        if (width <= 768) return 2;
-        if (width <= 1200) return 4;
-        if (width <= 1600) return 6;
-        return 8;
-    }
-
-    function moveSlider(sliderId, direction) {
-        const viewport = document.getElementById(sliderId);
-        if (!viewport) return;
-
-        const track = viewport.querySelector('.music-home-track');
-        const cards = track.querySelectorAll('.music-home-card');
-        if (!cards.length) return;
-
-        const visibleCount = getVisibleCount();
-        const maxIndex = Math.max(0, cards.length - visibleCount);
-
-        if (sliderState[sliderId] == null) {
-            sliderState[sliderId] = 0;
-        }
-
-        sliderState[sliderId] += direction * visibleCount;
-
-        if (sliderState[sliderId] < 0) sliderState[sliderId] = 0;
-        if (sliderState[sliderId] > maxIndex) sliderState[sliderId] = maxIndex;
-
-        const cardWidth = cards[0].offsetWidth;
-        const gap = 18;
-        const moveX = (cardWidth + gap) * sliderState[sliderId];
-
-        track.style.transform = 'translateX(-' + moveX + 'px)';
-    }
-
-    window.addEventListener('resize', function() {
-        Object.keys(sliderState).forEach(function(sliderId) {
-            sliderState[sliderId] = 0;
-
-            const viewport = document.getElementById(sliderId);
-            if (!viewport) return;
-
-            const track = viewport.querySelector('.music-home-track');
-            if (track) {
-                track.style.transform = 'translateX(0)';
-            }
-        });
-    });
-
-    </script>

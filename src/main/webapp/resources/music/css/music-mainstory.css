@@ -178,6 +178,20 @@
     color: #b3b3b3;
 }
 
+.music-artist-link {
+    color: #b3b3b3;
+    text-decoration: none;
+    font-size: inherit;
+    font-weight: 500;
+    transition: color 0.15s ease;
+    cursor: pointer;
+}
+
+.music-artist-link:hover {
+    color: #fff;
+    text-decoration: underline;
+}
+
 @media (max-width: 1600px) {
     .music-home-card {
         flex: 0 0 calc((100% - 90px) / 6);

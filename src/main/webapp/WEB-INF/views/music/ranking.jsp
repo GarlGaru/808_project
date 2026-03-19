@@ -1,21 +1,11 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ include file="/WEB-INF/views/common/setting.jsp" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<!DOCTYPE html>
-<html lang="ko">
-<head>
-    <meta charset="UTF-8">
-    <meta name="description" content="Music Ranking Page">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>랭킹</title>
-
 
 
     <!-- 음악 전용 CSS -->
 
-    <link rel="stylesheet" href="${path}/resources/music/css/music-ranking.css">
-</head>
+
 <body class="dark-mode">
 
 
@@ -85,7 +75,10 @@
 
                                                 <div class="music-ranking-card-body">
                                                     <div class="music-ranking-card-title">${song.title}</div>
-                                                    <div class="music-ranking-card-sub">${song.artistName}</div>
+                                                     <a href="${path}/music/artist?artistId=${song.artistId}"
+														class="music-artist-link" 
+				                                        onclick="event.stopPropagation();">
+														${song.artistName} </a>
                                                    
                                                 </div>
                                             </div>
@@ -157,7 +150,10 @@
 
                                                 <div class="music-ranking-card-body">
                                                     <div class="music-ranking-card-title">${song.title}</div>
-                                                    <div class="music-ranking-card-sub">${song.artistName}</div>
+                                                     <a href="${path}/music/artist?artistId=${song.artistId}"
+														class="music-artist-link" 
+				                                        onclick="event.stopPropagation();">
+														${song.artistName} </a>
                                                
                                                 </div>
                                             </div>
@@ -229,7 +225,10 @@
 
                                                 <div class="music-ranking-card-body">
                                                     <div class="music-ranking-card-title">${song.title}</div>
-                                                    <div class="music-ranking-card-sub">${song.artistName}</div>
+                                                     <a href="${path}/music/artist?artistId=${song.artistId}"
+														class="music-artist-link" 
+				                                        onclick="event.stopPropagation();">
+														${song.artistName} </a>
                                                    
                                                 </div>
                                             </div>
@@ -251,58 +250,4 @@
   
     </div>
 
-    <script src="${path}/resources/common/js/jquery/jquery-2.2.4.min.js"></script>
-    <script src="${path}/resources/common/bootstrap-4.6.2-dist/js/bootstrap.bundle.min.js"></script>
-    <script src="${path}/resources/common/js/main.js"></script>
-
-    <script>
-        const rankingSliderState = {};
-
-        function getRankingVisibleCount() {
-            const width = window.innerWidth;
-            if (width <= 768) return 2;
-            if (width <= 1200) return 4;
-            if (width <= 1600) return 6;
-            return 8;
-        }
-
-        function moveRankingSlider(sliderId, direction) {
-            const viewport = document.getElementById(sliderId);
-            if (!viewport) return;
-
-            const track = viewport.querySelector('.music-ranking-track');
-            const cards = track.querySelectorAll('.music-ranking-card');
-            if (!cards.length) return;
-
-            const visibleCount = getRankingVisibleCount();
-            const maxIndex = Math.max(0, cards.length - visibleCount);
-
-            if (!rankingSliderState[sliderId]) {
-                rankingSliderState[sliderId] = 0;
-            }
-
-            rankingSliderState[sliderId] += direction * visibleCount;
-
-            if (rankingSliderState[sliderId] < 0) rankingSliderState[sliderId] = 0;
-            if (rankingSliderState[sliderId] > maxIndex) rankingSliderState[sliderId] = maxIndex;
-
-            const cardWidth = cards[0].offsetWidth;
-            const gap = 18;
-            const moveX = (cardWidth + gap) * rankingSliderState[sliderId];
-
-            track.style.transform = 'translateX(-' + moveX + 'px)';
-        }
-
-        window.addEventListener('resize', function() {
-            Object.keys(rankingSliderState).forEach(function(sliderId) {
-                rankingSliderState[sliderId] = 0;
-                const viewport = document.getElementById(sliderId);
-                if (!viewport) return;
-                const track = viewport.querySelector('.music-ranking-track');
-                track.style.transform = 'translateX(0)';
-            });
-        });
-        </script>
-       
-</body>
-</html>
+   

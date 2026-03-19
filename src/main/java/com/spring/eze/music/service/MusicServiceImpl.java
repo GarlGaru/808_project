@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.spring.eze.common.GlobalVariableHolder;
 import com.spring.eze.music.dao.MusicDAO;
+import com.spring.eze.music.dto.ArtistDTO;
 import com.spring.eze.music.dto.SongDTO;
 
 @Service
@@ -59,7 +60,17 @@ public class MusicServiceImpl implements MusicService {
 	public String getSongPath(int songId) {
 		return musicDAO.getSongPath(songId);
 	}
+	//아티스트 상세페이지
+	public ArtistDTO getArtistDetail(int artistId) {
+		
+		return musicDAO.getArtistDetail(artistId);
+	}
 
+	@Override
+	public List<SongDTO> getSongsByArtist(int artistId) {
+		
+		return musicDAO.getSongsByArtist(artistId);
+	}
 
   
 }

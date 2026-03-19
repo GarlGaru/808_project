@@ -3,6 +3,7 @@ package com.spring.eze.music.service;
 import java.util.List;
 import java.util.Map;
 
+import com.spring.eze.music.dto.ArtistDTO;
 import com.spring.eze.music.dto.SongDTO;
 
 public interface MusicService {
@@ -39,5 +40,10 @@ public interface MusicService {
     
     //노래연결
     public String getSongPath(int songId);
+    
+    //아티스트 상세페이지
+    public ArtistDTO getArtistDetail(int artistId);
+    
+    public List<SongDTO> getSongsByArtist(int artistId);
    
 }

@@ -8,6 +8,7 @@ import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import com.spring.eze.music.dto.ArtistDTO;
 import com.spring.eze.music.dto.SongDTO;
 
 @Repository
@@ -99,6 +100,17 @@ public class MusicDAOImpl implements MusicDAO {
 	public String getSongPath(int songId) {
 		
 		 return sqlSession.selectOne(NS + "getSongPath", songId);
+	}
+	
+	@Override
+	public ArtistDTO getArtistDetail(int artistId) {
+	
+	    return sqlSession.selectOne(NS + "getArtistDetail", artistId);
+	}
+
+	@Override
+	public List<SongDTO> getSongsByArtist(int artistId) {
+	    return sqlSession.selectList(NS + "getSongsByArtist", artistId);
 	}
     
 }

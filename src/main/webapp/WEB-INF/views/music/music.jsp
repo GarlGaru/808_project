@@ -22,6 +22,10 @@
     <link rel="stylesheet" href="${path}/resources/music/css/music-mainstory.css">
     <!-- 하단 플레이어 전용 -->
     <link rel="stylesheet" href="${path}/resources/music/css/music-player.css">
+    <!-- 상세페이지 전용 -->
+    <link rel="stylesheet" href="${path}/resources/music/css/music-detail.css">
+    <!-- 랭킹 전용 -->
+    <link rel="stylesheet" href="${path}/resources/music/css/music-ranking.css">
 </head>
 <body class="dark-mode">
 

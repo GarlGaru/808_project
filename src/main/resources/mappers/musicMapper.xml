@@ -7,6 +7,7 @@
 
     <resultMap id="rankingResultMap" type="com.spring.eze.music.dto.SongDTO">
         <id property="songId" column="song_id"/>
+        <result property="artistId" column="artist_id"/>
         <result property="artistName" column="name"/>
         <result property="title" column="title"/>
         <result property="coverImageUrl" column="cover_image_url"/>
@@ -17,6 +18,7 @@
     <select id="getWeeklyRanking" resultMap="rankingResultMap">
         SELECT
             s.song_id,
+            s.artist_id,
             a.name,
             s.title,
             al.cover_image_url,
@@ -44,6 +46,7 @@
     <select id="getTodayHitSongs" resultMap="rankingResultMap">
         SELECT
             s.song_id,
+            s.artist_id,
             a.name,
             s.title,
             al.cover_image_url,
@@ -71,6 +74,7 @@
     <select id="getGenreRanking" parameterType="int" resultMap="rankingResultMap">
         SELECT
             s.song_id,
+             s.artist_id,
             a.name,
             s.title,
             al.cover_image_url,
@@ -118,6 +122,7 @@
 		<resultMap id="songDetailResultMap" type="com.spring.eze.music.dto.SongDTO">
 		    <id property="songId" column="song_id"/>
 		    <result property="title" column="title"/>
+		    <result property="artistId" column="artist_id"/>
 		    <result property="artistName" column="artist_name"/>
 		    <result property="albumTitle" column="album_title"/>
 		    <result property="genreName" column="genre_name"/>
@@ -129,6 +134,7 @@
 		<select id="getSongDetail" parameterType="int" resultMap="songDetailResultMap">
 		    SELECT
 		        s.song_id,
+		        s.artist_id,
 		        s.title,
 		        a.name AS artist_name,
 		        al.title AS album_title,
@@ -151,6 +157,7 @@
 		<select id="getSimilarSongs" parameterType="map" resultMap="songDetailResultMap">
 		    SELECT
 		        s.song_id,
+		        s.artist_id,
 		        s.title,
 		        a.name AS artist_name,
 		        al.title AS album_title,
@@ -176,5 +183,56 @@
 	    SELECT song_path
 	    FROM songs_tbl
 	    WHERE song_id = #{songId}
+		</select>
+		
+		<!--아티스트 상세페이지 -->
+
+		<select id="getArtistDetail" parameterType="int" resultType="com.spring.eze.music.dto.ArtistDTO">
+		    SELECT
+		        artist_id AS artistId,
+		        name AS name,
+		        profile_image_url AS profileImageUrl
+		    FROM artists_tbl
+		    WHERE artist_id = #{artistId}
+		</select>
+		
+				
+<!-- 		<resultMap id="artistSongResultMap" type="com.spring.eze.music.dto.SongDTO">
+		    <id property="songId" column="song_id"/>
+		    <result property="albumId" column="album_id"/>
+		    <result property="artistId" column="artist_id"/>
+		    <result property="genreId" column="genre_id"/>
+		    <result property="title" column="title"/>
+		    <result property="artistName" column="artist_name"/>
+		    <result property="albumTitle" column="album_title"/>
+		    <result property="genreName" column="genre_name"/>
+		    <result property="coverImageUrl" column="cover_image_url"/>
+		    <result property="songPath" column="song_path"/>
+		</resultMap> -->
+		
+		<select id="getSongsByArtist" parameterType="int" resultType="com.spring.eze.music.dto.SongDTO">
+			SELECT
+			    s.song_id,
+			    s.album_id,
+			    s.artist_id,
+			    sg.genre_id,
+			    s.title,
+			    a.name AS artist_name,
+			    al.title AS album_title,
+			    gt.name AS genre_name,
+			    al.cover_image_url,
+			    s.song_path
+			FROM songs_tbl s
+			JOIN artists_tbl a
+			    ON s.artist_id = a.artist_id
+			LEFT JOIN albums_tbl al
+			    ON s.album_id = al.album_id
+			LEFT JOIN song_genre_tbl sg
+			    ON s.song_id = sg.song_id
+			LEFT JOIN genres_tbl gt
+			    ON sg.genre_id = gt.genre_id
+			WHERE s.artist_id = #{artistId}
+			ORDER BY s.song_id DESC
+
 		</select>
 </mapper>
