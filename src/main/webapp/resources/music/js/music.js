@@ -14,6 +14,11 @@ async function loadMainContent(url) {
         const html = await response.text();
         result.innerHTML = html;
 
+        const initFn = result.querySelector('[data-init]')?.dataset.init;
+        if (initFn && typeof window[initFn] === 'function') {
+            window[initFn]();
+        }
+
     } catch (error) {
         result.innerHTML = "요청 실패";
         console.error(error);
