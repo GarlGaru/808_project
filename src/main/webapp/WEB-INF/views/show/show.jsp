@@ -23,7 +23,7 @@
 			<img src="${path}/resources/presentation/show.png">
 		</a>
     </div> --%>
- 
+ 	<br><br>
 
     <div class="show-wrap">
 	      <div class="show-top-menu-wrap">
@@ -40,12 +40,14 @@
 		        <a href="${path}/show/ranking"
 		           class="menu-item ${menu eq 'ranking' ? 'active' : ''}">랭킹</a>
 		
-		        <a href="javascript:void(0)" onclick="openAuthModal()"
+		        <a href="${path}/show/mypage/myTicket"
 		           class="menu-item ${menu eq 'myticket' ? 'active' : ''}">마이티켓
 		        </a>
+		        
+		       <!--  <a href="javascript:void(0)" onclick="openAuthModal()" -->
 		    </nav>
 		</div>
-			
+			<br>
 	       <div class="main-show-section-full">
 	    <div class="section">
 	        <h2 class="section-title" id="main-section-title">공연</h2>

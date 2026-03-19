@@ -111,7 +111,8 @@ public class ShowController {
 		System.out.println("session userId = " + session.getAttribute("userId"));
 		
 		if(userId == null) {
-			return "redirect:/authModal";
+			userId = 1L;
+//			return "redirect:/authModal";
 		}
 		
 		showservice.getMyTicketList(userId, model);

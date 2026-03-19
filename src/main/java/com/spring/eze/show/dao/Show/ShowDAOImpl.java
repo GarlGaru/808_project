@@ -79,11 +79,10 @@ public class ShowDAOImpl implements ShowDAO{
 		return sqlSession.selectList("com.spring.eze.show.dao.Show.ShowDAO.getShowRanking", genre);
 	}
 
-
 	@Override
 	public String selectVenueName(String showId) {
-        return sqlSession.selectOne("com.spring.eze.show.dao.Show.ShowDAO.selectVenueName", showId);
-    }
+		return sqlSession.selectOne("com.spring.eze.show.dao.Show.ShowDAO.selectVenueName", showId);
+	}
 
 	//마이티켓 확인
 	@Override
@@ -97,7 +96,6 @@ public class ShowDAOImpl implements ShowDAO{
 	public int getMyTicketCount(long userId) {
 		System.out.println("ShowDAOImpl - getMyTicketCount()");
 		return sqlSession.selectOne("com.spring.eze.show.dao.Show.ShowDAO.getMyTicketCount", userId);
-
 	}
 
 	@Override

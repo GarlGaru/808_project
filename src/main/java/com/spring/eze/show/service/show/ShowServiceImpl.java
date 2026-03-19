@@ -149,21 +149,21 @@ public class ShowServiceImpl implements ShowService{
 	//seat용 추가
 	@Override
 	public String getVenueName(String showId) {
-        return dao.selectVenueName(showId);
-    }
+		return dao.selectVenueName(showId);
+	}
 
 	// 마이티켓
 	@Override
-	public void getMyTicketList(long userId, Model model)
+	public void getMyTicketList(Long userId, Model model) 
 			throws ServletException, IOException {
 		System.out.println("ShowServiceImpl - getMyTicketList()");
-
+		
 		List<MyticketDTO> list = dao.getMyPageTicket(userId);
 		int ticketCount = dao.getMyTicketCount(userId);
-
+		
 		model.addAttribute("list", list);
 		model.addAttribute("ticketCount", ticketCount);
-
+		
 		if(list != null && !list.isEmpty()) {
 			model.addAttribute("email", list.get(0).getEmail());
 		}

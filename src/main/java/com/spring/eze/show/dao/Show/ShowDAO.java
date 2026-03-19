@@ -36,9 +36,12 @@ public interface ShowDAO {
 	
 	// 마이티켓 카운트(예매내역 확인)
 	public int getMyTicketCount(long userId);
+<<<<<<< Updated upstream
 
 	
 	//seat 팝업에 공연회차 가져오랴거 만듦
 	public Map<String, Object> selectScheduleInfo(String scheduleId);
 	
+=======
+>>>>>>> Stashed changes
 }
