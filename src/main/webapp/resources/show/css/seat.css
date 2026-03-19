@@ -3,7 +3,7 @@
 
 .step-header{
 	max-width: 1200px;
-	margin: 20 auto 15px auto;
+	margin: 20px 20px 15px 20px;
 	background: #1e1e1e;
 	border: 1px solid #ED6701;
 	border-radius: 10px;
@@ -44,12 +44,12 @@
 
 .seat span {
     display: block;
-    width: 38px;   
-    height: 38px;  
+    width: 15px;   
+    height: 15px;  
     text-align: center;
-    line-height: 38px; 
-    border-radius: 6px;
-    font-size: 11px;
+    line-height: 15px; 
+    border-radius: 2px;
+    font-size: 0px;
     cursor: pointer;
     border: 1px solid #aaa;
     background-color: #ffffff;
@@ -57,9 +57,9 @@
 }
 
 /* 등급별 색상 */
-.VIP span { background-color: gold; }
-.R span { background-color: #F54927; }
-.S span { background-color: #E427F5; }
+.VIP span { background-color: #F7C1F5; }
+.R span { background-color: #C3F7C1; }
+.S span { background-color: #AED6E6; }
 
 /* 선택 좌석 */
 .seat input:checked + span {
@@ -83,7 +83,8 @@
     gap: 20px;
     margin-top: 40px;
     padding: 0 20px;
-    width: 100%;
+    width: fit-content;
+    min-width: 100%; 
     box-sizing: border-box;
 }
 
@@ -107,6 +108,18 @@
     box-shadow: 0 4px 10px rgba(0,0,0,0.2);
 }
 
+.price-box h5 {
+    color: #000 !important;
+}
+
+.price-box p {
+    color: #000 !important;
+}
+
+.price-box hr {
+    border-color: #ddd;
+}
+
 .selected-info-text{
 	color: #000;
 }
@@ -120,9 +133,9 @@
     margin-right: 8px;
 }
 
-.grade.vip { background: gold; }
-.grade.r { background: #F54927; }
-.grade.s { background: #E427F5; }
+.grade.vip { background: #F7C1F5; }
+.grade.r { background: #C3F7C1; }
+.grade.s { background: #AED6E6; }
 
 /* 예약 버튼 (주황 그라데이션) */
 .reserve-btn {
@@ -146,7 +159,7 @@
 	background: #111;
 	border: 2px solid #ED6701;
 	border-radius: 12px;
-	padding: 40px;
+	padding: 19px;
 	box-shadow: 0 8px 20px rgba(0,0,0,0.4);
 	flex: 1;
     overflow-x: auto; 

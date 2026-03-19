@@ -30,4 +30,7 @@ public interface ShowDAO {
 	//seat용 추가
 	public String selectVenueName(String showId);
 	
+	//seat 팝업에 공연회차 가져오랴거 만듦
+	public Map<String, Object> selectScheduleInfo(String scheduleId);
+	
 }

@@ -31,4 +31,6 @@ public interface SeatDAO {
 	
 	public List<SeatDTO> selectSeatLayout(String venueName);
 	
+	public Map<String, Object> selectScheduleInfo(String scheduleId);
+	
 }
