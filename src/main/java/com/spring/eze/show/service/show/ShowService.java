@@ -30,4 +30,7 @@ public interface ShowService {
 	
 	//seat 좌석용 추가
 	public String getVenueName(String showId);
+	
+	//좌석 선택 및 예매확인시 공연 회차정보따라오게
+	public void getScheduleInfo(String scheduleId, Model model);
 }

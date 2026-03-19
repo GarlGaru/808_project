@@ -179,4 +179,11 @@ public class SeatServiceImpl implements SeatService {
 		 return list;
 	}
 
+	@Override
+	public void getScheduleInfo(String scheduleId, Model model) {
+		Map<String, Object> map = dao.selectScheduleInfo(scheduleId);
+	    model.addAttribute("scheduleInfo", map);
+		
+	}
+
 }

@@ -70,6 +70,11 @@ public class SeatDAOImpl implements SeatDAO {
 		return sqlSession.selectList("com.spring.eze.show.dao.Seat.SeatDAO.selectSeatLayout", venueName);
 	}
 
+	@Override
+	public Map<String, Object> selectScheduleInfo(String scheduleId) {
+		return sqlSession.selectOne("com.spring.eze.show.dao.Seat.SeatDAO.selectScheduleInfo", scheduleId);
+	}
+
 	
 }
 
