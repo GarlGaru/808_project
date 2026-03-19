@@ -32,7 +32,7 @@
   --modal-shadow-l: rgba(255, 255, 255, 0.04);
 
   /* 공통 모서리 반경 */
-  --modal-radius-card: 6px;  /* ← 더 둥글게 (기존 14px → 20px) */
+  --modal-radius-card: 12px;  /* ← 더 둥글게 (기존 14px → 20px) */
   --modal-radius-btn: 18px;
   --modal-radius-input: 2px;
   --modal-radius-small: 6px;

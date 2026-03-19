@@ -14,8 +14,8 @@
 #auth-overlay {
 
   /* ── 색상 ── */
-  --am-card:       #0d0f14;                    /* 카드(폼 영역) 배경 */
-  --am-sidebar:    #0f1319;                    /* 스위치 패널 배경 */
+  --am-card:       #060606;                    /* 카드(폼 영역) 배경 */
+  --am-sidebar:    #0e0e0e;                    /* 스위치 패널 배경 */
   --am-shadow-d:   var(--modal-shadow-d);      /* 카드 그림자 (어두운 쪽) */
   --am-shadow-l:   var(--modal-shadow-l);      /* 카드 그림자 (밝은 쪽) */
   --am-gray:       var(--modal-gray);          /* 보조 텍스트 색 */
@@ -48,8 +48,8 @@
   --am-input-radius:  var(--modal-radius-input); /* 입력 필드 모서리 둥글기 */
 
   /* ── 메인 버튼 (Sign In / Sign Up) ── */
-  --am-btn-w:     134px; /* 버튼 너비 */
-  --am-btn-h:      37px; /* 버튼 높이 */
+  --am-btn-w:     126px; /* 버튼 너비 */
+  --am-btn-h:      35px; /* 버튼 높이 */
   --am-btn-r:     var(--modal-radius-btn); /* 버튼 border-radius */
   --am-btn-mt:     10px; /* 버튼 위 기본 마진 */
   --am-btn-mb:     27px; /* 버튼 아래 마진 — 조정 가능 */
@@ -76,16 +76,16 @@
   --am-icon-fs:     11px; /* 소셜 아이콘 내부 글자 크기 */
 
   /* ── 여백 ── */
-  --am-divider-mt:  15px; /* 구분선 위 마진 */
+  --am-divider-mt:  0px; /* 구분선 위 마진 */
   --am-divider-mb:   7px; /* 구분선 아래 마진 */
   --am-link-mt:     12px; /* 링크 위 마진 */
-  --am-terms-mt:    17px; /* 약관 텍스트 위 마진 */
+  --am-terms-mt:    5px; /* 약관 텍스트 위 마진 */
 
   /* ── 기타 컴포넌트 ── */
-  --am-send-btn-h:   17px; /* 인증코드·중복확인 인라인 버튼 높이 */
-  --am-send-btn-fs:   9px; /* 인라인 버튼 폰트 크기 */
+  --am-send-btn-h:   15px; /* 인증코드·중복확인 인라인 버튼 높이 */
+  --am-send-btn-fs:   7px; /* 인라인 버튼 폰트 크기 */
   --am-timer-fs:      8px; /* 인증코드 타이머 폰트 크기 */
-  --am-eye-fs:       12px; /* 비밀번호 눈 아이콘 크기 */
+  --am-eye-fs:       10px; /* 비밀번호 눈 아이콘 크기 */
   --am-error-fs:      9px; /* 오류 메시지 폰트 크기 */
   --am-pw-check-fs:   8px; /* 비밀번호 조건 뱃지 폰트 크기 */
   --am-back-fs:       9px; /* "← 뒤로가기" 버튼 폰트 크기 */
@@ -128,7 +128,7 @@
   animation: mc-slideup 0.45s cubic-bezier(0.16,1,0.3,1);
 }
 
-.auth-main .auth-close-btn {
+/* .auth-main .auth-close-btn {
   position: absolute;
   top: 14px; right: 16px;
   width: 32px;
@@ -149,22 +149,23 @@
 .auth-main .auth-close-btn:hover {
   background: rgba(255,255,255,0.15);
   color: #fff;
-}
+} */
 
 /* ── 배경 그라디언트 ── */
 .auth-bg-layer {
   position: absolute; inset: 0; z-index: 0;
-  background-image:
-    /* radial-gradient(ellipse 60% 50% at 80% 20%, rgba(124,109,240,0.15) 0%, transparent 60%),
+  background-color: var(--am-card);
+  /* background-image:
+    radial-gradient(ellipse 60% 50% at 80% 20%, rgba(124,109,240,0.15) 0%, transparent 60%),
     radial-gradient(ellipse 50% 60% at 10% 80%, rgba(224,95,160,0.12)  0%, transparent 60%); */
 }
-
-/* ── 노이즈 텍스처 ── */
+/* 
+── 노이즈 텍스처 ──
 .auth-noise {
   position: absolute; inset: 0; z-index: 1; opacity: 0.045;
   background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
   background-size: 180px;
-}
+} */
 
 /* ── 반응형 ── */
 @media (max-width: 1000px) { .auth-main { transform: scale(0.85); } }
@@ -191,6 +192,10 @@
 
 .auth-view {
   display: flex; flex-direction: column; align-items: center; width: 100%;
+}
+
+.auth-view .auth-error-msg {
+	margin:0px;
 }
 
 /* ════════════════════════════════════
@@ -233,7 +238,7 @@
   text-align: center; line-height: 1.7; color: var(--am-gray);
 }
 .auth-desc--gap { margin-top: 8px; }
-.auth-desc--mb  { margin-bottom: 16px; }
+.auth-desc auth-desc--mb  { margin-bottom: 0px; }
 
 .auth-link {
   color: rgba(242,242,242,0.65); 
@@ -245,7 +250,7 @@
 .auth-link:hover { color: var(--am-white); }
 
 .auth-terms {
-  margin-top: var(--am-terms-mt); font-size: var(--am-terms-fs);
+  margin: var(--am-terms-mt); font-size: var(--am-terms-fs);
   color: rgba(255,255,255,0.12); text-align: center; line-height: 1.6;
 }
 .auth-terms a {
@@ -304,6 +309,8 @@
   line-height: var(--am-input-h);
 }
 
+.auth-link {margin: 10px}
+
 .auth-input-group .auth-input {
   width: 100%; margin: 0;
   padding-right: var(--am-input-pr-btn);
@@ -339,7 +346,7 @@
   position: absolute; right: 8px; top: 50%; transform: translateY(-50%);
   transition: 0.2s;
 }
-.auth-send-btn.sm { position: static; transform: none; font-size: 9px; padding: 2px 6px; }
+.auth-send-btn.sm { position: static; transform: none; font-size: 7px; padding: 2px 6px; }
 .auth-send-btn:hover { background: rgba(255,255,255,0.12); color: var(--am-white); }
 
 /* ── 비밀번호 체크리스트 ── */
@@ -352,8 +359,8 @@
 
 .pw-checklist {
   width: var(--am-input-w);
-  margin-top: 20px;  /* ← 비밀번호 입력칸과의 간격 늘리기 */
-  margin-bottom: 15px;
+  margin-top: 8px;  /* ← 비밀번호 입력칸과의 간격 늘리기 */
+  margin-bottom: 0px;
   display: none;
   gap: 4px;  /* ← gap을 더 줄이면 한 줄로 유지 (기존 6px) */
   flex-wrap: wrap;
@@ -367,7 +374,7 @@
   width: var(--am-btn-w); height: var(--am-btn-h);
   border-radius: var(--am-btn-r);
   /* margin: var(--am-btn-mt) 0 var(--am-btn-mb) 0; */
-  font-family: "Syne", sans-serif; font-weight: 700;
+  /* font-family: "Syne", sans-serif; */ font-weight: 700;
   font-size: var(--am-btn-fs); letter-spacing: 1.2px; text-transform: uppercase;
   background-color: #fff; color: #000; border: none; outline: none;
   cursor: pointer; transition: 0.2s;
@@ -395,9 +402,26 @@
 }
 .back-btn:hover { color: var(--am-white); }
 
+.reset-view p.auth-title--sm {
+    margin: 0px;
+}
+.reset-view p.auth-desc--mb {
+    margin-top: 0px;
+    margin-bottom: 5px;
+}
+
+.reset-view .auth-btn.submit{
+	margin: 10px;
+	
+}
+
+#r-email-error {
+	 margin: 0px;
+}
+
 /* ── 인증코드 필드 ── */
 .code-sent-field {
-  display: none; width: var(--am-input-w); margin: 15px 0 4px 0;  /* ← margin-top: 15px 추가 */
+  display: none; width: var(--am-input-w); margin: 0px 0 0px 0;  /* ← margin-top: 15px 추가 */
 }
 /* .code-sent-field input { width: 100%; } */
 
@@ -412,6 +436,8 @@
   font-size: var(--am-suc-title-fs); font-weight: 800;
   color: var(--am-white); margin-bottom: 8px;
 }
+
+
 .suc-sub { font-size: var(--am-suc-sub-fs); color: var(--am-gray); line-height: 1.6; }
 .success-wrap.slide-out {
   opacity: 0; transform: translateX(80px);
@@ -492,8 +518,8 @@
   padding: var(--am-switch-pad) var(--am-switch-padv);
   transition: var(--am-slide);
 }
-.switch_container .auth-title { text-align: center; }
-.switch_container .auth-desc  { margin-top: 8px; }
+.switch_container .auth-title { text-align: center; margin: 0px;}
+.switch_container .auth-desc  { margin: 0px; }
 
 .switch_button {
   cursor: pointer;
