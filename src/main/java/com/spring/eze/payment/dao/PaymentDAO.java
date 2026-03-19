@@ -17,4 +17,6 @@ public interface PaymentDAO {
     
     //결제취소
     int updateFailReason(PaymentOrderDTO dto);
+    //구독
+    int downgradeMembershipToFree(long userId);
 }
