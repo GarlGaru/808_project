@@ -25,18 +25,17 @@
     ModalCore.close('mpOverlay', 250);
   };
 
-  /* ── ModalCore 바인딩 & 비밀번호 인증코드 입력 이벤트 ── */
+  /* ── ModalCore 바인딩 ── */
   document.addEventListener('DOMContentLoaded', function () {
     ModalCore.bindOutsideClick('mpOverlay', '.mypage-modal');
     ModalCore.bindEscKey('mpOverlay');
     ModalCore.bindOnClose && ModalCore.bindOnClose('mpOverlay', function () {
-      mpStopPwTimer();
-      MP_PW_STATE.codeVerified = false;
-      MP_PW_STATE.serverCode = '';
-      var f = document.getElementById('pwCodeField');
-      var c = document.getElementById('pwCode');
-      if (f) f.style.display = 'none';
-      if (c) c.value = '';
+      /* 모달 닫힐 때 — 비번 + 닉네임 상태 전부 초기화 */
+      mpResetPwState();
+      mpResetNickCheck();
+      /* 수정 모드 열려있었으면 보기 모드로 복구 */
+      document.getElementById('mpPvEdit').style.display = 'none';
+      document.getElementById('mpPvView').style.display = 'block';
     });
     var pwCode = document.getElementById('pwCode');
     if (pwCode) pwCode.addEventListener('input', mpCheckPwCode);
@@ -54,9 +53,9 @@
     $('#mpSub').text(sub);
 
     /* 탭별 최초 1회 Lazy Load */
-    if (id === 'report'   && !window._mpReportLoaded)   { window._mpReportLoaded  = true; mpLoadPlayReport('THIS_MONTH'); }
-    if (id === 'comments' && !window._mpCmtLoaded)      { window._mpCmtLoaded     = true; mpLoadComments(); }
-    if (id === 'payments' && !window._mpPayLoaded)      { window._mpPayLoaded     = true; mpLoadPayments(); }
+    if (id === 'report'   && !window._mpReportLoaded) { window._mpReportLoaded = true; mpLoadPlayReport('THIS_MONTH'); }
+    if (id === 'comments' && !window._mpCmtLoaded)    { window._mpCmtLoaded    = true; mpLoadComments(); }
+    if (id === 'payments' && !window._mpPayLoaded)    { window._mpPayLoaded    = true; mpLoadPayments(); }
   };
 
   /* ────────────────────────────────────────────
@@ -100,54 +99,139 @@
      프로필 보기 ↔ 수정 토글
   ──────────────────────────────────────────── */
   window.mpEditStart = function () {
+    mpResetNickCheck();
     document.getElementById('mpPvView').style.display = 'none';
     document.getElementById('mpPvEdit').style.display = 'block';
   };
+
   window.mpEditCancel = function () {
+    mpResetPwState();
+    mpResetNickCheck();
     document.getElementById('mpPvEdit').style.display = 'none';
     document.getElementById('mpPvView').style.display = 'block';
   };
-  window.mpEditSave = function () {
-    var nick  = $('#eNick').val().trim();
-    var bio   = $('#eBio').val().trim();
-    var birth = $('#eBirth').val();
+
+  /* ────────────────────────────────────────────
+     닉네임 중복확인
+     AuthAPI.checkNick() — GET /checkNickname?nickname=
+     반환: 0 = 사용 가능, >0 = 중복
+  ──────────────────────────────────────────── */
+  var _nickChecked    = false;
+  var _nickCheckedVal = '';
+
+  window.mpCheckNick = function () {
+    var nick     = $('#eNick').val().trim();
+    var origNick = $('#vNick').text().trim();
+    var $msg     = $('#nickCheckMsg');
+    var $btn     = $('#nickCheckBtn');
 
     if (!nick) { alert('닉네임을 입력해주세요.'); return; }
 
+    /* 현재 닉네임과 같으면 확인 불필요 */
+    if (nick === origNick) {
+      _nickChecked    = true;
+      _nickCheckedVal = nick;
+      $('#eNick').removeClass('valid invalid');
+      $msg.text('현재 사용 중인 닉네임입니다.').css('color', 'rgba(242,242,242,0.45)').show();
+      return;
+    }
+
+    $btn.prop('disabled', true).text('확인 중...');
+
+    AuthAPI.checkNick(nick).then(function (cnt) {
+      if (cnt > 0) {
+        _nickChecked = false;
+        $('#eNick').removeClass('valid').addClass('invalid');
+        $msg.text('✕ 이미 사용 중인 닉네임입니다.').css('color', '#f87171').show();
+      } else {
+        _nickChecked    = true;
+        _nickCheckedVal = nick;
+        $('#eNick').removeClass('invalid').addClass('valid');
+        $msg.text('✓ 사용 가능한 닉네임입니다.').css('color', '#4ade80').show();
+      }
+    }).catch(function () {
+      $msg.text('중복 확인에 실패했습니다. 다시 시도해주세요.').css('color', 'rgba(242,242,242,0.45)').show();
+    }).then(function () {
+      $btn.prop('disabled', false).text('중복확인');
+    });
+  };
+
+  /* input 수정 시 확인 상태 초기화 */
+  window.mpResetNickCheck = function () {
+    _nickChecked = false;
+    _nickCheckedVal = '';
+    $('#eNick').removeClass('valid invalid');
+    $('#nickCheckMsg').hide().text('');
+  };
+
+  /* ────────────────────────────────────────────
+     내정보 저장
+  ──────────────────────────────────────────── */
+  window.mpEditSave = function () {
+    var nick     = $('#eNick').val().trim();
+    var bio      = $('#eBio').val().trim();
+    var birth    = $('#eBirth').val();
+    var origNick = $('#vNick').text().trim();
+
+    if (!nick) { alert('닉네임을 입력해주세요.'); return; }
+
+    if (nick !== origNick && (!_nickChecked || _nickCheckedVal !== nick)) {
+      alert('닉네임 중복확인을 해주세요.');
+      $('#eNick').focus();
+      return;
+    }
+
     $.ajax({
-      url:  CP + '/mypage/updateInfo',
-      type: 'POST',
-      data: { nickname: nick, bio: bio, birthDate: birth },
+      url:      CP + '/mypage/updateInfo',
+      type:     'POST',
+      data:     { nickname: nick, bio: bio, birthDate: birth },
       dataType: 'json',
       success: function (result) {
         if (result === 1) {
-          /* 보기 영역 DOM 갱신 */
           $('#vNick').text(nick);
           $('#vBio').text(bio || '소개를 입력해주세요');
           if (birth) {
             var d = new Date(birth);
-            $('#vBirth').text(d.getFullYear() + '년 ' + (d.getMonth() + 1) + '월 ' + d.getDate() + '일');
+            $('#vBirth').text(d.getFullYear() + '년 ' + (d.getMonth()+1) + '월 ' + d.getDate() + '일');
           }
-          /* 수정 폼 DOM도 최신값으로 동기화 — 재진입 시 구버전 값 방지 */
-          $('#eNick').val(nick);
+          $('#eNick').val(nick).removeClass('valid invalid');
           $('#eBio').val(bio);
-          /* 사이드바 닉네임도 갱신 */
+          _nickChecked    = false;
+          _nickCheckedVal = '';
           $('.mypage-modal .sb-name').text(nick);
           mpEditCancel();
+        } else if (result === -1) {
+          alert('닉네임을 입력해주세요.');
         } else {
           alert('저장에 실패했습니다.');
         }
       },
-      error: function () {
-        alert('저장 중 오류가 발생했습니다.');
-      }
+      error: function () { alert('저장 중 오류가 발생했습니다.'); }
     });
   };
 
   /* ────────────────────────────────────────────
-     비밀번호 변경 — 이메일 인증 (회원가입 방식)
+     비밀번호 변경
+     AuthAPI.sendResetCode() — GET /checkEmail + POST /sendCode
+     AuthAPI.resetPw()       — POST /updatePw
   ──────────────────────────────────────────── */
   var MP_PW_STATE = { codeVerified: false, serverCode: '', timerId: null };
+
+  function mpResetPwState() {
+    mpStopPwTimer();
+    MP_PW_STATE.codeVerified = false;
+    MP_PW_STATE.serverCode   = '';
+    var f = document.getElementById('pwCodeField');
+    var c = document.getElementById('pwCode');
+    var cur = document.getElementById('pwCurrent');
+    var pn  = document.getElementById('pwNew');
+    var pc  = document.getElementById('pwConfirm');
+    if (f)   { f.style.display = 'none'; }
+    if (c)   { c.value = ''; c.classList.remove('valid', 'invalid'); }
+    if (cur) { cur.value = ''; }
+    if (pn)  { pn.value = ''; }
+    if (pc)  { pc.value = ''; }
+  }
 
   function mpStartPwTimer() {
     var timerEl = document.getElementById('pwTimer');
@@ -167,58 +251,35 @@
   }
 
   function mpStopPwTimer() {
-    if (MP_PW_STATE.timerId) {
-      clearInterval(MP_PW_STATE.timerId);
-      MP_PW_STATE.timerId = null;
-    }
+    if (MP_PW_STATE.timerId) { clearInterval(MP_PW_STATE.timerId); MP_PW_STATE.timerId = null; }
     var el = document.getElementById('pwTimer');
     if (el) el.textContent = '5:00';
   }
 
+  /* 코드 발송 — AuthAPI.sendResetCode 재사용 */
   window.mpSendCode = function (email) {
     if (!email) return;
-    var CP = window.__AUTH_CP || '';
+    var $btn      = $('#pwSendBtn');
     var codeField = document.getElementById('pwCodeField');
     var codeInput = document.getElementById('pwCode');
 
-    var doSend = function () {
-      var params = new URLSearchParams();
-      params.append('email', email);
-      fetch(CP + '/sendCode', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: params
-      }).then(function (r) { return r.json(); }).then(function (serverCode) {
-        if (serverCode && serverCode.toString().trim().length === 6) {
-          MP_PW_STATE.serverCode = serverCode.toString().trim();
-          MP_PW_STATE.codeVerified = false;
-          if (codeInput) codeInput.value = '';
-          if (codeField) {
-            codeField.style.display = 'block';
-            mpStartPwTimer();
-          }
-          alert('[임시 인증번호] : ' + MP_PW_STATE.serverCode + '\n입력창에 입력해주세요.');
-        } else {
-          alert('인증코드 발송에 실패했습니다.');
-        }
-      }).catch(function () {
-        alert('인증코드 발송에 실패했습니다.');
-      });
-    };
+    $btn.prop('disabled', true).text('발송 중...');
 
-    if (CP) doSend();
-    else {
-      MP_PW_STATE.serverCode = '123456';
+    AuthAPI.sendResetCode(email).then(function (result) {
+      if (!result.ok) { alert(result.message); return; }
+      MP_PW_STATE.serverCode   = result.code;
       MP_PW_STATE.codeVerified = false;
-      if (codeInput) codeInput.value = '';
-      if (codeField) {
-        codeField.style.display = 'block';
-        mpStartPwTimer();
-      }
-      alert('[데모] 인증코드 123456 이 ' + email + ' 로 발송되었습니다.');
-    }
+      if (codeInput) { codeInput.value = ''; codeInput.classList.remove('valid', 'invalid'); }
+      if (codeField) { codeField.style.display = 'block'; mpStartPwTimer(); }
+      alert('[임시 인증번호] : ' + MP_PW_STATE.serverCode + '\n입력창에 입력해주세요.');
+    }).catch(function () {
+      alert('인증코드 발송에 실패했습니다.');
+    }).then(function () {
+      $btn.prop('disabled', false).text('코드 발송');
+    });
   };
 
+  /* 코드 실시간 검증 */
   function mpCheckPwCode() {
     var inp = document.getElementById('pwCode');
     if (!inp) return;
@@ -227,74 +288,38 @@
     if (!val) { MP_PW_STATE.codeVerified = false; return; }
     if (val.length === 6) {
       if (val === MP_PW_STATE.serverCode) {
-        inp.classList.add('valid');
-        MP_PW_STATE.codeVerified = true;
+        inp.classList.add('valid');  MP_PW_STATE.codeVerified = true;
       } else {
-        inp.classList.add('invalid');
-        MP_PW_STATE.codeVerified = false;
+        inp.classList.add('invalid'); MP_PW_STATE.codeVerified = false;
       }
     } else {
-      inp.classList.add('invalid');
-      MP_PW_STATE.codeVerified = false;
+      inp.classList.add('invalid'); MP_PW_STATE.codeVerified = false;
     }
   }
 
+  /* 비밀번호 변경 저장 — AuthAPI.resetPw 재사용 */
   window.mpChangePw = function () {
-    var current = document.getElementById('pwCurrent');
-    var code = document.getElementById('pwCode');
-    var pwNew = document.getElementById('pwNew');
+    var current   = document.getElementById('pwCurrent');
+    var pwNew     = document.getElementById('pwNew');
     var pwConfirm = document.getElementById('pwConfirm');
+    var userEmail = (document.getElementById('pwEmail') || {}).value || '';
 
-    if (!current || !current.value.trim()) {
-      alert('현재 비밀번호를 입력해주세요.'); return;
-    }
-    if (!MP_PW_STATE.codeVerified || !code || !code.value.trim()) {
-      alert('이메일 인증코드를 발송하고 올바른 코드를 입력해주세요.'); return;
-    }
-    if (!pwNew || !pwNew.value) {
-      alert('새 비밀번호를 입력해주세요.'); return;
-    }
-    if (pwNew.value !== pwConfirm.value) {
-      alert('비밀번호가 일치하지 않습니다.'); return;
-    }
-    if (pwNew.value.length < 8 || pwNew.value.length > 20) {
-      alert('비밀번호는 8~20자로 입력해주세요.'); return;
-    }
+    if (!current || !current.value.trim())                   { alert('현재 비밀번호를 입력해주세요.'); return; }
+    if (!MP_PW_STATE.codeVerified)                           { alert('이메일 인증을 완료해주세요.'); return; }
+    if (!pwNew || !pwNew.value)                              { alert('새 비밀번호를 입력해주세요.'); return; }
+    if (pwNew.value.length < 8 || pwNew.value.length > 20)  { alert('비밀번호는 8~20자로 입력해주세요.'); return; }
+    if (pwNew.value !== pwConfirm.value)                     { alert('비밀번호가 일치하지 않습니다.'); return; }
 
-    var CP = window.__AUTH_CP || '';
-    var email = document.getElementById('pwEmail');
-    var userEmail = email ? email.value : '';
-
-    if (CP) {
-      var params = new URLSearchParams();
-      params.append('email', userEmail);
-      params.append('password', pwNew.value);
-      params.append('currentPassword', current.value);
-      fetch(CP + '/updatePw', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: params
-      }).then(function (r) { return r.json(); }).then(function (result) {
-        if (result === 1) {
-          mpStopPwTimer();
-          MP_PW_STATE.codeVerified = false;
-          MP_PW_STATE.serverCode = '';
-          document.getElementById('pwCodeField').style.display = 'none';
-          current.value = ''; pwNew.value = ''; pwConfirm.value = ''; code.value = '';
-          alert('비밀번호가 변경되었습니다.');
-        } else {
-          alert('비밀번호 변경에 실패했습니다. 현재 비밀번호를 확인해주세요.');
-        }
-      }).catch(function () {
-        alert('비밀번호 변경에 실패했습니다.');
-      });
-    } else {
-      mpStopPwTimer();
-      MP_PW_STATE.codeVerified = false;
-      document.getElementById('pwCodeField').style.display = 'none';
-      current.value = ''; pwNew.value = ''; pwConfirm.value = ''; code.value = '';
-      alert('[데모] 비밀번호가 변경되었습니다.');
-    }
+    AuthAPI.resetPw(userEmail, pwNew.value).then(function (result) {
+      if (result.ok) {
+        mpResetPwState();
+        alert('비밀번호가 변경되었습니다.');
+      } else {
+        alert(result.message || '비밀번호 변경에 실패했습니다.');
+      }
+    }).catch(function () {
+      alert('비밀번호 변경 중 오류가 발생했습니다.');
+    });
   };
 
   /* ────────────────────────────────────────────
