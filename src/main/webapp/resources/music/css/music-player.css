@@ -1,0 +1,226 @@
+@charset "UTF-8";
+
+/* =========================
+   Bottom Player - Clean Version
+   ========================= */
+
+:root {
+    --sp-black: #111111;
+    --sp-border: #2a2a2a;
+    --sp-text: #ffffff;
+    --sp-text-sub: #b3b3b3;
+    --sp-green: #ff8000;
+    --sp-bar-bg: #444444;
+    --action-primary-bg: linear-gradient(90deg, #DF8845 0%, #ED6701 100%);
+}
+
+/* 하단 플레이어 전체 */
+.music-player-fixed {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100%;
+    height: 90px;
+    background: var(--sp-black);
+    color: var(--sp-text);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 24px;
+    box-sizing: border-box;
+    z-index: 9999;
+    border-top: 1px solid var(--sp-border);
+}
+
+/* 좌 / 중 / 우 공통 */
+.player-left,
+.player-center,
+.player-right {
+    display: flex;
+    align-items: center;
+    box-sizing: border-box;
+}
+
+/* 왼쪽 영역 */
+.player-left {
+    width: 30%;
+    min-width: 240px;
+    gap: 14px;
+}
+
+.player-cover-wrap {
+    flex-shrink: 0;
+}
+
+#playerCover {
+    width: 56px;
+    height: 56px;
+    object-fit: cover;
+    border-radius: 8px;
+    display: block;
+}
+
+.player-track-info {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+
+.player-track-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--sp-text);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.player-track-artist {
+    font-size: 12px;
+    color: var(--sp-text-sub);
+    margin-top: 4px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* 가운데 영역 */
+.player-center {
+    width: 40%;
+    flex-direction: column;
+    justify-content: center;
+    gap: 8px;
+}
+
+.player-controls {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.player-btn {
+    width: 36px;
+    height: 36px;
+    border: none;
+    border-radius: 50%;
+    background: transparent;
+    color: var(--sp-text);
+    cursor: pointer;
+    font-size: 18px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.15s ease, opacity 0.15s ease;
+}
+
+.player-btn:hover {
+    transform: scale(1.05);
+    opacity: 0.9;
+}
+
+.player-btn-main {
+    background: var(--sp-green);
+    color: #000;
+    font-weight: bold;
+}
+
+.player-progress-area {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.player-time {
+    font-size: 12px;
+    color: var(--sp-text-sub);
+    min-width: 40px;
+    text-align: center;
+}
+
+.player-progress {
+    flex: 1;
+    height: 6px;
+    background: var(--sp-bar-bg);
+    border-radius: 999px;
+    cursor: pointer;
+    overflow: hidden;
+}
+
+.player-progress-fill {
+    width: 0%;
+    height: 100%;
+    background: var(--sp-green);
+    border-radius: 999px;
+}
+
+/* 오른쪽 영역 */
+.player-right {
+    width: 30%;
+    min-width: 220px;
+    justify-content: flex-end;
+    gap: 12px;
+}
+
+.player-volume-wrap {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.player-volume-icon {
+    font-size: 14px;
+    line-height: 1;
+}
+
+.player-volume-bar {
+    width: 100px;
+    height: 6px;
+    background: var(--sp-bar-bg);
+    border-radius: 999px;
+    overflow: hidden;
+    cursor: pointer;
+}
+
+.player-volume-fill {
+    width: 70%;
+    height: 100%;
+    background: var(--sp-green);
+    border-radius: 999px;
+}
+
+/* 오디오 숨김 */
+.music-player-fixed audio {
+    display: none;
+}
+
+/* 본문이 플레이어에 가리지 않도록 */
+body {
+    padding-bottom: 90px;
+}
+
+/* 반응형 */
+@media only screen and (max-width: 991px) {
+    .music-player-fixed {
+        height: auto;
+        padding: 12px;
+        flex-wrap: wrap;
+        gap: 12px;
+    }
+
+    .player-left,
+    .player-center,
+    .player-right {
+        width: 100%;
+        min-width: 0;
+    }
+
+    .player-right {
+        justify-content: flex-start;
+    }
+
+    body {
+        padding-bottom: 160px;
+    }
+}

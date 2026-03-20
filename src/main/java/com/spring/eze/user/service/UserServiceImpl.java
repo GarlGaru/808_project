@@ -1,0 +1,275 @@
+package com.spring.eze.user.service;
+
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.regex.Pattern;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder; // 암호화 라이브러리
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.spring.eze.user.dto.UserDTO;
+import com.spring.eze.user.dao.UserDAO;
+import com.spring.eze.user.dto.EmailCodeDTO;
+
+@Service
+public class UserServiceImpl implements UserService {
+
+    @Autowired
+    private UserDAO dao;
+    
+    @Autowired
+    private BCryptPasswordEncoder encoder; // SecurityConfig에서 빈(bean)으로 등록한 함호화 객체 주입
+
+    // 백엔드 검증용 정규식 — JS와 동일한 기준 유지(한글/영/숫 2~10자)
+    private static final String EMAIL_PATTERN    = "^[A-Za-z0-9+_.-]+@(.+)$";
+    private static final String NICKNAME_PATTERN = "^[가-힣a-zA-Z0-9]{2,10}$";
+
+    // 공통 로직 : 파라미터 꺼낼 때 null 체크 + trim(앞 뒤 공백 제거) 처리
+    // null이면 null 반환, 아니면 trim한 값 반환 (빈문자열은 그대로 통과 — 각 메서드에서 처리)
+    private String getParam(HttpServletRequest request, String key) {
+        String val = request.getParameter(key);
+        return val == null ? null : val.trim();
+    }
+
+    // 회원가입 (BCrypt 암호화 적용)
+    @Transactional
+    @Override
+    public int insertUser(HttpServletRequest request)
+            throws ServletException, IOException {
+        try {
+            String email    = getParam(request, "email");
+            String password = getParam(request, "password"); // 사용자가 입력한 비밀번호(평문)
+            String nickname = getParam(request, "nickname");
+
+            // 빈값/공백 체크 (getParam이 null 반환)
+            if (email == null || password == null || nickname == null) {
+                System.out.println(">>> [회원가입 실패] 필수 파라미터 누락 또는 공백");
+                return -100;
+            }
+            
+            // 백엔드 2차 검증
+            if (!Pattern.matches(EMAIL_PATTERN, email))
+            	return -1; // 이메일 형식 오류
+            if (!Pattern.matches(NICKNAME_PATTERN, nickname))
+            	return -2; // 닉네임 형식 오류
+            if (password.length() < 8)                    
+            	return -3; // 비밀번호 길이 부족
+
+            UserDTO dto = new UserDTO();
+            dto.setEmail(email);
+            
+            // BCrypt 암호화 실행
+            // encode()를 쓰면 매번 다른 '솔트'를 섞어서 해시를 만듦(보안 좋음, 길이는 약 60자)
+            String encodedPw = encoder.encode(password);
+            dto.setPassword(encodedPw);
+            dto.setNickname(nickname);
+
+            // 유저 생성
+            int insertCnt = dao.insertUser(dto);
+            
+            if(insertCnt == 1){
+                // profile 생성 (user_id 연동)
+                dao.insertProfile(dto.getUserId());
+            }
+            
+            System.out.println(">>> [회원가입 완료] 이메일: " + email);
+            return insertCnt;
+
+        } catch (Exception e) {
+            System.err.println(">>> [회원가입 에러 발생]");
+            e.printStackTrace();
+            return -999;
+        }
+    }
+
+    // 이메일 중복확인
+    @Override
+    public int checkEmail(HttpServletRequest request)
+            throws ServletException, IOException {
+
+        String email = getParam(request, "email");
+        if (email == null) return 0; // 빈값은 중복 없음(사용 가능)으로 처리 — 실제 발송 단계에서 차단됨
+        return dao.checkEmail(email);
+    }
+
+    // 닉네임 중복확인
+    @Override
+    public int checkNickname(HttpServletRequest request) {
+        try {
+            String nickname = getParam(request, "nickname");
+
+            // null 또는 빈값·공백만 입력 시 → 사용 불가로 응답
+            if (nickname == null || nickname.isEmpty()) {
+                System.out.println(">>> [닉네임 체크] 빈값 또는 공백 입력");
+                return 1;
+            }
+
+            // 형식 검증 (2~10자 한글/영문/숫자) — 공백 포함 시 패턴 불일치로 차단
+            if (!Pattern.matches(NICKNAME_PATTERN, nickname)) {
+                System.out.println(">>> [닉네임 체크] 형식 오류: " + nickname);
+                return 1;
+            }
+
+            System.out.println(">>> [닉네임 체크] 조회: " + nickname);
+            return dao.checkNickname(nickname);
+
+        } catch (Exception e) {
+            System.err.println(">>> 닉네임 체크 중 오류 발생: " + e.getMessage());
+            return 1; // 에러 시 안전하게 사용 불가 응답
+        }
+    }
+
+    // 로그인(암호화된 비밀번호 비교 방식)
+    @Override
+    public int loginAction(HttpServletRequest request)
+            throws ServletException, IOException {
+        try {
+            String email    = getParam(request, "email");
+            String password = request.getParameter("password"); // 비밀번호는 보안상 trim 하지 않음 (공백 포함 가능, 로그인창에서 입력받은 평문 비번)
+            
+            // 기본 유효성 검사
+            if (email == null || password == null || password.isEmpty())
+            	return 0;
+            
+            // DB에서 유저 정보 조회
+            UserDTO loginUser = dao.getUserByEmail(email);
+            if (loginUser == null)
+            	return 0; // 이메일 없음
+            
+            // matches()메서드로 비밀번호 비교 
+            // BCrypt는 복호화가 안 되기 때문에 .equals()를 절대 못씀.
+            // encoder.match(사용자입력값, DB저장값) 순서로 넣으면 내부에서 솔트 꺼내서 비교해줌
+            // 비밀번호 검증 (현재는 equals, 추후 BCrypt.checkpw로 변경 예정 부분)
+            String dbPw = loginUser.getPassword();
+            if (dbPw == null || !encoder.matches(password, dbPw))
+            	return 0; // 비밀번호 불일치
+            
+            // 이메일 인증 여부 확인
+            if (loginUser.getEmailVerified() != 1)
+            	return 2; // 이메일 미인증
+            
+            // 로그인 성공 처리 => 보안을 위해 세션에 담기 전 비번 정보는 삭제
+            loginUser.setPassword(null);
+            
+            System.out.println(">>> profile: " + loginUser.getProfile());
+            System.out.println(">>> photoUrl: " + (loginUser.getProfile() != null ? loginUser.getProfile().getPhotoUrl() : "null"));
+            
+            // 세션 설정
+            HttpSession session = request.getSession();
+            session.setAttribute("loginUser", loginUser); // 세션에 유저 객체 통째로 저장(비번x)
+            session.setAttribute("userEmail", email);
+
+            System.out.println(">>> [로그인 성공] " + email);
+            return 1;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return 0;
+        }
+    }
+
+    // 이메일 인증 완료 처리
+    @Override
+    public int updateEmailVerified(HttpServletRequest request)
+            throws ServletException, IOException {
+
+        String email = getParam(request, "email");
+        if (email == null) return 0;
+        return dao.updateEmailVerified(email);
+    }
+
+    // 비밀번호 수정
+    @Override
+    public int updatePw(HttpServletRequest request) {
+        String email    = getParam(request, "email");
+        String password = request.getParameter("password"); // 새로 바꿀 비번
+
+        if (email == null || password == null || password.isEmpty()) {
+            System.out.println(">>> [비밀번호 수정 실패] 빈값 입력");
+            return 0;
+        }
+
+        // 바꿀 비밀번호도 당연히 암호화 해서 저장해야 함
+        String updatedPw = encoder.encode(password);
+        System.out.println(">>> 비밀번호 수정 대상: " + email);
+
+        Map<String, Object> map = new HashMap<>();
+        map.put("email", email);
+        map.put("password", updatedPw);
+        return dao.updatePw(map);
+    }
+
+//    // 회원탈퇴
+//    @Override
+//    public int deleteUser(HttpServletRequest request)
+//            throws ServletException, IOException {
+//
+//        String email = (String) request.getSession().getAttribute("userEmail");
+//        int deleteCnt = dao.deleteUser(email);
+//        if (deleteCnt == 1) request.getSession().invalidate();
+//        return deleteCnt;
+//    }
+
+    // 인증코드 생성 및 DB 저장
+    @Override
+    public int insertEmailCode(HttpServletRequest request)
+            throws ServletException, IOException {
+
+        String email = getParam(request, "email");
+        if (email == null) return 0; // 빈값·공백 차단
+
+        // 형식 검증 — 공백 포함 이메일이 넘어오는 경우 차단
+        if (!Pattern.matches(EMAIL_PATTERN, email)) {
+            System.out.println(">>> [인증코드 발송 실패] 이메일 형식 오류: " + email);
+            return 0;
+        }
+
+        int randomCode = (int)(Math.random() * 899999) + 100000;
+        String codeStr = String.valueOf(randomCode);
+
+        EmailCodeDTO dto = new EmailCodeDTO();
+        dto.setEmail(email);
+        dto.setCode(codeStr);
+
+        int result = dao.insertEmailCode(dto);
+        if (result == 1) {
+            request.getSession().setAttribute("sentCode", codeStr);
+            System.out.println(">>> [발급완료] 이메일: " + email + " / 인증코드: " + codeStr);
+        }
+        return result;
+    }
+
+    // 인증코드 조회
+    @Override
+    public EmailCodeDTO getEmailCode(HttpServletRequest request)
+            throws ServletException, IOException {
+
+        String email = getParam(request, "email");
+        if (email == null) return null;
+        return dao.getEmailCode(email);
+    }
+
+    // 인증코드 검증
+    @Override
+    public int verifyCode(HttpServletRequest request)
+            throws ServletException, IOException {
+
+        String email     = getParam(request, "email");
+        String inputCode = getParam(request, "code");
+
+        if (email == null || inputCode == null) return 0;
+
+        EmailCodeDTO dbRecord = dao.getEmailCode(email);
+
+        if (dbRecord == null)                        return 0;  // 없거나 만료
+        if (dbRecord.getCode().equals(inputCode))    return 1;  // 일치
+        return -1;                                              // 불일치
+    }
+}

@@ -1,0 +1,800 @@
+/* ============================================================
+   mypageModal.css
+   Bootstrap 4 충돌 방지 전략:
+   - .mypage-overlay : position fixed (전역 필요)
+   - .mypage-modal 하위 : 모든 스타일 격리
+   - Bootstrap의 .nav-item .badge .card 등 완전 덮어쓰기
+   ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500&family=Syne:wght@400;600;700;800&display=swap');
+
+/* ── CSS 변수: overlay 스코프 ── */
+.mypage-overlay {
+  --c-bg:      #0d0f14;
+  --c-sidebar: #0f1319;
+  --c-text:    #f2f2f2;
+  --c-gray:    rgba(242,242,242,0.4);
+  --c-muted:   rgba(242,242,242,0.38);
+  --c-muted2:  rgba(242,242,242,0.62);
+  --c-border:  rgba(255,255,255,0.06);
+  --c-border2: rgba(255,255,255,0.12);
+  --c-sd:      rgba(0,0,0,0.9);
+  --c-sl:      rgba(255,255,255,0.04);
+  --c-gold:    #c9a84c;
+  --c-silver:  #888888;
+  --c-bronze:  #6a4a2a;
+}
+
+/* ════════════════════════════════════
+   OVERLAY
+   ════════════════════════════════════ */
+.mypage-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: rgba(0,0,0,0.55);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: mp-fadein 0.3s ease;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 12px;
+  color: var(--c-gray);
+}
+
+/* ════════════════════════════════════
+   MODAL CARD
+   ════════════════════════════════════ */
+.mypage-modal {
+  position: relative;
+  width: 980px;
+  height: 680px;
+  background: var(--c-bg);
+  border-radius: 14px;
+  overflow: hidden;
+  display: flex;
+  border: 1px solid var(--c-border);
+  box-shadow: 12px 12px 20px var(--c-sd), -4px -4px 12px var(--c-sl);
+  animation: mp-slideup 0.45s cubic-bezier(0.16,1,0.3,1);
+}
+
+.mypage-modal *,
+.mypage-modal *::before,
+.mypage-modal *::after {
+  box-sizing: border-box;
+}
+
+.mypage-modal input,
+.mypage-modal textarea {
+  user-select: text;
+}
+
+/* ── SIDEBAR ── */
+.mypage-modal .sidebar {
+  width: 216px;
+  flex-shrink: 0;
+  background: var(--c-sidebar);
+  border-right: 1px solid var(--c-border);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  box-shadow: 4px 0 20px rgba(0,0,0,0.6);
+}
+
+.mypage-modal .sb-prof {
+  padding: 24px 16px 20px;
+  text-align: center;
+}
+
+.mypage-modal .av-wrap {
+  position: relative;
+  width: 96px;
+  height: 96px;
+  margin: 0 auto 12px;
+}
+
+.mypage-modal .av {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.08);
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 42px;
+  font-weight: 700;
+  color: var(--c-muted2);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.mypage-modal .av img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.mypage-modal .av:hover {
+  opacity: 0.92;
+}
+
+.mypage-modal .av-edit {
+  position: absolute;
+  bottom: 4px;
+  right: 4px;
+  width: 28px;
+  height: 28px;
+  background: rgba(0,0,0,0.6);
+  border-radius: 50%;
+  color: #fff;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  border: 2px solid var(--c-bg);
+}
+
+.mypage-modal .sb-name {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--c-text);
+  margin-bottom: 4px;
+}
+
+.mypage-modal .sb-email {
+  font-size: 12px;
+  color: var(--c-muted);
+  margin-bottom: 12px;
+}
+
+.mypage-modal .sb-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  justify-content: center;
+}
+
+.mypage-modal .grade-badge,
+.mypage-modal .level-badge {
+  font-size: 11px;
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-weight: 500;
+}
+
+.mypage-modal .grade-badge.free    { background: rgba(100,200,100,0.15); color: #a0e0a0; }
+.mypage-modal .grade-badge.premium { background: rgba(255,180,60,0.2);  color: #ffcc66; }
+.mypage-modal .grade-badge.ultimate{ background: rgba(200,170,80,0.25); color: #e0c070; }
+
+.mypage-modal .sb-nav {
+  flex: 1;
+  padding: 8px 0;
+}
+
+.mypage-modal .nav-item {
+  padding: 12px 20px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: var(--c-muted2);
+  cursor: pointer;
+  transition: all 0.18s;
+}
+
+.mypage-modal .nav-item:hover {
+  background: rgba(255,255,255,0.04);
+  color: var(--c-text);
+}
+
+.mypage-modal .nav-item.active {
+  background: rgba(255,255,255,0.08);
+  color: #fff;
+  font-weight: 500;
+  border-left: 3px solid rgba(255,255,255,0.4);
+}
+
+.mypage-modal .nav-icon {
+  flex-shrink: 0;
+  font-size: 14px;
+}
+
+/* ── MAIN PANE ── */
+.mypage-modal .main-pane {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.mypage-modal .pane-header {
+  padding: 24px 32px 16px;
+  border-bottom: 1px solid var(--c-border);
+}
+
+.mypage-modal .pane-title {
+  font-size: 22px;
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 4px;
+}
+
+.mypage-modal .pane-sub {
+  font-size: 13px;
+  color: var(--c-muted);
+}
+
+/* ── PANE BODY ── */
+.mypage-modal .pane-body {
+  flex: 1;
+  padding: 24px 32px;
+  overflow-y: auto;
+}
+
+/* ── 스크롤바 다크 커스텀 ── */
+.mypage-modal .pane-body::-webkit-scrollbar {
+  width: 6px;
+}
+.mypage-modal .pane-body::-webkit-scrollbar-track {
+  background: transparent;
+}
+.mypage-modal .pane-body::-webkit-scrollbar-thumb {
+  background: rgba(255,255,255,0.12);
+  border-radius: 3px;
+}
+.mypage-modal .pane-body::-webkit-scrollbar-thumb:hover {
+  background: rgba(255,255,255,0.22);
+}
+
+.tab-pane {
+  display: none;
+}
+
+.tab-pane.active {
+  display: block;
+}
+
+/* ── REPORT / 공통 레이아웃 ── */
+.mypage-modal .row-between {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.mypage-modal .sec-title {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--c-text);
+  margin-bottom: 10px;
+}
+
+.mypage-modal .stat-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+  margin-bottom: 20px;
+}
+
+.mypage-modal .stat-card {
+  padding: 16px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid var(--c-border);
+  border-radius: 10px;
+}
+
+.mypage-modal .stat-label {
+  font-size: 12px;
+  color: var(--c-muted);
+  margin-bottom: 6px;
+}
+
+.mypage-modal .stat-num {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--c-text);
+}
+
+.mypage-modal .stat-sub {
+  font-size: 11px;
+  color: var(--c-muted);
+  margin-top: 4px;
+}
+
+.mypage-modal .two-col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+}
+
+/* ── SELECT 드롭다운 다크 fix ── */
+.mypage-modal .mp-select {
+  padding: 6px 12px;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid var(--c-border2);
+  border-radius: 6px;
+  color: var(--c-text);
+  font-size: 12px;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+}
+
+.mypage-modal .mp-select option {
+  background: #1a1e28;
+  color: #f2f2f2;
+}
+
+.mypage-modal .genre-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.mypage-modal .genre-tag {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  background: rgba(255,255,255,0.05);
+  border-radius: 8px;
+  border: 1px solid var(--c-border);
+}
+
+.mypage-modal .genre-name { font-weight: 500; color: var(--c-text); }
+.mypage-modal .genre-pct { font-size: 11px; color: var(--c-muted); }
+
+/* ── 리스트 아이템 ── */
+.mypage-modal .list-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--c-border);
+}
+
+.mypage-modal .list-item .rank {
+  width: 24px;
+  flex-shrink: 0;
+  font-weight: 600;
+  color: var(--c-muted);
+}
+
+.mypage-modal .list-item .rank.gold { color: var(--c-gold); }
+.mypage-modal .list-item .rank.silver { color: var(--c-silver); }
+.mypage-modal .list-item .rank.bronze { color: var(--c-bronze); }
+
+.mypage-modal .li-thumb {
+  width: 36px;
+  height: 36px;
+  flex-shrink: 0;
+  background: rgba(255,255,255,0.06);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+}
+
+.mypage-modal .li-info { flex: 1; min-width: 0; }
+.mypage-modal .li-name { font-weight: 500; color: var(--c-text); }
+.mypage-modal .li-sub { font-size: 11px; color: var(--c-muted); margin-top: 2px; }
+.mypage-modal .prog-bar {
+  height: 4px;
+  background: rgba(255,255,255,0.08);
+  border-radius: 2px;
+  margin-top: 6px;
+  overflow: hidden;
+}
+.mypage-modal .prog-fill {
+  height: 100%;
+  background: rgba(255,255,255,0.25);
+  border-radius: 2px;
+}
+.mypage-modal .li-right { font-size: 12px; color: var(--c-muted); flex-shrink: 0; }
+
+/* ── 댓글 ── */
+.mypage-modal .cmt-item {
+  padding: 14px 0;
+  border-bottom: 1px solid var(--c-border);
+}
+
+.mypage-modal .cmt-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 6px;
+}
+
+.mypage-modal .cmt-target { font-size: 12px; color: var(--c-muted2); }
+.mypage-modal .cmt-date { font-size: 11px; color: var(--c-muted); }
+.mypage-modal .cmt-text { font-size: 13px; color: var(--c-text); line-height: 1.5; }
+.mypage-modal .cmt-actions { margin-top: 10px; display: flex; gap: 8px; }
+.mypage-modal .cmt-btn {
+  padding: 6px 12px;
+  font-size: 11px;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid var(--c-border2);
+  border-radius: 6px;
+  color: var(--c-text);
+  cursor: pointer;
+}
+.mypage-modal .cmt-btn.del { color: #ff8888; }
+
+/* ── 결제 내역 ── */
+.mypage-modal .chart-wrap {
+  height: 180px;
+  margin-bottom: 20px;
+}
+
+.mypage-modal .pay-item {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--c-border);
+}
+
+.mypage-modal .pay-icon { font-size: 20px; flex-shrink: 0; }
+.mypage-modal .pay-info { flex: 1; min-width: 0; }
+.mypage-modal .pay-name { font-weight: 500; color: var(--c-text); }
+.mypage-modal .pay-sub { font-size: 11px; color: var(--c-muted); margin-top: 2px; }
+.mypage-modal .pay-right { text-align: right; font-weight: 500; color: var(--c-text); }
+.mypage-modal .status-badge {
+  display: inline-block;
+  font-size: 10px;
+  padding: 2px 8px;
+  border-radius: 10px;
+  margin-top: 4px;
+}
+.mypage-modal .status-badge.confirmed { background: rgba(100,200,100,0.2); color: #a0e0a0; }
+.mypage-modal .status-badge.cancelled { background: rgba(200,100,100,0.2); color: #ff9999; }
+.mypage-modal .status-badge.pending { background: rgba(200,180,100,0.2); color: #ffcc66; }
+
+/* ── 예매 내역 ── */
+.mypage-modal .more-link {
+  color: var(--c-muted2);
+  font-size: 13px;
+  text-decoration: none;
+}
+.mypage-modal .more-link:hover { color: var(--c-text); }
+
+.mypage-modal .res-grid { display: flex; flex-direction: column; gap: 14px; }
+.mypage-modal .res-card {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid var(--c-border);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.mypage-modal .res-poster {
+  position: relative;
+  height: 100px;
+  overflow: hidden;
+}
+
+.mypage-modal .res-poster-bg {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+}
+
+.mypage-modal .res-poster-dim {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, transparent 0%, rgba(0,0,0,0.8) 100%);
+}
+
+.mypage-modal .res-content {
+  position: absolute;
+  bottom: 10px;
+  left: 14px;
+  right: 14px;
+  color: #fff;
+}
+
+.mypage-modal .res-name { font-size: 14px; font-weight: 600; }
+.mypage-modal .res-date { font-size: 11px; opacity: 0.9; margin-top: 4px; }
+.mypage-modal .res-info { padding: 14px; }
+.mypage-modal .res-venue,
+.mypage-modal .res-seat { font-size: 12px; color: var(--c-muted2); margin-bottom: 6px; }
+.mypage-modal .res-price {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 10px;
+}
+.mypage-modal .res-detail-btn {
+  padding: 6px 12px;
+  font-size: 11px;
+  background: rgba(255,255,255,0.1);
+  border: 1px solid var(--c-border2);
+  border-radius: 6px;
+  color: var(--c-text);
+  cursor: pointer;
+}
+
+.mypage-modal .res-empty {
+  text-align: center;
+  padding: 40px;
+  color: var(--c-muted);
+}
+.mypage-modal .res-empty-icon { font-size: 36px; margin-bottom: 10px; }
+
+/* ── 멤버십 ── */
+.mypage-modal .ms-card {
+  padding: 20px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid var(--c-border);
+  border-radius: 12px;
+  margin-bottom: 14px;
+}
+
+.mypage-modal .ms-title { font-size: 18px; font-weight: 700; color: var(--c-text); margin-bottom: 8px; }
+.mypage-modal .ms-expire { font-size: 12px; color: var(--c-muted); margin-bottom: 14px; }
+.mypage-modal .ms-benefits { display: flex; flex-wrap: wrap; gap: 8px; }
+.mypage-modal .ms-item {
+  padding: 6px 12px;
+  font-size: 12px;
+  background: rgba(255,255,255,0.05);
+  border-radius: 8px;
+  color: var(--c-muted2);
+}
+
+.mypage-modal .upgrade-btn {
+  width: 100%;
+  padding: 12px;
+  background: linear-gradient(135deg, rgba(200,170,80,0.3), rgba(150,120,50,0.2));
+  border: 1px solid rgba(200,170,80,0.4);
+  border-radius: 10px;
+  color: #e0c070;
+  font-weight: 600;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+/* ── 프로필 보기 (pv-) ── */
+.mypage-modal .pv-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--c-text);
+}
+
+.mypage-modal .pv-field {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--c-border);
+}
+
+.mypage-modal .pv-label {
+  width: 80px;
+  flex-shrink: 0;
+  font-size: 13px;
+  color: var(--c-muted);
+}
+
+.mypage-modal .pv-val {
+  flex: 1;
+  font-size: 13px;
+  color: var(--c-text);
+}
+
+.mypage-modal .pv-val.muted { color: var(--c-muted2); }
+
+.mypage-modal .pw-box {
+  margin-top: 24px;
+  padding-top: 24px;
+  border-top: 1px solid var(--c-border);
+}
+
+.mypage-modal .pw-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--c-text);
+  margin-bottom: 16px;
+}
+
+.mypage-modal .f-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+/* ── FORM ELEMENTS (입력창 색상 문제 해결 핵심) ── */
+.mypage-modal .f-group {
+  margin-bottom: 14px;
+}
+
+.mypage-modal label {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 13px;
+  color: var(--c-muted2);
+  font-weight: 500;
+}
+
+.mypage-modal .f-input,
+.mypage-modal .f-textarea {
+  width: 100%;
+  padding: 10px 14px;
+  background: rgba(255,255,255,0.04) !important;
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 8px;
+  color: #f2f2f2 !important;
+  font-size: 13px;
+  transition: all 0.2s;
+}
+
+.mypage-modal .f-input:focus,
+.mypage-modal .f-textarea:focus {
+  outline: none;
+  border-color: rgba(200,200,200,0.5);
+  background: rgba(255,255,255,0.08) !important;
+  box-shadow: 0 0 0 3px rgba(160,160,160,0.12);
+}
+
+.mypage-modal .f-textarea {
+  min-height: 84px;
+  resize: vertical;
+}
+
+.mypage-modal .f-input.valid,
+.mypage-modal .f-input.valid:focus {
+  border-color: rgba(109,190,130,0.6);
+  box-shadow: 0 0 0 2px rgba(109,190,130,0.15);
+}
+
+.mypage-modal .f-input.invalid,
+.mypage-modal .f-input.invalid:focus {
+  border-color: rgba(190,109,109,0.6);
+  box-shadow: 0 0 0 2px rgba(190,109,109,0.15);
+}
+
+/* 코드 입력 행 */
+.mypage-modal .code-row {
+  display: flex;
+  gap: 8px;
+}
+
+.mypage-modal .code-row .f-input {
+  flex: 1;
+}
+
+.mypage-modal .f-input--readonly,
+.mypage-modal .f-input:disabled {
+  background: rgba(255,255,255,0.02) !important;
+  color: var(--c-muted) !important;
+  cursor: default;
+  opacity: 0.9;
+}
+
+.mypage-modal .code-addon {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.mypage-modal .pw-timer {
+  font-size: 12px;
+  color: var(--c-muted);
+  min-width: 36px;
+}
+
+.mypage-modal .code-btn.sm {
+  padding: 0 12px;
+  font-size: 11px;
+}
+
+.mypage-modal .pw-code-field {
+  margin-top: 4px;
+}
+
+.mypage-modal .pw-change-btn {
+  margin-top: 8px;
+  margin-bottom: 4px;
+}
+
+/* 입력칸 하얗게 변하는 현상 방지 (autofill, 브라우저 기본 스타일) */
+.mypage-modal .f-input:-webkit-autofill,
+.mypage-modal .f-input:-webkit-autofill:hover,
+.mypage-modal .f-input:-webkit-autofill:focus,
+.mypage-modal .f-input:-webkit-autofill:active,
+.mypage-modal .f-textarea:-webkit-autofill,
+.mypage-modal .f-textarea:-webkit-autofill:hover,
+.mypage-modal .f-textarea:-webkit-autofill:focus,
+.mypage-modal .f-textarea:-webkit-autofill:active {
+  -webkit-box-shadow: 0 0 0 30px rgba(255,255,255,0.04) inset !important;
+  box-shadow: 0 0 0 30px rgba(255,255,255,0.04) inset !important;
+  -webkit-text-fill-color: #f2f2f2 !important;
+  transition: background-color 5000s ease-in-out 0s;
+}
+
+.mypage-modal .code-btn {
+  padding: 0 16px;
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.15);
+  color: var(--c-text);
+  border-radius: 8px;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.mypage-modal .code-btn:hover {
+  background: rgba(255,255,255,0.14);
+}
+
+/* 버튼들 */
+.mypage-modal .primary-btn {
+  padding: 10px 20px;
+  background: #fff;
+  color: #000;
+  border: none;
+  border-radius: 22px;
+  font-weight: 700;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.mypage-modal .primary-btn:hover {
+  opacity: 0.92;
+  transform: translateY(-1px);
+}
+
+.mypage-modal .outline-btn {
+  padding: 9px 18px;
+  background: transparent;
+  border: 1px solid rgba(255,255,255,0.2);
+  color: var(--c-text);
+  border-radius: 22px;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.mypage-modal .outline-btn:hover {
+  background: rgba(255,255,255,0.06);
+  border-color: rgba(255,255,255,0.35);
+}
+
+/* 위험 구역 */
+.mypage-modal .danger-zone {
+  margin-top: 32px;
+  padding: 16px;
+  background: rgba(200,60,60,0.08);
+  border: 1px solid rgba(200,60,60,0.2);
+  border-radius: 10px;
+}
+
+.mypage-modal .danger-label {
+  color: #ff7777;
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 12px;
+}
+
+.mypage-modal .danger-btn {
+  background: #c23c3c;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.mypage-modal .danger-btn:hover {
+  background: #d14d4d;
+}
+
+/* 애니메이션 */
+@keyframes mp-fadein  { from{opacity:0} to{opacity:1} }
+@keyframes mp-slideup {
+  from{opacity:0;transform:translateY(26px) scale(0.97)}
+  to  {opacity:1;transform:translateY(0)    scale(1)   }
+}

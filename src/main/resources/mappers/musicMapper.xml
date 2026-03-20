@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.spring.eze.music.dao.MusicDAO">
+
+    <resultMap id="rankingResultMap" type="com.spring.eze.music.dto.SongDTO">
+        <id property="songId" column="song_id"/>
+        <result property="artistName" column="name"/>
+        <result property="title" column="title"/>
+        <result property="coverImageUrl" column="cover_image_url"/>
+        <result property="totalScore" column="total_score"/>
+    </resultMap>
+
+    <!-- 주간 랭킹 -->
+    <select id="getWeeklyRanking" resultMap="rankingResultMap">
+        SELECT
+            s.song_id,
+            a.name,
+            s.title,
+            al.cover_image_url,
+            sc.total_score
+        FROM songs_tbl s
+        JOIN artists_tbl a
+            ON s.artist_id = a.artist_id
+        JOIN albums_tbl al
+            ON s.album_id = al.album_id
+        JOIN (
+            SELECT
+                song_id,
+                SUM(score) AS total_score
+            FROM song_score_tbl
+            WHERE created_at >= TRUNC(SYSDATE) - 7
+              AND created_at &lt; TRUNC(SYSDATE) + 1
+            GROUP BY song_id
+        ) sc
+            ON s.song_id = sc.song_id
+        ORDER BY sc.total_score DESC
+        FETCH FIRST 15 ROWS ONLY
+    </select>
+
+    <!-- 오늘의 히트곡 -->
+    <select id="getTodayHitSongs" resultMap="rankingResultMap">
+        SELECT
+            s.song_id,
+            a.name,
+            s.title,
+            al.cover_image_url,
+            sc.total_score
+        FROM songs_tbl s
+        JOIN artists_tbl a
+            ON s.artist_id = a.artist_id
+        JOIN albums_tbl al
+            ON s.album_id = al.album_id
+        JOIN (
+            SELECT
+                song_id,
+                SUM(score) AS total_score
+            FROM song_score_tbl
+            WHERE created_at >= SYSDATE - 1
+              AND created_at &lt; SYSDATE
+            GROUP BY song_id
+        ) sc
+            ON s.song_id = sc.song_id
+        ORDER BY sc.total_score DESC
+        FETCH FIRST 15 ROWS ONLY
+    </select>
+
+    <!-- 장르 랭킹 -->
+    <select id="getGenreRanking" parameterType="int" resultMap="rankingResultMap">
+        SELECT
+            s.song_id,
+            a.name,
+            s.title,
+            al.cover_image_url,
+            sc.total_score
+        FROM songs_tbl s
+        JOIN artists_tbl a
+            ON s.artist_id = a.artist_id
+        JOIN albums_tbl al
+            ON s.album_id = al.album_id
+        JOIN song_genre_tbl sg
+            ON s.song_id = sg.song_id
+        JOIN (
+            SELECT
+                song_id,
+                SUM(score) AS total_score
+            FROM song_score_tbl
+            WHERE created_at >= TRUNC(SYSDATE) - 7
+              AND created_at &lt; TRUNC(SYSDATE) + 1
+            GROUP BY song_id
+        ) sc
+            ON s.song_id = sc.song_id
+        WHERE sg.genre_id = #{genreId}
+        ORDER BY sc.total_score DESC
+        FETCH FIRST 15 ROWS ONLY
+    </select>
+
+    <!-- 점수 저장 -->
+	<insert id="insertSongScore">
+	    INSERT INTO song_score_tbl (
+	        score_id,
+	        user_id,
+	        song_id,
+	        score,
+	        created_at
+	    )
+	    VALUES (
+	        (SELECT NVL(MAX(score_id), 0) + 1 FROM song_score_tbl),
+	        #{userId},
+	        #{songId},
+	        #{score},
+	        SYSDATE
+	    )
+	</insert>
+    <!-- 곡상세 -->
+		<resultMap id="songDetailResultMap" type="com.spring.eze.music.dto.SongDTO">
+		    <id property="songId" column="song_id"/>
+		    <result property="title" column="title"/>
+		    <result property="artistName" column="artist_name"/>
+		    <result property="albumTitle" column="album_title"/>
+		    <result property="genreName" column="genre_name"/>
+		    <result property="genreId" column="genre_id"/>
+		    <result property="coverImageUrl" column="cover_image_url"/>
+		    <result property="songPath" column="song_path"/>
+		</resultMap>
+		
+		<select id="getSongDetail" parameterType="int" resultMap="songDetailResultMap">
+		    SELECT
+		        s.song_id,
+		        s.title,
+		        a.name AS artist_name,
+		        al.title AS album_title,
+		        g.name AS genre_name,
+		        g.genre_id,
+		        al.cover_image_url,
+		        s.song_path
+		    FROM songs_tbl s
+		    JOIN artists_tbl a
+		        ON s.artist_id = a.artist_id
+		    JOIN albums_tbl al
+		        ON s.album_id = al.album_id
+		    JOIN song_genre_tbl sg
+		        ON s.song_id = sg.song_id
+		    JOIN genres_tbl g
+		        ON sg.genre_id = g.genre_id
+		    WHERE s.song_id = #{songId}
+		</select>
+		
+		<select id="getSimilarSongs" parameterType="map" resultMap="songDetailResultMap">
+		    SELECT
+		        s.song_id,
+		        s.title,
+		        a.name AS artist_name,
+		        al.title AS album_title,
+		        g.name AS genre_name,
+		        g.genre_id,
+		        al.cover_image_url,
+		        s.song_path
+		    FROM songs_tbl s
+		    JOIN artists_tbl a
+		        ON s.artist_id = a.artist_id
+		    JOIN albums_tbl al
+		        ON s.album_id = al.album_id
+		    JOIN song_genre_tbl sg
+		        ON s.song_id = sg.song_id
+		    JOIN genres_tbl g
+		        ON sg.genre_id = g.genre_id
+		    WHERE sg.genre_id = #{genreId}
+		      AND s.song_id != #{songId}
+		    FETCH FIRST 10 ROWS ONLY
+		</select>
+		<!-- 노래연결 -->
+		<select id="getSongPath" parameterType="int" resultType="string">
+	    SELECT song_path
+	    FROM songs_tbl
+	    WHERE song_id = #{songId}
+		</select>
+</mapper>

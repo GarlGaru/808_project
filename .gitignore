@@ -29,6 +29,7 @@ replay_pid*
 #ide
 .vscode
 .idea
+.smarttomcat
 
 #env
 .env
@@ -53,10 +54,17 @@ tmp/
 *.swp
 *~.nib
 local.properties
-#.settings/
 .loadpath
 .recommenders
 target/
+
+#### 이 3개는 절대 포함 시키지 않기 ####
+.settings/
+.classpath
+.project
+####
+
+
 
 # External tool builders
 .externalToolBuilders/
@@ -112,3 +120,13 @@ target/
 .sts4-cache/
 
 # End of https://www.toptal.com/developers/gitignore/api/eclipse
+
+
+
+# music files
+*.mp3 
+*.wav
+*.flac
+
+
+

@@ -3,7 +3,7 @@
     <div class="container">
         <div class="row d-flex flex-wrap align-items-center">
             <div class="col-12 col-md-6">
-                <a href="#"><img src="${path}/resources/img/core-img/logo.png" alt="OneMusic logo"></a>
+                <a href="#"><img style="height: 50px;" src="${path}/resources/common/img/core-img/logo.png" alt="808 logo"></a>
                 <p class="copywrite-text">
                     Copyright &copy;<script>document.write(new Date().getFullYear());</script>
                     All rights reserved | This template is made with

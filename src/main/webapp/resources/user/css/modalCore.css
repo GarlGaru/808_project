@@ -1,0 +1,108 @@
+/* ============================================================
+   modalCore.css
+   ─────────────────────────────────────────────────────────────
+   authModal / mypageModal 공통 오버레이 기반 스타일
+
+   포함 내용:
+     - .mc-overlay   : position:fixed 오버레이 공통 기반
+     - 공통 CSS 변수: 색상, 반경 등
+     - @keyframes    : mc-fadein / mc-slideup (두 모달 공유)
+
+   사용 방법:
+     각 모달 overlay에 .mc-overlay 클래스 추가 후
+     모달별 CSS에서 세부 스타일 덮어씀
+
+   로드 순서:
+     modalCore.css → authModal.css → mypageModal.css
+   ─────────────────────────────────────────────────────────────
+   ⚠ 전역 리셋(*) 없음 — 모달 내부 격리만 담당
+========================================s==================== */
+
+/* ── 공통 CSS 변수 ── */
+:root {
+  /* 공통 색상 */
+  --modal-bg: rgba(0, 0, 0, 0.6);
+  --modal-blur: blur(14px);
+  --modal-text: #f2f2f2;
+  --modal-gray: rgba(242, 242, 242, 0.4);
+  --modal-muted: rgba(242, 242, 242, 0.38);
+  --modal-border: rgba(255, 255, 255, 0.06);
+  --modal-border2: rgba(255, 255, 255, 0.12);
+  --modal-shadow-d: rgba(0, 0, 0, 0.9);
+  --modal-shadow-l: rgba(255, 255, 255, 0.04);
+
+  /* 공통 모서리 반경 */
+  --modal-radius-card: 12px;  /* ← 더 둥글게 (기존 14px → 20px) */
+  --modal-radius-btn: 18px;
+  --modal-radius-input: 2px;
+  --modal-radius-small: 6px;
+  --modal-radius-medium: 10px;
+  --modal-radius-large: 12px;
+}
+
+/* ── 공통 오버레이 기반 ── */
+.mc-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: var(--modal-bg);
+  backdrop-filter: var(--modal-blur);
+  -webkit-backdrop-filter: var(--modal-blur);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'DM Sans', sans-serif;
+  color: var(--modal-gray);
+}
+
+/* ── 공통 닫기 버튼 기반 ──
+   각 모달에서 .mc-close-btn 에 위치/색상 override
+── */
+.mc-close-btn {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  z-index: 20;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid var(--modal-border);
+  color: rgba(242, 242, 242, 0.45);
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s, transform 0.2s;
+  /* Bootstrap .close 리셋 */
+  opacity: 1;
+  text-shadow: none;
+  padding: 0;
+  line-height: 1;
+}
+.mc-close-btn:hover {
+  background: rgba(255, 255, 255, 0.13);
+  color: var(--modal-text);
+  transform: rotate(90deg);
+}
+
+/* 플랫폼별 호버 색상 */
+.form_icon.google:hover { color: #ea4335; }
+.form_icon.naver:hover  { color: #03c75a; }
+
+/* ════════════════════════════════════
+   공통 애니메이션
+   ════════════════════════════════════ */
+
+/* 오버레이 페이드인 */
+@keyframes mc-fadein {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+/* 카드 슬라이드업 */
+@keyframes mc-slideup {
+  from { opacity: 0; transform: translateY(26px) scale(0.97); }
+  to   { opacity: 1; transform: translateY(0)    scale(1);    }
+}
