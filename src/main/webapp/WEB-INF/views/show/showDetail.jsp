@@ -6,6 +6,7 @@
 <html lang="ko">
 <%@ include file="/WEB-INF/views/common/common.jsp" %>
 <%@ include file="/WEB-INF/views/common/header.jsp" %>
+
 <head>
     <meta charset="UTF-8">
     <title>808 SHOW</title>
@@ -15,14 +16,36 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <link rel="stylesheet" type="text/css" href="https://npmcdn.com/flatpickr/dist/themes/dark.css">
 	<link rel="stylesheet" href="${path}/resources/show/css/showDetail.css">
+	<link rel="stylesheet" href="${path}/resources/show/css/show.css">
 	
 </head>
+<br><br>
 <body class="dark-mode">
 	<input type="hidden" id="showId" value="${dto.showId}">
 	<input type="hidden" id="contextPath" value="${pageContext.request.contextPath}">
-    <!-- 상단 공연 상세 페이지 -->
-    <div class="show-detail-wrapper">
+	
+	<div class="show-wrap">
+        <div class="show-top-menu-wrap">
+            <nav class="show-top-menu">
+                <a href="${path}/show/showList?category=concert&subCategory=all"
+                   class="menu-item ${menu eq 'concert' ? 'active' : ''}">콘서트</a>
 
+                <a href="${path}/show/showList?category=musical&subCategory=all"
+                   class="menu-item ${menu eq 'musical' ? 'active' : ''}">뮤지컬</a>
+
+                <a href="${path}/show/showList?category=play&subCategory=all"
+                   class="menu-item ${menu eq 'play' ? 'active' : ''}">연극</a>
+
+                <a href="${path}/show/ranking"
+                   class="menu-item ${menu eq 'ranking' ? 'active' : ''}">랭킹</a>
+
+                <a href="${path}/show/mypage/myTicket"
+                   class="menu-item ${menu eq 'myticket' ? 'active' : ''}">마이티켓</a>
+            </nav>
+        </div>
+	
+	 <!-- 상단 공연 상세 페이지 -->
+    <div class="show-detail-wrapper">
     <!-- 상단 공연 기본정보 -->
     <section class="detail-top">
         <div class="poster-area">
@@ -86,6 +109,7 @@
             <jsp:include page="/WEB-INF/views/show/tabs/info.jsp" />
         </div>
     </section>
+	</div>
 </div> 
 	
     <%@ include file="/WEB-INF/views/common/footer.jsp" %>
@@ -298,8 +322,7 @@
        const contextPath = $('#contextPath').val();
        const url = contextPath + "/show/seat?showId=" + showId + "&scheduleId=" + scheduleId;
        const popupName = "seatPopup";
-       const specs = "width=850,height=750,top=50,left=100,scrollbars=yes";
-       
+       const specs = "width=1400,height=950,top=50,left=100,scrollbars=yes,resizable=yes";
        window.open(url, popupName, specs);
    });
    </script>

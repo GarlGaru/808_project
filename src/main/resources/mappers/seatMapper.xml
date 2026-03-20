@@ -96,7 +96,8 @@
 		  <foreach collection="seatLabels" item="label" open="(" separator="," close=")">
 		  	#{label}
 		  </foreach>
-		  AND seat_status = 'AVAILABLE'
+		  AND (seat_status = 'AVAILABLE'
+		   OR (seat_status = 'HELD' AND hold_at &lt; SYSDATE - (5/1440)))
 	</update>
 	
 	<select id="selectSeatLayout" parameterType="String" resultMap="seatMap">
@@ -109,5 +110,16 @@
 	WHERE  venue_name = #{venueName}
 	ORDER BY row_no, col_no
 	</select>
+
+	<select id="selectScheduleInfo" parameterType="String" resultType="map">
+    SELECT schedule_id,
+           show_id,
+           TO_CHAR(play_date, 'YYYY-MM-DD') AS play_date,
+           TO_CHAR(play_date, 'DY', 'NLS_DATE_LANGUAGE=KOREAN') AS play_day,
+           start_time
+    FROM schedule_tbl
+    WHERE schedule_id = #{scheduleId}
+</select>
+
 	
  </mapper>

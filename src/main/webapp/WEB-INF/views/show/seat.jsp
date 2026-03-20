@@ -120,72 +120,91 @@
     <script src="${path}/resources/common/js/main.js"></script>
 
     <script>
-    $(document).ready(function(){
+	$(document).ready(function(){
 
-        $("input[name='selectedSeats']").on("change", function() {
-            const selectedCount = $("input[name='selectedSeats']:checked").length;
-            if (selectedCount > 4) {
-                $(this).prop("checked", false);
-                alert("좌석은 최대 4매까지 선택 가능합니다.");
-                return;
-            }
-            let selectedSeats = [];
-            let totalPrice = 0;
-            $("input[name='selectedSeats']:checked").each(function() {
-                selectedSeats.push($(this).val());
-                totalPrice += parseInt($(this).data("price"));
-            });
-            $("#display-seats").text(selectedSeats.length ? selectedSeats.join(", ") : "없음");
-            $("#display-price").text(selectedSeats.length ? totalPrice.toLocaleString() : "0");
+    function autoResizePopup() {
+        if (window.opener) {
+            const contentWidth  = document.body.scrollWidth  + 60;
+            const contentHeight = document.body.scrollHeight + 60;
+            const maxWidth = window.screen.availWidth - 50;
+            const maxHeight = window.screen.availHeight - 50;
+            const finalWidth  = Math.min(Math.max(contentWidth,  800), maxWidth);
+            const finalHeight = Math.min(Math.max(contentHeight, 600), maxHeight);
+            window.resizeTo(finalWidth, finalHeight);
+            const left = (window.screen.width  - finalWidth)  / 2;
+            const top  = (window.screen.height - finalHeight) / 2;
+            window.moveTo(left, top);
+        }
+    }
+
+    $(window).on("load", function() {
+        setTimeout(autoResizePopup, 100);
+    });
+    setTimeout(autoResizePopup, 300);
+
+    // ✅ 좌석 체크박스
+    $("input[name='selectedSeats']").on("change", function() {
+        const selectedCount = $("input[name='selectedSeats']:checked").length;
+        if (selectedCount > 4) {
+            $(this).prop("checked", false);
+            alert("좌석은 최대 4매까지 선택 가능합니다.");
+            return;
+        }
+        let selectedSeats = [];
+        let totalPrice = 0;
+        $("input[name='selectedSeats']:checked").each(function() {
+            selectedSeats.push($(this).val());
+            totalPrice += parseInt($(this).data("price"));
         });
+        $("#display-seats").text(selectedSeats.length ? selectedSeats.join(", ") : "없음");
+        $("#display-price").text(selectedSeats.length ? totalPrice.toLocaleString() : "0");
+    });
 
-        $(document).on("click", "#btn-reserve", function() {
-            const selectedSeats = [];
-            $("input[name='selectedSeats']:checked").each(function() {
-                selectedSeats.push($(this).val());
-            });
-            if (selectedSeats.length === 0) {
-                alert("좌석을 하나 이상 선택해주세요.");
-                return;
-            }
+    // ✅ 좌석 선택 완료 버튼
+    $(document).on("click", "#btn-reserve", function() {
+        const selectedSeats = [];
+        $("input[name='selectedSeats']:checked").each(function() {
+            selectedSeats.push($(this).val());
+        });
+        if (selectedSeats.length === 0) {
+            alert("좌석을 하나 이상 선택해주세요.");
+            return;
+        }
 
-            const showId = $("input[name='showId']").val();
-            const scheduleId = $("input[name='scheduleId']").val();
+        const showId = $("input[name='showId']").val();
+        const scheduleId = $("input[name='scheduleId']").val();
 
-            $.ajax({
-                url: "${path}/show/reserveCheck",
-                type: "POST",
-                traditional: true,
-                data: {
-                    showId: showId,
-                    scheduleId: scheduleId,
-                    selectedSeats: selectedSeats
-                },
-                success: function(res){
-                    if(res === "success"){
-                        const popupName = "seatPopup";
-                        const popupWidth = 1200;
-                        const popupHeight = 900;
-                        const left = (window.screen.width - popupWidth) / 2;
-                        const top = (window.screen.height - popupHeight) / 2;
-                        const specs = 'width=' + popupWidth + ',height=' + popupHeight + ',left=' + left + ',top=' + top;
-                        window.open("", popupName, specs);
-                        const $form = $("#reserveForm");
-                        $form.attr("target", popupName);
-                        $form.submit();
-                    } else if(res === "login_required") {
-                        alert("로그인 후 이용해주세요.");
-                    } else {
-                        alert("이미 선택된 좌석입니다. 다시 선택해주세요.");
-                        location.reload();
-                    }
-                },
-                error: function(){
-                    alert("좌석 확인 중 오류 발생");
+        $.ajax({
+            url: "${path}/show/reserveCheck",
+            type: "POST",
+            traditional: true,
+            data: {
+                showId: showId,
+                scheduleId: scheduleId,
+                selectedSeats: selectedSeats
+            },
+            success: function(res){
+                if(res === "success"){
+                    const popupName = "reservePopup";   
+                    const specs = "width=1200,height=850,top=50,left=100,scrollbars=yes";
+                    window.open("", popupName, specs);  
+                    const $form = $("#reserveForm");
+                    $form.attr("target", popupName);
+                    $form.submit();
+                } else if(res === "login_required") {
+                    alert("로그인 후 이용해주세요.");
+                } else {
+                    alert("이미 선택된 좌석입니다. 다시 선택해주세요.");
+                    location.reload();
                 }
-            });
+            },
+            error: function(){
+                alert("좌석 확인 중 오류 발생");
+            }
         });
     });
-    </script>
+
+});
+</script>
 </body>
 </html>

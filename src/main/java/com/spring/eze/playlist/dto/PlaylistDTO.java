@@ -9,6 +9,9 @@ public class PlaylistDTO {
     private String title;
     private PlaylistType listType;
 
+    public PlaylistDTO() {
+    }
+
     public PlaylistDTO(int playlistId, int userId, String title, PlaylistType listType) {
         this.playlistId = playlistId;
         this.userId = userId;
