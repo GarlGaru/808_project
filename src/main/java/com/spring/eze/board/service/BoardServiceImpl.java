@@ -29,46 +29,47 @@ public class BoardServiceImpl implements BoardService {
 	private BoardDAO dao;
 
 	// 1. 목록 조회 (페이징)
-	// [BoardServiceImpl.java]
 	@Override
 	public void BoardList(HttpServletRequest request, HttpServletResponse response, Model model)
 	        throws ServletException, IOException {
+	    
+	    // 1. pageNum과 pageSize 파라미터 읽기
 	    String pageNum = request.getParameter("pageNum");
-	    if (pageNum == null || pageNum.isEmpty()) {
-	        pageNum = "1";
-	    }
-	    String sort = request.getParameter("sort"); // 1. sort 파라미터 읽기 [cite: 20, 21]
+	    if (pageNum == null || pageNum.isEmpty()) pageNum = "1";
+
+	    String pageSizeStr = request.getParameter("pageSize"); // 추가된 부분
+	    if (pageSizeStr == null || pageSizeStr.isEmpty()) pageSizeStr = "10"; // 기본값 10
+	    
+	    String sort = request.getParameter("sort");
 	    String searchType = request.getParameter("searchType");
 	    String keyword = request.getParameter("keyword");
-	    
-	    
+
+	    // 2. Pageing 객체 생성 시 pageSize도 함께 전달 (생성자가 없다면 setter 사용)
 	    Pageing paging = new Pageing(pageNum);
-	    
+	    paging.setPageSize(Integer.parseInt(pageSizeStr)); // 이 메서드가 Pageing 클래스에 있어야 함
+
 	    Map<String, Object> map = new HashMap<>();
 	    map.put("searchType", searchType);
 	    map.put("keyword", keyword);
-	    
-	    
+
 	    int totalCount = dao.boardCnt(map);
 	    paging.setTotalCount(totalCount);
 
-	    //Map<String, Object> map = new HashMap<>();
+	    // 3. 계산된 startRow, endRow를 맵에 담기 (이제 pageSize에 따라 유동적으로 계산됨)
 	    map.put("startRow", paging.getStartRow());
 	    map.put("endRow", paging.getEndRow());
-	    map.put("sort", sort); // 2. MyBatis로 넘길 맵에 sort 추가
-	    
-	    List<BoardDTO> bestList = dao.getBestList();
+	    map.put("sort", sort);
 
+	    List<BoardDTO> bestList = dao.getBestList();
 	    List<BoardDTO> list = dao.boardList(map);
-	    System.out.println("DEBUG: list size = " + (list != null ? list.size() : "null"));
-	    
-	
+
 	    model.addAttribute("bestList", bestList);
 	    model.addAttribute("list", list);
 	    model.addAttribute("paging", paging);
-	    model.addAttribute("sort", sort); // 3. JSP에서 'checked' 상태 유지를 위해 다시 전달 [cite: 21, 22]
-	    model.addAttribute("searchType", searchType); // 3. JSP에서 'checked' 상태 유지를 위해 다시 전달 [cite: 21, 22]
-	    model.addAttribute("keyword", keyword); // 3. JSP에서 'checked' 상태 유지를 위해 다시 전달 [cite: 21, 22]
+	    model.addAttribute("sort", sort);
+	    model.addAttribute("searchType", searchType);
+	    model.addAttribute("keyword", keyword);
+	
 	    
 	    System.out.println("검색 타입: " + searchType);
 	    System.out.println("검색어: " + keyword);
@@ -238,5 +239,16 @@ public class BoardServiceImpl implements BoardService {
 	public List<BoardDTO> getList() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public int getTotalCnt(Map<String, Object> map) {
+	
+	    return dao.boardCnt(map); 
+	}
+	
+	@Override
+	public int getTodayCount() {
+	    return dao.boardCntToday(); // 맵퍼에 새로 만든 쿼리를 호출해요.
 	}
 }

@@ -157,5 +157,11 @@
 		WHERE
 		BNO = #{bno}
 	</update>
+	
+<select id="boardCntToday" resultType="int">
+    SELECT COUNT(*) 
+    FROM FREE_BOARD_TBL 
+    WHERE TO_CHAR(REGDATE, 'YYYY-MM-DD') = TO_CHAR(SYSDATE, 'YYYY-MM-DD')
+</select>
 
 </mapper>
