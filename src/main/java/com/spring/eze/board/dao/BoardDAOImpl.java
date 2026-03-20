@@ -64,4 +64,9 @@ public class BoardDAOImpl implements BoardDAO {
     public List<BoardDTO> getBestList() {
         return sqlSession.selectList(NS + ".getBestList"); //
     }
+
+	@Override
+	public int boardCntToday() {
+		return sqlSession.selectOne(NS + ".boardCntToday");
+	}
 }
