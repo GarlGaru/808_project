@@ -9,38 +9,38 @@ function initMusicReco(){
 
     // 컨텍스트 루트 경로 (recommend.jsp의 <html data-context-path="${path}"> 에서 주입)
     const path = document.documentElement.dataset.contextPath ?? '';
-    console.log("get path : " + path)
+    // console.log("get path : " + path)
 
-    /* ── 주간 인기곡 ─────────────────────────────────────────── */
+    /* ── 취향 기반 추천 ─────────────────────────────────────────── */
     MusicSlider({
-        mountId:  'weekly-slider-mount',
-        title:    '주간 인기곡',
-        subtitle: '이번 주 가장 많이 사랑받은 곡들이에요.',
-        apiUrl:   `${path}/music/weekly-ranking`,
+        mountId:  'personal-recommend-mount',
+        title:    '취향 기반 추천',
+        subtitle: '좋아할 만한 곡들을 모아봤어요.',
+        apiUrl:   `${path}/music/personal-recommend`,
         sliderId: 'weeklySlider',
-        label:    '주간 인기곡',
+        label:    '취향 기반 추천',
         path,
     });
 
-    /* ── 오늘의 히트곡 ───────────────────────────────────────── */
+    /* ── 좋아할만한 인기 트랙 ───────────────────────────────────────── */
     MusicSlider({
         mountId:  'today-slider-mount',
-        title:    '오늘의 히트곡',
-        subtitle: '오늘 많이 재생된 곡들을 모아봤어요.',
+        title:    '좋아할만한 인기 트랙',
+        subtitle: '나와 비슷한 취향의 사용자들이 많이 찾는 곡.',
         apiUrl:   `${path}/music/today-hits`,
         sliderId: 'todaySlider',
-        label:    '오늘의 히트곡',
+        label:    '좋아할만한 인기 트랙',
         path,
     });
 
-    /* ── 장르 인기곡 ─────────────────────────────────────────── */
+    /* ── 좋아할만한 최신 곡 ─────────────────────────────────────────── */
     MusicSlider({
         mountId:  'genre-slider-mount',
-        title:    '장르 인기곡',
-        subtitle: '지금 인기 있는 장르별 추천 곡이에요.',
+        title:    '좋아할만한 최신 곡',
+        subtitle: '새로나온 곡, 이런건 어떠세요?',
         apiUrl:   `${path}/music/genre-ranking`,
         sliderId: 'genreSlider',
-        label:    '장르 인기곡',
+        label:    '좋아할만한 최신 곡',
         path,
     });
 
