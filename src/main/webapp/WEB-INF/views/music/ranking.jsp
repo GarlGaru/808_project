@@ -10,28 +10,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>랭킹</title>
 
-    <!-- 공통 CSS -->
-    <link rel="stylesheet" href="${path}/resources/common/css/style.css">
-    <link rel="stylesheet" href="${path}/resources/common/style.css">
+
 
     <!-- 음악 전용 CSS -->
-    <link rel="stylesheet" href="${path}/resources/music/css/music-layout.css">
-    <link rel="stylesheet" href="${path}/resources/music/css/music-sidebar.css">
-    <link rel="stylesheet" href="${path}/resources/music/css/music-player.css">
+
     <link rel="stylesheet" href="${path}/resources/music/css/music-ranking.css">
 </head>
 <body class="dark-mode">
 
-    <%@ include file="/WEB-INF/views/common/common.jsp" %>
-    <%@ include file="/WEB-INF/views/common/header.jsp" %>
+
 
     <div class="music-layout-page">
         <div class="music-layout-content">
-
-            <!-- 왼쪽 사이드바 -->
-            <aside class="music-layout-aside">
-                <%@ include file="/WEB-INF/views/music/aside.jsp" %>
-            </aside>
 
             <!-- 랭킹 본문 -->
             <main class="music-layout-main">
@@ -67,7 +57,7 @@
                                     <div class="music-ranking-track">
                                         <c:forEach var="song" items="${weeklyRanking}">
                                             <div class="music-ranking-card"
-                                                 onclick="location.href='${path}/music/detail?songId=${song.songId}'">
+                                                 onclick="loadMainContent('${path}/music/detail?songId=${song.songId}')">
 
                                                 <div class="music-ranking-thumb-wrap">
                                                     <c:choose>
@@ -83,16 +73,14 @@
                                                         </c:otherwise>
                                                     </c:choose>
 
-                                                    <button type="button"
-                                                            class="music-ranking-play-btn"
-                                                            onclick="playRankingSong(event, this)"
-                                                            data-song-id="${song.songId}"
-                                                            data-title="${song.title}"
-                                                            data-artist="${song.artistName}"
-                                                            data-cover="${song.coverImageUrl}"
-                                                           >
-                                                        ▶
-                                                    </button>
+                                                 <button type="button"
+											        class="music-ranking-play-btn js-play-song"
+											        data-song-id="${song.songId}"
+											        data-title="${song.title}"
+											        data-artist="${song.artistName}"
+											        data-cover="${song.coverImageUrl}">
+												    ▶
+												</button>
                                                 </div>
 
                                                 <div class="music-ranking-card-body">
@@ -139,7 +127,7 @@
                                     <div class="music-ranking-track">
                                         <c:forEach var="song" items="${todayHitSongs}">
                                             <div class="music-ranking-card"
-                                                 onclick="location.href='${path}/music/detail?songId=${song.songId}'">
+                                                  onclick="loadMainContent('${path}/music/detail?songId=${song.songId}')">
 
                                                 <div class="music-ranking-thumb-wrap">
                                                     <c:choose>
@@ -211,7 +199,7 @@
                                     <div class="music-ranking-track">
                                         <c:forEach var="song" items="${genreRanking}">
                                             <div class="music-ranking-card"
-                                                 onclick="location.href='${path}/music/detail?songId=${song.songId}'">
+                                                  onclick="loadMainContent('${path}/music/detail?songId=${song.songId}')">
 
                                                 <div class="music-ranking-thumb-wrap">
                                                     <c:choose>
@@ -260,7 +248,7 @@
         </div>
             
 
-        <%@ include file="/WEB-INF/views/music/player.jsp" %>
+  
     </div>
 
     <script src="${path}/resources/common/js/jquery/jquery-2.2.4.min.js"></script>
@@ -314,44 +302,7 @@
                 track.style.transform = 'translateX(0)';
             });
         });
-
-        function playRankingSong(event, btn) {
-            event.stopPropagation();
-
-            const songId = btn.dataset.songId;
-            const title = btn.dataset.title;
-            const artist = btn.dataset.artist;
-            const cover = btn.dataset.cover;
-
-            $.ajax({
-                url: '${path}/music/songPath',
-                type: 'GET',
-                data: { songId: songId },
-                success: function(songPath) {
-                    if (!songPath || songPath.trim() === '') {
-                        alert('이 곡의 재생 파일 경로가 없습니다.');
-                        return;
-                    }
-
-                    const song = {
-                        songId: songId,
-                        title: title,
-                        artistName: artist,
-                        coverImageUrl: cover,
-                        songPath: songPath
-                    };
-
-                    if (window.setPlayerSong) {
-                        window.setPlayerSong(song);
-                    } else {
-                        alert('플레이어 함수가 연결되지 않았습니다.');
-                    }
-                },
-                error: function() {
-                    alert('곡 경로를 불러오지 못했습니다.');
-                }
-            });
-        }
-    </script>
+        </script>
+       
 </body>
 </html>
