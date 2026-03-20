@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -18,6 +19,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.spring.eze.user.dto.MypageBoardDTO;
 import com.spring.eze.user.dto.MypageCommentDTO;
+import com.spring.eze.user.dto.MypageMembershipDTO;
 import com.spring.eze.user.dto.MypageMonthlyStatDTO;
 import com.spring.eze.user.dto.MypagePaymentDTO;
 import com.spring.eze.user.dto.MypagePlayReportDTO;
@@ -119,6 +121,34 @@ public class MypageController {
 
         return mypageService.getMonthlyStats(loginUser.getUserId());
     }
+    
+    // ── 멤버쉽 정보 ─────────────────────────────
+    @RequestMapping(value = "/mypage", method = RequestMethod.GET)
+    public String mypageMain(HttpSession session, Model model) {
+        logger.info("<<< url => /mypage (메인 페이지 이동 및 세션 동기화) >>>");
+
+        // 1. 세션에서 로그인 유저 가져오기
+        UserDTO loginUser = getLoginUser(session);
+        if (loginUser == null) return "redirect:/login";
+
+        // 2. 서비스에서 검증된 멤버십 정보 조회 (null 또는 유효한 DTO 반환)
+        MypageMembershipDTO membership = mypageService.getMembershipInfo(loginUser.getUserId());
+        
+        // 3. [핵심 추가] DB 상태와 세션 가방의 등급 정보를 일치시키기
+        if (membership == null) {
+            // DB에 유효한 PRO 정보가 없다면 세션 등급을 FREE로 변경
+            loginUser.getProfile().setMembershipType("FREE");
+        } else {
+            // 유효한 정보가 있다면 세션 등급을 PRO로 유지/변경
+            loginUser.getProfile().setMembershipType("PRO");
+        }
+        
+        // 4. 모델에 담기 (만료일/D-Day 출력용)
+        model.addAttribute("membership", membership);
+
+        return "user/mypage"; 
+    }
+    
 
     // ── 808 플레이 리포트 ──────────────────────────
     // Lazy Loading — 플레이리포트 탭 클릭 시 최초 1회만 호출

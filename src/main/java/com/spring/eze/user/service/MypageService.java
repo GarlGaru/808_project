@@ -6,6 +6,7 @@ import javax.servlet.http.HttpSession;
 
 import com.spring.eze.user.dto.MypageBoardDTO;
 import com.spring.eze.user.dto.MypageCommentDTO;
+import com.spring.eze.user.dto.MypageMembershipDTO;
 import com.spring.eze.user.dto.MypageMonthlyStatDTO;
 import com.spring.eze.user.dto.MypagePaymentDTO;
 import com.spring.eze.user.dto.MypagePlayReportDTO;
@@ -31,6 +32,9 @@ public interface MypageService {
 
     // 월별 지출 합계 — Chart.js용
     public List<MypageMonthlyStatDTO> getMonthlyStats(int userId);
+    
+    // 멤버쉽 정보
+    public MypageMembershipDTO getMembershipInfo(int userId);
 
     // 808 플레이 리포트 — Lazy Loading (탭 클릭 시 최초 1회)
     // periodType: THIS_MONTH / LAST_MONTH / 3MONTH

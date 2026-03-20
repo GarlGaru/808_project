@@ -49,17 +49,14 @@
         <div class="sb-email"><c:out value="${loginUser.email}"/></div>
         <div class="sb-badges">
           <c:choose>
-            <c:when test="${loginUser.profile.membershipType eq 'ULTIMATE'}">
-              <span class="grade-badge ultimate">👑 Ultimate</span>
-            </c:when>
-            <c:when test="${loginUser.profile.membershipType eq 'PREMIUM'}">
-              <span class="grade-badge premium">⚡ Premium</span>
+            <c:when test="${loginUser.profile.membershipType eq 'PRO'}">
+              <span class="grade-badge ultimate">PRO</span>
             </c:when>
             <c:otherwise>
-              <span class="grade-badge free">🎵 Free</span>
+              <span class="grade-badge free">FREE</span>
             </c:otherwise>
           </c:choose>
-          <span class="level-badge" id="mpLevelBadge">🎵 Lv.24</span>
+          <span class="level-badge" id="mpLevelBadge">Lv.24</span>
         </div>
       </div>
       
@@ -67,28 +64,28 @@
 
       <nav class="sb-nav">
         <div class="nav-item active"
-             onclick="mpTab(this,'report','🎧 808 플레이 리포트','이번 달 나의 음악 청취 현황')">
-          <span class="nav-icon">🎧</span>808 플레이 리포트
+             onclick="mpTab(this,'report','808 플레이 리포트','이번 달 나의 음악 청취 현황')">
+          <span class="nav-icon"><i class="fa-sharp fa-solid fa-headphones"></i></span>808 플레이 리포트
         </div>
         <div class="nav-item"
-             onclick="mpTab(this,'comments','💬 내 댓글','내가 작성한 댓글 목록')">
-          <span class="nav-icon">💬</span>댓글
+             onclick="mpTab(this,'comments','내 댓글','내가 작성한 댓글 목록')">
+          <span class="nav-icon"><i class="fa-sharp fa-solid fa-message"></i></span>내 댓글
         </div>
         <div class="nav-item"
-             onclick="mpTab(this,'reservation','🎫 예매 내역','공연 예매 내역')">
-          <span class="nav-icon">🎫</span>예매 내역
+             onclick="mpTab(this,'reservation','예매 내역','공연 예매 내역')">
+          <span class="nav-icon"><i class="fa-sharp fa-solid fa-calendar-check"></i></span>예매 내역
         </div>
         <div class="nav-item"
-             onclick="mpTab(this,'payments','💳 결제 내역','결제 기록')">
-          <span class="nav-icon">💳</span>결제 내역
+             onclick="mpTab(this,'payments','결제 내역','결제 기록')">
+          <span class="nav-icon"><i class="fa-sharp fa-solid fa-credit-card"></i></span>결제 내역
         </div>
         <div class="nav-item"
-             onclick="mpTab(this,'membership','👑 멤버십 정보','현재 등급 및 혜택')">
-          <span class="nav-icon">👑</span>멤버십
+             onclick="mpTab(this,'membership','멤버십 정보','현재 등급 및 혜택')">
+          <span class="nav-icon"><i class="fa-solid fa-chess-queen"></i></span>멤버십
         </div>
         <div class="nav-item"
-             onclick="mpTab(this,'profile','👤 내정보 수정','프로필 및 비밀번호 변경')">
-          <span class="nav-icon">👤</span>내정보 수정
+             onclick="mpTab(this,'profile','내정보 수정','프로필 및 비밀번호 변경')">
+          <span class="nav-icon"><i class="fa-solid fa-id-badge"></i></span>내정보 수정
         </div>
       </nav>
     </div>
@@ -97,7 +94,8 @@
     <div class="main-pane">
 
       <div class="pane-header">
-        <div class="pane-title" id="mpTitle">🎧 808 플레이 리포트</div>
+        <div class="pane-title" id="mpTitle"><i class="fa-solid fa-headphones"></i> 808 플레이 리포트</div>
+        
         <div class="pane-sub"   id="mpSub">이번 달 나의 음악 청취 현황</div>
       </div>
 
@@ -168,37 +166,61 @@
         </div>
 
         <!-- ─── MEMBERSHIP ─── -->
-        <div class="tab-pane" id="tab-membership">
-          <div class="ms-card">
-            <div class="ms-title">
-              <c:choose>
-                <c:when test="${loginUser.profile.membershipType eq 'ULTIMATE'}">👑 Ultimate</c:when>
-                <c:when test="${loginUser.profile.membershipType eq 'PREMIUM'}">⚡ Premium</c:when>
-                <c:otherwise>🎵 Free</c:otherwise>
-              </c:choose>
-            </div>
-            <div class="ms-expire">만료: 2026년 4월 30일 · D-70</div>
-            <div class="ms-benefits">
-              <div class="ms-item">광고 없는 청취</div>
-              <div class="ms-item">오프라인 다운로드</div>
-              <div class="ms-item">고음질 스트리밍</div>
-              <div class="ms-item">공연 우선 예매</div>
-              <div class="ms-item">독점 콘텐츠</div>
-              <div class="ms-item">가사 실시간 지원</div>
-            </div>
-          </div>
-          <button class="upgrade-btn">👑 UPGRADE TO ULTIMATE →</button>
-          <div class="stat-card" style="margin-top:10px">
-            <div class="sec-title">Ultimate 추가 혜택</div>
-            <div class="ms-benefits">
-              <div class="ms-item">Premium 전체 포함</div>
-              <div class="ms-item">공연 VIP 입장</div>
-              <div class="ms-item">팬미팅 우선권</div>
-              <div class="ms-item">굿즈 20% 할인</div>
-            </div>
-          </div>
-        </div>
-
+		  <%-- 마이페이지 내 멤버십 탭 영역 --%>
+		<div class="tab-pane" id="tab-membership">
+		  <div class="ms-card">
+		    <div class="ms-title">
+		      <c:choose>
+		        <%-- 세션의 유저 정보로 등급 표시 (컨트롤러에서 실시간 동기화됨) --%>
+		        <c:when test="${loginUser.profile.membershipType eq 'PRO'}">PRO</c:when>
+		        <c:otherwise>FREE</c:otherwise>
+		      </c:choose>
+		    </div>
+		
+		    <%-- 1. 멤버십 정보가 존재할 때 (PRO 상태) --%>
+		    <c:if test="${not empty membership}">
+		      <div class="ms-expire">
+		        만료: ${membership.expireDate} · D-${membership.daysLeft}
+		      </div>
+		    </c:if>
+		    
+		    <%-- 2. 멤버십 정보가 없을 때 (FREE 상태) --%>
+		    <c:if test="${empty membership}">
+		      <div class="ms-expire">활성 상태인 멤버십이 없습니다.</div>
+		    </c:if>
+		
+		    <div class="ms-benefits">
+		      <div class="ms-item">광고 없는 청취</div>
+		      <div class="ms-item">오프라인 다운로드</div>
+		      <div class="ms-item">고음질 스트리밍</div>
+		      <div class="ms-item">공연 우선 예매</div>
+		      <div class="ms-item">독점 콘텐츠</div>
+		      <div class="ms-item">가사 실시간 지원</div>
+		    </div>
+		  </div>
+		
+		  <%-- [핵심] 등급에 따라 버튼 문구만 변경하여 노출 --%>
+		  <c:choose>
+		    <c:when test="${loginUser.profile.membershipType eq 'PRO'}">
+		      <%-- PRO일 때는 관리/해지 메뉴로 연결 --%>
+		      <button class="upgrade-btn" onclick="openSubscribeModal()">VIEW PLAN</button>
+		    </c:when>
+		    <c:otherwise>
+		      <%-- FREE일 때는 업그레이드 유도 --%>
+		      <button class="upgrade-btn" onclick="openSubscribeModal()">UPGRADE TO PRO</button>
+		    </c:otherwise>
+		  </c:choose>
+		
+		  <div class="stat-card" style="margin-top:10px">
+		    <div class="sec-title">PRO 멤버쉽 서비스</div>
+		    <div class="ms-benefits">
+		      <div class="ms-item">Premium 전체 포함</div>
+		      <div class="ms-item">공연 VIP 입장</div>
+		      <div class="ms-item">팬미팅 우선권</div>
+		      <div class="ms-item">굿즈 20% 할인</div>
+		    </div>
+		  </div>
+		</div>
         <!-- ─── PROFILE ─── -->
         <div class="tab-pane" id="tab-profile">
 
@@ -213,7 +235,7 @@
             </div>
             <div class="pv-field">
               <span class="pv-label">이메일</span>
-              <span class="pv-val muted"><c:out value="${loginUser.email}"/> 🔒</span>
+              <span class="pv-val muted"><c:out value="${loginUser.email} "/><i class="fa-sharp fa-solid fa-shield-halved"></i></span>
             </div>
             <div class="pv-field">
               <span class="pv-label">생년월일</span>
@@ -241,11 +263,10 @@
               <span class="pv-label">멤버십</span>
               <span class="pv-val">
                 <c:choose>
-                  <c:when test="${loginUser.profile.membershipType eq 'ULTIMATE'}">👑 Ultimate</c:when>
-                  <c:when test="${loginUser.profile.membershipType eq 'PREMIUM'}">⚡ Premium</c:when>
-                  <c:otherwise>🎵 Free</c:otherwise>
+                  <c:when test="${loginUser.profile.membershipType eq 'PRO'}">PRO</c:when>
+                  <c:otherwise>FREE</c:otherwise>
                 </c:choose>
-              </span>
+              <i class="fa-sharp fa-solid fa-circle-play"></i></span>
             </div>
             <div class="pv-field">
               <span class="pv-label">가입일</span>

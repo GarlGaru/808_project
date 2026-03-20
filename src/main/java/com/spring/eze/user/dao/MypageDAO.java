@@ -12,6 +12,7 @@ import com.spring.eze.user.dto.MypageTopSongDTO;
 import com.spring.eze.user.dto.MypageMonthlyStatDTO;
 import com.spring.eze.user.dto.MypageDayStatDTO;
 import com.spring.eze.user.dto.MypageGenreStatDTO;
+import com.spring.eze.user.dto.MypageMembershipDTO;
 import com.spring.eze.user.dto.UserDTO;
 
 public interface MypageDAO {
@@ -33,6 +34,9 @@ public interface MypageDAO {
 
     // 월별 지출 합계(최근 12개월) - Chart.js용
     public List<MypageMonthlyStatDTO> selectMonthlyStats(int userId);
+    
+    // 멤버쉽 정보
+    public MypageMembershipDTO selectMembershipInfo(int userId);
     
     // 808 플레리 리포트 요약
 	// SCORE = 1   → 재생 시작 (GLB_SCORE_PLAY)

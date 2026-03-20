@@ -11,6 +11,7 @@ import com.spring.eze.user.dto.MypageBoardDTO;
 import com.spring.eze.user.dto.MypageCommentDTO;
 import com.spring.eze.user.dto.MypageDayStatDTO;
 import com.spring.eze.user.dto.MypageGenreStatDTO;
+import com.spring.eze.user.dto.MypageMembershipDTO;
 import com.spring.eze.user.dto.MypageMonthlyStatDTO;
 import com.spring.eze.user.dto.MypagePaymentDTO;
 import com.spring.eze.user.dto.MypagePlayReportDTO;
@@ -79,6 +80,13 @@ public class MypageDAOImpl implements MypageDAO {
     public List<MypageMonthlyStatDTO> selectMonthlyStats(int userId) {
         return mapper().selectMonthlyStats(userId);
     }
+    
+    // 멤버쉽 정보
+	@Override
+	public MypageMembershipDTO selectMembershipInfo(int userId) {
+		return mapper().selectMembershipInfo(userId);
+	}
+    
 
     /* ────────────────────────────────────────────
        808 플레이 리포트
@@ -140,5 +148,6 @@ public class MypageDAOImpl implements MypageDAO {
     public int deleteUser(int userId) {
         return mapper().deleteUser(userId);
     }
+
 
 }

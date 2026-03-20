@@ -135,7 +135,26 @@
      GROUP BY TO_CHAR(APPROVED_AT, 'YYYY-MM')
      ORDER BY yearMonth ASC
   </select>
-
+  
+  <!-- 멤버쉽 -->
+<select id="selectMembershipInfo" parameterType="int" resultType="com.spring.eze.user.dto.MypageMembershipDTO">
+    SELECT * FROM (
+        SELECT 
+            ORDER_ID      AS orderId,
+            ITEM_NAME     AS itemName,
+            <!-- 승인일(APPROVED_AT) 기준 1개월 뒤를 만료일로 설정 -->
+            TO_CHAR(ADD_MONTHS(APPROVED_AT, 1), 'YYYY"년" MM"월" DD"일"') AS expireDate,
+            <!-- (만료일 - 현재시간)을 계산하여 소수점 올림(CEIL) 처리 -->
+            CEIL(ADD_MONTHS(APPROVED_AT, 1) - SYSDATE) AS daysLeft,
+            STATUS        AS status
+        FROM PAYMENT_ORDER
+        WHERE USER_ID = #{userId}
+          AND PAYMENT_TYPE = 'PRO'
+          AND STATUS = 'APPROVED'
+        ORDER BY APPROVED_AT DESC
+    )
+    WHERE ROWNUM = 1 <!-- 가장 최근 승인된 내역 1건만 조회 -->
+</select>
 
 <!-- ────────────────────────────────────────────
      808 플레이 리포트

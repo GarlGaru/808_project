@@ -10,8 +10,8 @@
 
 /* ── CSS 변수: overlay 스코프 ── */
 .mypage-overlay {
-  --c-bg:      #0d0f14;
-  --c-sidebar: #0f1319;
+  --c-bg: rgba(20, 20, 20, 0.82);
+  --c-sidebar: #0e0e0e;
   --c-text:    #f2f2f2;
   --c-gray:    rgba(242,242,242,0.4);
   --c-muted:   rgba(242,242,242,0.38);
@@ -32,8 +32,8 @@
   position: fixed;
   inset: 0;
   z-index: 9999;
-  background: rgba(0,0,0,0.55);
-  backdrop-filter: blur(14px);
+  background: rgba(0,0,0,0.35);
+  backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(14px);
   display: flex;
   align-items: center;
@@ -51,7 +51,9 @@
   position: relative;
   width: 980px;
   height: 680px;
-  background: var(--c-bg);
+  background: rgba(20,20,20,0.82);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
   border-radius: 14px;
   overflow: hidden;
   display: flex;

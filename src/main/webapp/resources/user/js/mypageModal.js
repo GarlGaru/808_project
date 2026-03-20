@@ -94,6 +94,33 @@
       }
     });
   };
+  
+  /* ────────────────────────────────────────────
+    멤버십 구독 취소
+──────────────────────────────────────────── */
+window.mpCancelMembership = function() {
+    if (!confirm('정말 멤버십 구독을 취소하시겠습니까?\n취소 즉시 PRO 혜택이 중단됩니다.')) return;
+
+    var CP = window.__AUTH_CP || '';
+    
+    $.ajax({
+        url: CP + '/mypage/cancelMembership', // 서버의 취소 컨트롤러 주소
+        type: 'POST',
+        dataType: 'json',
+        success: function(result) {
+            if (result === 1) {
+                alert('구독이 정상적으로 취소되었습니다.');
+                // [핵심] 페이지를 새로고침하여 컨트롤러가 세션을 FREE로 갱신하게 만듦
+                location.reload(); 
+            } else {
+                alert('취소 처리에 실패했습니다. 다시 시도해주세요.');
+            }
+        },
+        error: function() {
+            alert('서버 통신 중 오류가 발생했습니다.');
+        }
+    });
+};
 
   /* ────────────────────────────────────────────
      프로필 보기 ↔ 수정 토글

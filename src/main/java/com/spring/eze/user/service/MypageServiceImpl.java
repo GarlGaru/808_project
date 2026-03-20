@@ -19,6 +19,7 @@ import com.spring.eze.user.dto.EmailCodeDTO;
 import com.spring.eze.user.dto.MypageBoardDTO;
 import com.spring.eze.user.dto.MypageCommentDTO;
 import com.spring.eze.user.dto.MypageDayStatDTO;
+import com.spring.eze.user.dto.MypageMembershipDTO;
 import com.spring.eze.user.dto.MypageMonthlyStatDTO;
 import com.spring.eze.user.dto.MypagePaymentDTO;
 import com.spring.eze.user.dto.MypagePlayReportDTO;
@@ -110,6 +111,31 @@ public class MypageServiceImpl implements MypageService {
         return mypageDAO.selectMonthlyStats(userId);
     }
 
+    // 멤버십 정보 조회 및 검증
+    @Override
+    public MypageMembershipDTO getMembershipInfo(int userId) {
+        
+        // 1. DB에서 가장 최근의 PRO 결제 정보를 조회
+        MypageMembershipDTO membership = mypageDAO.selectMembershipInfo(userId);
+        
+        // 2. 정보가 존재할 경우에만 유효성 검증
+        if (membership != null) {
+            
+             // 결제 상태가 'APPROVED'(승인)가 아니라면 유효한 멤버십이 아님
+             // D-Day(daysLeft)가 0보다 작으면 이미 한 달이 지나 만료된 상태
+            boolean isApproved = "APPROVED".equals(membership.getStatus());
+            boolean isExpired = membership.getDaysLeft() < 0;
+
+            // 승인이 안났거나 이미 만료되었다면 사용자에게 정보를 보여주지 않음 (null 반환)
+            if (!isApproved || isExpired) {
+                return null;
+            }
+        }
+        
+        // 3. 위 검증을 모두 통과한 정상적인 정보(PRO 유지 중)만 반환
+        return membership;
+    }
+    
 
     /* ────────────────────────────────────────────
        808 플레이 리포트
@@ -287,5 +313,6 @@ public class MypageServiceImpl implements MypageService {
         session.invalidate();
         return 1;
     }
+
 
 }
