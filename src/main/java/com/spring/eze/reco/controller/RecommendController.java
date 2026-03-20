@@ -33,7 +33,7 @@ public class RecommendController {
     private MusicService musicService;
 
 
-    @GetMapping("/music/weekly-ranking")
+    @GetMapping("/music/personal-recommend")
     public @ResponseBody List<SongDTO> weekly(){
 
         List<SongDTO> list = musicService.getweeklyRanking();

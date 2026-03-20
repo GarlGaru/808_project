@@ -5,7 +5,7 @@
 
 <div data-init="initMusicReco">
     <%-- 각 슬라이더의 마운트 포인트 --%>
-    <div id="weekly-slider-mount"></div>
+    <div id="personal-recommend-mount"></div>
     <div id="today-slider-mount"></div>
     <div id="genre-slider-mount"></div>
 
