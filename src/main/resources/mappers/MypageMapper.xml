@@ -47,51 +47,57 @@
 
 
 <!-- ────────────────────────────────────────────
-     내가 쓴 글
+     내 활동 내역 (게시글, 댓글, 리뷰)
 ──────────────────────────────────────────── -->
-  <!-- 더보기 방식 10개씩 로드 -->
-  <!-- map 파라미터: userId, startRow, endRow -->
-  <select id="selectMyBoardList" parameterType="map" resultType="com.spring.eze.user.dto.MypageBoardDTO">
-    SELECT * FROM (
-      SELECT ROWNUM AS RNUM, A.*
-        FROM (
-              SELECT B.BNO
-                   , B.TITLE
-                   , B.CONTENT
-                   , B.REGDATE
-                   , B.VIEWCNT
-                FROM FREE_BOARD_TBL B
-               WHERE B.USER_ID = #{userId}
-               ORDER BY B.BNO DESC
-             ) A
-       WHERE ROWNUM &lt;= #{endRow}
-    )
-    WHERE RNUM &gt;= #{startRow}
-  </select>
-
-
-<!-- ────────────────────────────────────────────
-     내가 쓴 댓글
-──────────────────────────────────────────── -->
-  <!-- 더보기 방식 10개씩 로드, 원글 제목 JOIN -->
-  <select id="selectMyCommentList" parameterType="map" resultType="com.spring.eze.user.dto.MypageCommentDTO">
-    SELECT * FROM (
-      SELECT ROWNUM AS RNUM, A.*
-        FROM (
-              SELECT C.CNO
-                   , C.BNO
-                   , B.TITLE  AS boardTitle
-                   , C.CONTENT
-                   , C.REGDATE
-                FROM FREE_COMMENT_TBL C
-                JOIN FREE_BOARD_TBL   B ON C.BNO = B.BNO
-               WHERE C.USER_ID = #{userId}
-               ORDER BY C.CNO DESC
-             ) A
-       WHERE ROWNUM &lt;= #{endRow}
-    )
-    WHERE RNUM &gt;= #{startRow}
-  </select>
+	<select id="selectMyActivityList" parameterType="map" resultType="com.spring.eze.user.dto.MypageActivityDTO">
+	    SELECT * FROM (
+	        SELECT ROWNUM AS RNUM, A.*
+	        FROM (
+	            <!-- 1. 게시글: 원글 번호(BNO)와 제목(TITLE) -->
+	            SELECT 
+	                'BOARD'        AS type,
+	                BNO            AS targetNo,
+	                TO_CHAR(BNO)   AS parentId,    <!-- 자기 번호를 부모ID로 (이동용) -->
+	                TITLE          AS targetTitle, <!-- 원글 제목 --> 
+	                CONTENT        AS content,
+	                REGDATE        AS regdate
+	            FROM FREE_BOARD_TBL
+	            WHERE USER_ID = #{userId}
+	
+	            UNION ALL
+	
+	            <!-- 2. 댓글: 원글 번호(BNO)와 조인한 원글 제목(TITLE) -->
+	            SELECT 
+	                'REPLY'        AS type,
+	                R.CNO          AS targetNo,     <!-- 댓글 고유번호 -->
+	                TO_CHAR(R.BNO) AS parentId,     <!-- 이동할 원글 번호 -->
+	                B.TITLE        AS targetTitle,  <!-- 조인해서 가져온 원글 제목 -->
+	                TO_CLOB(R.CONTENT) AS content,
+	                R.REGDATE      AS regdate
+	            FROM FREE_COMMENT_TBL R
+	            JOIN FREE_BOARD_TBL B ON R.BNO = B.BNO
+	            WHERE R.USER_ID = #{userId}
+	
+	            UNION ALL
+	
+	            <!-- 3. 리뷰: 공연 ID(SHOW_ID)와 공연 제목(CONCERT_TITLE) -->
+	            SELECT 
+	                'REVIEW'       AS type,
+	                R.REVIEW_ID    AS targetNo,
+	                R.SHOW_ID      AS parentId,    <!-- 공연 ID (Kopis ID 등 문자열) -->
+	                S.TITLE        AS targetTitle,  <!-- 공연 제목 -->
+	                R.CONTENT      AS content,
+	                R.CREATED_AT   AS regdate       <!-- 리뷰는 작성일 컬럼명이 다를 수 있음 -->
+	            FROM REVIEW_TBL R
+				JOIN SHOW_TBL S ON R.SHOW_ID = S.SHOW_ID
+				WHERE R.USER_ID = #{userId}
+	
+	            ORDER BY regdate DESC
+	        ) A
+	        WHERE ROWNUM &lt;= #{endRow}
+	    )
+	    WHERE RNUM &gt;= #{startRow}
+	</select>
 
 
 <!-- ────────────────────────────────────────────
@@ -164,42 +170,42 @@
 
   <!-- 사용자 재생 통계 요약 -->
   <!-- 총 재생횟수(SCORE=1), 총 청취시간(SCORE=5 * 10초), 전월 청취시간, 고유 트랙 수 -->
-  <select id="selectPlaySummary" parameterType="int"
-          resultType="com.spring.eze.user.dto.MypagePlayReportDTO">
-    SELECT NVL(COUNT(CASE WHEN SCORE = 1 THEN 1 END), 0)
-               AS totalPlayCount
+  <select id="selectPlaySummary" parameterType="map"
+        resultType="com.spring.eze.user.dto.MypagePlayReportDTO">
+  SELECT NVL(COUNT(CASE WHEN SCORE = #{scorePlay}     THEN 1 END), 0)
+             AS totalPlayCount
 
-         , NVL(COUNT(CASE WHEN SCORE = 5 THEN 1 END) * 10, 0)
-               AS totalPlayTimeSec
+       , NVL(COUNT(CASE WHEN SCORE = #{scoreInterval} THEN 1 END) * 10, 0)
+             AS totalPlayTimeSec
 
-         , NVL(COUNT(CASE WHEN SCORE = 5
-                           AND CREATED_AT >= ADD_MONTHS(TRUNC(SYSDATE, 'MM'), -1)
-                           AND CREATED_AT  &lt; TRUNC(SYSDATE, 'MM')
-                      THEN 1 END) * 10, 0)
-               AS prevMonthPlayTimeSec
+       , NVL(COUNT(CASE WHEN SCORE = #{scoreInterval}
+                         AND CREATED_AT >= ADD_MONTHS(TRUNC(SYSDATE, 'MM'), -1)
+                         AND CREATED_AT  &lt; TRUNC(SYSDATE, 'MM')
+                    THEN 1 END) * 10, 0)
+             AS prevMonthPlayTimeSec
 
-         , NVL(COUNT(DISTINCT CASE WHEN SCORE = 1 THEN SONG_ID END), 0)
-               AS uniqueTrackCount
+       , NVL(COUNT(DISTINCT CASE WHEN SCORE = #{scorePlay} THEN SONG_ID END), 0)
+             AS uniqueTrackCount
 
-      FROM SONG_SCORE_TBL
-     WHERE USER_ID = #{userId}
-  </select>
+    FROM SONG_SCORE_TBL
+   WHERE USER_ID = #{userId}
+</select>
 
 
   <!-- 요일별 재생수 -->
   <!-- SCORE=5 기준 — 실제 청취 행 카운트 -->
   <!-- TO_CHAR(CREATED_AT, 'D') → Oracle 요일 인덱스 (1=일 ~ 7=토) -->
   <!-- 데이터 없는 요일은 row 안나옴 → Service에서 1~7 배열 0채움 처리 -->
-  <select id="selectPlayCountByDay" parameterType="int"
-          resultType="com.spring.eze.user.dto.MypageDayStatDTO">
-    SELECT TO_NUMBER(TO_CHAR(CREATED_AT, 'D')) AS dayIndex
-         , COUNT(*)                             AS playCount
-      FROM SONG_SCORE_TBL
-     WHERE USER_ID = #{userId}
-       AND SCORE   = 5
-     GROUP BY TO_CHAR(CREATED_AT, 'D')
-     ORDER BY TO_NUMBER(TO_CHAR(CREATED_AT, 'D')) ASC
-  </select>
+<select id="selectPlayCountByDay" parameterType="map"
+        resultType="com.spring.eze.user.dto.MypageDayStatDTO">
+  SELECT TO_NUMBER(TO_CHAR(CREATED_AT, 'D')) AS dayIndex
+       , COUNT(*)                             AS playCount
+    FROM SONG_SCORE_TBL
+   WHERE USER_ID = #{userId}
+     AND SCORE   = #{scoreInterval}
+   GROUP BY TO_CHAR(CREATED_AT, 'D')
+   ORDER BY TO_NUMBER(TO_CHAR(CREATED_AT, 'D')) ASC
+</select>
 
 
   <!-- 탑 장르 Top4 -->
@@ -207,29 +213,29 @@
   <!-- SONG_GENRE_TBL: 스키마에 존재하는 테이블 — songs_tbl.genre_id와 중복이지만 정규화 테이블 사용 -->
   <!-- [주의] SONG_GENRE_TBL에 더미 데이터도 INSERT 필요 (dummy_data 참고) -->
   <!-- XML 내부 주석은 SQL 안에 두면 안 됨 → 쿼리 외부로 이동 처리 -->
-  <select id="selectTopGenres" parameterType="int"
-          resultType="com.spring.eze.user.dto.MypageGenreStatDTO">
-    SELECT *
-      FROM (
-            SELECT G.NAME                                           AS genreName
-                 , COUNT(*)                                         AS playCount
-                 , ROUND(COUNT(*) * 100 / SUM(COUNT(*)) OVER(), 0) AS percentage
-              FROM (
-                    SELECT SONG_ID
-                      FROM SONG_SCORE_TBL
-                     WHERE USER_ID = #{userId}
-                       AND SCORE   = 5
-                     GROUP BY SONG_ID
-                    HAVING COUNT(*) &gt;= 3
-                   ) VALID_SONGS
-              JOIN SONGS_TBL      S  ON VALID_SONGS.SONG_ID = S.SONG_ID
-              JOIN SONG_GENRE_TBL SG ON S.SONG_ID            = SG.SONG_ID
-              JOIN GENRES_TBL     G  ON SG.GENRE_ID          = G.GENRE_ID
-             GROUP BY G.NAME
-             ORDER BY playCount DESC
-           )
-     WHERE ROWNUM &lt;= 4
-  </select>
+<select id="selectTopGenres" parameterType="map"
+        resultType="com.spring.eze.user.dto.MypageGenreStatDTO">
+  SELECT *
+    FROM (
+          SELECT G.NAME                                           AS genreName
+               , COUNT(*)                                         AS playCount
+               , ROUND(COUNT(*) * 100 / SUM(COUNT(*)) OVER(), 0) AS percentage
+            FROM (
+                  SELECT SONG_ID
+                    FROM SONG_SCORE_TBL
+                   WHERE USER_ID = #{userId}
+                     AND SCORE   = #{scoreInterval}
+                   GROUP BY SONG_ID
+                  HAVING COUNT(*) &gt;= 3
+                 ) VALID_SONGS
+            JOIN SONGS_TBL      S  ON VALID_SONGS.SONG_ID = S.SONG_ID
+            JOIN SONG_GENRE_TBL SG ON S.SONG_ID            = SG.SONG_ID
+            JOIN GENRES_TBL     G  ON SG.GENRE_ID          = G.GENRE_ID
+           GROUP BY G.NAME
+           ORDER BY playCount DESC
+         )
+   WHERE ROWNUM &lt;= 4
+</select>
 
 
   <!-- 탑 곡 Top10 -->
@@ -248,7 +254,7 @@
               JOIN SONGS_TBL      S  ON SS.SONG_ID  = S.SONG_ID
               JOIN ARTISTS_TBL    A  ON S.ARTIST_ID = A.ARTIST_ID
              WHERE SS.USER_ID = #{userId}
-               AND SS.SCORE   = 1
+               AND SS.SCORE   = #{scorePlay}
                <choose>
                  <when test="periodType == 'THIS_MONTH'">
                    AND SS.CREATED_AT >= TRUNC(SYSDATE, 'MM')
@@ -271,8 +277,8 @@
   <!-- 탑 아티스트 Top10 -->
   <!-- COUNT(DISTINCT SS.SONG_ID) → 재생한 고유 곡 수 기준 -->
   <!-- coverImageUrl: 가장 최근 앨범 커버 (MAX RELEASE_DATE 서브쿼리) -->
-  <select id="selectTopArtists" parameterType="int"
-          resultType="com.spring.eze.user.dto.MypageTopArtistDTO">
+  <select id="selectTopArtists" parameterType="map"
+        resultType="com.spring.eze.user.dto.MypageTopArtistDTO">
     SELECT *
       FROM (
             SELECT A.ARTIST_ID  AS artistId
@@ -293,7 +299,7 @@
               JOIN SONGS_TBL      S  ON SS.SONG_ID  = S.SONG_ID
               JOIN ARTISTS_TBL    A  ON S.ARTIST_ID = A.ARTIST_ID
              WHERE SS.USER_ID = #{userId}
-               AND SS.SCORE   = 1
+               AND SS.SCORE   = #{scorePlay}
              GROUP BY A.ARTIST_ID, A.NAME
              ORDER BY playCount DESC
            )

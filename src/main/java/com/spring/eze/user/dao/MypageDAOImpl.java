@@ -7,8 +7,7 @@ import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import com.spring.eze.user.dto.MypageBoardDTO;
-import com.spring.eze.user.dto.MypageCommentDTO;
+import com.spring.eze.user.dto.MypageActivityDTO;
 import com.spring.eze.user.dto.MypageDayStatDTO;
 import com.spring.eze.user.dto.MypageGenreStatDTO;
 import com.spring.eze.user.dto.MypageMembershipDTO;
@@ -44,18 +43,13 @@ public class MypageDAOImpl implements MypageDAO {
     /* ────────────────────────────────────────────
        활동 내역
     ──────────────────────────────────────────── */
+    
+    // 통합 활동 내역 조회 (userId, startRow, endRow 포함된 Map)
+	@Override
+	public List<MypageActivityDTO> selectMyActivityList(Map<String, Object> map) {
+		return mapper().selectMyActivityList(map);
+	}
 
-    // 내가 쓴 글 - 더보기 방식
-    @Override
-    public List<MypageBoardDTO> selectMyBoardList(Map<String, Object> map) {
-        return mapper().selectMyBoardList(map);
-    }
-
-    // 내가 쓴 댓글 - 더보기 방식
-    @Override
-    public List<MypageCommentDTO> selectMyCommentList(Map<String, Object> map) {
-        return mapper().selectMyCommentList(map);
-    }
 
     /* ────────────────────────────────────────────
        예매 내역
@@ -93,20 +87,20 @@ public class MypageDAOImpl implements MypageDAO {
     ──────────────────────────────────────────── */
 
     @Override
-    public MypagePlayReportDTO selectPlaySummary(int userId) {
-        return mapper().selectPlaySummary(userId);
+    public MypagePlayReportDTO selectPlaySummary(Map<String, Object> map) {
+        return mapper().selectPlaySummary(map);
     }
 
     // 플레이 리포트 - 요일별 재생수
     @Override
-    public List<MypageDayStatDTO> selectPlayCountByDay(int userId) {
-        return mapper().selectPlayCountByDay(userId);
+    public List<MypageDayStatDTO> selectPlayCountByDay(Map<String, Object> map) {
+        return mapper().selectPlayCountByDay(map);
     }
     
     // 플레이 리포트 - 탑 장르
     @Override
-    public List<MypageGenreStatDTO> selectTopGenres(int userId) {
-        return mapper().selectTopGenres(userId);
+    public List<MypageGenreStatDTO> selectTopGenres(Map<String, Object> map) {
+        return mapper().selectTopGenres(map);
     }
 
     // 탑 곡 - Top10
@@ -117,8 +111,8 @@ public class MypageDAOImpl implements MypageDAO {
 
     // 탑 아티스트 - Top10
     @Override
-    public List<MypageTopArtistDTO> selectTopArtists(int userId) {
-        return mapper().selectTopArtists(userId);
+    public List<MypageTopArtistDTO> selectTopArtists(Map<String, Object> map) {
+        return mapper().selectTopArtists(map);
     }
 
     /* ────────────────────────────────────────────

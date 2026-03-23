@@ -21,23 +21,42 @@
 /* ── 공통 CSS 변수 ── */
 :root {
   /* 공통 색상 */
-  --modal-bg: rgba(0, 0, 0, 0.6);
-  --modal-blur: blur(14px);
-  --modal-text: #f2f2f2;
-  --modal-gray: rgba(242, 242, 242, 0.4);
-  --modal-muted: rgba(242, 242, 242, 0.38);
-  --modal-border: rgba(255, 255, 255, 0.06);
-  --modal-border2: rgba(255, 255, 255, 0.12);
+  --modal-bg:       rgba(0, 0, 0, 0.6);
+  --modal-blur:     blur(14px);
+  --modal-text:     #f2f2f2;
+  --modal-gray:     rgba(242, 242, 242, 0.4);
+  --modal-muted:    rgba(242, 242, 242, 0.38);
+  --modal-border:   rgba(255, 255, 255, 0.06);
+  --modal-border2:  rgba(255, 255, 255, 0.12);
   --modal-shadow-d: rgba(0, 0, 0, 0.9);
   --modal-shadow-l: rgba(255, 255, 255, 0.04);
 
+  /* 공통 카드/사이드바 배경
+     auth: #060606(카드) / #0e0e0e(사이드)
+     mypage: rgba(20,20,20,0.82)(카드) / #0e0e0e(사이드)
+     사이드바는 완전히 동일 → 공통화
+     카드 배경은 각자 override */
+  --modal-sidebar-bg:   #0e0e0e;
+
+  /* 공통 그림자
+     auth .auth-main / mypage .mypage-modal 동일 값 */
+  --modal-card-shadow:  12px 12px 20px var(--modal-shadow-d), -4px -4px 12px var(--modal-shadow-l);
+
+  /* 사이드바 우측 그림자 — auth .auth-switch / mypage .sidebar 동일 값 */
+  --modal-side-shadow:  4px 0 20px rgba(0, 0, 0, 0.6);
+
+  /* 입력 valid / invalid 색상
+     auth: rgb(109,190,130) / mypage: rgba(109,190,130,0.6) → 공통 기준값 */
+  --modal-ok-color:     rgba(109, 190, 130, 0.8);
+  --modal-err-color:    rgba(190, 109, 109, 0.8);
+
   /* 공통 모서리 반경 */
-  --modal-radius-card: 12px;  /* ← 더 둥글게 (기존 14px → 20px) */
-  --modal-radius-btn: 18px;
-  --modal-radius-input: 2px;
-  --modal-radius-small: 6px;
+  --modal-radius-card:   12px;
+  --modal-radius-btn:    18px;
+  --modal-radius-input:   2px;
+  --modal-radius-small:   6px;
   --modal-radius-medium: 10px;
-  --modal-radius-large: 12px;
+  --modal-radius-large:  12px;
 }
 
 /* ── 공통 오버레이 기반 ── */
@@ -90,6 +109,21 @@
 /* 플랫폼별 호버 색상 */
 .form_icon.google:hover { color: #ea4335; }
 .form_icon.naver:hover  { color: #03c75a; }
+
+/* ════════════════════════════════════
+   공통 autofill 재정의
+   auth는 전역 input 에, mypage는 스코프 안에 각자 선언 → 여기서 통합
+   각 모달 CSS에서 배경색(inset box-shadow)만 override
+   ════════════════════════════════════ */
+.mc-overlay input:-webkit-autofill,
+.mc-overlay input:-webkit-autofill:hover,
+.mc-overlay input:-webkit-autofill:focus,
+.mc-overlay input:-webkit-autofill:active {
+  -webkit-text-fill-color: var(--modal-text) !important;
+  caret-color: var(--modal-text) !important;
+  transition: background-color 9999s ease-in-out 0s;
+  /* 배경색은 각 모달에서 box-shadow inset으로 override */
+}
 
 /* ════════════════════════════════════
    공통 애니메이션
