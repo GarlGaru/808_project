@@ -3,6 +3,11 @@
 <c:set var="path" value="${pageContext.request.contextPath}" />
 
 <div class="music-home-wrap">
+	
+<%-- 	<form action="${path}/music/search" method="get">
+	    <input type="text" name="keyword" placeholder="곡명 또는 아티스트 검색">
+	    <button type="submit">검색</button>
+	</form> --%>
 
     <!-- ========================= 1) 주간 인기곡 ========================= -->
 	<section class="music-home-block">
@@ -50,15 +55,15 @@
 	                                    </c:otherwise>
 	                                </c:choose>
 	
-	                                <button type="button"
-	                                        class="music-home-play js-play-song"
-	                                        data-song-id="${song.songId}"
-	                                        data-title="${song.title}"
-	                                        data-artist="${song.artistName}"
-	                                        data-cover="${empty song.coverImageUrl ? '/resources/music/img/default_album.jpg' : song.coverImageUrl}"
-	                                        aria-label="${song.title} 재생">
-	                                    ▶
-	                                </button>
+	                              <button type="button"
+        class="music-home-play-btn js-play-song"
+        data-song-id="${song.songId}"
+        data-title="${song.title}"
+        data-artist="${song.artistName}"
+        data-cover="${empty song.coverImageUrl ? '/resources/music/img/default_album.jpg' : song.coverImageUrl}"
+        onclick="event.stopPropagation(); playerManager.playByButton(this);">
+    ▶
+</button>
 	                            </div>
 	
 	                            <div class="music-home-body"
@@ -128,16 +133,15 @@
                                         </c:otherwise>
                                     </c:choose>
 
-                            <button type="button"
-                                    class="music-home-play js-play-song"
-                                    onclick="event.stopPropagation();"
-                                    data-song-id="${song.songId}"
-                                    data-title="${song.title}"
-                                    data-artist="${song.artistName}"
-                                    data-cover="${empty song.coverImageUrl ? '/resources/music/img/default_album.jpg' : song.coverImageUrl}"
-                                    aria-label="${song.title} 재생">
-                                ▶
-                            </button>
+                         			  <button type="button"
+        class="music-home-play-btn js-play-song"
+        data-song-id="${song.songId}"
+        data-title="${song.title}"
+        data-artist="${song.artistName}"
+        data-cover="${empty song.coverImageUrl ? '/resources/music/img/default_album.jpg' : song.coverImageUrl}"
+        onclick="event.stopPropagation(); playerManager.playByButton(this);">
+    ▶
+</button>
                                 </div>
 
                                 <div class="music-home-body">
@@ -206,15 +210,15 @@
 	                                    </c:otherwise>
 	                                </c:choose>
 	
-	                                <button type="button"
-	                                        class="music-home-play js-play-song"
-	                                        data-song-id="${song.songId}"
-	                                        data-title="${song.title}"
-	                                        data-artist="${song.artistName}"
-	                                        data-cover="${empty song.coverImageUrl ? '/resources/music/img/default_album.jpg' : song.coverImageUrl}"
-	                                        aria-label="${song.title} 재생">
-	                                    ▶
-	                                </button>
+	                      <button type="button"
+        class="music-home-play-btn js-play-song"
+        data-song-id="${song.songId}"
+        data-title="${song.title}"
+        data-artist="${song.artistName}"
+        data-cover="${empty song.coverImageUrl ? '/resources/music/img/default_album.jpg' : song.coverImageUrl}"
+        onclick="event.stopPropagation(); playerManager.playByButton(this);">
+    ▶
+</button>
 	                            </div>
 	
 	                            <div class="music-home-body"

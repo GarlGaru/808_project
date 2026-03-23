@@ -8,10 +8,12 @@ import com.spring.eze.user.dto.UserDTO;
 import com.spring.eze.music.dto.ArtistDTO;
 import com.spring.eze.music.dto.SongDTO;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -172,9 +174,9 @@ public class MusicController {
     }
 
     // 좋아요 점수
-    @GetMapping("/likeScore")
+    @GetMapping("/toggleLike")
     @ResponseBody
-    public String recordLikeScore(@RequestParam int songId, HttpSession session) {
+    public String toggleLike(@RequestParam int songId, HttpSession session) {
 
         UserDTO loginUser = (UserDTO) session.getAttribute("loginUser");
 
@@ -183,9 +185,39 @@ public class MusicController {
         }
 
         int userId = loginUser.getUserId();
-        musicService.addLikeScore(songId, userId);
+        return musicService.toggleLike(songId, userId);
+    }
+    
+    @GetMapping("/likeStatus")
+    @ResponseBody
+    public String likeStatus(@RequestParam int songId, HttpSession session) {
 
-        return "success";
+        UserDTO loginUser = (UserDTO) session.getAttribute("loginUser");
+
+        if (loginUser == null) {
+            return "noLogin";
+        }
+
+        int userId = loginUser.getUserId();
+        int likeSum = musicService.getLikeStatus(songId, userId);
+
+        return likeSum > 0 ? "liked" : "unliked";
+    }
+    
+    @GetMapping("/likedList")
+    public String likedList(HttpSession session, Model model) {
+
+        UserDTO loginUser = (UserDTO) session.getAttribute("loginUser");
+
+        if (loginUser == null) {
+            model.addAttribute("likedSongs", java.util.Collections.emptyList());
+            return "music/likedList";
+        }
+
+        int userId = loginUser.getUserId();
+        model.addAttribute("likedSongs", musicService.getLikedSongs(userId));
+
+        return "music/likedList";
     }
     //곡상세 페이지
     @GetMapping("/detail")
@@ -204,9 +236,20 @@ public class MusicController {
         return "music/detail";
     }
     //노래연결
+    @GetMapping(value = "/songPath", produces = "text/plain; charset=UTF-8")
     @ResponseBody
-    @GetMapping("/songPath")
     public String getSongPath(@RequestParam("songId") int songId) {
         return musicService.getSongPath(songId);
     }
+    //검색
+    @RequestMapping("/search")
+    public String seach(HttpServletRequest request,HttpServletResponse response, Model model)
+				throws ServletException, IOException{
+			
+			log.info("<<</search.jq>>>");
+			
+			
+			return "music/search";
+		}
+    
 }

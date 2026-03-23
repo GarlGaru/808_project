@@ -2,10 +2,6 @@
 <%@ include file="/WEB-INF/views/common/setting.jsp" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 
-
-    <!-- 음악 전용 CSS -->
-
-
 <body class="dark-mode">
 
 
@@ -17,8 +13,6 @@
             <main class="music-layout-main">
                 <div class="music-ranking-page">
 
-               
-
                     <!-- 1) 최근 인기 랭킹 -->
                     <section class="music-ranking-block">
                         <div class="music-ranking-block-header">
@@ -26,7 +20,8 @@
                                 <h2 class="music-ranking-block-title">최근 인기 랭킹</h2>
                                 <p class="music-ranking-block-desc">가장 많이 재생된 곡들을 확인해보세요.</p>
                             </div>
-
+						
+						<!--  슬라이더 버튼 -->
                             <div class="music-ranking-controls">
                                 <button type="button"
                                         class="music-ranking-arrow"
@@ -39,12 +34,13 @@
                                     ›
                                 </button>
                             </div>
+                            
                         </div>
-
+<!--주간 랭킹----------------------------------------------------  -->
                         <c:choose>
                             <c:when test="${not empty weeklyRanking}">
                                 <div class="music-ranking-viewport" id="weeklyRankingSlider">
-                                    <div class="music-ranking-track">
+                                    <div class="music-ranking-track" data-playlist-scope>
                                         <c:forEach var="song" items="${weeklyRanking}">
                                             <div class="music-ranking-card"
                                                  onclick="loadMainContent('${path}/music/detail?songId=${song.songId}')">
@@ -63,22 +59,24 @@
                                                         </c:otherwise>
                                                     </c:choose>
 
-                                                 <button type="button"
-											        class="music-ranking-play-btn js-play-song"
-											        data-song-id="${song.songId}"
-											        data-title="${song.title}"
-											        data-artist="${song.artistName}"
-											        data-cover="${song.coverImageUrl}">
+                                                <button type="button"
+												        class="music-ranking-play-btn js-play-song"
+												        onclick="playRankingSong(event, this)"
+												        data-song-id="${song.songId}"
+												        data-title="${song.title}"
+												        data-artist="${song.artistName}"
+												        data-cover="${empty song.coverImageUrl ? '/resources/music/img/default_album.jpg' : song.coverImageUrl}">
 												    ▶
 												</button>
                                                 </div>
 
                                                 <div class="music-ranking-card-body">
                                                     <div class="music-ranking-card-title">${song.title}</div>
-                                                     <a href="${path}/music/artist?artistId=${song.artistId}"
-														class="music-artist-link" 
-				                                        onclick="event.stopPropagation();">
-														${song.artistName} </a>
+								                        <button type="button"
+														        class="music-artist-link"
+														        onclick="event.stopPropagation(); loadMainContent('${path}/music/artist?artistId=${song.artistId}');">
+														    ${song.artistName}
+														</button>
                                                    
                                                 </div>
                                             </div>
@@ -117,7 +115,7 @@
                         <c:choose>
                             <c:when test="${not empty todayHitSongs}">
                                 <div class="music-ranking-viewport" id="todayRankingSlider">
-                                    <div class="music-ranking-track">
+                                   <div class="music-ranking-track" data-playlist-scope>
                                         <c:forEach var="song" items="${todayHitSongs}">
                                             <div class="music-ranking-card"
                                                   onclick="loadMainContent('${path}/music/detail?songId=${song.songId}')">
@@ -137,24 +135,23 @@
                                                     </c:choose>
 
                                                     <button type="button"
-                                                            class="music-ranking-play-btn"
-                                                            onclick="playRankingSong(event, this)"
-                                                            data-song-id="${song.songId}"
-                                                            data-title="${song.title}"
-                                                            data-artist="${song.artistName}"
-                                                            data-cover="${song.coverImageUrl}"
-                                                            >
-                                                        ▶
-                                                    </button>
+													        class="music-ranking-play-btn js-play-song"
+													        onclick="playRankingSong(event, this)"
+													        data-song-id="${song.songId}"
+													        data-title="${song.title}"
+													        data-artist="${song.artistName}"
+													        data-cover="${empty song.coverImageUrl ? '/resources/music/img/default_album.jpg' : song.coverImageUrl}">
+													    ▶
+													</button>
                                                 </div>
 
                                                 <div class="music-ranking-card-body">
                                                     <div class="music-ranking-card-title">${song.title}</div>
-                                                     <a href="${path}/music/artist?artistId=${song.artistId}"
-														class="music-artist-link" 
-				                                        onclick="event.stopPropagation();">
-														${song.artistName} </a>
-                                               
+	                                                     <button type="button"
+														        class="music-artist-link"
+														        onclick="event.stopPropagation(); loadMainContent('${path}/music/artist?artistId=${song.artistId}');">
+														    ${song.artistName}
+														</button>
                                                 </div>
                                             </div>
                                         </c:forEach>
@@ -192,7 +189,7 @@
                         <c:choose>
                             <c:when test="${not empty genreRanking}">
                                 <div class="music-ranking-viewport" id="genreRankingSlider">
-                                    <div class="music-ranking-track">
+                                    <div class="music-ranking-track" data-playlist-scope>
                                         <c:forEach var="song" items="${genreRanking}">
                                             <div class="music-ranking-card"
                                                   onclick="loadMainContent('${path}/music/detail?songId=${song.songId}')">
@@ -212,24 +209,23 @@
                                                     </c:choose>
 
                                                     <button type="button"
-                                                            class="music-ranking-play-btn"
-                                                            onclick="playRankingSong(event, this)"
-                                                            data-song-id="${song.songId}"
-                                                            data-title="${song.title}"
-                                                            data-artist="${song.artistName}"
-                                                            data-cover="${song.coverImageUrl}"
-                                                           >
-                                                        ▶
-                                                    </button>
+													        class="music-ranking-play-btn js-play-song"
+													        onclick="playRankingSong(event, this)"
+													        data-song-id="${song.songId}"
+													        data-title="${song.title}"
+													        data-artist="${song.artistName}"
+													        data-cover="${empty song.coverImageUrl ? '/resources/music/img/default_album.jpg' : song.coverImageUrl}">
+													    ▶
+													</button>
                                                 </div>
 
                                                 <div class="music-ranking-card-body">
                                                     <div class="music-ranking-card-title">${song.title}</div>
-                                                     <a href="${path}/music/artist?artistId=${song.artistId}"
-														class="music-artist-link" 
-				                                        onclick="event.stopPropagation();">
-														${song.artistName} </a>
-                                                   
+	                                                    <button type="button"
+														        class="music-artist-link"
+														        onclick="event.stopPropagation(); loadMainContent('${path}/music/artist?artistId=${song.artistId}');">
+														    ${song.artistName}
+														</button>
                                                 </div>
                                             </div>
                                         </c:forEach>
@@ -245,9 +241,5 @@
                 </div>
             </main>
         </div>
-            
 
-  
     </div>
-
-   

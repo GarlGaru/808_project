@@ -43,21 +43,18 @@
 
                 <!-- 2) 액션 버튼 -->
                 <section class="music-artist-actions">
-                    <button type="button"
-                            class="music-artist-play-main-btn"
-                            <c:if test="${not empty artistSongs}">
-                                onclick="playerManager.playByButton(this);"
-                                data-song-id="${artistSongs[0].songId}"
-                                data-title="${artistSongs[0].title}"
-                                data-artist="${artistSongs[0].artistName}"
-                                data-cover="${empty artistSongs[0].coverImageUrl ? '/resources/music/img/default_album.jpg' : artistSongs[0].coverImageUrl}"
-                            </c:if>>
-                        ▶
-                    </button>
+<c:if test="${not empty artistSongs}">
+    <button type="button"
+            class="music-artist-play-main-btn js-play-song"
+            data-song-id="${artistSongs[0].songId}"
+            data-title="${artistSongs[0].title}"
+            data-artist="${artistSongs[0].artistName}"
+            data-cover="${empty artistSongs[0].coverImageUrl ? '/resources/music/img/default_album.jpg' : artistSongs[0].coverImageUrl}"
+            onclick="event.stopPropagation(); playerManager.playByButton(this);">
+        ▶
+    </button>
+</c:if>
 
-                    <button type="button" class="music-artist-follow-btn">
-                        팔로우하기
-                    </button>
 
                     <button type="button" class="music-artist-more-btn">
                         ···
@@ -109,15 +106,15 @@
                                 </div>
 
                                 <div class="music-artist-col-play">
-                                    <button type="button"
-                                            class="music-artist-row-play-btn js-play-song"
-                                            data-song-id="${song.songId}"
-                                            data-title="${song.title}"
-                                            data-artist="${song.artistName}"
-                                            data-cover="${empty song.coverImageUrl ? '/resources/music/img/default_album.jpg' : song.coverImageUrl}"
-                                            onclick="event.stopPropagation(); playerManager.playByButton(this);">
-                                        ▶
-                                    </button>
+  <button type="button"
+        class="music-artist-play-btn js-play-song"
+        data-song-id="${song.songId}"
+        data-title="${song.title}"
+        data-artist="${song.artistName}"
+        data-cover="${empty song.coverImageUrl ? '/resources/music/img/default_album.jpg' : song.coverImageUrl}"
+        onclick="event.stopPropagation(); playerManager.playByButton(this);">
+    ▶
+</button>
                                 </div>
                             </div>
                         </c:forEach>

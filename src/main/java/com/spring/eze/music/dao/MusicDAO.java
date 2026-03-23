@@ -45,7 +45,12 @@ public interface MusicDAO {
     public ArtistDTO getArtistDetail(int artistId);
     public List<SongDTO> getSongsByArtist(int artistId);
     
+    //좋아요
+    public int getLikeScoreSum(int songId, int userId);
+    public List<SongDTO> getLikedSongs(int userId);
     
-    
- 
+    //검색
+    public List<SongDTO> getSearhSong(String keyword);
+    public List<ArtistDTO> getSearhArtist(String keyword);
+
 }

@@ -2,14 +2,8 @@
 <%@ include file="/WEB-INF/views/common/setting.jsp" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 
-
-
-
-
     <div class="music-layout-page">
         <div class="music-layout-content">
-
-
 
             <!-- 상세 본문 -->
             <main class="music-layout-main">
@@ -63,19 +57,22 @@
                          ========================= -->
                     <section class="music-detail-actions">
                         <!-- 큰 재생 버튼 -->
-                    <button type="button"
-                        class="music-detail-row-play-btn js-play-song"
-                        data-song-id="${song.songId}"
-                        data-title="${song.title}"
-                        data-artist="${song.artistName}"
-                        data-cover="${song.coverImageUrl}">
-                        ▶
-                    </button>
+	                    <button type="button"
+						        class="music-detail-row-play-btn js-play-song"
+						        data-song-id="${song.songId}"
+						        data-title="${song.title}"
+						        data-artist="${song.artistName}"
+						        data-cover="${empty song.coverImageUrl ? '/resources/music/img/default_album.jpg' : song.coverImageUrl}">
+						    ▶
+						</button>
 
                         <!-- 좋아요 -->
-                        <button type="button" class="music-detail-icon-btn" title="좋아요">
-                            ♡
-                        </button>
+		                <button type="button"
+						        id="btnLike"
+						        class="music-detail-icon-btn js-like-song"
+						        aria-pressed="false">
+						    ♡
+						</button>
 
                         <!-- 추가 -->
                         <button type="button" class="music-detail-icon-btn" title="추가">
@@ -191,14 +188,13 @@
 
                                     <div class="music-detail-col-play">
                                    <button type="button"
-								        class="music-detail-row-play-btn js-play-song"
-								        data-song-id="${sim.songId}"
-								        data-title="${sim.title}"
-								        data-artist="${sim.artistName}"
-								       data-cover="${empty sim.coverImageUrl ? '/resources/music/img/default_album.jpg' : sim.coverImageUrl}"
-       								   onclick="event.stopPropagation(); playerManager.playByButton(this);">
-									    ▶
-									</button>
+						        class="music-detail-row-play-btn js-play-song"
+						        data-song-id="${sim.songId}"
+						        data-title="${sim.title}"
+						        data-artist="${sosimng.artistName}"
+						        data-cover="${empty sim.coverImageUrl ? '/resources/music/img/default_album.jpg' : sim.coverImageUrl}">
+						    ▶
+						</button>
 						
 									</div>
                                 </div>
@@ -213,5 +209,48 @@
     <script src="${path}/resources/common/bootstrap-4.6.2-dist/js/bootstrap.bundle.min.js"></script>
     <script src="${path}/resources/common/js/main.js"></script>
 
-
+		<script>
+		$(function () {
+		    $(document).on('click', '.js-like-song', function (e) {
+		        e.stopPropagation();
+		
+		        const $btn = $(this);
+		        const songId = $btn.data('song-id');
+		
+		        if (!songId) {
+		            alert('곡 정보가 없습니다.');
+		            return;
+		        }
+		
+		        $.ajax({
+		            url: '${path}/music/toggleLike',
+		            type: 'GET',
+		            data: { songId: songId },
+		            success: function (res) {
+		                if (res === 'liked') {
+		                    $btn.addClass('is-liked');
+		                    $btn.text('♥');
+		                } else if (res === 'unliked') {
+		                    $btn.removeClass('is-liked');
+		                    $btn.text('♡');
+		                } else if (res === 'noLogin') {
+		                    alert('로그인 후 이용 가능합니다.');
+		                } else {
+		                    alert('좋아요 처리에 실패했습니다.');
+		                }
+		            },
+		            error: function () {
+		                alert('서버 오류가 발생했습니다.');
+		            }
+		        });
+		    });
+		});
+		</script>
+	<script>
+document.addEventListener('DOMContentLoaded', function () {
+    if (window.likeManager) {
+        window.likeManager.setSong('${song.songId}');
+    }
+});
+</script>
 
