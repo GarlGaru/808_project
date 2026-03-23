@@ -98,24 +98,22 @@
     </select>
 
     <!-- 점수 저장 -->
-    <insert id="insertSongScore">
-        INSERT INTO song_score_tbl
-        (
-            score_id,
-            user_id,
-            song_id,
-            score,
-            created_at
-        )
-        VALUES
-        (
-            song_score_seq.NEXTVAL,
-            #{userId},
-            #{songId},
-            #{score},
-            SYSDATE
-        )
-    </insert>
+	<insert id="insertSongScore">
+	    INSERT INTO song_score_tbl (
+	        score_id,
+	        user_id,
+	        song_id,
+	        score,
+	        created_at
+	    )
+	    VALUES (
+	        (SELECT NVL(MAX(score_id), 0) + 1 FROM song_score_tbl),
+	        #{userId},
+	        #{songId},
+	        #{score},
+	        SYSDATE
+	    )
+	</insert>
     <!-- 곡상세 -->
 		<resultMap id="songDetailResultMap" type="com.spring.eze.music.dto.SongDTO">
 		    <id property="songId" column="song_id"/>

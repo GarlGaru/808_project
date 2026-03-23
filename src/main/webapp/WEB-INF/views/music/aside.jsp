@@ -23,21 +23,21 @@
             <!-- 메인 홈으로 이동 -->
             <button type="button"
                     class="music-side-btn"
-                    onclick="location.href='${path}/music'">
+                    onclick="loadMainContent('${path}/music/mainstory')">
                 MUSIC HOME
             </button>
 
             <!-- 추천 페이지로 이동 -->
             <button type="button"
                     class="music-side-btn"
-                    onclick="location.href='${path}/music/recommend'">
+                    onclick="loadMainContent('${path}/music/recommend')">
                 추천별 보기
             </button>
 
             <!-- 랭킹 페이지로 이동 -->
             <button type="button"
                     class="music-side-btn"
-                    onclick="location.href='${path}/music/ranking'">
+                    onclick="loadMainContent('${path}/music/ranking')">
                 랭킹별 보기
             </button>
         </div>
@@ -45,38 +45,49 @@
         <!-- 구분선 -->
         <hr class="music-side-divider">
 
-        <!-- 
-            플레이리스트/라이브러리 영역
-        -->
+
+        <!-- 플레이리스트/라이브러리 영역 -->
         <div class="music-side-section" id="sidePlaylist">
 
-            <!-- 내 플레이리스트 -->
-            <div class="music-side-item create-playlist">
-                <div class="music-side-icon">+</div>
-                <div class="music-side-info">
-                    <div class="music-side-title">내 플레이리스트</div>
-                    <div class="music-side-meta">새 리스트 만들기</div>
-                </div>
-            </div>
-
             <!-- 좋아요 리스트 -->
-            <div class="music-side-item">
-                <div class="music-side-icon">♥</div>
+            <div class="music-side-item" id="btnGetLikeList">
+                <div class="music-side-icon">
+                    <i class="bi bi-heart-fill"></i>
+                </div>
                 <div class="music-side-info">
                     <div class="music-side-title">좋아요 표시한 곡</div>
                     <div class="music-side-meta">내 라이브러리</div>
                 </div>
             </div>
-
             <!-- 최근 재생 -->
-            <div class="music-side-item">
-                <div class="music-side-icon">♪</div>
+            <div class="music-side-item" id="btnGetHistoryList">
+                <div class="music-side-icon">
+                    <i class="bi bi-clock-history"></i>
+                </div>
                 <div class="music-side-info">
-                    <div class="music-side-title">최근 재생한 곡</div>
-                    <div class="music-side-meta">최근 청취 기록</div>
+                    <div class="music-side-title">기록</div>
+                    <div class="music-side-meta">최근 재생 목록</div>
                 </div>
             </div>
 
+            <!-- 새 재생목록 만들기 -->
+            <div class="music-side-item create-playlist" id="btnNewPlaylist">
+                <div class="music-side-icon">
+                    <i class="bi bi-plus-lg"></i>
+                </div>
+                <div class="music-side-info">
+                    <div class="music-side-title">새 재생목록</div>
+                    <div class="music-side-meta">플레이리스트 만들기</div>
+                </div>
+            </div>
+
+            <!-- NORMAL 플레이리스트 컨테이너 -->
+            <div id="normalPlaylistContainer"></div>
+
         </div>
+
+
     </div>
 </div>
+
+<script type="module" src="${path}/resources/music/js/playlist.js"></script>
