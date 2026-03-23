@@ -13,7 +13,7 @@
 
 /* ── CSS 변수 ── */
 .mypage-overlay {
-  --c-bg:      rgba(20,20,20,0.82);
+  --c-bg:      rgba(8, 8, 10, 0.88);
   --c-sidebar: linear-gradient(160deg, #111 0%, #0e0e0e 100%);
   --c-text:    #f2f2f2;
   --c-gray:    rgba(242,242,242,0.4);
@@ -64,8 +64,8 @@
   width: 980px;
   height: 680px;
   background: var(--c-bg);
-  backdrop-filter: blur(6px);
-  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(24px) saturate(1.6);
+  -webkit-backdrop-filter: blur(24px) saturate(1.6);
   border-radius: 14px;
   overflow: hidden;
   display: flex;
@@ -93,6 +93,18 @@
   flex-direction: column;
   overflow: hidden;
   box-shadow: 4px 0 20px rgba(0,0,0,0.6);
+}
+
+/* 이거 아래에 추가 */
+.mypage-modal .sidebar::before {
+  content: '';
+  position: absolute;
+  top: -40px;
+  left: -40px;
+  width: 200px;
+  height: 200px;
+  background: radial-gradient(circle, rgba(124,109,240,0.15) 0%, transparent 70%);
+  pointer-events: none;
 }
 
 .mypage-modal .sb-prof {
@@ -213,6 +225,7 @@
   flex: 1;
   padding: 24px 32px;
   overflow-y: auto;
+  background: rgba(255,255,255,0.02);
 }
 .mypage-modal .pane-body::-webkit-scrollbar       { width: 6px; }
 .mypage-modal .pane-body::-webkit-scrollbar-track  { background: transparent; }
@@ -488,7 +501,7 @@
 .mypage-modal .upgrade-btn {
   width: 100%;
   padding: 10px;
-  background: rgba(232,93,4,0.2);
+  background: linear-gradient(135deg, rgba(200,170,80,0.3), rgba(150,120,50,0.2));
   border: none;
   border-radius: 6px;
   color: var(--c-text);
@@ -678,7 +691,15 @@
 .mypage-modal .act-badge--reply  { background: rgba(100,160,255,0.15); color: #93c5fd; }
 .mypage-modal .act-badge--review { background: rgba(100,200,100,0.18); color: #86efac; }
 
-/* ── 아티스트 썸네일 — 원형 ── */
+/* ── 앨범커버 썸네일 — 8px 라운드 ── */
+.mypage-modal .li-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+/* ── 아티스트 썸네일 — 원형 (앨범커버 override) ── */
 .mypage-modal .li-thumb--artist {
   border-radius: 50%;
 }
@@ -690,11 +711,14 @@
 }
 
 /* ── stat-num 요일(문자 길이 가변) 크기 ── */
-.mypage-modal .stat-num--day { font-size: 17px; }
+.mypage-modal .stat-num--day { font-size: 22px; }
 
 /* ── stat-card 패딩 변형 ── */
 
-/* ── 플레이 리포트 stat-card 그라데이션 — 제거 ── */
+/* ── 플레이 리포트 요약 3개 카드 — 블랙 글라스 그라데이션 ── */
+#tab-report .stat-grid .stat-card {
+  background: linear-gradient(160deg, rgba(255,255,255,0.07) 0%, rgba(255,255,255,0.02) 100%);
+}
 .mypage-modal .stat-card--inner { padding: 14px; }
 .mypage-modal .stat-card--flex  { flex: 1; }
 .mypage-modal .stat-card--ms-info { margin-top: 10px; }
@@ -747,6 +771,49 @@
   display: flex;
   gap: 7px;
 }
+
+/* CSS 튤립(Bootstrap tooltip 을 못 써서)  */
+.mypage-modal .mp-tip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: transparent;
+  border: 1px solid var(--c-muted);
+  color: var(--c-muted);
+  font-size: 9px;
+  font-weight: 600;
+  cursor: default;
+  position: relative;
+  margin-left: 4px;
+  vertical-align: middle;
+}
+
+.mypage-modal .mp-tip::after {
+  content: attr(data-tip);
+  position: absolute;
+  bottom: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(20,20,20,0.95);
+  color: var(--c-text);
+  font-size: 11px;
+  line-height: 1.5;
+  padding: 6px 10px;
+  border-radius: 6px;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.2s;
+  z-index: 100;
+}
+
+.mypage-modal .mp-tip:hover::after {
+  opacity: 1;
+}
+
 
 /* ── field-msg 색상 상태 ── */
 .mypage-modal .field-msg.msg--ok    { color: #4ade80; }

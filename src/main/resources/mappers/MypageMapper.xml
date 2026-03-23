@@ -249,10 +249,12 @@
             SELECT S.SONG_ID    AS songId
                  , S.TITLE      AS title
                  , A.NAME       AS artistName
+                 , AL.COVER_IMAGE_URL AS coverImageUrl
                  , COUNT(*)     AS playCount
-              FROM SONG_SCORE_TBL SS
-              JOIN SONGS_TBL      S  ON SS.SONG_ID  = S.SONG_ID
-              JOIN ARTISTS_TBL    A  ON S.ARTIST_ID = A.ARTIST_ID
+                    FROM SONG_SCORE_TBL SS
+			      JOIN SONGS_TBL      S  ON SS.SONG_ID  = S.SONG_ID
+			      JOIN ARTISTS_TBL    A  ON S.ARTIST_ID = A.ARTIST_ID
+			      JOIN ALBUMS_TBL     AL ON S.ALBUM_ID  = AL.ALBUM_ID
              WHERE SS.USER_ID = #{userId}
                AND SS.SCORE   = #{scorePlay}
                <choose>
@@ -267,7 +269,7 @@
                    AND SS.CREATED_AT >= ADD_MONTHS(TRUNC(SYSDATE, 'MM'), -3)
                  </when>
                </choose>
-             GROUP BY S.SONG_ID, S.TITLE, A.NAME
+             GROUP BY S.SONG_ID, S.TITLE, A.NAME, AL.COVER_IMAGE_URL
              ORDER BY playCount DESC
            )
      WHERE ROWNUM &lt;= 10

@@ -56,7 +56,8 @@
               <span class="grade-badge free">${loginUser.profile.membershipType}</span>
             </c:otherwise>
           </c:choose>
-          <span class="level-badge" id="mpLevelBadge">Lv.24</span>
+          <!-- 나중에 여유 생기면 때 Lv. 기능추가 -->
+          <!-- <span class="level-badge" id="mpLevelBadge">Lv.24</span> -->
         </div>
       </div>
       
@@ -105,17 +106,17 @@
         <div class="tab-pane active" id="tab-report">
           <div class="stat-grid">
             <div class="stat-card">
-              <div class="stat-label">총 청취 시간</div>
+              <div class="stat-label">총 청취 시간<span class="mp-tip" data-tip="재생 후 10초 이상 들은 곡들의 누적 시간이에요.">?</span></div>
               <div class="stat-num" id="mpStatTime">-</div>
               <div class="stat-sub" id="mpStatTimeSub">-</div>
             </div>
             <div class="stat-card">
-              <div class="stat-label">재생한 곡</div>
+              <div class="stat-label">재생한 곡<!-- <span class="mp-tip" data-tip="재생 버튼을 누른 총 횟수예요. 같은 곡을 여러 번 들으면 중복 집계돼요."></span> --></div>
               <div class="stat-num" id="mpStatPlay">-</div>
               <div class="stat-sub" id="mpStatPlaySub">-</div>
             </div>
             <div class="stat-card">
-              <div class="stat-label">활발한 요일</div>
+              <div class="stat-label">활발한 요일<span class="mp-tip" data-tip="10초 이상 청취한 기록이 가장 많은 요일이에요.">?</span></div>
               <div class="stat-num stat-num--day" id="mpStatDay">-</div>
               <div class="stat-sub">최다 청취 요일</div>
             </div>
@@ -124,7 +125,7 @@
             <%-- TOP 10 — stat-card 박스로 감싸서 빈 상태 정렬 --%>
             <div class="stat-card stat-card--inner">
               <div class="row-between row-between--mb">
-                <div class="sec-title sec-title--inline">TOP 10</div>
+                <div class="sec-title sec-title--inline">TOP 10<span class="mp-tip" data-tip="선택한 기간 동안 재생 횟수가 가장 많은 곡 순위예요.">?</span></div>
                 <div class="select-wrap">
                   <select class="mp-select" id="mpSongPeriod" onchange="mpLoadTopSongs(this.value)">
                     <option value="THIS_MONTH">이번 달</option>
@@ -138,11 +139,11 @@
             <%-- 장르 + 아티스트 --%>
             <div class="two-col__right">
               <div class="stat-card stat-card--inner stat-card--flex">
-                <div class="sec-title sec-title--sm">TOP 장르</div>
+                <div class="sec-title sec-title--sm">TOP 장르<span class="mp-tip" data-tip="30초 이상 들은 곡들을 기준으로 집계한 장르 비율이에요. 단순 재생보다 실제로 즐겨 들은 장르를 반영해요.">?</span></div>
                 <div class="genre-grid" id="mpTopGenres"></div>
               </div>
               <div class="stat-card stat-card--inner stat-card--flex">
-                <div class="sec-title sec-title--sm">TOP 아티스트</div>
+                <div class="sec-title sec-title--sm">TOP 아티스트<!-- <span class="mp-tip" data-tip="가장 많은 종류의 곡을 재생한 아티스트 순위예요.">?</span>--></div>
                 <div id="mpTopArtists"></div>
               </div>
             </div>
@@ -189,12 +190,14 @@
           <div class="ms-expire">만료: ${membership.expireDate} · D-${membership.daysLeft}</div>
         </c:if>
         <div class="ms-benefits">
+          <div class="ms-item">무제한 스트리밍</div>
+          <div class="ms-item">AI 음악 추천</div>
           <div class="ms-item">광고 없는 청취</div>
           <div class="ms-item">고음질 스트리밍</div>
-          <div class="ms-item">공연 우선 예매</div>
+          <!-- <div class="ms-item">공연 우선 예매</div> -->
           <div class="ms-item">독점 콘텐츠</div>
           <div class="ms-item">가사 실시간 지원</div>
-          <div class="ms-item">굿즈 20% 할인</div>
+          <!-- <div class="ms-item">굿즈 20% 할인</div> -->
         </div>
       </div>
       <button class="upgrade-btn upgrade-btn--pro" onclick="mpCancelMembership('${membership.orderId}')">구독 해지</button>
@@ -206,12 +209,11 @@
       <div class="ms-card">
         <div class="ms-title">FREE</div>
         <div class="ms-benefits">
-          <div class="ms-item">광고 없는 청취</div>
-          <div class="ms-item">오프라인 다운로드</div>
-          <div class="ms-item">고음질 스트리밍</div>
-          <div class="ms-item">공연 우선 예매</div>
-          <div class="ms-item">독점 콘텐츠</div>
-          <div class="ms-item">가사 실시간 지원</div>
+          <div class="ms-item">광고 노출</div>
+          <div class="ms-item">전곡 하이라이트 감상</div>
+          <div class="ms-item">아티스트 정보 제공</div>
+          <div class="ms-item">표준 음질 제공</div>
+          <div class="ms-item">기본 굿즈 구매</div>
         </div>
       </div>
 

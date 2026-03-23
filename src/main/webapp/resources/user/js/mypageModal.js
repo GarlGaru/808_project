@@ -61,8 +61,8 @@
   /* ════════════════════════════════════════════
      열기 / 닫기 — ModalCore 위임
      ════════════════════════════════════════════ */
-
   window.openMypage = function () { ModalCore.open('mpOverlay'); };
+  
   window.mpClose    = function () { ModalCore.close('mpOverlay', 250); };
 
   document.addEventListener('DOMContentLoaded', function () {
@@ -467,7 +467,7 @@ window.mpCancelMembership = function (orderId) {
     var timeText;
     if (totalH > 0)      { timeText = totalH + 'h' + (totalM > 0 ? ' ' + totalM + 'm' : ''); }
     else if (totalM > 0) { timeText = totalM + 'm'; }
-    else                 { timeText = '기록 없음'; diffText = '-'; }
+    else                 { timeText = '-'; diffText = '-'; }
 
     $('#mpStatTime').text(timeText);
     $('#mpStatTimeSub').text(diffText);
@@ -511,10 +511,22 @@ window.mpCancelMembership = function (orderId) {
       var rank = i + 1;
       node.querySelector('.rank').textContent = rank;
       node.querySelector('.rank').className   = 'rank ' + rankClass(rank);
+      
+      var thumb = node.querySelector('.li-thumb');
+	  if (s.coverImageUrl) {
+	      var img = document.createElement('img');
+	      img.src = CP + s.coverImageUrl;
+	      img.alt = s.title;
+	      thumb.appendChild(img);
+	  }
+      
       node.querySelector('.li-name').textContent = s.title;
       node.querySelector('.li-sub').textContent  = s.artistName;
       node.querySelector('.prog-fill').style.width = Math.round(s.playCount / max * 100) + '%';
       node.querySelector('.li-right').textContent = s.playCount + '회';
+      
+
+      
       /* 아티스트 템플릿 재사용 — li-right 없으므로 숨김 처리 불필요 */
       frag.appendChild(node);
     });
@@ -541,7 +553,7 @@ window.mpCancelMembership = function (orderId) {
       thumb.className = 'li-thumb li-thumb--artist';
       if (a.coverImageUrl) {
         var img = document.createElement('img');
-        img.src = a.coverImageUrl;
+        img.src = CP + a.coverImageUrl;
         img.alt = a.name;
         thumb.appendChild(img);
       }
