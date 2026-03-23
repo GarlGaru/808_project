@@ -1,5 +1,7 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<!-- 데이터베이스 시간나오게하기위한거 -->
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 
 <c:set var="ctx" value="${pageContext.request.contextPath}" />
 <c:set var="adminRes" value="${ctx}/resources/common/admin" />
@@ -181,8 +183,8 @@
                                             </c:choose>
                                         </td>
 
-                                        <td>${p.createdAt}</td>
-                                        <td>${p.approvedAt}</td>
+                                        <td><fmt:formatDate value="${p.createdAt}" pattern="yyyy-MM-dd HH:mm:ss" /></td>
+										<td><fmt:formatDate value="${p.approvedAt}" pattern="yyyy-MM-dd HH:mm:ss" /></td>
                                         <td>${p.failReason}</td>
 
                                         <td>
@@ -282,10 +284,12 @@
             return rowStatus === selectedStatus;
         });
 
+        //데이터베이스 정렬/페이징처리
         var table = $('#dataTable').DataTable({
             "pageLength": 10,
             "lengthMenu": [10, 25, 50, 100],
-            "ordering": true,
+            "ordering": true, 
+            "order": [[7, "desc"]],//최신글
             "searching": true,
             "language": {
                 "search": "검색:",
