@@ -184,8 +184,10 @@
 				<p>
 					<strong>${param.show_title != null ? param.show_title : '선택하신 공연'}</strong>
 				</p>
-				<p style="font-size: 13px; color: #aaa;">날짜: 2026-03-20 (금)</p>
-				<p style="font-size: 13px; color: #aaa;">시간: 19:30</p>
+				<p style="font-size: 13px; color: #aaa;">
+    				날짜: ${scheduleInfo.PLAY_DATE} (${scheduleInfo.PLAY_DAY})
+				</p>
+				<p style="font-size: 13px; color: #aaa;">시간: ${scheduleInfo.START_TIME}</p>
 
 				<h3 style="margin-top: 30px;">결제 금액</h3>
 				<div class="info-row">

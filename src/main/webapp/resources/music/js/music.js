@@ -25,6 +25,11 @@ async function loadMainContent(url) {
         // 받아온 HTML을 해당 영역에 삽입
         result.innerHTML = html;
 
+        const initFn = result.querySelector('[data-init]')?.dataset.init;
+        if (initFn && typeof window[initFn] === 'function') {
+            window[initFn]();
+        }
+
     } catch (error) {
         // 네트워크 오류 등 요청 자체가 실패한 경우
         result.innerHTML = "요청 실패";

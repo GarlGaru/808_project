@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.apache.ibatis.annotations.Param;
 
+import com.spring.eze.show.dto.Myticket.MyticketDTO;
 import com.spring.eze.show.dto.Show.ShowDTO;
 
 public interface ShowDAO {
@@ -26,8 +27,17 @@ public interface ShowDAO {
 
 	//랭킹 페이지
 	public List<ShowDTO> getShowRanking(String genre);
-	
+
 	//seat용 추가
 	public String selectVenueName(String showId);
+
+	// 마이티켓 목록
+	public List<MyticketDTO> getMyPageTicket(long userId);
 	
+	// 마이티켓 카운트(예매내역 확인)
+	public int getMyTicketCount(long userId);
+
+	//seat 팝업에 공연회차 가져오랴거 만듦
+	public Map<String, Object> selectScheduleInfo(String scheduleId);
+
 }

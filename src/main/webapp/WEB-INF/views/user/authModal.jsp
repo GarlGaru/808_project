@@ -37,6 +37,11 @@
   <%-- .auth-main : 카드 --%>
   <div class="auth-main">
 
+<%--     닫기 버튼
+    <button id="auth-close-btn" class="auth-close-btn" onclick="closeAuthModal()">
+      <i class="fa-solid fa-xmark"></i>
+    </button> --%>
+
     <div class="auth-bg-layer"></div>
     <div class="auth-noise"></div>
 
@@ -98,7 +103,7 @@
               </div>
             </div>
 
-            <button class="auth-btn auth-btn--mt-sm" onclick="doReset()">변경하기</button>
+            <button class="auth-btn submit" onclick="doReset()">변경하기</button>
           </div>
 
         </div>
@@ -154,7 +159,7 @@
             </div>
 			
             <p class="auth-terms">
-              가입 시 서비스 <a href="${pageContext.request.contextPath}/terms" target="_blank">이용약관</a> 및 <br />
+              가입 시 서비스 <a href="${pageContext.request.contextPath}/terms" target="_blank">이용약관</a> 및
               <a href="${pageContext.request.contextPath}/terms" target="_blank">개인정보 처리방침</a>에 동의하게 됩니다.
             </p>
             <button class="auth-btn submit" onclick="doSignup()">Sign Up</button>

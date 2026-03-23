@@ -1,7 +1,7 @@
 ﻿<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ include file="/WEB-INF/views/common/setting.jsp" %>
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="ko" data-context-path="${pageContext.request.contextPath}"> <%-- js 에서도 path 인식할 수 있게 추가 --%>
 <head>
     <meta charset="UTF-8">
     <meta name="description" content="Music Main Page">
@@ -59,13 +59,19 @@
 	<script>
 	    window.APP_PATH = '${pageContext.request.contextPath}';
 	</script>
-	
+
 	<script src="${path}/resources/common/js/jquery/jquery-2.2.4.min.js"></script>
 	<script src="${path}/resources/common/bootstrap-4.6.2-dist/js/bootstrap.bundle.min.js"></script>
 	<script src="${path}/resources/common/js/main.js"></script>
 	<script src="${path}/resources/music/js/music.js"></script>
 	<script src="${path}/resources/music/js/music-like.js"></script>
-	
+
+	 <%-- 추천 js 로딩 --%>
+    <script src="${path}/resources/music/js/recoApi.js"></script>
+    <script src="${path}/resources/music/js/musicCard.js"></script>
+    <script src="${path}/resources/music/js/musicSlider.js"></script>
+    <script src="${path}/resources/music/js/recommend.js"></script>
+
 	<script>
 	    window.addEventListener("DOMContentLoaded", function() {
 	        loadMainContent("${path}/music/mainstory");

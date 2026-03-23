@@ -1,5 +1,6 @@
 package com.spring.eze.playlist.controller;
 
+import com.spring.eze.common.LoginSessionHandler;
 import com.spring.eze.playlist.dto.PlaylistDTO;
 import com.spring.eze.playlist.dto.PlaylistEleDTO;
 import com.spring.eze.playlist.service.PlaylistServiceImpl;
@@ -16,6 +17,8 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.spring.eze.common.LoginSessionHandler.SESSION_ERROR;
+
 /**
  * Playlist는 하나의 단어로 취급합니다.
  * 그러므로 카멜케이스(대문자)에 주의 해주세요.
@@ -25,37 +28,13 @@ import java.util.List;
 public class PlaylistController {
 
     private static final Logger log = LoggerFactory.getLogger(PlaylistController.class);
-
-    private static final int SESSION_ERROR = -1;
+    @Autowired
+    private LoginSessionHandler lsh;
 
     @Autowired
     private PlaylistServiceImpl service;
 
 
-//    @GetMapping({"", "/"})
-//    public String test(HttpServletRequest request, HttpServletResponse response, Model model) {
-//        log.info("PlaylistController - test");
-//        return "";
-//    }
-
-    /**
-     * 로그인이 되어있는지 판정
-     * @return 성공시 : userId, 실패시 : SESSION_ERROR
-     * */
-    private int getUserIdFromSession(HttpServletRequest request){
-        UserDTO userDTO = null;
-        try{
-            userDTO = (UserDTO) request.getSession().getAttribute("loginUser");
-        }catch (Exception e){
-            log.error(e.toString());
-            return SESSION_ERROR;
-        }
-        if (userDTO == null) {
-            return SESSION_ERROR;
-        }
-
-        return userDTO.getUserId();
-    }
 
     /**
      * url = /playlist/all <br>
@@ -68,7 +47,7 @@ public class PlaylistController {
     public @ResponseBody List<PlaylistDTO> getPlaylistAll(HttpServletRequest request){
         log.info("PlaylistController - getPlaylistAll");
 
-        int userId = this.getUserIdFromSession(request);
+        int userId = lsh.getUserIdFromSession(request);
         if (userId == SESSION_ERROR) {
             return new ArrayList<>();
         }
@@ -98,7 +77,7 @@ public class PlaylistController {
     public @ResponseBody PlaylistDTO getLikes(HttpServletRequest request){
         log.info("PlaylistController - getLikes");
 
-        int userId = this.getUserIdFromSession(request);
+        int userId = lsh.getUserIdFromSession(request);
         if (userId == SESSION_ERROR) {
             return null;
         }
@@ -113,7 +92,7 @@ public class PlaylistController {
     public @ResponseBody PlaylistDTO getHistory(HttpServletRequest request){
         log.info("PlaylistController - getHistory");
 
-        int userId = this.getUserIdFromSession(request);
+        int userId = lsh.getUserIdFromSession(request);
         if (userId == SESSION_ERROR) {
             return null;
         }
@@ -126,7 +105,7 @@ public class PlaylistController {
             HttpServletRequest request , @RequestBody String title){
         log.info("PlaylistController - createPlaylist");
 
-        int userId = this.getUserIdFromSession(request);
+        int userId = lsh.getUserIdFromSession(request);
         if (userId == SESSION_ERROR) {
             return 0;
         }

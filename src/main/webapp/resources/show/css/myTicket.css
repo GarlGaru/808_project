@@ -1,0 +1,191 @@
+@charset "UTF-8";
+
+.myticket-container {
+    width: 100%;
+    max-width: 1200px;
+    margin: 40px auto 80px;
+    color: #fff;
+}
+
+.myticket-summary {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 28px 32px;
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 12px;
+    background: rgba(255,255,255,0.04);
+    margin-bottom: 36px;
+}
+
+.summary-title {
+    font-size: 14px;
+    color: #aaa;
+    margin-bottom: 8px;
+}
+
+.summary-email {
+    font-size: 28px;
+    font-weight: 600;
+    color: #fff;
+}
+
+.summary-count-wrap {
+    display: flex;
+    align-items: center;
+}
+
+.summary-count-box {
+    min-width: 140px;
+    text-align: center;
+    padding-left: 30px;
+    border-left: 1px solid rgba(255,255,255,0.12);
+}
+
+.count-number {
+    font-size: 32px;
+    font-weight: 700;
+    color: #ED6701;
+    margin-bottom: 6px;
+}
+
+.count-label {
+    font-size: 14px;
+    color: #bbb;
+}
+
+.myticket-list-section {
+    width: 100%;
+}
+
+.section-header h2 {
+    font-size: 30px;
+    font-weight: 700;
+    margin-bottom: 20px;
+    color: #fff;
+}
+
+.ticket-header-row {
+    display: flex;
+    padding: 16px 0;
+    border-top: 1px solid rgba(255,255,255,0.12);
+    border-bottom: 1px solid rgba(255,255,255,0.12);
+    font-size: 14px;
+    color: #bbb;
+}
+
+.ticket-item {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 28px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.10);
+}
+
+.col-date {
+    width: 130px;
+    flex-shrink: 0;
+}
+
+.col-show {
+    width: 430px;
+    flex-shrink: 0;
+}
+
+.col-booking {
+    width: 250px;
+    flex-shrink: 0;
+}
+
+.col-status {
+    width: 150px;
+    flex-shrink: 0;
+}
+
+.ticket-date {
+    font-size: 18px;
+    color: #ddd;
+}
+
+.ticket-show {
+    display: flex;
+    gap: 18px;
+}
+
+.ticket-poster img {
+    width: 95px;
+    height: 130px;
+    object-fit: cover;
+    border-radius: 6px;
+    background: #222;
+}
+
+.ticket-show-info {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 8px;
+}
+
+.ticket-title {
+    font-size: 18px;
+    font-weight: 700;
+    line-height: 1.4;
+    color: #fff;
+}
+
+.ticket-period,
+.ticket-venue {
+    font-size: 14px;
+    color: #ccc;
+    line-height: 1.5;
+}
+
+.ticket-booking {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    font-size: 14px;
+    color: #ddd;
+}
+
+.ticket-booking .label {
+    display: inline-block;
+    min-width: 70px;
+    color: #aaa;
+}
+
+.ticket-status {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+}
+
+.status-text {
+    font-size: 16px;
+    font-weight: 600;
+    color: #fff;
+}
+
+.cancel-btn {
+    padding: 10px 18px;
+    border: none;
+    border-radius: 6px;
+    background: linear-gradient(90deg, #DF8845, #ED6701);
+    color: #fff;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.cancel-btn:hover {
+    opacity: 0.9;
+}
+
+.empty-ticket {
+    padding: 60px 0;
+    text-align: center;
+    color: #aaa;
+    font-size: 16px;
+}

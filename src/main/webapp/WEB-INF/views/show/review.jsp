@@ -13,7 +13,7 @@
 
     <link rel="stylesheet" href="${path}/resources/common/css/style.css">
     <link rel="stylesheet" href="${path}/resources/common/style.css">
-    <link rel="stylesheet" href="${path}/resources/show/css/review.css">
+    <link rel="stylesheet" href="${path}/resources/show/css/review.css?v=2">
     
    
     

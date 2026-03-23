@@ -259,6 +259,51 @@
               </span>
             </div>
 
+            <div class="danger-zone">
+              <div class="danger-label">위험 구역</div>
+              <button class="danger-btn" onclick="mpWithdraw()">계정 탈퇴</button>
+            </div>
+          </div><%-- /mpPvView --%>
+
+          <div id="mpPvEdit" style="display:none">
+            <div class="row-between" style="margin-bottom:14px">
+              <div class="pv-title">기본 정보 수정</div>
+              <div style="display:flex;gap:7px">
+                <button class="outline-btn" onclick="mpEditCancel()">취소</button>
+                <button class="primary-btn" onclick="mpEditSave()">저장</button>
+              </div>
+            </div>
+
+            <%-- 닉네임 + 중복확인 --%>
+            <div class="f-group">
+              <label>닉네임</label>
+              <div class="code-row">
+                <input type="text" class="f-input" id="eNick"
+                       value="<c:out value='${loginUser.nickname}'/>"
+                       oninput="mpResetNickCheck()">
+                <button type="button" class="code-btn" id="nickCheckBtn"
+                        onclick="mpCheckNick()">중복확인</button>
+              </div>
+              <div id="nickCheckMsg" style="font-size:11px;margin-top:4px;display:none"></div>
+            </div>
+
+            <div class="f-group">
+              <label>생년월일</label>
+              <input type="date" class="f-input" id="eBirth"
+                     value="<fmt:formatDate value='${loginUser.profile.birthDate}' pattern='yyyy-MM-dd'/>">
+            </div>
+            <div class="f-group">
+              <label>이메일 (변경 불가)</label>
+              <input type="email" class="f-input"
+                     value="<c:out value='${loginUser.email}'/>" disabled>
+            </div>
+            <div class="f-group">
+              <label>소개</label>
+              <textarea class="f-input f-textarea" id="eBio" rows="3"
+                placeholder="자신을 소개해주세요..."><c:out value="${loginUser.profile.bio}"/></textarea>
+            </div>
+
+            <%-- 비밀번호 변경 — 수정 폼 안으로 이동 --%>
             <div class="pw-box">
               <div class="pw-title">🔐 비밀번호 변경</div>
               <div class="f-group">
@@ -296,44 +341,8 @@
                 </div>
               </div>
               <button type="button" class="primary-btn pw-change-btn" onclick="mpChangePw()">비밀번호 변경</button>
-              <div class="danger-zone">
-                <div class="danger-label">위험 구역</div>
-                <button class="danger-btn" onclick="mpWithdraw()">계정 탈퇴</button>
-              </div>
             </div>
-          </div>
-
-          <div id="mpPvEdit" style="display:none">
-            <div class="row-between" style="margin-bottom:14px">
-              <div class="pv-title">기본 정보 수정</div>
-              <div style="display:flex;gap:7px">
-                <button class="outline-btn" onclick="mpEditCancel()">취소</button>
-                <button class="primary-btn" onclick="mpEditSave()">저장</button>
-              </div>
-            </div>
-            <div class="f-row">
-              <div class="f-group">
-                <label>닉네임</label>
-                <input type="text" class="f-input" id="eNick"
-                       value="<c:out value='${loginUser.nickname}'/>">
-              </div>
-              <div class="f-group">
-                <label>생년월일</label>
-                <input type="date" class="f-input" id="eBirth"
-                       value="<fmt:formatDate value='${loginUser.profile.birthDate}' pattern='yyyy-MM-dd'/>">
-              </div>
-            </div>
-            <div class="f-group">
-              <label>이메일 (변경 불가)</label>
-              <input type="email" class="f-input"
-                     value="<c:out value='${loginUser.email}'/>" disabled>
-            </div>
-            <div class="f-group">
-              <label>소개</label>
-              <textarea class="f-input f-textarea" id="eBio" rows="4"
-                placeholder="자신을 소개해주세요..."><c:out value="${loginUser.profile.bio}"/></textarea>
-            </div>
-          </div>
+          </div><%-- /mpPvEdit --%>
 
         </div><%-- /tab-profile --%>
 

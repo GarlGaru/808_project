@@ -1,0 +1,41 @@
+<style>
+/* 리스트 테이블 전용 스타일 추가 */
+.board-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+}
+
+.board-table th {
+    border-bottom: 2px solid #333; /* 상단 강조선 */
+    padding: 12px 5px;
+    background-color: #fff;
+    color: #333;
+    font-size: 14px;
+}
+
+.board-table td {
+    padding: 15px 5px;
+    border-bottom: 1px solid #eee; /* 행 구분선 */
+    text-align: center;
+    font-size: 14px;
+    color: #555;
+}
+
+/* 마우스 올렸을 때 행 강조 */
+.board-table tr:hover {
+    background-color: #f9f9f9;
+}
+
+/* 글쓰기 버튼 색상 강제 적용 (CSS 파일에 이미 있지만 확인차) */
+#btnSave {
+    background-color: #03c75a !important; /* 네이버 그린 */
+    color: white !important;
+}
+
+/* 페이징 숫자 스타일 */
+.paging a:hover {
+    text-decoration: underline;
+    color: #03c75a;
+}
+</style>
