@@ -28,7 +28,7 @@
 								<li><a href="${path}/show">Show</a></li>
 								<c:choose>
 									<%-- 로그인완료시 --%>
-									<c:when test="${not empty sessionScope.loginUser}">
+									 <c:when test="${not empty sessionScope.loginUser and sessionScope.loginUser.profile.membershipType ne 'PRO'}">
 								 	<li>
 							        	<a href="javascript:void(0);" onclick="openSubscribeModal()">Subscribe</a>
 							    	</li>
@@ -47,7 +47,11 @@
 									<%-- 로그인 된 상태: 닉네임 클릭 → openMypage() --%>
 									<c:when test="${not empty sessionScope.loginUser}">
 										<div class="login-register-btn mr-15">
-											<a href="javascript:void(0)" onclick="openMypage()">${sessionScope.loginUser.nickname}님 👤</a>
+										  <a href="javascript:void(0)" onclick="openMypage()">
+										    ${sessionScope.loginUser.nickname}
+										    <i class="fa-solid fa-circle-user"></i>
+										    <!-- <i class="fa-solid fa-user"></i> -->
+										  </a>
 										</div>
 										<div class="login-register-btn">
 											<a href="${path}/logout">Logout</a>

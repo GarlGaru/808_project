@@ -9,6 +9,11 @@ import com.spring.eze.payment.dto.kakaopayorderRequest;
 import com.spring.eze.payment.dto.kakaopayreadyResponse;
 import com.spring.eze.payment.service.kakaopayService;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
+import com.spring.eze.user.dto.UserDTO;
+
 @Controller
 @RequestMapping("/kakaopay") // ★ 여기 고정: /eze/kakaopay/...
 public class kakaoPayController {
@@ -37,32 +42,57 @@ public class kakaoPayController {
      * 카카오 ready API 호출 -> 카카오 결제 페이지 URL 받아서 redirect
      */
     @PostMapping("/ready")
-    public String ready(kakaopayorderRequest req) {
+    public String ready(HttpServletRequest request, kakaopayorderRequest req) {
 
-        // 지금은 로그인 안 붙였으니까 임시 userId
-        // 나중에 로그인 붙이면 여기서 user_tbl.user_id 가져와서 long으로 넘기면 됨
-        long userId = 1L;
+        HttpSession session = request.getSession();
 
-        // 지금은 예약도 아직 안 붙였으니까 임시 reservationId
-        // 예약 붙이면 reservation_tbl에 먼저 insert하고 그 reservation_id를 넘겨야 함
+        // 로그인 사용자
+        UserDTO loginUser = (UserDTO) session.getAttribute("loginUser");
+        if (loginUser == null) {
+            throw new IllegalArgumentException("로그인 정보가 없습니다.");
+        }
+
+        long userId = loginUser.getUserId();
+
+        // 지금은 reservation 아직 안 붙였으니 임시값
         long reservationId = 0L;
 
-        // 주문번호(문자열 PK) - 중복만 안 나면 됨
+        // 주문번호 생성
         String orderId = "TIC-" + System.currentTimeMillis();
 
-        // (디버깅) 바인딩 확인용 - quantity가 null로 들어오면 여기서 바로 보임
-        System.out.println("=== READY REQUEST ===");
+        // 결제 타입
+        String paymentType = req.getPaymentType();
+
+        if ("TICKET".equals(paymentType)) {
+            String showId = request.getParameter("showId");
+            String scheduleId = request.getParameter("scheduleId");
+            String[] selectedSeats = request.getParameterValues("selectedSeats");
+
+            session.setAttribute("selectedSeats", selectedSeats);
+            session.setAttribute("selectedShowId", showId);
+            session.setAttribute("selectedScheduleId", scheduleId);
+
+            System.out.println("=== TICKET READY REQUEST ===");
+            System.out.println("showId=" + showId);
+            System.out.println("scheduleId=" + scheduleId);
+            System.out.println("selectedSeats=" + java.util.Arrays.toString(selectedSeats));
+
+        } else if ("SUBSCRIBE".equals(paymentType)) {
+            // 구독결제는 좌석정보 안 씀
+            session.removeAttribute("selectedSeats");
+            session.removeAttribute("selectedShowId");
+            session.removeAttribute("selectedScheduleId");
+
+            System.out.println("=== SUBSCRIBE READY REQUEST ===");
+        }
+
         System.out.println("itemName=" + req.getItemName());
         System.out.println("quantity=" + req.getQuantity());
         System.out.println("totalPrice=" + req.getTotalPrice());
+        System.out.println("userId=" + userId);
 
-        // 서비스에서:
-        // 1) DB 저장(READY)
-        // 2) 카카오 ready 호출
-        // 3) tid 업데이트
         kakaopayreadyResponse ready = kakaopayService.ready(req, orderId, userId, reservationId);
 
-        // 카카오가 준 결제페이지로 이동
         return "redirect:" + ready.getNext_redirect_pc_url();
     }
 
@@ -76,8 +106,15 @@ public class kakaoPayController {
     @GetMapping("/approve")
     public String approve(@RequestParam("pg_token") String pgToken,
                           @RequestParam("orderId") String orderId,
-                          @RequestParam("userId") long userId,
+                          HttpSession session,
                           Model model) {
+    	
+    	 UserDTO loginUser = (UserDTO) session.getAttribute("loginUser");
+    	    if (loginUser == null) {
+    	        throw new IllegalArgumentException("로그인 정보가 없습니다.");
+    	    }
+
+    	    long userId = loginUser.getUserId();
 
         kakaopayapproveResponse approve = kakaopayService.approve(pgToken, orderId, userId);
 

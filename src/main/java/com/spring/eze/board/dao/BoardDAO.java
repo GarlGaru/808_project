@@ -35,6 +35,8 @@ public interface BoardDAO {
 	}
 
 	public int boardCntToday();
+
+	public List<BoardDTO> getTodayBoardList();
 	
 	
 
