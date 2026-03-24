@@ -1,6 +1,5 @@
 package com.spring.eze.user.controller;
 
-import java.io.File;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -10,18 +9,19 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.spring.eze.user.dto.MypageBoardDTO;
-import com.spring.eze.user.dto.MypageCommentDTO;
+import com.spring.eze.user.dto.MypageActivityDTO;
+import com.spring.eze.user.dto.MypageMembershipDTO;
 import com.spring.eze.user.dto.MypageMonthlyStatDTO;
 import com.spring.eze.user.dto.MypagePaymentDTO;
 import com.spring.eze.user.dto.MypagePlayReportDTO;
-import com.spring.eze.user.dto.MypageReservationDTO;
+													
 import com.spring.eze.user.dto.UserDTO;
 import com.spring.eze.user.service.MypageServiceImpl;
 
@@ -29,100 +29,36 @@ import com.spring.eze.user.service.MypageServiceImpl;
 public class MypageController {
 
     private static final Logger logger = LoggerFactory.getLogger(MypageController.class);
-
-    // 프로필 사진 저장 경로 — 실제 파일 저장 절대경로 / 웹 접근 경로 분리
-    private static final String UPLOAD_WEB_PATH  = "/resources/upload/profile/";
-
-    // MypageService 인터페이스 타입으로 주입
-    // 실제 동작은 MypageServiceImpl이 하지만 인터페이스로 받는 게 올바른 방식
+																						 
     @Autowired
     private MypageServiceImpl mypageService;
 
-    // ── 공통 헬퍼 ──────────────────────────────────
-    // 매 메서드마다 세션에서 loginUser 꺼내는 코드가 반복되므로 private 메서드로 분리해서 중복 제거
+																																  
+    // 세션에서 loginUser 꺼내는 공통 헬퍼
     private UserDTO getLoginUser(HttpSession session) {
         return (UserDTO) session.getAttribute("loginUser");
     }
 
-
-    // ── 내가 쓴 글 ─────────────────────────────────
-    // @ResponseBody → return값을 JSP로 보내지 않고 JSON으로 직접 브라우저에 전송
-    // HttpServletRequest → JS에서 넘긴 파라미터(page)를 꺼내기 위해 필요
-    @ResponseBody
-    @RequestMapping(value = "/mypage/boards", method = RequestMethod.GET)
-    public List<MypageBoardDTO> getMyBoards(HttpServletRequest request, HttpSession session) {
-        logger.info("<<< url => /mypage/boards >>>");
+    // ─────────────────────────────────────────────────────
+    // 마이페이지 진입 — 멤버십 상태 동기화 후 페이지 이동
+    // ─────────────────────────────────────────────────────
+    @RequestMapping(value = "/mypage", method = RequestMethod.GET)
+    public String mypageMain(HttpSession session, Model model) {
+        logger.info("<<< url => /mypage >>>");
 
         UserDTO loginUser = getLoginUser(session);
-        // 세션 없으면 null 반환 → JS에서 null 체크 후 로그인 모달 열기
-        if (loginUser == null) return null;
+        if (loginUser == null) return "redirect:/login";
 
-        // JS에서 넘긴 page 파라미터 꺼내기
-        // ex) $.ajax({ data: { page: 2 } }) → "2" 라는 String으로 넘어옴
-        // null이면 기본값 1
-        String pageStr = request.getParameter("page");
-        int page = (pageStr != null) ? Integer.parseInt(pageStr) : 1;
+        MypageMembershipDTO membership = mypageService.getMembershipInfo(loginUser.getUserId(), session);
+        model.addAttribute("membership", membership);
 
-        return mypageService.getMyBoardList(loginUser.getUserId(), page);
+        return "user/mypage";
     }
 
-
-    // ── 내가 쓴 댓글 ───────────────────────────────
-    @ResponseBody
-    @RequestMapping(value = "/mypage/comments", method = RequestMethod.GET)
-    public List<MypageCommentDTO> getMyComments(HttpServletRequest request, HttpSession session) {
-        logger.info("<<< url => /mypage/comments >>>");
-
-        UserDTO loginUser = getLoginUser(session);
-        if (loginUser == null) return null;
-
-        String pageStr = request.getParameter("page");
-        int page = (pageStr != null) ? Integer.parseInt(pageStr) : 1;
-
-        return mypageService.getMyCommentList(loginUser.getUserId(), page);
-    }
-
-//    // ── 예매 내역 ──────────────────────────────────
-//    // page 파라미터 없으므로 HttpServletRequest 불필요
-//    @ResponseBody
-//    @RequestMapping(value = "/mypage/reservations", method = RequestMethod.GET)
-//    public List<MypageReservationDTO> getMyReservations(HttpSession session) {
-//        logger.info("<<< url => /mypage/reservations >>>");
-//
-//        UserDTO loginUser = getLoginUser(session);
-//        if (loginUser == null) return null;
-//
-//        return mypageService.getMyReservationList(loginUser.getUserId());
-//    }
-
-    // ── 결제 내역 ──────────────────────────────────
-    @ResponseBody
-    @RequestMapping(value = "/mypage/payments", method = RequestMethod.GET)
-    public List<MypagePaymentDTO> getMyPayments(HttpSession session) {
-        logger.info("<<< url => /mypage/payments >>>");
-
-        UserDTO loginUser = getLoginUser(session);
-        if (loginUser == null) return null;
-
-        return mypageService.getMyPaymentList(loginUser.getUserId());
-    }
-
-
-    // ── 월별 지출 합계 ─────────────────────────────
-    @ResponseBody
-    @RequestMapping(value = "/mypage/monthlyStats", method = RequestMethod.GET)
-    public List<MypageMonthlyStatDTO> getMonthlyStats(HttpSession session) {
-        logger.info("<<< url => /mypage/monthlyStats >>>");
-
-        UserDTO loginUser = getLoginUser(session);
-        if (loginUser == null) return null;
-
-        return mypageService.getMonthlyStats(loginUser.getUserId());
-    }
-
-    // ── 808 플레이 리포트 ──────────────────────────
-    // Lazy Loading — 플레이리포트 탭 클릭 시 최초 1회만 호출
-    // periodType: THIS_MONTH / LAST_MONTH / 3MONTH (기본값 THIS_MONTH)
+    // ─────────────────────────────────────────────────────
+    // 808 플레이 리포트
+    // periodType: THIS_MONTH(기본) / LAST_MONTH / 3MONTH
+    // ─────────────────────────────────────────────────────
     @ResponseBody
     @RequestMapping(value = "/mypage/playReport", method = RequestMethod.GET)
     public MypagePlayReportDTO getPlayReport(HttpServletRequest request, HttpSession session) {
@@ -137,10 +73,56 @@ public class MypageController {
         return mypageService.getPlayReport(loginUser.getUserId(), periodType);
     }
 
-    // ── 내 정보 수정 ───────────────────────────────
-    // JS에서 nickname, birthDate, bio 3개 파라미터를 POST로 넘김
-    // HttpServletRequest로 파라미터 꺼내서 각각 Service에 전달
-    // HttpSession은 수정 후 세션 갱신용으로 Service에 넘김
+    // ─────────────────────────────────────────────────────
+    // 활동 내역 (게시글 / 댓글 / 리뷰) — 10개씩 더보기
+    // ─────────────────────────────────────────────────────
+    @ResponseBody
+    @RequestMapping(value = "/mypage/activity", method = RequestMethod.GET)
+    public List<MypageActivityDTO> getMyActivity(
+            @RequestParam(defaultValue = "1") int page,
+            HttpSession session) {
+        logger.info("<<< url => /mypage/activity >>>");
+
+        UserDTO loginUser = getLoginUser(session);
+        if (loginUser == null) return null;
+
+														 
+        return mypageService.getMyActivityList(loginUser.getUserId(), page);
+    }
+
+    // ─────────────────────────────────────────────────────
+    // 결제 내역
+    // ─────────────────────────────────────────────────────																															  
+    @ResponseBody
+    @RequestMapping(value = "/mypage/payments", method = RequestMethod.GET)
+    public List<MypagePaymentDTO> getMyPayments(HttpSession session) {
+        logger.info("<<< url => /mypage/payments >>>");
+
+        UserDTO loginUser = getLoginUser(session);
+        if (loginUser == null) return null;
+
+        return mypageService.getMyPaymentList(loginUser.getUserId());
+    }
+
+    // ─────────────────────────────────────────────────────
+    // 월별 지출 합계 — Chart.js용
+    // ─────────────────────────────────────────────────────
+    @ResponseBody
+    @RequestMapping(value = "/mypage/monthlyStats", method = RequestMethod.GET)
+    public List<MypageMonthlyStatDTO> getMonthlyStats(HttpSession session) {
+        logger.info("<<< url => /mypage/monthlyStats >>>");
+
+        UserDTO loginUser = getLoginUser(session);
+        if (loginUser == null) return null;
+
+        return mypageService.getMonthlyStats(loginUser.getUserId());
+    }
+	
+    // ─────────────────────────────────────────────────────
+    // 내 정보 수정 (닉네임 / 생년월일 / 소개)
+    // @return 1:성공  -1:닉네임없음  0:실패  -999:비로그인
+    // ─────────────────────────────────────────────────────
+																		 
     @ResponseBody
     @RequestMapping(value = "/mypage/updateInfo", method = RequestMethod.POST)
     public int updateUserInfo(HttpServletRequest request, HttpSession session) {
@@ -156,61 +138,28 @@ public class MypageController {
         return mypageService.updateUserInfo(loginUser.getUserId(), nickname, birthDate, bio, session);
     }
 
+    // ─────────────────────────────────────────────────────
+    // 프로필 사진 수정 — multipart/form-data
+													 
+    // JS: FormData.append("photoFile", file)
+    // @return 1:성공  0:실패  -1:예외  -999:비로그인
+    // ─────────────────────────────────────────────────────
+    @ResponseBody
+    @RequestMapping(value = "/mypage/updatePhoto", method = RequestMethod.POST)
+    public int updatePhoto(@RequestParam("photoFile") MultipartFile file, HttpSession session) {
+        logger.info("<<< url => /mypage/updatePhoto >>>");
 
-		 // ── 프로필 사진 수정 ───────────────────────────
-		 // multipart/form-data 방식 — 파일 업로드
-		 // @RequestParam("photoFile") → JS FormData.append("photoFile", file)과 키 이름 일치해야 함
-		 // 파일 저장은 Controller에서, DB저장 + 세션갱신은 Service에서
-	    @ResponseBody
-	    @RequestMapping(value = "/mypage/updatePhoto", method = RequestMethod.POST)
-	    public int updatePhoto(@RequestParam("photoFile") MultipartFile file, HttpSession session) {
-	        logger.info("<<< url => /mypage/updatePhoto (Tomcat Mode) >>>");
-	        
-	        UserDTO loginUser = getLoginUser(session);
-	        if (loginUser == null) return -999;
-	        
-	        try {
-	            // 1. [핵심] 톰캣 서버의 실제 배포 경로를 가져옴
-	            // /resources/upload/profile/ 폴더가 실제로 저장된 서버 내의 주소를 알아냄
-	            String realPath = session.getServletContext().getRealPath(UPLOAD_WEB_PATH);
-	            
-	            // 2. 디렉토리가 없으면 자동 생성
-	            File dir = new File(realPath);
-	            if (!dir.exists()) dir.mkdirs();
-	
-	            // 3. 서버단 파일 확장자 검증
-	            String originalName = file.getOriginalFilename();
-	            if (originalName == null || !originalName.contains(".")) return 0;
-	
-	            String ext = originalName.substring(originalName.lastIndexOf(".") + 1).toLowerCase();
-	            if (!ext.matches("jpg|jpeg|png|gif")) {
-	                logger.warn("허용되지 않는 확장자: {}", ext);
-	                return 0;
-	            }
-	
-	            // 4. 파일명 생성 (유저 ID 기반 고정명으로 덮어쓰기 유도)
-	            String fileName = "user_" + loginUser.getUserId() + "." + ext;
-	
-	            // 5. 실제 파일 저장 (배포 경로에 저장해야 브라우저가 바로 읽음)
-	            file.transferTo(new File(realPath + File.separator + fileName));
-	
-	            // 6. DB에 저장할 웹 접근 경로 (프로젝트 시작 루트부터의 경로)
-	            String photoUrl = UPLOAD_WEB_PATH + fileName;
-	
-	            // 7. DB 업데이트 및 세션 최신화는 Service에서 처리
-	            return mypageService.updatePhotoUrl(loginUser.getUserId(), photoUrl, session);
-	            
-	        } catch (Exception e) {
-	            logger.error("프로필 이미지 업로드 에러: userId={}", loginUser.getUserId(), e);
-	            return -1;
-	        }
-	    }
+        UserDTO loginUser = getLoginUser(session);
+        if (loginUser == null) return -999;
+																															
+        return mypageService.updateProfilePhoto(loginUser.getUserId(), file, session);
+    }
 
-
-    // ── 비밀번호 변경 ──────────────────────────────
-    // JS에서 currentPw, code, newPw 3개 파라미터를 POST로 넘김
-    // 세션에서 userId 꺼내서 Service에 전달
-    // @return 1: 성공, -1: 현재 비번 틀림, -2: 인증코드 만료/불일치, 0: 실패
+    // ─────────────────────────────────────────────────────
+    // 비밀번호 변경
+    // @return 1:성공  -1:현재비번틀림  -2:인증코드오류  0:실패  -999:비로그인
+    // ─────────────────────────────────────────────────────
+																								
     @ResponseBody
     @RequestMapping(value = "/mypage/updatePw", method = RequestMethod.POST)
     public int updatePw(HttpServletRequest request, HttpSession session) {
@@ -226,20 +175,18 @@ public class MypageController {
         return mypageService.updatePw(loginUser.getUserId(), currentPw, code, newPw);
     }
 
-
-    // ── 계정 탈퇴 ──────────────────────────────────
-    // 탈퇴 후 세션 무효화는 Service에서 처리
-    // JS에서 result === 1 확인 후 메인으로 redirect
+    // ─────────────────────────────────────────────────────
+    // 계정 탈퇴 — 성공 시 세션 무효화
+    // @return 1:성공  0:실패  -999:비로그인
+    // ─────────────────────────────────────────────────────
     @ResponseBody
     @RequestMapping(value = "/mypage/withdraw", method = RequestMethod.POST)
     public int withdraw(HttpSession session) {
         logger.info("<<< url => /mypage/withdraw >>>");
 
         UserDTO loginUser = getLoginUser(session);
-        if (loginUser == null) return -999;
-
-        // userId로 탈퇴 — mypageDAO.deleteUser(userId) 직접 처리
-        // USER_TBL DELETE → CASCADE로 PROFILE_TBL 자동 삭제
+																		  
+																   
         return mypageService.deleteUser(loginUser.getUserId(), session);
     }
 
