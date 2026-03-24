@@ -28,7 +28,7 @@
 								<li><a href="${path}/show">Show</a></li>
 								<c:choose>
 									<%-- 로그인완료시 --%>
-									<c:when test="${not empty sessionScope.loginUser}">
+									 <c:when test="${not empty sessionScope.loginUser and sessionScope.loginUser.profile.membershipType ne 'PRO'}">
 								 	<li>
 							        	<a href="javascript:void(0);" onclick="openSubscribeModal()">Subscribe</a>
 							    	</li>
