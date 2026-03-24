@@ -59,8 +59,8 @@ public interface MusicService {
     public List<SongDTO> getLikedSongs(int userId);
     
     //검색
-    public void  searchList(HttpServletRequest request, HttpServletResponse response, Model model)
-    	throws ServletException, IOException;
+    public List<SongDTO>  searchSongs(String keyword);
+    	
     
     
 }

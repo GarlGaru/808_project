@@ -102,16 +102,9 @@ public class MusicServiceImpl implements MusicService {
 	}
 
 	@Override
-	public void searchList(HttpServletRequest request, HttpServletResponse response, Model model)
-			throws ServletException, IOException {
-		
-		System.out.println("ServiceImpl - searchList");
-		
-		String keyword = request.getParameter("keyword");
-		System.out.println("keyword"+ keyword);
-		
-		
-		
+	public List<SongDTO> searchSongs(String keyword) {
+	
+		return musicDAO.getSearhSong(keyword);
 	}
 
   

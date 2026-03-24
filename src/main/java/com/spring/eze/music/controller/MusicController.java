@@ -242,14 +242,23 @@ public class MusicController {
         return musicService.getSongPath(songId);
     }
     //검색
-    @RequestMapping("/search")
-    public String seach(HttpServletRequest request,HttpServletResponse response, Model model)
-				throws ServletException, IOException{
-			
-			log.info("<<</search.jq>>>");
-			
-			
-			return "music/search";
-		}
+    @GetMapping("/search")
+    public String search(@RequestParam(value = "keyword", required = false) String keyword,
+                         Model model) {
+
+        log.info("<<< /music/search >>>");
+        log.info("keyword = {}", keyword);
+
+        List<SongDTO> searchList = null;
+
+        if (keyword != null && !keyword.trim().isEmpty()) {
+            searchList = musicService.searchSongs(keyword.trim());
+        }
+
+        model.addAttribute("keyword", keyword);
+        model.addAttribute("searchList", searchList);
+
+        return "music/search";
+    }
     
 }

@@ -729,5 +729,25 @@ window.addEventListener('resize', function() {
     });
 });
 
+// ==============================
+// 검색결과 값 받기
+// ==============================
+function submitMusicSearch(form) {
+    
+    const keywordInput = form.querySelector('input[name="keyword"]');  //input 찾기
+    const keyword = keywordInput ? keywordInput.value.trim() : '';     //앞뒤 공백 제거
+
+    if (!keyword) {
+        alert('검색어를 입력해주세요.');
+        return;
+    }
+
+    loadMainContent(path + '/music/search?keyword=' + encodeURIComponent(keyword));  // loadMainContent 함수를 쓰면서 주소및 encodeURIComponent(keyword) => 한글,공백 깨짐 방지
+}
+
+
 // 다른 스크립트에서도 접근 가능하도록 전역 공개
 window.playerManager = playerManager;
+
+
+

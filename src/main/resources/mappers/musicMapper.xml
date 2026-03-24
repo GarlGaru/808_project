@@ -277,4 +277,31 @@
 		    WHERE s.artist_id = #{artistId}
 		    ORDER BY s.song_id DESC
 		</select>
+		
+		<!--검색 상세페이지 결과값 -->
+		<select id="getSearhSong" parameterType="String" resultMap="songDetailResultMap">
+		   SELECT
+		        s.song_id,
+		        s.artist_id,
+		        s.title,
+		        a.name AS artist_name,
+		        al.title AS album_title,
+		        g.name AS genre_name,
+		        g.genre_id,
+		        al.cover_image_url,
+		        s.song_path
+		    FROM songs_tbl s
+		    JOIN artists_tbl a
+		        ON s.artist_id = a.artist_id
+		    LEFT JOIN albums_tbl al
+		        ON s.album_id = al.album_id
+		    LEFT JOIN song_genre_tbl sg
+		        ON s.song_id = sg.song_id
+		    LEFT JOIN genres_tbl g
+		        ON sg.genre_id = g.genre_id
+		    WHERE LOWER(s.title) LIKE '%' || LOWER(#{keyword}) || '%'
+		       OR LOWER(a.name) LIKE '%' || LOWER(#{keyword}) || '%'
+		    ORDER BY s.song_id DESC
+		
+		</select>
 </mapper>

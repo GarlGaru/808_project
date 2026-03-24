@@ -26,6 +26,9 @@
     <link rel="stylesheet" href="${path}/resources/music/css/music-detail.css">
     <!-- 랭킹 전용 -->
     <link rel="stylesheet" href="${path}/resources/music/css/music-ranking.css">
+    <!--검색 상세페이지 전용-->
+    <link rel="stylesheet" href="${path}/resources/music/css/music-search.css">
+    
 </head>
 <body class="dark-mode">
 

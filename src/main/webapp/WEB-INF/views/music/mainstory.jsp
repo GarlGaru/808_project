@@ -3,11 +3,22 @@
 <c:set var="path" value="${pageContext.request.contextPath}" />
 
 <div class="music-home-wrap">
-	
-<%-- 	<form action="${path}/music/search" method="get">
-	    <input type="text" name="keyword" placeholder="곡명 또는 아티스트 검색">
-	    <button type="submit">검색</button>
-	</form> --%>
+	<!-- 검색  -->
+<form class="music-search-form music-search-expand"
+      onsubmit="event.preventDefault(); submitMusicSearch(this);">
+    
+    <input type="text" name="keyword" placeholder="검색">
+
+    <button type="submit" class="music-search-btn" aria-label="검색">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="11" cy="11" r="7"></circle>
+            <line x1="16.65" y1="16.65" x2="21" y2="21"></line>
+        </svg>
+    </button>
+</form>
+
+<hr>
+
 
     <!-- ========================= 1) 주간 인기곡 ========================= -->
 	<section class="music-home-block">
