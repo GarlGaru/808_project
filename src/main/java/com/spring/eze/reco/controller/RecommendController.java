@@ -4,6 +4,7 @@ import com.spring.eze.common.LoginSessionHandler;
 import com.spring.eze.music.dto.SongDTO;
 import com.spring.eze.music.service.MusicService;
 import com.spring.eze.playlist.dto.PlaylistDTO;
+import com.spring.eze.reco.dto.SongCardDTO;
 import com.spring.eze.reco.service.RecommendService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,9 +35,17 @@ public class RecommendController {
 
 
     @GetMapping("/music/personal-recommend")
-    public @ResponseBody List<SongDTO> weekly(){
+    public @ResponseBody List<SongCardDTO> weekly(HttpServletRequest request) {
+        int userId = lsh.getUserIdFromSession(request);
+        if (userId == SESSION_ERROR) {
+            // 로그인 안했으면 주간 랭킹
+            return service.convertToSongCardDTO(musicService.getweeklyRanking());
+        }
 
-        List<SongDTO> list = musicService.getweeklyRanking();
+        List<SongCardDTO> list = service.getUserRecommend(userId);
+        if (list.isEmpty()) {
+            return service.convertToSongCardDTO(musicService.getweeklyRanking());
+        }
 
         return list;
     }

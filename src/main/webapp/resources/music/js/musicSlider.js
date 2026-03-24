@@ -73,6 +73,7 @@ async function MusicSlider({
     const cardBase = cardTpl.content.firstElementChild;
 
     songs.forEach(song => {
+        // console.log(song);
         track.appendChild(createCard(cardBase, song, path, label));
     });
 

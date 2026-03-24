@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+ <mapper namespace="com.spring.eze.reco.dao.RecommendDAO">
+
+    <select id="selectTopKeywords" resultType="com.spring.eze.reco.dto.KeywordScoreDTO">
+        SELECT sk.keyword_id AS keywordId, SUM(ss.score) AS totalScore
+        FROM song_score_tbl ss
+        JOIN song_keyword_tbl sk ON ss.song_id = sk.song_id
+        WHERE ss.user_id = #{userId}
+        GROUP BY sk.keyword_id
+        ORDER BY totalScore DESC
+        FETCH FIRST 5 ROWS ONLY
+    </select>
+
+    <select id="selectRecommendedSongs" resultType="int">
+        SELECT s.song_id
+        FROM songs_tbl s
+        JOIN song_keyword_tbl sk ON s.song_id = sk.song_id
+        JOIN (
+            <foreach collection="topKeywords" item="ks" separator="UNION ALL">
+                SELECT  #{ks.keywordId} AS keyword_id,
+                        #{ks.totalScore} AS kw_score
+                FROM DUAL
+            </foreach>
+        ) kw ON sk.keyword_id = kw.keyword_id
+        GROUP BY s.song_id
+        ORDER BY SUM(kw.kw_score) DESC
+        FETCH FIRST #{amount} ROWS ONLY
+    </select>
+
+    <select id="getResultSongs" resultType="com.spring.eze.reco.dto.KeywordScoreDTO">
+        SELECT
+        s.song_id          AS songId,
+        ar.name            AS artistName,
+        s.title            AS songTitle,
+        al.cover_image_url AS coverImageUrl
+        FROM songs_tbl s
+        JOIN artists_tbl ar
+        ON s.artist_id = ar.artist_id
+        JOIN albums_tbl al
+        ON s.album_id = al.album_id
+        ORDER BY s.song_id DESC
+    </select>
+
+ </mapper> 

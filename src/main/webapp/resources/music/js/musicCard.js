@@ -12,8 +12,8 @@ function createCard(cardBase, song, path, label) {
     const card = cardBase.cloneNode(true);
 
     const cover = song.coverImageUrl
-        ? `${path}${song.coverImageUrl}`
-        : `${path}/resources/music/img/default_album.jpg`;
+        ? `${song.coverImageUrl}`
+        : `${path}/resources/music/img/default_album.png`;
 
     // 카드 루트
     card.dataset.songId = song.songId;
