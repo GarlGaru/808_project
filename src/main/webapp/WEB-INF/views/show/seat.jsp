@@ -126,8 +126,10 @@
         if (window.opener) {
             const contentWidth  = document.body.scrollWidth  + 60;
             const contentHeight = document.body.scrollHeight + 60;
-            const finalWidth  = Math.min(Math.max(contentWidth,  800), 1300);
-            const finalHeight = Math.min(Math.max(contentHeight, 600), 850);
+            const maxWidth = window.screen.availWidth - 50;
+            const maxHeight = window.screen.availHeight - 50;
+            const finalWidth  = Math.min(Math.max(contentWidth,  800), maxWidth);
+            const finalHeight = Math.min(Math.max(contentHeight, 600), maxHeight);
             window.resizeTo(finalWidth, finalHeight);
             const left = (window.screen.width  - finalWidth)  / 2;
             const top  = (window.screen.height - finalHeight) / 2;

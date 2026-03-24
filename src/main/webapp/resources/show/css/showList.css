@@ -161,3 +161,15 @@
 .sort-wrap.sort-only {
     margin-top: 0;
 }
+
+/* 카드 전체 및 글씨 영역 배경 투명화 */
+.show-card {
+    background-color: transparent !important; 
+    border: none !important; /* 필요시 카드 겉 테두리(선)도 제거 */
+}
+
+.show-card .card-body {
+    background-color: transparent !important;
+    padding-left: 0 !important; /* 텍스트가 왼쪽 이미지 라인에 딱 맞게 정렬되길 원한다면 추가 */
+    padding-right: 0 !important;
+}

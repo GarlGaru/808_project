@@ -50,7 +50,27 @@ public class MusicController {
 
         return "music/music";
     }
+    
+    @GetMapping("/mainstory")
+    public String mainstory(HttpServletRequest request, HttpServletResponse response, Model model) {
+    	
+    	 List<SongDTO> weeklyRanking = musicService.getweeklyRanking();
+         List<SongDTO> todayHitSongs = musicService.getTodayHitSongs();
+         List<SongDTO> genreRanking = musicService.getGenreRanking(1); // 기본 장르 1
 
+         model.addAttribute("weeklyRanking", weeklyRanking);
+         model.addAttribute("todayHitSongs", todayHitSongs);
+         model.addAttribute("genreRanking", genreRanking);
+
+         // 기존 JSP가 songList만 보고 있다면 호환용으로 같이 넣기
+         model.addAttribute("songList", todayHitSongs);
+
+         log.info("<<< url => /ranking >>>");
+         
+         
+        return "/music/mainstory";
+    }
+    
     @RequestMapping("/recommend")
     public String recommend(HttpServletRequest request, HttpServletResponse response, Model model) {
         log.info("<<< url => /recommend >>>");

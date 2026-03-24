@@ -8,6 +8,7 @@ import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import com.spring.eze.show.dto.Myticket.MyticketDTO;
 import com.spring.eze.show.dto.Show.ShowDTO;
 
 @Repository
@@ -81,6 +82,20 @@ public class ShowDAOImpl implements ShowDAO{
 	@Override
 	public String selectVenueName(String showId) {
 		return sqlSession.selectOne("com.spring.eze.show.dao.Show.ShowDAO.selectVenueName", showId);
+	}
+
+	//마이티켓 확인
+	@Override
+	public List<MyticketDTO> getMyPageTicket(long userId) {
+		System.out.println("ShowDAOImpl - getMyPageTicket()");
+		return sqlSession.selectList("com.spring.eze.show.dao.Show.ShowDAO.getMyPageTicket", userId);
+	}
+
+	//마이티켓 예매내역 카운트(건수용)
+	@Override
+	public int getMyTicketCount(long userId) {
+		System.out.println("ShowDAOImpl - getMyTicketCount()");
+		return sqlSession.selectOne("com.spring.eze.show.dao.Show.ShowDAO.getMyTicketCount", userId);
 	}
 
 	@Override

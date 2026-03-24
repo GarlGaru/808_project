@@ -63,6 +63,7 @@ public class ShowController {
          throws ServletException, IOException {
       log.info("ShowController - main화면");
 
+      	model.addAttribute("menu", "default");
       	showservice.getShowMain(request, response, model);
 		return "show/show";
     }
@@ -79,6 +80,7 @@ public class ShowController {
 		 throws ServletException, IOException {
       log.info("ShowController - 각 장르별 상세페이지 화면 ");
      
+      model.addAttribute("menu", category);
       showservice.prepareShowListPage(category, subCategory, model);
       return "show/showList";
 	}
@@ -90,9 +92,32 @@ public class ShowController {
 							   Model model)
 		 throws ServletException, IOException {
 	  log.info("ShowController - Ajax 데이터 요청 화면 (카테고리, 세부장르)");	
-		
+	
+	  model.addAttribute("menu", category);
 	  showservice.prepareShowListPage(category, subCategory, model);
 	  return "show/showListContent";
+	}
+	
+	// [공연메인페이지] - 마이티켓연결
+	@RequestMapping("/mypage/myTicket")
+	public String myTicketPage(HttpSession session, Model model)
+		 throws ServletException, IOException {
+		log.info("ShowController - 공연메인=>마이티켓연결");
+		
+		model.addAttribute("menu", "myticket");
+		
+		Long userId = (Long) session.getAttribute("userId");
+		
+		System.out.println("session userId = " + session.getAttribute("userId"));
+		
+		if(userId == null) {
+			userId = 1L;
+//			return "redirect:/authModal";
+		}
+		
+		showservice.getMyTicketList(userId, model);
+		 
+		return "show/mypage/myTicket";
 	}
 	
 	// [공연상세페이지] 공연개별페이지 -----
@@ -141,6 +166,7 @@ public class ShowController {
         
         log.info("ShowController - showRanking()");
         
+        model.addAttribute("menu", "ranking");
         showservice.getShowRanking(request, response, model);
         return "show/ranking";
     }
@@ -152,6 +178,7 @@ public class ShowController {
         
         log.info("ShowController - rankingAjax()");
         
+        model.addAttribute("menu", "ranking");
         showservice.getShowRanking(request, response, model);
         return "show/rankingContent";
     }
