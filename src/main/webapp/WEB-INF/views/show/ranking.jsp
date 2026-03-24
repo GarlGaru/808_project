@@ -82,6 +82,7 @@
     
     <script>
     $(function() {
+    	// 기존 ajax 탭 전환 코드
         $(".ranking-tab").on("click", function() {
             let category = $(this).data("category");
 
@@ -100,8 +101,28 @@
                 }
             });
         });
+    	
+    	// -- 툴팁 열기/닫기 (ajax 로드 이후에도 동작하도록 document에 위임)
+   		
+    	// 1. 랭킹 기준 버튼 클릭시 툴팁 토굴
+    	$(document).on("click", "#btnRankInfo", function(e) {
+    		e.stopPropagation(); // 클릭이벤트 문서전체 퍼지는 것 방지
+    		$("#rankTooltip").fadeToggle(200);
+    	});
+    	
+    	// 2. 툴팁 내 X버튼 클릭시 닫기
+    	$(document).on("click", "#btnCloseTooltip", function(e) {
+    		e.stopPropagation();
+    		$("#rankTooltip").fadeOut(200);
+    	});
+    	
+    	// 3. 툴팁 바깥(문서 빈 공간) 클릭 시 툴팁 닫기
+    	$(document).on("click", function(e) {
+    		if(!$(e.target).closest(".tootil-wrap").length) {
+    			$("#rankTooltip").fadeOut(200);
+    		}
+    	});
     });
-    
     </script>
 </body>
 </html>
