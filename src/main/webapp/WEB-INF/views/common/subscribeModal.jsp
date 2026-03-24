@@ -7,7 +7,7 @@
     position:fixed;
     inset:0;
     background:rgba(0,0,0,0.75);
-    z-index:9999;
+    z-index:10000;
     justify-content:center;
     align-items:center;
 }
