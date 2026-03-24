@@ -99,7 +99,7 @@
 			</div>
 			<div class="reply-actions">
 				<c:if
-					test="${sessionScope.loginUser.nickname eq row.nickname or sessionScope.loginUser.userId eq 'admin'}">
+					test="${sessionScope.loginUser.nickname eq row.nickname or sessionScope.loginUser.nickname eq 'admin'}">
 					<button type="button" class="btn-reply-delete"
 						onclick="deleteReply('${row.cno}', '${row.bno}')">DELETE
 					</button>
@@ -107,7 +107,6 @@
 			</div>
 		</div>
 	</c:forEach>
-
 	<c:if test="${empty list}">
 		<div class="no-reply">
 			<p style="font-size: 16px; margin-bottom: 8px;">아직 작성된 댓글이 없습니다.</p>

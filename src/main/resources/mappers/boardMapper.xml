@@ -15,6 +15,14 @@
 		)
 	</insert>
 
+	<select id="getTodayBoardList"
+		resultType="com.spring.eze.board.dto.BoardDTO">
+		SELECT BNO, TITLE, REGDATE
+		FROM FREE_BOARD_TBL
+		WHERE TO_CHAR(REGDATE, 'YYYY-MM-DD') = TO_CHAR(SYSDATE, 'YYYY-MM-DD')
+		ORDER BY BNO DESC
+	</select>
+
 	<update id="updateBoard"
 		parameterType="com.spring.eze.board.dto.BoardDTO">
 		UPDATE FREE_BOARD_TBL
@@ -106,9 +114,11 @@
 		B.REGDATE AS regdate,
 		B.VIEWCNT AS viewcnt,
 		B.YOUTUBE_URL AS youtubeUrl,
-		(SELECT COUNT(*) FROM BOARD_LIKE_TBL L WHERE L.BNO = B.BNO) AS likeCount
+		(SELECT COUNT(*) FROM BOARD_LIKE_TBL L
+		WHERE L.BNO = B.BNO) AS likeCount
 		FROM FREE_BOARD_TBL B
-		JOIN user_tbl U ON B.USER_ID = U.user_id
+		JOIN user_tbl U
+		ON B.USER_ID = U.user_id
 		ORDER BY B.BNO DESC
 	</select>
 
@@ -157,11 +167,11 @@
 		WHERE
 		BNO = #{bno}
 	</update>
-	
-<select id="boardCntToday" resultType="int">
-    SELECT COUNT(*) 
-    FROM FREE_BOARD_TBL 
-    WHERE TO_CHAR(REGDATE, 'YYYY-MM-DD') = TO_CHAR(SYSDATE, 'YYYY-MM-DD')
-</select>
+
+	<select id="boardCntToday" resultType="int">
+		SELECT COUNT(*)
+		FROM FREE_BOARD_TBL
+		WHERE TO_CHAR(REGDATE, 'YYYY-MM-DD') = TO_CHAR(SYSDATE, 'YYYY-MM-DD')
+	</select>
 
 </mapper>

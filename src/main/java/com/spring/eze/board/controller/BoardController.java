@@ -52,6 +52,7 @@ public class BoardController {
 	@RequestMapping("/board_update")
 	public String board_update(HttpServletRequest request, HttpServletResponse response, Model model)
 			throws ServletException, IOException {
+	
 		log.info("BoardController - board_detail");
 		HttpSession session = request.getSession();
 		Object loginUser = session.getAttribute("loginUser");
@@ -165,5 +166,11 @@ public class BoardController {
 	public int getBoardTodayCnt() {
 	    // 오늘 올라온 글자 수만 서비스에서 가져와서 대답해줘요.
 	    return boardservice.getTodayCount(); 
+	}
+	@RequestMapping("/admin/api/stats/boardTodayList")
+	@ResponseBody 
+	public java.util.List<com.spring.eze.board.dto.BoardDTO> getBoardTodayList() {
+
+	    return boardservice.getTodayBoardList(); 
 	}
 }

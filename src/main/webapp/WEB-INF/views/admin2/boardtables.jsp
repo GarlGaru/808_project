@@ -63,7 +63,7 @@
 					<p class="mb-4">자유게시판</p>
 					<div class="card shadow mb-4">
 						<div class="card-header py-3">
-							<h6 class="m-0 font-weight-bold text-primary">게시글 목록</h6>
+							<h6 class="m-0 font-weight-bold text-primary">게시글데이터</h6>
 						</div>
 						<div class="card-body">
 							<div class="table-responsive">
@@ -75,7 +75,9 @@
 											<th>Nickname</th>
 											<th>TITLE</th>
 											<th>CONTENT</th>
+											<th>올린시간</th>
 											<th>VIEW</th>
+											<th>LIKE</th>
 											<th>URL</th>
 											<th>관리</th>
 										</tr>
@@ -100,7 +102,9 @@
 															</c:otherwise>
 														</c:choose>
 												</a></td>
+												<td>${row.regdate}</td>
 												<td>${row.viewcnt}</td>
+												<td>${row.likeCount}</td>
 												<td>${row.youtubeUrl}</td>
 												<td>
 													<button type="button"

@@ -251,4 +251,8 @@ public class BoardServiceImpl implements BoardService {
 	public int getTodayCount() {
 	    return dao.boardCntToday(); // 맵퍼에 새로 만든 쿼리를 호출해요.
 	}
+	@Override
+	public List<BoardDTO> getTodayBoardList() {
+	    return dao.getTodayBoardList(); // DAO에 새로 만들 메서드 호출
+	}
 }
