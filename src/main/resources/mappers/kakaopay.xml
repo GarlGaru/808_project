@@ -171,10 +171,10 @@
      WHERE order_id = #{value}
   </update>
 
-  <!-- 선택 좌석 SOLD 처리 -->
+  <!-- 선택 좌석 RESERVED 처리 -->
   <update id="updateSeatStatusSold" parameterType="map">
     UPDATE seat_tbl
-       SET seat_status = 'SOLD'
+       SET seat_status = 'RESERVED'
      WHERE seat_id IN
      <foreach collection="seatIds" item="seatId" open="(" separator="," close=")">
        #{seatId}
