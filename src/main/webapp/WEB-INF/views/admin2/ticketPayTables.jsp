@@ -1,6 +1,5 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<!-- 데이터베이스 시간나오게하기위한거 -->
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 
 <c:set var="ctx" value="${pageContext.request.contextPath}" />
@@ -10,10 +9,9 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Admin - Pay Tables</title>
+    <title>Admin - Ticket Pay Tables</title>
 
     <link href="${adminRes}/vendor/fontawesome-free/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Nunito:200,300,400,600,700,800,900" rel="stylesheet">
@@ -54,12 +52,7 @@
             padding: 0.45em 0.7em;
             border-radius: 0.35rem;
         }
-
-        .btn-cancel-pay {
-            min-width: 90px;
-        }
     </style>
-
 </head>
 
 <body id="page-top">
@@ -91,7 +84,7 @@
 					<i class="fas fa-fw fa-users"></i> <span>User Admin</span>
 			</a></li>
 
-			<li class="nav-item active"><a class="nav-link" href="${adminUrl}/pay">
+			<li class="nav-item"><a class="nav-link" href="${adminUrl}/pay">
 					<i class="fas fa-fw fa-credit-card"></i> <span>Pay Admin</span>
 			</a></li>
 
@@ -105,7 +98,7 @@
 						Admin</span>
 			</a></li>
 			
-			<li class="nav-item">
+			<li class="nav-item active">
 			    <a class="nav-link" href="${adminUrl}/ticketpay">
 			        <i class="fas fa-fw fa-ticket-alt"></i>
 			        <span>Ticket Pay Admin</span>
@@ -115,91 +108,61 @@
 			<hr class="sidebar-divider d-none d-md-block">
 
 		</ul>
-	<!-- End Sidebar -->
-	
-    <!-- Content Wrapper -->
-    <div id="content-wrapper" class="d-flex flex-column">
+		<!-- End Sidebar -->
 
+    <div id="content-wrapper" class="d-flex flex-column">
         <div id="content">
 
             <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 shadow">
-                <span class="h5 mb-0 text-gray-800">결제 관리</span>
+                <span class="h5 mb-0 text-gray-800">티켓 결제 관리</span>
             </nav>
 
             <div class="container-fluid">
-
-                <h1 class="h3 mb-2 text-gray-800">PAY Tables</h1>
-                <p class="page-title-sub">결제 내역 및 주문 상태 확인</p>
+                <h1 class="h3 mb-2 text-gray-800">TICKET PAY Tables</h1>
+                <p class="page-title-sub">티켓 결제 데이터 조회</p>
 
                 <div class="card shadow mb-4">
                     <div class="card-header py-3">
-                        <h6 class="font-weight-bold text-primary">결제데이터</h6>
+                        <h6 class="font-weight-bold text-primary">티켓결제데이터</h6>
                     </div>
                     <div class="card-body">
                         <div class="table-responsive">
                             <table class="table table-bordered" id="dataTable" width="100%">
                                 <thead>
                                 <tr>
-                                    <th>결제번호</th>
-                                    <th>결제한회원</th>
-                                    <th>상품명</th>
-                                    <th>구매수량</th>
-                                    <th>총결제금액</th>
-                                    <th>카카오페이 결제 고유번호</th>
-                                    <th>결제상태</th>
-                                    <th>주문생성시간</th>
-                                    <th>결제승인시간</th>
-                                    <th>결제실패사유</th>
-                                    <th>관리</th>
+                                    <th>주문번호</th>
+                                    <th>좌석번호</th>
+                                    <th>공연ID</th>
+                                    <th>회차ID</th>
+                                    <th>좌석가격</th>
+                                    <th>티켓상태</th>
+                                    <th>생성일</th>
+                                    <th>취소일</th>
                                 </tr>
                                 </thead>
                                 <tbody>
-                                <c:forEach var="p" items="${payList}">
-                                    <tr data-status="${p.status}">
-                                        <td>${p.orderId}</td>
-                                        <td>${p.userId}</td>
-                                        <td>${p.itemName}</td>
-                                        <td>${p.quantity}</td>
-                                        <td>${p.totalAmount}</td>
-                                        <td>${p.tid}</td>
-
+                                <c:forEach var="t" items="${ticketPayList}">
+                                    <tr data-status="${t.ticketStatus}">
+                                        <td>${t.orderId}</td>
+                                        <td>${t.seatId}</td>
+                                        <td>${t.showId}</td>
+                                        <td>${t.scheduleId}</td>
+                                        <td>${t.ticketPrice}</td>
                                         <td>
                                             <c:choose>
-                                                <c:when test="${p.status eq 'READY'}">
-                                                    <span class="badge badge-secondary">READY</span>
-                                                </c:when>
-                                                <c:when test="${p.status eq 'APPROVED'}">
+                                                <c:when test="${t.ticketStatus eq 'APPROVED'}">
                                                     <span class="badge badge-success">APPROVED</span>
                                                 </c:when>
-                                                <c:when test="${p.status eq 'CANCEL'}">
+                                                <c:when test="${t.ticketStatus eq 'CANCEL'}">
                                                     <span class="badge badge-warning">CANCEL</span>
                                                 </c:when>
-                                                <c:when test="${p.status eq 'FAIL'}">
-                                                    <span class="badge badge-danger">FAIL</span>
-                                                </c:when>
                                                 <c:otherwise>
-                                                    <span class="badge badge-dark">${p.status}</span>
+                                                    <span class="badge badge-dark">${t.ticketStatus}</span>
                                                 </c:otherwise>
                                             </c:choose>
                                         </td>
-
-                                        <td><fmt:formatDate value="${p.createdAt}" pattern="yyyy-MM-dd HH:mm:ss" /></td>
-										<td><fmt:formatDate value="${p.approvedAt}" pattern="yyyy-MM-dd HH:mm:ss" /></td>
-                                        <td>${p.failReason}</td>
-
-                                        <td>
-                                            <c:if test="${p.status eq 'APPROVED'}">
-                                                <button type="button"
-												        class="btn btn-sm btn-danger btn-cancel-pay cancel-btn"
-												        data-toggle="modal"
-												        data-target="#cancelModal"
-												        data-orderid="${p.orderId}"
-												        data-itemname="${p.itemName}"
-												        data-tid="${p.tid}">
-												    결제취소
-												</button>
-                                            </c:if>
-                                        </td>
+                                        <td><fmt:formatDate value="${t.createdAt}" pattern="yyyy-MM-dd HH:mm:ss" /></td>
+                                        <td><fmt:formatDate value="${t.canceledAt}" pattern="yyyy-MM-dd HH:mm:ss" /></td>
                                     </tr>
                                 </c:forEach>
                                 </tbody>
@@ -207,7 +170,6 @@
                         </div>
                     </div>
                 </div>
-
             </div>
 
         </div>
@@ -217,7 +179,6 @@
                 <span>Copyright &copy; Admin 2026</span>
             </div>
         </footer>
-
     </div>
 
 </div>
@@ -225,38 +186,6 @@
 <a class="scroll-to-top rounded" href="#page-top">
     <i class="fas fa-angle-up"></i>
 </a>
-
-<!-- 결제 취소 모달 -->
-<div class="modal fade" id="cancelModal" tabindex="-1" role="dialog" aria-labelledby="cancelModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-
-        <input type="hidden" id="modalOrderId">
-		<input type="hidden" id="modalTid">
-
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="cancelModalLabel">결제 취소 확인</h5>
-                <button class="close" type="button" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-
-            <div class="modal-body text-left">
-                <p class="mb-2 font-weight-bold">정말 이 결제를 취소하시겠습니까?</p>
-                <div class="small text-gray-700">
-                    <div>주문번호 : <span id="modalOrderIdText"></span></div>
-                    <div>상품명 : <span id="modalItemNameText"></span></div>
-                </div>
-            </div>
-
-            <div class="modal-footer">
-                <button class="btn btn-secondary" type="button" data-dismiss="modal">아니오</button>
-                <button class="btn btn-danger" type="button" id="confirmCancelBtn">예</button>
-            </div>
-        </div>
-
-    </div>
-</div>
 
 <script src="${adminRes}/vendor/jquery/jquery.min.js"></script>
 <script src="${adminRes}/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
@@ -284,12 +213,11 @@
             return rowStatus === selectedStatus;
         });
 
-        //데이터베이스 정렬/페이징처리
         var table = $('#dataTable').DataTable({
             "pageLength": 10,
             "lengthMenu": [10, 25, 50, 100],
-            "ordering": true, 
-            "order": [[7, "desc"]],//최신글
+            "ordering": true,
+            "order": [[6, "desc"]],
             "searching": true,
             "language": {
                 "search": "검색:",
@@ -311,10 +239,8 @@
                     '<select id="statusFilter" class="custom-select custom-select-sm form-control form-control-sm" ' +
                     'style="width:auto; display:inline-block; margin-left:5px;">' +
                     '<option value="">전체</option>' +
-                    '<option value="READY">READY</option>' +
                     '<option value="APPROVED">APPROVED</option>' +
                     '<option value="CANCEL">CANCEL</option>' +
-                    '<option value="FAIL">FAIL</option>' +
                     '</select>' +
                     '</label>';
 
@@ -325,42 +251,6 @@
                 });
             }
         });
-
-        $(document).on('click', '.cancel-btn', function() {
-            var orderId = $(this).data('orderid');
-            var itemName = $(this).data('itemname');
-            var tid = $(this).data('tid');
-
-            $('#modalOrderId').val(orderId);
-            $('#modalTid').val(tid);
-
-            $('#modalOrderIdText').text(orderId);
-            $('#modalItemNameText').text(itemName);
-        });
-
-        //카카오 결제취소
-        $('#confirmCancelBtn').on('click', function() {
-            var orderId = $('#modalOrderId').val();
-
-            $.ajax({
-                url: '${ctx}/kakaopay/request_cancel',
-                type: 'get',
-                data: { orderId: orderId },
-                success: function(response) {
-                    if (response === 'OK') {
-                        $('#cancelModal').modal('hide');
-                        alert('결제취소가 완료되었습니다.');
-                        location.reload();
-                    } else {
-                        alert('취소 요청은 갔는데 응답이 이상함: ' + response);
-                    }
-                },
-                error: function() {
-                    alert('결제취소 중 오류가 발생했습니다.');
-                }
-            });
-        });
-
     });
 </script>
 

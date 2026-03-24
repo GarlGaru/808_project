@@ -19,13 +19,13 @@
     </resultMap>
 	
 	<select id="selectSeatList" parameterType="map" resultMap="seatMap">
-    SELECT seat_label, seat_status
-    FROM seat_tbl
-    WHERE show_id = #{showId}
-      AND schedule_id = #{scheduleId}
-      AND seat_status IN ('HELD', 'RESERVED')
-    ORDER BY seat_label
-</select>
+	    SELECT seat_label, seat_status
+	    FROM seat_tbl
+	    WHERE show_id = #{showId}
+	      AND schedule_id = #{scheduleId}
+	      AND seat_status IN ('HELD', 'RESERVED')
+	    ORDER BY seat_label
+	</select>
 
 	<update id="updateHoldSeats">
 		UPDATE seat_tbl
