@@ -69,4 +69,9 @@ public class BoardDAOImpl implements BoardDAO {
 	public int boardCntToday() {
 		return sqlSession.selectOne(NS + ".boardCntToday");
 	}
+	@Override
+	public List<BoardDTO> getTodayBoardList() {
+	    // 기존 return null; 에서 아래와 같이 실제 매퍼 호출로 수정됨
+	    return sqlSession.selectList(NS + ".getTodayBoardList"); 
+	}
 }

@@ -252,7 +252,7 @@
 <header class="header">
   <%-- 로고 이미지 경로를 아래 src에 입력하세요 --%>
   <a href="${cp}/main" class="header-logo">
-    <img src="${cp}/resources/TODO_로고이미지경로" alt="808 PROJECT" />
+    <img src="${cp}/resources/common/img/core-img/808_logo(white).png" alt="808 PROJECT" />
   </a>
   <div class="header-sep"></div>
   <span class="header-title">이용약관 및 개인정보 처리방침</span>

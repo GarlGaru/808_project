@@ -151,19 +151,16 @@
       : fieldError(input, errorEl, "이메일 형식이 잘못되었습니다.");
   }
 
+  /* startTimer / stopTimer — ModalCore.timer 위임
+     STATE.timers[stateKey] 구조 유지 (호출부 변경 최소화) */
   function startTimer(timerEl, stateKey) {
     if (STATE.timers[stateKey]) clearInterval(STATE.timers[stateKey]);
-    var sec = 300;
-    STATE.timers[stateKey] = setInterval(function() {
-      var m = Math.floor(sec / 60), s = sec % 60;
-      timerEl.textContent = m + ":" + String(s).padStart(2, "0");
-      if (--sec < 0) { clearInterval(STATE.timers[stateKey]); timerEl.textContent = "만료됨"; }
-    }, 1000);
+    STATE.timers[stateKey] = ModalCore.timer.start(timerEl, 300);
   }
 
   function stopTimer(timerEl, stateKey) {
-    if (STATE.timers[stateKey]) { clearInterval(STATE.timers[stateKey]); STATE.timers[stateKey] = null; }
-    timerEl.textContent = "5:00";
+    ModalCore.timer.stop(timerEl, STATE.timers[stateKey]);
+    STATE.timers[stateKey] = null;
   }
 
   var PW_RULES = [
