@@ -157,6 +157,43 @@
     }
   }
 
+  /* ────────────────────────────────────────────
+     timer — 인증코드 카운트다운 공통 유틸
+     auth / mypage 양쪽에서 동일한 로직 중복 구현 → 여기서 통합
+
+     사용법:
+       var tid = ModalCore.timer.start(el, 300);  // el: 타이머 표시할 DOM, 300초
+       ModalCore.timer.stop(el, tid);
+  ──────────────────────────────────────────── */
+  var timer = {
+
+    start: function (el, durationSec) {
+      if (!el) return null;
+      var sec = durationSec || 300;
+      el.textContent = _formatTime(sec);
+      var tid = setInterval(function () {
+        sec--;
+        el.textContent = _formatTime(sec);
+        if (sec <= 0) {
+          clearInterval(tid);
+          el.textContent = '만료됨';
+        }
+      }, 1000);
+      return tid;  /* 호출한 쪽에서 stop 할 때 필요 */
+    },
+
+    stop: function (el, tid) {
+      if (tid) clearInterval(tid);
+      if (el)  el.textContent = '5:00';
+    }
+  };
+
+  function _formatTime(sec) {
+    var m = Math.floor(sec / 60);
+    var s = sec % 60;
+    return m + ':' + (s < 10 ? '0' : '') + s;
+  }
+
   /* ── 전역 노출 ── */
   window.ModalCore = {
     open:             open,
@@ -165,6 +202,7 @@
     bindEscKey:       bindEscKey,
     bindCloseBtn:     bindCloseBtn,
     bindOnClose:      bindOnClose,
+    timer:            timer,
   };
 
 }());
