@@ -104,7 +104,6 @@
 	<div id="wrapper">
 
 		<!-- Sidebar -->
-		<!-- Sidebar -->
 		<ul
 			class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion"
 			id="accordionSidebar">
@@ -142,6 +141,13 @@
 				href="${adminUrl}/music"> <i class="fas fa-fw fa-music"></i> <span>Music
 						Admin</span>
 			</a></li>
+			
+			<li class="nav-item">
+			    <a class="nav-link" href="${adminUrl}/ticketpay">
+			        <i class="fas fa-fw fa-ticket-alt"></i>
+			        <span>Ticket Pay Admin</span>
+			    </a>
+			</li>
 
 			<hr class="sidebar-divider d-none d-md-block">
 
