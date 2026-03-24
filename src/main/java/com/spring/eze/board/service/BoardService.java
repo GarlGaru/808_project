@@ -2,6 +2,7 @@ package com.spring.eze.board.service;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -33,6 +34,11 @@ public interface BoardService {
 	         throws ServletException, IOException;
 
 	public List<BoardDTO> getList();
+
+	public int getTotalCnt(Map<String, Object> map);
+	
+	
+	public int getTodayCount();
 	   
 
 }

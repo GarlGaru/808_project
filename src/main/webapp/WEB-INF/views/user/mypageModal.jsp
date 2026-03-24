@@ -10,9 +10,9 @@
   로드 의존성:
     modalCore.css → mypageModal.css → modalCore.js → mypageModal.js
 --%>
-<script>if (!window.__AUTH_CP) window.__AUTH_CP = "${path}";</script>
+<script>if (!window.__AUTH_CP) window.__AUTH_CP = "${pageContext.request.contextPath}";</script>
 <%-- modalCore.css는 authModal.jsp에서 이미 로드됨 — 중복 방지 주석 --%>
-<link rel="stylesheet" href="${path}/resources/user/css/mypageModal.css">
+<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/user/css/mypageModal.css">
 
 <%--
   .mc-overlay : modalCore.css 기반 (position:fixed, backdrop, z-index:9999)
@@ -35,7 +35,7 @@
           <div class="av" id="mpAv" onclick="document.getElementById('mpAvFile').click()">
             <c:choose>
               <c:when test="${not empty loginUser.profile.photoUrl}">
-                <img src="${path}${loginUser.profile.photoUrl}?v=${now}" alt="프로필">
+                <img src="${pageContext.request.contextPath}${loginUser.profile.photoUrl}?v=${now}" alt="프로필">
               </c:when>
               <c:otherwise>
                 ${fn:substring(loginUser.nickname, 0, 1)}
@@ -49,17 +49,15 @@
         <div class="sb-email"><c:out value="${loginUser.email}"/></div>
         <div class="sb-badges">
           <c:choose>
-            <c:when test="${loginUser.profile.membershipType eq 'ULTIMATE'}">
-              <span class="grade-badge ultimate">👑 Ultimate</span>
-            </c:when>
-            <c:when test="${loginUser.profile.membershipType eq 'PREMIUM'}">
-              <span class="grade-badge premium">⚡ Premium</span>
+            <c:when test="${loginUser.profile.membershipType eq 'PRO'}">
+              <span class="grade-badge ultimate">PRO</span>
             </c:when>
             <c:otherwise>
-              <span class="grade-badge free">🎵 Free</span>
+              <span class="grade-badge free">${loginUser.profile.membershipType}</span>
             </c:otherwise>
           </c:choose>
-          <span class="level-badge" id="mpLevelBadge">🎵 Lv.24</span>
+          <!-- 나중에 여유 생기면 때 Lv. 기능추가 -->
+          <!-- <span class="level-badge" id="mpLevelBadge">Lv.24</span> -->
         </div>
       </div>
       
@@ -67,28 +65,28 @@
 
       <nav class="sb-nav">
         <div class="nav-item active"
-             onclick="mpTab(this,'report','🎧 808 플레이 리포트','이번 달 나의 음악 청취 현황')">
-          <span class="nav-icon">🎧</span>808 플레이 리포트
+             onclick="mpTab(this,'report','808 플레이 리포트','이번 달 나의 음악 청취 현황')">
+          <span class="nav-icon"><i class="fa-sharp fa-solid fa-headphones"></i></span>808 플레이 리포트
+        </div>
+		<div class="nav-item"
+		     onclick="mpTab(this,'activity','통합 활동 내역','내가 작성한 글, 댓글, 리뷰 목록')">
+		  <span class="nav-icon"><i class="fa-solid fa-list-ul"></i></span>활동 내역
+		</div>
+        <div class="nav-item"
+             onclick="mpTab(this,'reservation','예매 내역','공연 예매 내역')">
+          <span class="nav-icon"><i class="fa-sharp fa-solid fa-calendar-check"></i></span>예매 내역
         </div>
         <div class="nav-item"
-             onclick="mpTab(this,'comments','💬 내 댓글','내가 작성한 댓글 목록')">
-          <span class="nav-icon">💬</span>댓글
+             onclick="mpTab(this,'payments','결제 내역','결제 기록')">
+          <span class="nav-icon"><i class="fa-sharp fa-solid fa-credit-card"></i></span>결제 내역
         </div>
         <div class="nav-item"
-             onclick="mpTab(this,'reservation','🎫 예매 내역','공연 예매 내역')">
-          <span class="nav-icon">🎫</span>예매 내역
+             onclick="mpTab(this,'membership','멤버십 정보','현재 등급 및 혜택')">
+          <span class="nav-icon"><i class="fa-solid fa-chess-queen"></i></span>멤버십
         </div>
         <div class="nav-item"
-             onclick="mpTab(this,'payments','💳 결제 내역','결제 기록')">
-          <span class="nav-icon">💳</span>결제 내역
-        </div>
-        <div class="nav-item"
-             onclick="mpTab(this,'membership','👑 멤버십 정보','현재 등급 및 혜택')">
-          <span class="nav-icon">👑</span>멤버십
-        </div>
-        <div class="nav-item"
-             onclick="mpTab(this,'profile','👤 내정보 수정','프로필 및 비밀번호 변경')">
-          <span class="nav-icon">👤</span>내정보 수정
+             onclick="mpTab(this,'profile','내정보 수정','프로필 및 비밀번호 변경')">
+          <span class="nav-icon"><i class="fa-solid fa-id-badge"></i></span>내정보 수정
         </div>
       </nav>
     </div>
@@ -97,7 +95,8 @@
     <div class="main-pane">
 
       <div class="pane-header">
-        <div class="pane-title" id="mpTitle">🎧 808 플레이 리포트</div>
+        <div class="pane-title" id="mpTitle"><i class="fa-solid fa-headphones"></i> 808 플레이 리포트</div>
+        
         <div class="pane-sub"   id="mpSub">이번 달 나의 음악 청취 현황</div>
       </div>
 
@@ -107,53 +106,64 @@
         <div class="tab-pane active" id="tab-report">
           <div class="stat-grid">
             <div class="stat-card">
-              <div class="stat-label">총 청취 시간</div>
+              <div class="stat-label">총 청취 시간<span class="mp-tip" data-tip="재생 후 10초 이상 들은 곡들의 누적 시간이에요.">?</span></div>
               <div class="stat-num" id="mpStatTime">-</div>
               <div class="stat-sub" id="mpStatTimeSub">-</div>
             </div>
             <div class="stat-card">
-              <div class="stat-label">재생한 곡</div>
+              <div class="stat-label">재생한 곡<!-- <span class="mp-tip" data-tip="재생 버튼을 누른 총 횟수예요. 같은 곡을 여러 번 들으면 중복 집계돼요."></span> --></div>
               <div class="stat-num" id="mpStatPlay">-</div>
               <div class="stat-sub" id="mpStatPlaySub">-</div>
             </div>
             <div class="stat-card">
-              <div class="stat-label">활발한 요일</div>
-              <div class="stat-num" id="mpStatDay" style="font-size:17px">-</div>
+              <div class="stat-label">활발한 요일<span class="mp-tip" data-tip="10초 이상 청취한 기록이 가장 많은 요일이에요.">?</span></div>
+              <div class="stat-num stat-num--day" id="mpStatDay">-</div>
               <div class="stat-sub">최다 청취 요일</div>
             </div>
           </div>
           <div class="two-col">
-            <div>
-              <div class="row-between" style="margin-bottom:9px">
-                <div class="sec-title">TOP 10</div>
-                <select class="mp-select" id="mpSongPeriod" onchange="mpLoadTopSongs(this.value)">
-                  <option value="THIS_MONTH">이번 달</option>
-                  <option value="LAST_MONTH">지난 달</option>
-                  <option value="3MONTH">최근 3개월</option>
-                </select>
+            <%-- TOP 10 — stat-card 박스로 감싸서 빈 상태 정렬 --%>
+            <div class="stat-card stat-card--inner">
+              <div class="row-between row-between--mb">
+                <div class="sec-title sec-title--inline">TOP 10<span class="mp-tip" data-tip="선택한 기간 동안 재생 횟수가 가장 많은 곡 순위예요.">?</span></div>
+                <div class="select-wrap">
+                  <select class="mp-select" id="mpSongPeriod" onchange="mpLoadTopSongs(this.value)">
+                    <option value="THIS_MONTH">이번 달</option>
+                    <option value="LAST_MONTH">지난 달</option>
+                    <option value="3MONTH">최근 3개월</option>
+                  </select>
+                </div>
               </div>
               <div id="mpTopList"></div>
             </div>
-            <div>
-              <div class="sec-title">TOP 장르</div>
-              <div class="genre-grid" id="mpTopGenres"></div>
-              <div class="sec-title" style="margin-top:12px">TOP 아티스트</div>
-              <div id="mpTopArtists"></div>
+            <%-- 장르 + 아티스트 --%>
+            <div class="two-col__right">
+              <div class="stat-card stat-card--inner stat-card--flex">
+                <div class="sec-title sec-title--sm">TOP 장르<span class="mp-tip" data-tip="30초 이상 들은 곡들을 기준으로 집계한 장르 비율이에요. 단순 재생보다 실제로 즐겨 들은 장르를 반영해요.">?</span></div>
+                <div class="genre-grid" id="mpTopGenres"></div>
+              </div>
+              <div class="stat-card stat-card--inner stat-card--flex">
+                <div class="sec-title sec-title--sm">TOP 아티스트<!-- <span class="mp-tip" data-tip="가장 많은 종류의 곡을 재생한 아티스트 순위예요.">?</span>--></div>
+                <div id="mpTopArtists"></div>
+              </div>
             </div>
           </div>
         </div>
 
-        <!-- ─── COMMENTS ─── -->
-        <div class="tab-pane" id="tab-comments">
-          <div id="mpCmtList"></div>
-        </div>
+        <!-- ─── ACTIVITY ─── -->
+        <div class="tab-pane" id="tab-activity">
+		  <div id="mpActivityList"></div>
+		  <div class="more-link-wrap">
+		    <button id="mpActMoreBtn" class="outline-btn outline-btn--full" onclick="mpMoreActivity()" style="display:none">더보기</button>
+		  </div>
+		</div>
 
         <!-- ─── RESERVATION ─── -->
         <div class="tab-pane" id="tab-reservation">
           <div class="sec-title">최근 예매 내역</div>
           <div id="mpResCards"></div>
-          <div style="text-align:center;margin-top:14px">
-            <a href="${pageContext.request.contextPath}/reservation/list" class="more-link">
+          <div class="more-link-wrap">
+            <a href="${pageContext.request.contextPath}/show/mypage/myTicket" class="more-link">
               전체 예매 내역 보기 →
             </a>
           </div>
@@ -168,42 +178,65 @@
         </div>
 
         <!-- ─── MEMBERSHIP ─── -->
-        <div class="tab-pane" id="tab-membership">
-          <div class="ms-card">
-            <div class="ms-title">
-              <c:choose>
-                <c:when test="${loginUser.profile.membershipType eq 'ULTIMATE'}">👑 Ultimate</c:when>
-                <c:when test="${loginUser.profile.membershipType eq 'PREMIUM'}">⚡ Premium</c:when>
-                <c:otherwise>🎵 Free</c:otherwise>
-              </c:choose>
-            </div>
-            <div class="ms-expire">만료: 2026년 4월 30일 · D-70</div>
-            <div class="ms-benefits">
-              <div class="ms-item">광고 없는 청취</div>
-              <div class="ms-item">오프라인 다운로드</div>
-              <div class="ms-item">고음질 스트리밍</div>
-              <div class="ms-item">공연 우선 예매</div>
-              <div class="ms-item">독점 콘텐츠</div>
-              <div class="ms-item">가사 실시간 지원</div>
-            </div>
-          </div>
-          <button class="upgrade-btn">👑 UPGRADE TO ULTIMATE →</button>
-          <div class="stat-card" style="margin-top:10px">
-            <div class="sec-title">Ultimate 추가 혜택</div>
-            <div class="ms-benefits">
-              <div class="ms-item">Premium 전체 포함</div>
-              <div class="ms-item">공연 VIP 입장</div>
-              <div class="ms-item">팬미팅 우선권</div>
-              <div class="ms-item">굿즈 20% 할인</div>
-            </div>
-          </div>
-        </div>
+		 <div class="tab-pane" id="tab-membership">
 
+  <c:choose>
+    <%-- ── PRO 구독 중 ── --%>
+    <c:when test="${loginUser.profile.membershipType eq 'PRO'}">
+
+      <div class="ms-card ms-card--pro">
+        <div class="ms-title">PRO</div>
+        <c:if test="${not empty membership}">
+          <div class="ms-expire">만료: ${membership.expireDate} · D-${membership.daysLeft}</div>
+        </c:if>
+        <div class="ms-benefits">
+          <div class="ms-item">무제한 스트리밍</div>
+          <div class="ms-item">AI 음악 추천</div>
+          <div class="ms-item">광고 없는 청취</div>
+          <div class="ms-item">고음질 스트리밍</div>
+          <!-- <div class="ms-item">공연 우선 예매</div> -->
+          <div class="ms-item">독점 콘텐츠</div>
+          <div class="ms-item">가사 실시간 지원</div>
+          <!-- <div class="ms-item">굿즈 20% 할인</div> -->
+        </div>
+      </div>
+      <button class="upgrade-btn upgrade-btn--pro" onclick="mpCancelMembership('${membership.orderId}')">구독 해지</button>
+
+    </c:when>
+    <%-- ── FREE ── --%>
+    <c:otherwise>
+
+      <div class="ms-card">
+        <div class="ms-title">FREE</div>
+        <div class="ms-benefits">
+          <div class="ms-item">광고 노출</div>
+          <div class="ms-item">전곡 하이라이트 감상</div>
+          <div class="ms-item">아티스트 정보 제공</div>
+          <div class="ms-item">표준 음질 제공</div>
+          <div class="ms-item">기본 굿즈 구매</div>
+        </div>
+      </div>
+
+      <div class="stat-card stat-card--ms-info">
+        <div class="sec-title">PRO 멤버십 혜택</div>
+        <div class="ms-benefits">
+          <div class="ms-item">Premium 전체 포함</div>
+          <div class="ms-item">공연 VIP 입장</div>
+          <div class="ms-item">팬미팅 우선권</div>
+          <div class="ms-item">굿즈 20% 할인</div>
+        </div>
+      </div>
+      <button class="upgrade-btn" onclick="openSubscribeModal()">PRO로 업그레이드</button>
+
+    </c:otherwise>
+  </c:choose>
+
+</div>
         <!-- ─── PROFILE ─── -->
         <div class="tab-pane" id="tab-profile">
 
           <div id="mpPvView">
-            <div class="row-between" style="margin-bottom:14px">
+            <div class="row-between row-between--mb14">
               <div class="pv-title">기본 정보</div>
               <button class="outline-btn" onclick="mpEditStart()">✎ 수정</button>
             </div>
@@ -213,7 +246,7 @@
             </div>
             <div class="pv-field">
               <span class="pv-label">이메일</span>
-              <span class="pv-val muted"><c:out value="${loginUser.email}"/> 🔒</span>
+              <span class="pv-val muted"><c:out value="${loginUser.email} "/><i class="fa-sharp fa-solid fa-shield-halved"></i></span>
             </div>
             <div class="pv-field">
               <span class="pv-label">생년월일</span>
@@ -241,11 +274,10 @@
               <span class="pv-label">멤버십</span>
               <span class="pv-val">
                 <c:choose>
-                  <c:when test="${loginUser.profile.membershipType eq 'ULTIMATE'}">👑 Ultimate</c:when>
-                  <c:when test="${loginUser.profile.membershipType eq 'PREMIUM'}">⚡ Premium</c:when>
-                  <c:otherwise>🎵 Free</c:otherwise>
+                  <c:when test="${loginUser.profile.membershipType eq 'PRO'}">PRO</c:when>
+                  <c:otherwise>FREE</c:otherwise>
                 </c:choose>
-              </span>
+              <i class="fa-sharp fa-solid fa-circle-play"></i></span>
             </div>
             <div class="pv-field">
               <span class="pv-label">가입일</span>
@@ -257,18 +289,17 @@
                   <c:otherwise>-</c:otherwise>
                 </c:choose>
               </span>
-            </div>
-
-            <div class="danger-zone">
-              <div class="danger-label">위험 구역</div>
+               <div class="danger-zone">
               <button class="danger-btn" onclick="mpWithdraw()">계정 탈퇴</button>
             </div>
+            </div>
+
           </div><%-- /mpPvView --%>
 
           <div id="mpPvEdit" style="display:none">
-            <div class="row-between" style="margin-bottom:14px">
+            <div class="row-between row-between--mb14">
               <div class="pv-title">기본 정보 수정</div>
-              <div style="display:flex;gap:7px">
+              <div class="btn-group">
                 <button class="outline-btn" onclick="mpEditCancel()">취소</button>
                 <button class="primary-btn" onclick="mpEditSave()">저장</button>
               </div>
@@ -284,7 +315,7 @@
                 <button type="button" class="code-btn" id="nickCheckBtn"
                         onclick="mpCheckNick()">중복확인</button>
               </div>
-              <div id="nickCheckMsg" style="font-size:11px;margin-top:4px;display:none"></div>
+              <div id="nickCheckMsg" class="field-msg" style="display:none"></div>
             </div>
 
             <div class="f-group">
@@ -305,7 +336,7 @@
 
             <%-- 비밀번호 변경 — 수정 폼 안으로 이동 --%>
             <div class="pw-box">
-              <div class="pw-title">🔐 비밀번호 변경</div>
+              <div class="pw-title"><i class="fa-sharp fa-solid fa-unlock-keyhole"></i> 비밀번호 변경</div>
               <div class="f-group">
                 <label>현재 비밀번호</label>
                 <input type="password" class="f-input" id="pwCurrent" placeholder="현재 비밀번호 입력">
@@ -353,4 +384,88 @@
 </div><%-- /mpOverlay --%>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
-<script src="${path}/resources/user/js/mypageModal.js"></script>
+
+<%-- ══════════════════════════════════════════
+     HTML 템플릿 — JS가 값만 꽂아 넣는 뼈대
+     display:none 으로 화면에 안 보임
+     ══════════════════════════════════════════ --%>
+
+<%-- TOP 10 / 아티스트 — list-item 1개 뼈대 --%>
+<template id="tmpl-list-item">
+  <div class="list-item">
+    <div class="rank"></div>
+    <div class="li-thumb"></div>
+    <div class="li-info">
+      <div class="li-name"></div>
+      <div class="li-sub"></div>
+      <div class="prog-bar"><div class="prog-fill"></div></div>
+    </div>
+    <div class="li-right"></div>
+  </div>
+</template>
+
+<%-- TOP 장르 — genre-tag 1개 뼈대 --%>
+<template id="tmpl-genre-tag">
+  <div class="genre-tag">
+    <div class="genre-name"></div>
+    <div class="genre-pct"></div>
+  </div>
+</template>
+
+<%-- 활동 내역 — cmt-item 1개 뼈대 --%>
+<template id="tmpl-cmt-item">
+  <div class="cmt-item">
+    <div class="cmt-meta">
+      <div class="cmt-target">
+        <span class="act-badge"></span>
+        <span class="cmt-target-title"></span>
+      </div>
+      <div class="cmt-date"></div>
+    </div>
+    <div class="cmt-text"></div>
+    <div class="cmt-actions">
+      <button class="cmt-btn cmt-btn--view">원글보기</button>
+      <button class="cmt-btn del cmt-btn--del" style="display:none">삭제</button>
+    </div>
+  </div>
+</template>
+
+<%-- 결제 내역 — pay-item 1개 뼈대 --%>
+<template id="tmpl-pay-item">
+  <div class="pay-item">
+    <div class="pay-icon"></div>
+    <div class="pay-info">
+      <div class="pay-name"></div>
+      <div class="pay-sub"></div>
+    </div>
+    <div class="pay-right">
+      <span class="pay-amount"></span>
+      <div><span class="status-badge"></span></div>
+    </div>
+  </div>
+</template>
+
+<%-- 예매 내역 — res-card 1개 뼈대 --%>
+<template id="tmpl-res-card">
+  <div class="res-card">
+    <div class="res-poster">
+      <div class="res-poster-bg"></div>
+      <div class="res-poster-dim"></div>
+      <div class="res-content">
+        <div class="res-name"></div>
+        <div class="res-date"></div>
+        <span class="status-badge"></span>
+      </div>
+    </div>
+    <div class="res-info">
+      <div class="res-venue"></div>
+      <div class="res-seat"></div>
+      <div class="res-price">
+        <span class="res-amt"></span>
+        <button class="res-detail-btn">상세보기</button>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script src="${pageContext.request.contextPath}/resources/user/js/mypageModal.js"></script>

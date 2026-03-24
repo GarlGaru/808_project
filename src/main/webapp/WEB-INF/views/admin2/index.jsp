@@ -4,352 +4,469 @@
 <c:set var="ctx" value="${pageContext.request.contextPath}" />
 <c:set var="adminUrl" value="${ctx}/admin" />
 <c:set var="adminRes" value="${ctx}/resources/common/admin" />
+<style>
+        /* 종 아이콘 스타일 */
+        .yellow-bell {
+            color: #f1c40f;
+            font-size: 1.5rem;
+            cursor: pointer;
+            display: inline-block;
+            transform-origin: top center;
+            animation: bell-shake 2s infinite ease-in-out;
+        }
+
+        /* 빨간색 숫자 배지 스타일 */
+        .bell-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background-color: #e74a3b;
+            color: white;
+            font-size: 0.7rem;
+            padding: 2px 6px;
+            border-radius: 50%;
+            font-weight: bold;
+            border: 2px solid white;
+            display: inline-block;
+        }
+
+        /* 종과 숫자를 감싸는 바구니 */
+        .notification-container {
+            position: relative;
+            display: inline-block;
+            margin-right: 15px;
+        }
+
+        @keyframes bell-shake {
+            0%, 100% { transform: rotate(0deg); }
+            10% { transform: rotate(15deg); }
+            20% { transform: rotate(-10deg); }
+            30% { transform: rotate(5deg); }
+            40% { transform: rotate(-5deg); }
+            50% { transform: rotate(0deg); }
+        }
+    </style>
 
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>Admin - Dashboard</title>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<title>Admin - Dashboard</title>
 
-    <link href="${adminRes}/vendor/fontawesome-free/css/all.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css?family=Nunito:200,300,400,600,700,800,900" rel="stylesheet">
-    <link href="${adminRes}/css/sb-admin-2.min.css" rel="stylesheet">
+<link href="${adminRes}/vendor/fontawesome-free/css/all.min.css"
+	rel="stylesheet">
+<link
+	href="https://fonts.googleapis.com/css?family=Nunito:200,300,400,600,700,800,900"
+	rel="stylesheet">
+<link href="${adminRes}/css/sb-admin-2.min.css" rel="stylesheet">
 </head>
 
 <body id="page-top">
 
-<div id="wrapper">
+	<div id="wrapper">
 
-    <!-- Sidebar -->
-    <!-- Sidebar -->
-<ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
+		<!-- Sidebar -->
+		<!-- Sidebar -->
+		<ul
+			class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion"
+			id="accordionSidebar">
 
-    <a class="sidebar-brand d-flex align-items-center justify-content-center" href="${adminUrl}">
-        <div class="sidebar-brand-icon">
-            <i class="fas fa-user-shield"></i>
-        </div>
-        <div class="sidebar-brand-text mx-3">808 ADMIN</div>
-    </a>
+			<a
+				class="sidebar-brand d-flex align-items-center justify-content-center"
+				href="${adminUrl}">
+				<div class="sidebar-brand-icon">
+					<i class="fas fa-user-shield"></i>
+				</div>
+				<div class="sidebar-brand-text mx-3">808 ADMIN</div>
+			</a>
 
-    <hr class="sidebar-divider my-0">
+			<hr class="sidebar-divider my-0">
 
-    <li class="nav-item active">
-        <a class="nav-link" href="${adminUrl}">
-            <i class="fas fa-fw fa-tachometer-alt"></i>
-            <span>Dashboard</span>
-        </a>
-    </li>
+			<li class="nav-item active"><a class="nav-link"
+				href="${adminUrl}"> <i class="fas fa-fw fa-tachometer-alt"></i>
+					<span>Dashboard</span>
+			</a></li>
 
-    <li class="nav-item">
-        <a class="nav-link" href="${adminUrl}/user">
-            <i class="fas fa-fw fa-users"></i>
-            <span>User Admin</span>
-        </a>
-    </li>
+			<li class="nav-item"><a class="nav-link" href="${adminUrl}/user">
+					<i class="fas fa-fw fa-users"></i> <span>User Admin</span>
+			</a></li>
 
-    <li class="nav-item">
-        <a class="nav-link" href="${adminUrl}/pay">
-            <i class="fas fa-fw fa-credit-card"></i>
-            <span>Pay Admin</span>
-        </a>
-    </li>
+			<li class="nav-item"><a class="nav-link" href="${adminUrl}/pay">
+					<i class="fas fa-fw fa-credit-card"></i> <span>Pay Admin</span>
+			</a></li>
 
-    <li class="nav-item">
-        <a class="nav-link" href="${adminUrl}/board">
-            <i class="fas fa-fw fa-clipboard-list"></i>
-            <span>Board Admin</span>
-        </a>
-    </li>
+			<li class="nav-item"><a class="nav-link"
+				href="${adminUrl}/board"> <i class="fas fa-fw fa-clipboard-list"></i>
+					<span>Board Admin</span>
+			</a></li>
 
-    <li class="nav-item">
-        <a class="nav-link" href="${adminUrl}/music">
-            <i class="fas fa-fw fa-music"></i>
-            <span>Music Admin</span>
-        </a>
-    </li>
+			<li class="nav-item"><a class="nav-link"
+				href="${adminUrl}/music"> <i class="fas fa-fw fa-music"></i> <span>Music
+						Admin</span>
+			</a></li>
 
-    <hr class="sidebar-divider d-none d-md-block">
+			<hr class="sidebar-divider d-none d-md-block">
 
-</ul>
-    <!-- End Sidebar -->
+		</ul>
+		<!-- End Sidebar -->
 
-    <div id="content-wrapper" class="d-flex flex-column">
-        <div id="content">
+		<div id="content-wrapper" class="d-flex flex-column">
+			<div id="content">
 
-            <!-- Topbar -->
-            <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
-                <span class="navbar-brand">808 Admin Dashboard</span>
-            </nav>
+				<!-- Topbar -->
+				<nav
+					class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
+					<span class="navbar-brand">808 Admin Dashboard</span>
 
-            <!-- Page Content -->
-            <div class="container-fluid">
-
-                <!-- 상단 카드 -->
-                <div class="row">
-
-                    <!-- 최근 5일 가입자 총합 -->
-                    <div class="col-xl-3 col-md-6 mb-4">
-                        <div class="card border-left-primary shadow h-100 py-2">
-                            <div class="card-body">
-                                <div id="signupTotal" class="h5 mb-0 font-weight-bold text-gray-800">0</div>
-                                <div class="text-xs font-weight-bold text-primary text-uppercase">
-                                    최근 5일 가입자 합계
-                                </div>
-                            </div>
+					<div class="ml-auto d-flex align-items-center">
+                        <div class="notification-container">
+                            <a href="#" class="yellow-bell" title="신규 알림">
+                                <i class="fas fa-bell"></i>
+                            </a>
+                            <span id="bell-count" class="bell-badge">0</span>
                         </div>
-                    </div>
+					</div>
+				</nav>
 
-                    <!-- 최근 5일 결제 승인 총합 -->
-                    <div class="col-xl-3 col-md-6 mb-4">
-                        <div class="card border-left-success shadow h-100 py-2">
-                            <div class="card-body">
-                                <div id="payTotal" class="h5 mb-0 font-weight-bold text-gray-800">0</div>
-                                <div class="text-xs font-weight-bold text-success text-uppercase">
-                                    최근 5일 결제 승인 합계
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+				<!-- Page Content -->
+				<div class="container-fluid">
 
-                    <!-- READY 건수 -->
-                    <div class="col-xl-3 col-md-6 mb-4">
-                        <div class="card border-left-warning shadow h-100 py-2">
-                            <div class="card-body">
-                                <div id="readyCount" class="h5 mb-0 font-weight-bold text-gray-800">0</div>
-                                <div class="text-xs font-weight-bold text-warning text-uppercase">
-                                    결제 READY
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+					<!-- 상단 카드 -->
+					<div class="row">
 
-                    <!-- APPROVED 건수 -->
-                    <div class="col-xl-3 col-md-6 mb-4">
-                        <div class="card border-left-info shadow h-100 py-2">
-                            <div class="card-body">
-                                <div id="approvedCount" class="h5 mb-0 font-weight-bold text-gray-800">0</div>
-                                <div class="text-xs font-weight-bold text-info text-uppercase">
-                                    결제 APPROVED
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+						<!-- 최근 5일 가입자 총합 -->
+						<div class="col-xl-3 col-md-6 mb-4">
+							<div class="card border-left-primary shadow h-100 py-2">
+								<div class="card-body">
+									<div id="signupTotal"
+										class="h5 mb-0 font-weight-bold text-gray-800">0</div>
+									<div
+										class="text-xs font-weight-bold text-primary text-uppercase">
+										최근 5일 가입자 합계</div>
+								</div>
+							</div>
+						</div>
 
-                </div>
+						<!-- 최근 5일 결제 승인 총합 -->
+						<div class="col-xl-3 col-md-6 mb-4">
+							<div class="card border-left-success shadow h-100 py-2">
+								<div class="card-body">
+									<div id="payTotal"
+										class="h5 mb-0 font-weight-bold text-gray-800">0</div>
+									<div
+										class="text-xs font-weight-bold text-success text-uppercase">
+										최근 5일 결제 승인 합계</div>
+								</div>
+							</div>
+						</div>
 
-                <!-- 차트 영역 -->
-                <div class="row">
+						<!-- READY 건수 -->
+						<div class="col-xl-3 col-md-6 mb-4">
+							<div class="card border-left-warning shadow h-100 py-2">
+								<div class="card-body">
+									<div id="readyCount"
+										class="h5 mb-0 font-weight-bold text-gray-800">0</div>
+									<div
+										class="text-xs font-weight-bold text-warning text-uppercase">
+										결제 READY</div>
+								</div>
+							</div>
+						</div>
 
-                    <!-- 가입자 라인차트 -->
-                    <div class="col-xl-8 col-lg-7">
-                        <div class="card shadow mb-4">
-                            <div class="card-header py-3">
-                                <h6 class="m-0 font-weight-bold text-primary">최근 5일 가입자</h6>
-                            </div>
-                            <div class="card-body">
-                                <div style="height:320px;">
-                                    <canvas id="myAreaChart"></canvas>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+						<!-- APPROVED 건수 -->
+						<div class="col-xl-3 col-md-6 mb-4">
+							<div class="card border-left-info shadow h-100 py-2">
+								<div class="card-body">
+									<div id="approvedCount"
+										class="h5 mb-0 font-weight-bold text-gray-800">0</div>
+									<div class="text-xs font-weight-bold text-info text-uppercase">
+										결제 APPROVED</div>
+								</div>
+							</div>
+						</div>
 
-                    <!-- 결제 상태 도넛 -->
-                    <div class="col-xl-4 col-lg-5">
-                        <div class="card shadow mb-4">
-                            <div class="card-header py-3">
-                                <h6 class="m-0 font-weight-bold text-primary">결제 상태 분포</h6>
-                            </div>
-                            <div class="card-body">
-                                <div style="height:320px;">
-                                    <canvas id="myPieChart"></canvas>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+					</div>
 
-                </div>
+					<!-- 차트 영역 -->
+					<div class="row">
 
-                <!-- 바차트 -->
-                <div class="row">
-                    <div class="col-xl-12 col-lg-12">
-                        <div class="card shadow mb-4">
-                            <div class="card-header py-3">
-                                <h6 class="m-0 font-weight-bold text-primary">최근 5일 결제 승인</h6>
-                            </div>
-                            <div class="card-body">
-                                <div style="height:320px;">
-                                    <canvas id="myBarChart"></canvas>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+						<!-- 가입자 라인차트 -->
+						<div class="col-xl-8 col-lg-7">
+							<div class="card shadow mb-4">
+								<div class="card-header py-3">
+									<h6 class="m-0 font-weight-bold text-primary">최근 5일 가입자</h6>
+								</div>
+								<div class="card-body">
+									<div style="height: 320px;">
+										<canvas id="myAreaChart"></canvas>
+									</div>
+								</div>
+							</div>
+						</div>
 
-            </div>
-        </div>
+						<!-- 결제 상태 도넛 -->
+						<div class="col-xl-4 col-lg-5">
+							<div class="card shadow mb-4">
+								<div class="card-header py-3">
+									<h6 class="m-0 font-weight-bold text-primary">결제 상태 분포</h6>
+								</div>
+								<div class="card-body">
+									<div style="height: 320px;">
+										<canvas id="myPieChart"></canvas>
+									</div>
+								</div>
+							</div>
+						</div>
 
-        <!-- Footer -->
-        <footer class="sticky-footer bg-white">
-            <div class="container my-auto text-center">
-                <span>808 &copy; Admin 2026</span>
-            </div>
-        </footer>
+					</div>
 
-    </div>
-</div>
+					<!-- 바차트 -->
+					<div class="row">
+						<div class="col-xl-12 col-lg-12">
+							<div class="card shadow mb-4">
+								<div class="card-header py-3">
+									<h6 class="m-0 font-weight-bold text-primary">최근 5일 결제 승인</h6>
+								</div>
+								<div class="card-body">
+									<div style="height: 320px;">
+										<canvas id="myBarChart"></canvas>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
 
-<a class="scroll-to-top rounded" href="#page-top">
-    <i class="fas fa-angle-up"></i>
-</a>
+				</div>
+			</div>
 
-<script src="${adminRes}/vendor/jquery/jquery.min.js"></script>
-<script src="${adminRes}/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-<script src="${adminRes}/vendor/jquery-easing/jquery.easing.min.js"></script>
-<script src="${adminRes}/js/sb-admin-2.min.js"></script>
-<script src="${adminRes}/vendor/chart.js/Chart.min.js"></script>
+			<!-- Footer -->
+			<footer class="sticky-footer bg-white">
+				<div class="container my-auto text-center">
+					<span>808 &copy; Admin 2026</span>
+				</div>
+			</footer>
 
-<script>
-$(function () {
+		</div>
+	</div>
 
-    var areaChart = null;
-    var barChart = null;
-    var pieChart = null;
+	<a class="scroll-to-top rounded" href="#page-top"> <i
+		class="fas fa-angle-up"></i>
+	</a>
 
-    function sumArray(arr) {
-        var total = 0;
-        for (var i = 0; i < arr.length; i++) {
-            total += Number(arr[i] || 0);
-        }
-        return total;
-    }
+	<script src="${adminRes}/vendor/jquery/jquery.min.js"></script>
+	<script src="${adminRes}/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+	<script src="${adminRes}/vendor/jquery-easing/jquery.easing.min.js"></script>
+	<script src="${adminRes}/js/sb-admin-2.min.js"></script>
+	<script src="${adminRes}/vendor/chart.js/Chart.min.js"></script>
 
-    function buildLineChart(labels, data) {
-        var ctx = document.getElementById('myAreaChart').getContext('2d');
-        if (areaChart) areaChart.destroy();
+	<script>
+		$(function() {
 
-        areaChart = new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels: labels,
-                datasets: [{
-                    label: '가입자',
-                    data: data,
-                    backgroundColor: "rgba(78, 115, 223, 0.2)",
-                    borderColor: "rgba(78, 115, 223, 1)",
-                    pointBackgroundColor: "rgba(78, 115, 223, 1)",
-                    pointBorderColor: "#fff",
-                    pointRadius: 4,
-                    fill: true
-                }]
-            },
-            options: {
-                maintainAspectRatio: false,
-                scales: {
-                    yAxes: [{
-                        ticks: { beginAtZero: true, precision: 0 }
-                    }]
-                }
-            }
-        });
-    }
+			var areaChart = null;
+			var barChart = null;
+			var pieChart = null;
 
-    function buildBarChart(labels, data) {
-        var ctx = document.getElementById('myBarChart').getContext('2d');
-        if (barChart) barChart.destroy();
+			function sumArray(arr) {
+				var total = 0;
+				for (var i = 0; i < arr.length; i++) {
+					total += Number(arr[i] || 0);
+				}
+				return total;
+			}
 
-        barChart = new Chart(ctx, {
-            type: 'bar',
-            data: {
-                labels: labels,
-                datasets: [{
-                    label: '결제 승인',
-                    data: data,
-                    backgroundColor: "rgba(28, 200, 138, 0.7)",
-                    borderColor: "rgba(28, 200, 138, 1)",
-                    borderWidth: 1
-                }]
-            },
-            options: {
-                maintainAspectRatio: false,
-                scales: {
-                    yAxes: [{
-                        ticks: { beginAtZero: true, precision: 0 }
-                    }]
-                }
-            }
-        });
-    }
+			function buildLineChart(labels, data) {
+				var ctx = document.getElementById('myAreaChart').getContext(
+						'2d');
+				if (areaChart)
+					areaChart.destroy();
 
-    function buildPieChart(labels, data) {
-        var ctx = document.getElementById('myPieChart').getContext('2d');
-        if (pieChart) pieChart.destroy();
+				areaChart = new Chart(ctx, {
+					type : 'line',
+					data : {
+						labels : labels,
+						datasets : [ {
+							label : '가입자',
+							data : data,
+							backgroundColor : "rgba(78, 115, 223, 0.2)",
+							borderColor : "rgba(78, 115, 223, 1)",
+							pointBackgroundColor : "rgba(78, 115, 223, 1)",
+							pointBorderColor : "#fff",
+							pointRadius : 4,
+							fill : true
+						} ]
+					},
+					options : {
+						maintainAspectRatio : false,
+						scales : {
+							yAxes : [ {
+								ticks : {
+									beginAtZero : true,
+									precision : 0
+								}
+							} ]
+						}
+					}
+				});
+			}
 
-        var colorMap = {
-            READY: "#f6c23e",
-            APPROVED: "#1cc88a",
-            FAIL: "#e74a3b",
-            CANCEL: "#858796"
-        };
+			function buildBarChart(labels, data) {
+				var ctx = document.getElementById('myBarChart')
+						.getContext('2d');
+				if (barChart)
+					barChart.destroy();
 
-        var colors = labels.map(function(label) {
-            return colorMap[label] || "#4e73df";
-        });
+				barChart = new Chart(ctx, {
+					type : 'bar',
+					data : {
+						labels : labels,
+						datasets : [ {
+							label : '결제 승인',
+							data : data,
+							backgroundColor : "rgba(28, 200, 138, 0.7)",
+							borderColor : "rgba(28, 200, 138, 1)",
+							borderWidth : 1
+						} ]
+					},
+					options : {
+						maintainAspectRatio : false,
+						scales : {
+							yAxes : [ {
+								ticks : {
+									beginAtZero : true,
+									precision : 0
+								}
+							} ]
+						}
+					}
+				});
+			}
 
-        pieChart = new Chart(ctx, {
-            type: 'doughnut',
-            data: {
-                labels: labels,
-                datasets: [{
-                    data: data,
-                    backgroundColor: colors,
-                    borderWidth: 1
-                }]
-            },
-            options: {
-                maintainAspectRatio: false,
-                legend: {
-                    position: 'bottom'
-                }
-            }
-        });
-    }
+			function buildPieChart(labels, data) {
+				var ctx = document.getElementById('myPieChart')
+						.getContext('2d');
+				if (pieChart)
+					pieChart.destroy();
 
-    $.getJSON('<c:url value="/admin/api/stats/signupLast5"/>', function(res) {
-        var labels = res.map(function(x) { return x.label; });
-        var data = res.map(function(x) { return x.cnt; });
+				var colorMap = {
+					READY : "#f6c23e",
+					APPROVED : "#1cc88a",
+					FAIL : "#e74a3b",
+					CANCEL : "#858796"
+				};
 
-        $('#signupTotal').text(sumArray(data));
-        buildLineChart(labels, data);
-    });
+				var colors = labels.map(function(label) {
+					return colorMap[label] || "#4e73df";
+				});
 
-    $.getJSON('<c:url value="/admin/api/stats/payLast5"/>', function(res) {
-        var labels = res.map(function(x) { return x.label; });
-        var data = res.map(function(x) { return x.cnt; });
+				pieChart = new Chart(ctx, {
+					type : 'doughnut',
+					data : {
+						labels : labels,
+						datasets : [ {
+							data : data,
+							backgroundColor : colors,
+							borderWidth : 1
+						} ]
+					},
+					options : {
+						maintainAspectRatio : false,
+						legend : {
+							position : 'bottom'
+						}
+					}
+				});
+			}
 
-        $('#payTotal').text(sumArray(data));
-        buildBarChart(labels, data);
-    });
+			$.getJSON('<c:url value="/admin/api/stats/signupLast5"/>',
+					function(res) {
+						var labels = res.map(function(x) {
+							return x.label;
+						});
+						var data = res.map(function(x) {
+							return x.cnt;
+						});
 
-    $.getJSON('<c:url value="/admin/api/stats/payStatus"/>', function(res) {
-        var labels = res.map(function(x) { return x.label; });
-        var data = res.map(function(x) { return x.cnt; });
+						$('#signupTotal').text(sumArray(data));
+						buildLineChart(labels, data);
+					});
 
-        buildPieChart(labels, data);
+			$.getJSON('<c:url value="/admin/api/stats/payLast5"/>', function(
+					res) {
+				var labels = res.map(function(x) {
+					return x.label;
+				});
+				var data = res.map(function(x) {
+					return x.cnt;
+				});
 
-        var statusMap = {};
-        for (var i = 0; i < res.length; i++) {
-            statusMap[res[i].label] = res[i].cnt;
-        }
+				$('#payTotal').text(sumArray(data));
+				buildBarChart(labels, data);
+			});
 
-        $('#readyCount').text(statusMap.READY || 0);
-        $('#approvedCount').text(statusMap.APPROVED || 0);
-    });
+			$.getJSON('<c:url value="/admin/api/stats/payStatus"/>', function(
+					res) {
+				var labels = res.map(function(x) {
+					return x.label;
+				});
+				var data = res.map(function(x) {
+					return x.cnt;
+				});
 
-});
-</script>
+				buildPieChart(labels, data);
+
+				var statusMap = {};
+				for (var i = 0; i < res.length; i++) {
+					statusMap[res[i].label] = res[i].cnt;
+				}
+
+				$('#readyCount').text(statusMap.READY || 0);
+				$('#approvedCount').text(statusMap.APPROVED || 0);
+			});
+
+		});
+		/* 오늘 올린 게시판 보기 (노란종) */
+		$(document).ready(function() {
+		    let lastCount = -1;
+
+		    function checkNewPost() {
+		        
+		        const targetUrl = '${ctx}/board/admin/api/stats/boardTodayCnt';
+
+		        $.getJSON(targetUrl, function(currentCount) {
+		            // 처음 실행 시 숫자 세팅
+		            if (lastCount === -1) {
+		                $('#bell-count').text(currentCount).show();
+		                lastCount = currentCount;
+		                return;
+		            }
+
+		            // 오늘 올라온 글이 늘어났을 때만 알림 발생!
+		            if (currentCount > lastCount) {
+		                $('#bell-count').text(currentCount).show();
+		                
+		                // 종을 신나게 흔들기 (3초)
+		                $('.yellow-bell').css('animation', 'bell-shake 0.2s infinite');
+		                
+		                setTimeout(function() {
+		                    $('.yellow-bell').css('animation', 'bell-shake 2s infinite ease-in-out');
+		                }, 3000);
+		            } else {
+		                $('#bell-count').text(currentCount);
+		            }
+		            lastCount = currentCount;
+		        }).fail(function() {
+		            console.log("오늘 알림 데이터를 가져오지 못했습니다.");
+		        });
+		    }
+
+		    setInterval(checkNewPost, 5000); // 5초마다 확인
+		    checkNewPost();
+		});
+		
+	</script>
 
 </body>
 </html>
