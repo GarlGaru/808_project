@@ -14,7 +14,7 @@
 		jdbcType=VARCHAR}, #{board_image, jdbcType=VARCHAR}
 		)
 	</insert>
-
+	
 	<select id="getTodayBoardList"
 		resultType="com.spring.eze.board.dto.BoardDTO">
 		SELECT BNO, TITLE, REGDATE
@@ -46,25 +46,23 @@
 		= #{userId}
 	</delete>
 
-	<select id="getBoardDetail"
-		resultType="com.spring.eze.board.dto.BoardDTO" parameterType="int">
-		SELECT
-		B.BNO,
-		B.USER_ID AS userId,
-		B.TITLE,
-		B.CONTENT,
-		B.REGDATE,
-		B.VIEWCNT,
-		B.YOUTUBE_URL AS youtubeUrl,
-		B.BOARD_IMAGE AS board_image, U.NICKNAME
-		AS nickname
-		FROM FREE_BOARD_TBL B
-		JOIN user_tbl U ON B.USER_ID =
-		U.user_id
-		WHERE B.BNO = #{bno}
-	</select>
+<select id="getBoardDetail" resultType="com.spring.eze.board.dto.BoardDTO" parameterType="int">
+    SELECT
+        B.BNO,
+        B.USER_ID AS userId,
+        B.TITLE,
+        B.CONTENT,
+        B.REGDATE,
+        B.VIEWCNT,
+        B.YOUTUBE_URL AS youtubeUrl,
+        B.BOARD_IMAGE AS board_image, 
+        U.NICKNAME AS nickname
+    FROM FREE_BOARD_TBL B
+    JOIN user_tbl U ON B.USER_ID = U.user_id
+    WHERE B.BNO = #{bno}
+</select>
 
-	<select id="boardList"
+<select id="boardList"
 		resultType="com.spring.eze.board.dto.BoardDTO" parameterType="map">
 		SELECT * FROM (
 		SELECT ROWNUM AS RNUM, A.* FROM (
@@ -102,6 +100,7 @@
 		) A WHERE ROWNUM &lt;= #{endRow}
 		) WHERE RNUM &gt;= #{startRow}
 	</select>
+
 
 	<select id="boardListAll"
 		resultType="com.spring.eze.board.dto.BoardDTO">
@@ -173,5 +172,10 @@
 		FROM FREE_BOARD_TBL
 		WHERE TO_CHAR(REGDATE, 'YYYY-MM-DD') = TO_CHAR(SYSDATE, 'YYYY-MM-DD')
 	</select>
+
+
+	
+
+
 
 </mapper>

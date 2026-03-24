@@ -15,7 +15,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
+
 import org.springframework.web.bind.annotation.ResponseBody;
+
 
 import com.spring.eze.board.service.BoardService;
 
@@ -25,8 +27,11 @@ public class BoardController {
 
 	private static final Logger log = LoggerFactory.getLogger(BoardController.class);
 
+	
 	@Autowired
 	private BoardService boardservice;
+
+
 
 	@RequestMapping("/list")
 	public String BoardList(HttpServletRequest request, HttpServletResponse response, Model model)
@@ -35,6 +40,7 @@ public class BoardController {
 
 		// 2. 변경된 필드명 적용
 		boardservice.BoardList(request, response, model);
+
 
 		return "board/boardlist";
 	}
@@ -101,6 +107,7 @@ public class BoardController {
 			throws ServletException, IOException {
 		log.info("BoardController - plusReadCnt");
 
+
 		// 2. 변경된 필드명 적용
 		boardservice.plusReadCnt(request, response, model);
 		boardservice.BoardDetail(request, response, model);
@@ -132,11 +139,13 @@ public class BoardController {
 		return "board/plusReadCnt";
 	}
 
+
 	@RequestMapping("/insertBoard")
 	public String insertBoard(HttpServletRequest request, HttpServletResponse response, Model model)
 			throws ServletException, IOException {
 
 		log.info("BoardController - insertBoard ");
+
 
 		// 2. 변경된 필드명 적용
 		boardservice.boardInsert(request, response, model);
@@ -171,6 +180,8 @@ public class BoardController {
 	@ResponseBody 
 	public java.util.List<com.spring.eze.board.dto.BoardDTO> getBoardTodayList() {
 
-	    return boardservice.getTodayBoardList(); 
+	    return boardservice.getTodayBoardList();
+		
+
 	}
 }

@@ -17,6 +17,16 @@
 
 <style>
 
+<link rel="stylesheet" href="${path}/resources/common/css/style.css">
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<style>
+.container {
+	margin: 0 auto;
+	max-width: 1100px;
+	padding: 20px;
+}
+
 /* [상단 옵션 영역: 라디오 버튼] */
 .board-header {
 	display: flex;
