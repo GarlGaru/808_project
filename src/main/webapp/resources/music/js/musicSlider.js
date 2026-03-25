@@ -4,7 +4,7 @@
  * - REST API에서 곡 목록을 받아 카드를 동적으로 생성합니다.
  *
  * @param {Object} options
- * @param {string} options.mountId  - 마운트할 요소의 id
+ * @param {string} options.mountId  - 마운트할 요소의 id, 슬라이드 넣을 곳
  * @param {string} options.title    - 섹션 제목
  * @param {string} options.subtitle - 섹션 부제목
  * @param {string} options.apiUrl   - 곡 목록을 반환하는 REST API URL
@@ -94,4 +94,63 @@ async function MusicSlider({
             loadMainContent(`${path}/music/detail?songId=${card.dataset.songId}`);
         }
     });
+}
+
+
+
+async function getSongList(apiUrl) {
+    let songs = [];
+    try {
+        const res = await fetch(apiUrl);
+        if (!res.ok) throw new Error(`API 오류: ${res.status}`);
+        songs = await res.json();
+    } catch (err) {
+        console.error(`[MusicSlider] API 호출 오류 (${apiUrl})`, err);
+    }
+    return songs;
+}
+
+
+
+
+
+/**
+ * musicCard.js
+ * 카드 뼈대(#music-card-template)를 cloneNode로 복제한 뒤 곡 데이터를 채워 반환합니다.
+ *
+ * @param {Element} cardBase - <template id="music-card-template">의 firstElementChild
+ * @param {Object}  song     - API 응답 곡 데이터
+ * @param {string}  path     - 컨텍스트 루트 경로
+ * @param {string}  label    - 카드 하단 라벨 텍스트
+ * @returns {Element}
+ */
+function createCard(cardBase, song, path, label) {
+    const card = cardBase.cloneNode(true);
+
+    const cover = song.coverImageUrl
+        ? `${song.coverImageUrl}`
+        : `${path}/resources/music/img/default_album.png`;
+
+    // 카드 루트
+    card.dataset.songId = song.songId;
+
+    // 썸네일
+    const img = card.querySelector('.music-home-thumb');
+    img.src = cover;
+    img.alt = song.title;
+
+    // 재생 버튼
+    const playBtn = card.querySelector('.js-play-song');
+    playBtn.dataset.songId = song.songId;
+    playBtn.dataset.title  = song.title;
+    playBtn.dataset.artist = song.artistName;
+    playBtn.dataset.cover  = cover;
+    playBtn.setAttribute('aria-label', `${song.title} 재생`);
+
+    // 텍스트 슬롯
+    card.querySelector('[data-slot="title"]').textContent  = song.title;
+    card.querySelector('[data-slot="artist"]').textContent = song.artistName;
+    card.querySelector('[data-slot="label"]').textContent  = label;
+
+    return card;
 }

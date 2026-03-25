@@ -21,10 +21,22 @@ public class RecommendService {
         if (topKeywords.isEmpty()) {   // 아무것도 재생한적 없으면
             return List.of();
         }
+        for (KeywordScoreDTO keyword : topKeywords) {
+            System.out.println(keyword);
+        }
 
         List<Integer> recommendSongs = dao.selectRecommendedSongs(userId, topKeywords, 15);
+        for (Integer songId : recommendSongs) {
+            System.out.println(songId);
+        }
 
-        return dao.getResultSongs(recommendSongs);
+        List<SongCardDTO> result = dao.getResultSongs(recommendSongs);
+        System.out.println(result.get(1));
+        System.out.println(result.get(2));
+        System.out.println(result.get(3));
+
+
+        return result;
     }
 
     public List<SongCardDTO> convertToSongCardDTO(List<SongDTO> list) {

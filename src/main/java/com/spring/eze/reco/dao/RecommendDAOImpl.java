@@ -22,6 +22,9 @@ public class RecommendDAOImpl implements RecommendDAO {
 
     @Override
     public List<Integer> selectRecommendedSongs(int userId, List<KeywordScoreDTO> topKeywords, int amount) {
+        System.out.println("user  :" + userId);
+        System.out.println("top :" + topKeywords);
+        System.out.println("amount :" + amount);
         RecommendDAO dao = sqlSession.getMapper(RecommendDAO.class);
         return dao.selectRecommendedSongs(userId, topKeywords, amount);
     }

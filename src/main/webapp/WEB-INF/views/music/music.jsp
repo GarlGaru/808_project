@@ -29,6 +29,65 @@
 </head>
 <body class="dark-mode">
 
+<%-- template : 랜더링 되지 않음, js에서 가져다 쓰는 용도 --%>
+    <%-- 슬라이더 template --%>
+    <template id="music-slider-template">
+        <section class="music-home-block">
+            <div class="music-home-header">
+                <div>
+                    <h2 class="music-home-title" data-slot="title"></h2>
+                    <p class="music-home-desc" data-slot="subtitle"></p>
+                </div>
+
+                <div class="music-home-controls">
+                    <button type="button"
+                            class="music-home-arrow"
+                            data-action="prev">
+                        ‹
+                    </button>
+                    <button type="button"
+                            class="music-home-arrow"
+                            data-action="next">
+                        ›
+                    </button>
+                </div>
+            </div>
+
+            <div class="music-home-viewport" data-slot="viewport">
+                <div class="music-home-track" data-slot="track">
+                    <!-- 카드들이 JS에 의해 여기에 주입됩니다 -->
+                </div>
+            </div>
+
+            <div class="music-home-empty" data-slot="empty" style="display:none;"></div>
+        </section>
+    </template>
+
+    <%-- 카드 template --%>
+    <template id="music-card-template">
+        <div class="music-home-card" data-song-id="">
+            <div class="music-home-thumb-wrap">
+                <img class="music-home-thumb" src="" alt="">
+                <button type="button"
+                        class="music-home-play-btn js-play-song"
+                        data-song-id=""
+                        data-title=""
+                        data-artist=""
+                        data-cover=""
+                        aria-label="">
+                    ▶
+                </button>
+            </div>
+            <div class="music-home-body">
+                <div class="music-home-song" data-slot="title"></div>
+                <div class="music-home-artist" data-slot="artist"></div>
+                <div class="music-home-score" data-slot="label"></div>
+            </div>
+        </div>
+    </template>
+<%-- template 끝 --%>
+
+
     <!-- 공통 상단 영역 -->
     <%@ include file="/WEB-INF/views/common/common.jsp" %>
     <%@ include file="/WEB-INF/views/common/header.jsp" %>
@@ -67,10 +126,8 @@
 	<script src="${path}/resources/music/js/music-like.js"></script>
 
 	 <%-- 추천 js 로딩 --%>
-    <script src="${path}/resources/music/js/recoApi.js"></script>
-    <script src="${path}/resources/music/js/musicCard.js"></script>
     <script src="${path}/resources/music/js/musicSlider.js"></script>
-    <script src="${path}/resources/music/js/recommend.js"></script>
+    <script src="${path}/resources/music/js/slider-init.js"></script>
 
 	<script>
 	    window.addEventListener("DOMContentLoaded", function() {

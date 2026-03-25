@@ -244,12 +244,36 @@ public class MusicController {
     //검색
     @RequestMapping("/search")
     public String seach(HttpServletRequest request,HttpServletResponse response, Model model)
-				throws ServletException, IOException{
-			
-			log.info("<<</search.jq>>>");
-			
-			
-			return "music/search";
-		}
+            throws ServletException, IOException{
+
+        log.info("<<</search.jq>>>");
+
+
+        return "music/search";
+    }
+
+    @GetMapping("/weekly-ranking")
+    @ResponseBody
+    public List<SongDTO> weeklyRanking(HttpSession session) {
+        log.info("Get weekly-ranking");
+        return musicService.getweeklyRanking();
+
+    }
+
+    @GetMapping("/today-hits")
+    @ResponseBody
+    public List<SongDTO> todayHitSongs(HttpSession session) {
+        log.info("Get today-hits");
+        return musicService.getTodayHitSongs();
+
+    }
+
+    @GetMapping("/genre-ranking")
+    @ResponseBody
+    public List<SongDTO> genreRanking(HttpSession session) {
+        log.info("Get genre-ranking");
+        return musicService.getGenreRanking(1); // 기본 장르 1
+
+    }
     
 }

@@ -49,22 +49,22 @@ public class RecommendController {
 
         return list;
     }
-
-    @GetMapping("/music/today-hits")
-    public @ResponseBody List<SongDTO> today(){
-
-        List<SongDTO> list = musicService.getTodayHitSongs();
-
-        return list;
-    }
-
-    @GetMapping("/music/genre-ranking")
-    public @ResponseBody List<SongDTO> genre(){
-
-        List<SongDTO> list = musicService.getGenreRanking(1); // 기본 장르 1
-
-        return list;
-    }
+//
+//    @GetMapping("/music/today-hits")
+//    public @ResponseBody List<SongDTO> today(){
+//
+//        List<SongDTO> list = musicService.getTodayHitSongs();
+//
+//        return list;
+//    }
+//
+//    @GetMapping("/music/genre-ranking")
+//    public @ResponseBody List<SongDTO> genre(){
+//
+//        List<SongDTO> list = musicService.getGenreRanking(1); // 기본 장르 1
+//
+//        return list;
+//    }
 
     @GetMapping("/music/test")
     public @ResponseBody List<SongDTO> test(){
