@@ -382,38 +382,85 @@
 
 
   /* ════════════════════════════════════════════
-     멤버십 구독 취소
+     멤버십 구독
      ════════════════════════════════════════════ */
 
- /* 멤버십 구독 취소 — 결제팀 취소 API 직접 호출 */
-window.mpCancelMembership = function (orderId) {
-    // 1. 사용자 확인창
-    if (!confirm('정말 멤버십 구독을 취소하시겠습니까?\n취소 즉시 PRO 혜택이 중단됩니다.')) return;
+ /* 구독 업그레이드 버튼 클릭 시 (FREE -> PRO) 
+  handleProMembership - JSP에서 넘겨받은 현재 등급 ('FREE' or 'PRO') */
 
-    // 2. orderId가 없는 경우를 대비한 안전장치
-    if (!orderId) {
-        alert('주문 정보를 찾을 수 없습니다. 고객센터에 문의해주세요.');
+/* 멤버십 관련 버튼 클릭 시 (PRO ↔ FREE 전환 처리) */
+window.handleProMembership = function(currentMembership) {
+    if (currentMembership === 'PRO') {
+        if (confirm('현재 PRO 멤버십을 이용 중입니다.\n구독을 취소하시겠습니까?')) {
+            if (!orderId || orderId === 'null' || orderId === '') {
+                alert('구독 정보를 찾을 수 없습니다.\n고객센터로 문의해주세요.');
+                return;
+            }
+
+            window.mpCancelMembership(orderId);
+        }
         return;
     }
 
-    // 3. 결제팀 취소 컨트롤러 호출
+    // FREE → PRO 업그레이드
+    if (typeof window.openSubscribeModal === 'function') {
+        window.openSubscribeModal();
+    } else {
+        alert('결제 시스템을 불러올 수 없습니다. 잠시 후 다시 시도해주세요.');
+    }
+};
+
+/**
+ * 결제 실패 시 재시도 (결제팀 연동)
+ */
+window.retryMembershipPayment = function(orderId) {
+    if(!orderId) return;
+    
+    if (confirm('결제에 실패한 이력이 있습니다. 다시 결제를 진행하시겠습니까?')) {
+        // 결제팀의 재결제 로직 호출 (예: 카카오페이 재요청)
+        location.href = CP + '/kakaopay/retry?orderId=' + orderId;
+    }
+};
+
+
+ /* 멤버십 구독 취소(PRO -> FREE) — 결제팀 취소 API 직접 호출 */
+window.mpCancelMembership = function (orderId) {
+    // 1. 파라미터 체크
+    if (!orderId || orderId === 'null' || orderId === '') {
+        alert('결제 정보를 찾을 수 없어 해지가 불가능합니다.\n고객센터로 문의해주세요.');
+        return;
+    }
+
+    // 2. 최종 의사 확인
+    if (!confirm('정말 멤버십 구독을 해지하시겠습니까?\n해지 시 즉시 모든 PRO 혜택이 중단되고 FREE 등급으로 전환됩니다.')) {
+        return;
+    }
+
+    // 3. 중복 클릭 방지 (버튼 비활성화)
+    var $btn = $('.upgrade-btn--pro');
+    $btn.prop('disabled', true).text('해지 처리 중...');
+
     $.ajax({
-        url: CP + '/kakaopay/request_cancel', // 서버 경로 확인
-        type: 'get',
+        url: CP + '/kakaopay/request_cancel',
+        type: 'GET', // 결제팀 API 규격에 맞춤
         data: { orderId: orderId },
         success: function(response) {
-            // 결제팀 컨트롤러가 성공 시 "OK"를 리턴함
             if (response === 'OK') {
-                alert('멤버십 구독 취소가 완료되었습니다.\n다음에 다시 만나요!');
+                alert('PRO 멤버십 해지가 정상적으로 완료되었습니다.\n이용해주셔서 감사합니다.');
                 
-                /* 완료 후 마이페이지 재진입 시 세션이 FREE로 갱신되도록 새로고침 */
-                location.href = CP + '/mypage'; 
+                /* * 세션 정보를 갱신해야 JSP의 <c:choose>가 FREE를 그릴 수 있으므로 
+                 * 페이지를 새로고침하거나 마이페이지로 리다이렉트합니다.
+                 */
+                location.reload(); 
             } else {
-                alert('취소 처리 중 문제가 발생했습니다: ' + response);
+                alert('취소 처리 중 오류가 발생했습니다: ' + response);
+                $btn.prop('disabled', false).text('구독 해지');
             }
         },
-        error: function() {
-            alert('결제 서버와 통신 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.');
+        error: function(xhr, status, error) {
+            console.error('Cancel Error:', error);
+            alert('통신 오류가 발생했습니다. 잠시 후 다시 시도해주세요.');
+            $btn.prop('disabled', false).text('구독 해지');
         }
     });
 };
@@ -558,7 +605,7 @@ window.mpCancelMembership = function (orderId) {
         thumb.appendChild(img);
       }
       node.querySelector('.li-name').textContent = a.name;
-      node.querySelector('.li-sub').textContent  = a.playCount + '곡 재생';
+      /* node.querySelector('.li-sub').textContent  = a.playCount + '곡 재생'; */
       /* 아티스트는 prog-bar / li-right 불필요 — 숨김 */
       node.querySelector('.prog-bar').style.display  = 'none';
       node.querySelector('.li-right').style.display  = 'none';
@@ -574,8 +621,8 @@ window.mpCancelMembership = function (orderId) {
       $container.html('<div class="empty-box">결제 내역이 없습니다</div>');
       return;
     }
-    var statusMap   = { PAID:'완료', REFUNDED:'환불', PENDING:'대기' };
-    var statusClass = { PAID:'confirmed', REFUNDED:'cancelled', PENDING:'pending' };
+    var statusMap   = { APPROVED:'완료', FAIL:'결제 오류', READY:'대기', CANCEL:'결제 취소' };
+	var statusClass = { APPROVED:'APPROVED', FAIL:'FAIL', READY:'READY', CANCEL:'CANCEL' };
     var typeIcon    = { CARD:'💳', VIRTUAL:'🏦', PHONE:'📱' };
     var tmpl = document.getElementById('tmpl-pay-item');
     var frag = document.createDocumentFragment();
@@ -584,7 +631,15 @@ window.mpCancelMembership = function (orderId) {
       var node = tmpl.content.cloneNode(true);
       node.querySelector('.pay-icon').textContent   = typeIcon[p.paymentType] || '💳';
       node.querySelector('.pay-name').textContent   = p.itemName;
-      node.querySelector('.pay-sub').textContent    = p.approvedAt;
+      
+      var d = new Date(p.approvedAt);
+	  var dateStr = d.getFullYear() + '.'
+		  + String(d.getMonth() + 1).padStart(2, '0') + '.'
+		  + String(d.getDate()).padStart(2, '0') + ' '
+		  + String(d.getHours()).padStart(2, '0') + ':'
+		  + String(d.getMinutes()).padStart(2, '0') + ':'
+		  + String(d.getSeconds()).padStart(2, '0');
+      node.querySelector('.pay-sub').textContent = dateStr;
       node.querySelector('.pay-amount').textContent = '₩' + p.totalAmount.toLocaleString();
       var badge = node.querySelector('.status-badge');
       badge.textContent = statusMap[p.status] || p.status;
@@ -640,7 +695,7 @@ window.mpCancelMembership = function (orderId) {
         ? CP + '/board/plusReadCnt?bno=' + item.targetNo
         : (type === 'REPLY')
         ? CP + '/board/plusReadCnt?bno=' + item.parentId
-        : CP + '/show/showDetail?showId=' + item.parentId + '#review' + item.targetNo;
+        : CP + '/show/showDetail?showId=' + item.parentId;
 
       var viewBtn = node.querySelector('.cmt-btn--view');
       viewBtn.addEventListener('click', (function (u) {
@@ -666,7 +721,7 @@ window.mpCancelMembership = function (orderId) {
     else                  { $btn.show(); }
   }
 
-  /* 예매 내역 (더미) */
+  /* 예매 내역 */
   function renderReservations() {
     var el = document.getElementById('mpResCards');
     if (!el) return;
@@ -733,80 +788,186 @@ window.mpCancelMembership = function (orderId) {
     return values;
   }
 
-  function _calcBarColors(values) {
+ /* 1. 160도 톤의 묵직한 주황 + 반투명 그라데이션 추출 */
+function _getOrangeGradient(ctx) {
+    if (!ctx) return 'rgba(232, 93, 4, 0.5)';
+    var w = ctx.canvas.width || 300;
+    var h = ctx.canvas.height || 150;
+    
+    // 160도 각도 느낌을 위한 대각선 선형 그라데이션
+    const g = ctx.createLinearGradient(0, 0, w * 0.4, h); 
+    
+    // 주황색 톤 유지 + 오퍼시티 0.45~0.55 (반투명)
+    g.addColorStop(0,   'rgba(180, 60, 20, 0.45)');   // 딥 베이스
+    g.addColorStop(0.4, 'rgba(237, 103, 1, 0.55)');   // 하이라이트 오렌지
+    g.addColorStop(1,   'rgba(140, 45, 10, 0.45)');   // 묵직한 마무리
+    return g;
+}
+
+/* 2. 막대 색상 계산 로직 (최대값 강조) */
+function _calcBarColors(values, ctx) {
     var maxVal = Math.max.apply(null, values.concat([0]));
     var bg = [], bd = [];
+    
     $.each(values, function (i, v) {
-      var r = maxVal > 0 ? v / maxVal : 0;
-      bg.push('rgba(255,255,255,' + (0.04 + r * 0.15).toFixed(2) + ')');
-      bd.push('rgba(255,255,255,' + (0.08 + r * 0.40).toFixed(2) + ')');
+        if (v === maxVal && maxVal > 0) {
+            // 최대값: 160도 그라데이션 + 진한 테두리
+            bg.push(_getOrangeGradient(ctx));
+            bd.push('rgba(232, 93, 4, 0.8)');
+        } else {
+            // 나머지: 은은한 반투명 흰색 (데이터 비례)
+            var r = maxVal > 0 ? v / maxVal : 0;
+            bg.push('rgba(255, 255, 255, ' + (0.04 + r * 0.1).toFixed(2) + ')');
+            bd.push('rgba(255, 255, 255, 0.05)');
+        }
     });
     return { bg: bg, bd: bd };
-  }
+}
 
-  function mpCreateChart() {
+/* 3. 차트 초기 생성 (제자리 애니메이션 & 축 가이드라인) */
+function mpCreateChart() {
     var canvas = document.getElementById('mpPayChart');
     if (!canvas || !window.Chart) return;
     if (_mpChart) { _mpChart.destroy(); _mpChart = null; }
 
+    var ctx = canvas.getContext('2d');
     var emptyValues = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
-    var colors      = _calcBarColors(emptyValues);
+    var colors = _calcBarColors(emptyValues, ctx);
 
-    _mpChart = new Chart(canvas.getContext('2d'), {
-      type: 'bar',
-      data: {
-        labels: _buildMonthLabels(),
-        datasets: [{
-          data:            emptyValues,
-          backgroundColor: colors.bg,
-          borderColor:     colors.bd,
-          borderWidth: 1, borderRadius: 5, borderSkipped: false
-        }]
-      },
-      options: {
-        responsive: true, maintainAspectRatio: false,
-        plugins: {
-          legend: { display: false },
-          tooltip: {
-            backgroundColor: 'rgba(15,19,25,.98)',
-            borderColor: 'rgba(255,255,255,.08)', borderWidth: 1,
-            titleColor: '#f2f2f2', bodyColor: 'rgba(242,242,242,.4)', padding: 9,
-            callbacks: {
-              label: function (c) {
-                return c.raw > 0 ? '₩' + c.raw.toLocaleString() : '내역 없음';
-              }
-            }
-          }
+    _mpChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: _buildMonthLabels(),
+            datasets: [{
+                data: emptyValues,
+                backgroundColor: colors.bg,
+                borderColor: colors.bd,
+                borderWidth: 1,
+                borderRadius: 6,
+                barPercentage: 0.5
+            }]
         },
-        scales: {
-          x: {
-            grid:  { color: 'rgba(255,255,255,.04)' },
-            ticks: { color: 'rgba(242,242,242,.3)', font: { size: 9, family: 'DM Sans' } }
-          },
-          y: {
-            grid:   { color: 'rgba(255,255,255,.04)' },
-            border: { display: false },
-            ticks:  {
-              color: 'rgba(242,242,242,.3)', font: { size: 9 },
-              callback: function (v) { return v > 0 ? '₩' + v.toLocaleString() : ''; }
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            // [애니메이션] 왼쪽에서 날아오지 않고 제자리에서 솟구침
+            animations: {
+                y: {
+                    duration: 800,
+                    easing: 'easeOutQuart',
+                    from: (ctx) => ctx.chart.scales.y.getPixelForValue(0)
+                },
+                x: { duration: 0 } 
+            },
+            plugins: {
+                legend: { display: false },
+                tooltip: {
+                    backgroundColor: 'rgba(15, 19, 25, 0.98)',
+                    borderColor: 'rgba(255, 255, 255, 0.08)',
+                    borderWidth: 1,
+                    padding: 10,
+                    callbacks: {
+                        label: function (c) {
+                            return c.raw > 0 ? '₩' + c.raw.toLocaleString() + ' 결제되었어요' : '결제 내역이 없어요';
+                        }
+                    }
+                }
+            },
+            scales: {
+                x: {
+                    grid: { display: true, drawOnChartArea: false, color: 'rgba(255, 255, 255, 0.1)' },
+                    ticks: { color: 'rgba(242, 242, 242, 0.3)', font: { size: 10 } }
+                },
+                y: {
+                    display: true,
+                    grid: { color: 'rgba(255, 255, 255, 0.05)', borderDash: [3, 3], drawTicks: false },
+                    border: { display: false },
+                    ticks: {
+                        color: 'rgba(242, 242, 242, 0.2)',
+                        font: { size: 9 },
+                        maxTicksLimit: 4,
+                        callback: function(v) { return v > 0 ? v.toLocaleString() : ''; }
+                    }
+                }
             }
-          }
         }
-      }
     });
-    window._mpChartInited = true;
-  }
+}
 
-  function mpUpdateChart(statList) {
+/* 4. 데이터 업데이트 (안정적 리사이즈 포함) */
+function mpUpdateChart(statList) {
     if (!_mpChart) return;
+    
     var values = _mapToMonthValues(statList);
-    var colors = _calcBarColors(values);
-    _mpChart.data.datasets[0].data            = values;
+    var colors = _calcBarColors(values, _mpChart.ctx);
+    
+    _mpChart.data.datasets[0].data = values;
     _mpChart.data.datasets[0].backgroundColor = colors.bg;
-    _mpChart.data.datasets[0].borderColor     = colors.bd;
-    _mpChart.update();
-  }
+    _mpChart.data.datasets[0].borderColor = colors.bd;
+    
+    // 모달이 열린 직후 크기 계산 오류 방지
+    _mpChart.resize(); 
+    _mpChart.update({
+        duration: 800,
+        easing: 'easeOutQuart'
+    });
+}
 
+/* 5. 모달 오픈 시 강제 리사이즈 (window.openMypage 수정) */
+/**
+ * 5. 모달 오픈 시 멤버십 데이터 로드 및 차트 리사이즈
+ */
+window.openMypage = function () { 
+    // 모달 오버레이 오픈
+    ModalCore.open('mpOverlay'); 
+    
+    /**
+     * [Membership 정보 비동기 로드]
+     * JSP Model에 멤버십 데이터가 없으므로 API를 통해 실시간 조회
+     * 조회 성공 시: 해지 버튼에 orderId 주입 + 화면 날짜 텍스트 갱신
+     */
+    $.ajax({
+        url:      CP + '/mypage/membershipInfo',
+        type:     'GET',
+        dataType: 'json',
+        success: function(data) {
+            console.log("<<< Membership API Response >>>", data); // 디버깅용 로그
+
+            if (data && data.orderId) {
+                // [1] 해지 버튼 속성 세팅
+                $('.upgrade-btn--pro').attr('onclick', 
+                    "mpCancelMembership('" + data.orderId + "')");
+                
+                // [2] 화면 데이터 렌더링 (ID 기반으로 텍스트 주입)
+                // 만약 JSP에 해당 ID들이 없다면 추가가 필요합니다.
+                if (data.expireDate) $('#expireDate').text(data.expireDate);
+                if (data.daysLeft !== undefined) $('#daysLeft').text(data.daysLeft);
+                
+                // PRO 전용 UI 활성화 (필요 시)
+                $('.ms-pro-badge').show();
+            } else {
+                // 멤버십 정보가 없을 때(FREE)의 처리
+                $('.ms-pro-badge').hide();
+                $('.upgrade-btn--pro').attr('onclick', "location.href='" + CP + "/payment/subscribe'");
+            }
+        },
+        error: function(xhr, status, error) {
+            console.error("<<< Membership API Error >>>", error);
+        }
+    });
+
+    /**
+     * [차트 리프레시]
+     * 모달 애니메이션(0.2s)이 끝난 후 캔버스 크기를 재계산해야 차트가 깨지지 않음
+     */
+    setTimeout(function() {
+        if (typeof _mpChart !== 'undefined' && _mpChart) {
+            _mpChart.resize();
+            _mpChart.update();
+            console.log("<<< Chart Resized and Updated >>>");
+        }
+    }, 250); 
+};
 
   /* ════════════════════════════════════════════
      Ajax 로드

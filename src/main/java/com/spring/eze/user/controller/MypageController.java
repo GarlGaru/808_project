@@ -42,19 +42,38 @@ public class MypageController {
     // ─────────────────────────────────────────────────────
     // 마이페이지 진입 — 멤버십 상태 동기화 후 페이지 이동
     // ─────────────────────────────────────────────────────
-    @RequestMapping(value = "/mypage", method = RequestMethod.GET)
+    /**
+     * 마이페이지 메인 진입 (SSR: 초기 렌더링용)
+     */
+    @RequestMapping(value = "/mypage/", method = RequestMethod.GET)
     public String mypageMain(HttpSession session, Model model) {
-        logger.info("<<< url => /mypage >>>");
+        logger.info("<<< url => /mypage (Main) >>>");
 
         UserDTO loginUser = getLoginUser(session);
         if (loginUser == null) return "redirect:/login";
 
+        // 초기 로딩 시 멤버십 정보를 Model에 담아 '깜빡임' 방지
         MypageMembershipDTO membership = mypageService.getMembershipInfo(loginUser.getUserId(), session);
         model.addAttribute("membership", membership);
 
         return "user/mypage";
     }
 
+    /**
+     * 멤버십 정보 조회 API (AJAX: 동적 갱신용)
+     */
+    @RequestMapping(value = "/mypage/membershipInfo", method = RequestMethod.GET)
+    @ResponseBody // JSON 데이터를 리턴하도록 명시
+    public MypageMembershipDTO membershipInfo(HttpSession session) {
+        logger.info("<<< url => /mypage/membershipInfo (API) >>>");
+        
+        UserDTO loginUser = getLoginUser(session);
+        if (loginUser == null) return null; // 혹은 에러 객체 반환
+        
+        // 실시간 멤버십 상태만 JSON으로 반환
+        return mypageService.getMembershipInfo(loginUser.getUserId(), session);
+    }
+    
     // ─────────────────────────────────────────────────────
     // 808 플레이 리포트
     // periodType: THIS_MONTH(기본) / LAST_MONTH / 3MONTH

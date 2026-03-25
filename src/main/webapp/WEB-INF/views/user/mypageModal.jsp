@@ -50,7 +50,7 @@
         <div class="sb-badges">
           <c:choose>
             <c:when test="${loginUser.profile.membershipType eq 'PRO'}">
-              <span class="grade-badge ultimate">PRO</span>
+              <span class="grade-badge pro">PRO</span>
             </c:when>
             <c:otherwise>
               <span class="grade-badge free">${loginUser.profile.membershipType}</span>
@@ -102,11 +102,11 @@
 
       <div class="pane-body">
 
-        <!-- ─── REPORT ─── -->
+        <!-- ─── 808 REPORT ─── -->
         <div class="tab-pane active" id="tab-report">
           <div class="stat-grid">
             <div class="stat-card">
-              <div class="stat-label">총 청취 시간<span class="mp-tip" data-tip="재생 후 10초 이상 들은 곡들의 누적 시간이에요.">?</span></div>
+              <div class="stat-label">총 청취 시간<span class="mp-tip" data-tip="실제로 감상한 곡들의 누적 시간이에요">?</span></div>
               <div class="stat-num" id="mpStatTime">-</div>
               <div class="stat-sub" id="mpStatTimeSub">-</div>
             </div>
@@ -116,7 +116,7 @@
               <div class="stat-sub" id="mpStatPlaySub">-</div>
             </div>
             <div class="stat-card">
-              <div class="stat-label">활발한 요일<span class="mp-tip" data-tip="10초 이상 청취한 기록이 가장 많은 요일이에요.">?</span></div>
+              <div class="stat-label">활발한 요일<span class="mp-tip" data-tip="청취한 기록이 가장 많은 요일이에요.">?</span></div>
               <div class="stat-num stat-num--day" id="mpStatDay">-</div>
               <div class="stat-sub">최다 청취 요일</div>
             </div>
@@ -125,7 +125,7 @@
             <%-- TOP 10 — stat-card 박스로 감싸서 빈 상태 정렬 --%>
             <div class="stat-card stat-card--inner">
               <div class="row-between row-between--mb">
-                <div class="sec-title sec-title--inline">TOP 10<span class="mp-tip" data-tip="선택한 기간 동안 재생 횟수가 가장 많은 곡 순위예요.">?</span></div>
+                <div class="sec-title sec-title--inline">TOP 10<span class="mp-tip" data-tip="선택 기간 동안 가장 많이 감상한 순위예요.">?</span></div>
                 <div class="select-wrap">
                   <select class="mp-select" id="mpSongPeriod" onchange="mpLoadTopSongs(this.value)">
                     <option value="THIS_MONTH">이번 달</option>
@@ -139,11 +139,11 @@
             <%-- 장르 + 아티스트 --%>
             <div class="two-col__right">
               <div class="stat-card stat-card--inner stat-card--flex">
-                <div class="sec-title sec-title--sm">TOP 장르<span class="mp-tip" data-tip="30초 이상 들은 곡들을 기준으로 집계한 장르 비율이에요. 단순 재생보다 실제로 즐겨 들은 장르를 반영해요.">?</span></div>
+                <div class="sec-title sec-title--sm">TOP 장르<span class="mp-tip" data-tip="자주 감상한 곡들의 장르를 분석해 취향을 반영했어요.">?</span></div>
                 <div class="genre-grid" id="mpTopGenres"></div>
               </div>
               <div class="stat-card stat-card--inner stat-card--flex">
-                <div class="sec-title sec-title--sm">TOP 아티스트<!-- <span class="mp-tip" data-tip="가장 많은 종류의 곡을 재생한 아티스트 순위예요.">?</span>--></div>
+                <div class="sec-title sec-title--sm">TOP 아티스트<span class="mp-tip" data-tip="다양한 곡을 가장 오래 감상한 결과로 찾아낸 아티스트예요.">?</span></div>
                 <div id="mpTopArtists"></div>
               </div>
             </div>
@@ -178,35 +178,35 @@
         </div>
 
         <!-- ─── MEMBERSHIP ─── -->
-		 <div class="tab-pane" id="tab-membership">
+<div class="tab-pane" id="tab-membership">
 
   <c:choose>
-    <%-- ── PRO 구독 중 ── --%>
+    <%-- 1. PRO 구독 중 (서버 로딩 시점 기준) --%>
     <c:when test="${loginUser.profile.membershipType eq 'PRO'}">
-
       <div class="ms-card ms-card--pro">
         <div class="ms-title">PRO</div>
-        <c:if test="${not empty membership}">
-          <div class="ms-expire">만료: ${membership.expireDate} · D-${membership.daysLeft}</div>
-        </c:if>
+        <%-- [기존 ID 유지] 만약 서버에서 데이터가 없어도 JS가 채울 수 있게 빈 tag로 둡니다 --%>
+        <div class="ms-expire" id="membershipArea">
+          만료: <span id="expireDate">${membership.expireDate}</span> 
+          · D-<span id="daysLeft">${membership.daysLeft}</span>
+        </div>
         <div class="ms-benefits">
           <div class="ms-item">무제한 스트리밍</div>
           <div class="ms-item">AI 음악 추천</div>
           <div class="ms-item">광고 없는 청취</div>
           <div class="ms-item">고음질 스트리밍</div>
-          <!-- <div class="ms-item">공연 우선 예매</div> -->
           <div class="ms-item">독점 콘텐츠</div>
           <div class="ms-item">가사 실시간 지원</div>
-          <!-- <div class="ms-item">굿즈 20% 할인</div> -->
         </div>
       </div>
-      <button class="upgrade-btn upgrade-btn--pro" onclick="mpCancelMembership('${membership.orderId}')">구독 해지</button>
-
+      <%-- [기존 클래스 유지] upgrade-btn--pro --%>
+      <button class="upgrade-btn upgrade-btn--pro" 
+              onclick="mpCancelMembership('${membership.orderId}')">구독 해지</button>
     </c:when>
-    <%-- ── FREE ── --%>
-    <c:otherwise>
 
-      <div class="ms-card">
+    <%-- 2. FREE 상태 --%>
+    <c:otherwise>
+      <div class="ms-card ms-card--free">
         <div class="ms-title">FREE</div>
         <div class="ms-benefits">
           <div class="ms-item">광고 노출</div>
@@ -217,17 +217,19 @@
         </div>
       </div>
 
-      <div class="stat-card stat-card--ms-info">
-        <div class="sec-title">PRO 멤버십 혜택</div>
+      <div class="ms-card ms-card--pro">
+        <div class="ms-title">PRO</div>
         <div class="ms-benefits">
-          <div class="ms-item">Premium 전체 포함</div>
-          <div class="ms-item">공연 VIP 입장</div>
-          <div class="ms-item">팬미팅 우선권</div>
-          <div class="ms-item">굿즈 20% 할인</div>
+          <div class="ms-item">무제한 스트리밍</div>
+          <div class="ms-item">AI 음악 추천</div>
+          <div class="ms-item">광고 없는 청취</div>
+          <div class="ms-item">고음질 스트리밍</div>
+          <div class="ms-item">독점 콘텐츠</div>
+          <div class="ms-item">가사 실시간 지원</div>
         </div>
       </div>
-      <button class="upgrade-btn" onclick="openSubscribeModal()">PRO로 업그레이드</button>
-
+      <%-- FREE일 때는 membership.orderId가 없으므로 빈 값 전달 방지 --%>
+      <button class="upgrade-btn" onclick="location.href='${pageContext.request.contextPath}/payment/subscribe'">PRO로 업그레이드</button>
     </c:otherwise>
   </c:choose>
 
