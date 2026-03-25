@@ -129,9 +129,36 @@
 		    
 		    $('.btn-prev').on('click', function(){
 		        releaseSeatsAjax(function() {
+		        	
+		        	const currentWidth = window.outerWidth;
+		        	const currentHeight = window.outerHeight;
+		        	const currentLeft = window.screenX;
+		        	const currentTop = window.screenY;
+		        	
 		            location.href = "${path}/show/seat?showId=${param.showId}&scheduleId=${param.scheduleId}";
+		            
+		            setTimeout(function(){
+		            	window.resizeTo(currentWidth, currentHeight);
+		            	window.moveTo(currentLeft, currentTop);
+		            }, 300);
 		        });
 		    });
+		});
+		
+		$(document).ready(function() {
+		    function resizeToContent() {
+		        if (window.opener) {
+		          
+		            const contentHeight = document.body.scrollHeight + 100; 
+		            const currentWidth = window.outerWidth; 
+		            
+		            const maxHeight = window.screen.availHeight * 0.7;
+		            const finalHeight = Math.min(contentHeight, maxHeight);
+		            
+		            window.resizeTo(currentWidth, finalHeight);
+		        }
+		    }
+		    setTimeout(resizeToContent, 200);
 		});
 		</script>
 	
@@ -174,7 +201,7 @@
 
 			<div class="footer-btns">
 				<button class="btn btn-prev" >이전</button> 	<!-- onclick="window.close()" -->
-				<button class="btn btn-next" onclick="alert('결제 페이지로 이동합니다.')">다음단계</button>
+				<button class="btn btn-next" >다음단계</button>
 			</div>
 		</div>
 
