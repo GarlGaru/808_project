@@ -16,7 +16,7 @@
                     <div class="music-artist-hero-bg">
                         <c:choose>
                             <c:when test="${not empty artist.profileImageUrl}">
-                                <img src="${path}${artist.profileImageUrl}"
+                                <img src="${artist.profileImageUrl}"
                                      alt="${artist.name}"
                                      class="music-artist-hero-bg-img">
                             </c:when>
@@ -80,7 +80,7 @@
                                     <div class="music-artist-song-thumb-wrap">
                                         <c:choose>
                                             <c:when test="${not empty song.coverImageUrl}">
-                                                <img src="${path}${song.coverImageUrl}"
+                                                <img src="${song.coverImageUrl}"
                                                      alt="${song.title}"
                                                      class="music-artist-song-thumb">
                                             </c:when>
@@ -106,15 +106,15 @@
                                 </div>
 
                                 <div class="music-artist-col-play">
-  <button type="button"
-        class="music-artist-play-btn js-play-song"
-        data-song-id="${song.songId}"
-        data-title="${song.title}"
-        data-artist="${song.artistName}"
-        data-cover="${empty song.coverImageUrl ? '/resources/music/img/default_album.jpg' : song.coverImageUrl}"
-        onclick="event.stopPropagation(); playerManager.playByButton(this);">
-    ▶
-</button>
+									  <button type="button"
+									        class="music-artist-play-btn js-play-song"
+									        data-song-id="${song.songId}"
+									        data-title="${song.title}"
+									        data-artist="${song.artistName}"
+									        data-cover="${empty song.coverImageUrl ? '/resources/music/img/default_album.jpg' : song.coverImageUrl}"
+									        onclick="event.stopPropagation(); playerManager.playByButton(this);">
+									    ▶
+									</button>
                                 </div>
                             </div>
                         </c:forEach>

@@ -20,7 +20,7 @@
                         <div class="music-detail-hero-cover-wrap">
                             <c:choose>
                                 <c:when test="${not empty song.coverImageUrl}">
-                                    <img src="${path}${song.coverImageUrl}"
+                                    <img src="${song.coverImageUrl}"
                                          alt="${song.title}"
                                          class="music-detail-hero-cover">
                                 </c:when>
@@ -155,7 +155,7 @@
 						                 
 						                    <c:choose>
 						                        <c:when test="${not empty sim.coverImageUrl}">
-						                            <img src="${path}${sim.coverImageUrl}"
+						                            <img src="${sim.coverImageUrl}"
 						                                 alt="${sim.title}"
 						                                 class="music-detail-song-thumb">
 						                        </c:when>
