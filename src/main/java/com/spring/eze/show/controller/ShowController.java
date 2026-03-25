@@ -5,9 +5,10 @@ import com.spring.eze.main.service.MainService;
 import com.spring.eze.show.dao.Show.ShowDAO;
 import com.spring.eze.show.dto.Seat.SeatDTO;
 import com.spring.eze.show.dto.Show.ShowDTO;
+import com.spring.eze.show.dto.ranking.RankingDTO;
 import com.spring.eze.show.dto.review.ReviewDTO;
 import com.spring.eze.show.service.Seat.SeatService;
-
+import com.spring.eze.show.service.ranking.RankingService;
 import com.spring.eze.show.service.review.ReviewService;
 
 import com.spring.eze.show.service.show.ShowService;
@@ -31,7 +32,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import org.springframework.web.bind.annotation.RequestParam;
@@ -46,16 +47,18 @@ public class ShowController {
 
     @Autowired
     private MainService service;
-	@Autowired
+	
+    @Autowired
 	private SeatService seatService;
+	
 	@Autowired
-
 	private ReviewService reviewService;
 	
 	@Autowired
 	private ShowService showservice;
 
-
+	@Autowired
+	private RankingService rankingService;
    
    // [공연메인] -------------
 	@RequestMapping("")
@@ -276,24 +279,37 @@ public class ShowController {
    // 리 뷰 끝 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  
 	
-//   // 콘서트 
-//	@RequestMapping("/show/musicalList")
-//	public String musicalList(HttpServletRequest request, HttpServletResponse response, Model model)
-//	     throws ServletException, IOException {
-//	  log.info("ShowController - 뮤지컬 상세페이지 화면");
-//	 
-//	  return "show/musicalList";
-//	}
-//	
-//   // 콘서트 
-//	@RequestMapping("/show/playList")
-//	public String playList(HttpServletRequest request, HttpServletResponse response, Model model)
-//	     throws ServletException, IOException {
-//	  log.info("ShowController - 연극 상세페이지 화면");
-//	 
-//	  return "show/playList";
-//	}
-//	
+   // [랭킹 시작] ----------------
+   @RequestMapping(value = "/ranking", method=RequestMethod.GET)
+   public String showRanking(String category, Model model) {
+	  
+	  log.info("showController - 랭킹 화면");
+	   
+	  List<RankingDTO> rankingList = rankingService.getTicketRanking(category);
+	  
+	  System.out.println("가져온 랭킹 데이터: " + rankingList);
+	  model.addAttribute("rankingList", rankingList);
+	  model.addAttribute("currentCategory", category);
+	  
+	  return "show/ranking";
+   }
+   
+   // [랭킹 ajax] -----------------
+   @RequestMapping(value="/rankingAjax", method=RequestMethod.GET)
+   public String rankingAjax(@RequestParam(defaultValue = "all") String category, Model model) {
+	   log.info("showController - 랭킹 화면 ajax");
+	   System.out.println(">>> 넘어온 카테고리: " + category);
+	   
+	   List<RankingDTO> rankingList = rankingService.getTicketRanking(category);
+	   
+	   // 데이터가 몇 건이나 나오는지 확인!
+	   System.out.println(">>> 조회된 데이터 개수: " + (rankingList != null ? rankingList.size() : 0));
+	    
+	   model.addAttribute("rankingList", rankingList);
+	   model.addAttribute("currentCategory", category);
+	   
+	   return "show/rankingContent";
+   }
 	
 //// 여기부터 좌석이긔긔긔!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 

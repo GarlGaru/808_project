@@ -1,55 +1,82 @@
 @charset "UTF-8";
-/* .ranking-section {
-    width: 1200px;
-    margin: 0 auto;
+
+/* 1. 전체 레이아웃 */
+.ranking-section {
+    max-width: 1100px; /* 전체 너비를 1100px로 제한하여 정돈된 느낌을 줌 */
+    margin: 60px auto; /* 상하 여백을 60px 줘서 답답함을 해소 */
+    padding: 0 20px; /* 양옆에 최소한의 여백 확보 */
     color: #fff;
 }
 
+/* 2. 상단 타이틀 (직사각형 위쪽) */
 .ranking-title {
-    font-size: 36px;
-    font-weight: 700;
-    margin-bottom: 30px;
+    font-size: 32px; /* 폰트 크기를 키워 시선 집중 */
+    font-weight: 800; /* 아주 굵은 서체 사용 */
+    color: #fff;
+    margin-bottom: 20px; /* 탭 버튼과의 간격 확보 */
+    letter-spacing: -1px; /* 글자 간격을 좁혀 세련미 추가 */
 }
 
+.ranking-title span {
+    color: #ED6701;
+}
+
+//* [3] 탭 버튼 영역 (상단 직사각형 보정) */
 .ranking-tab-box {
     display: flex;
-    gap: 12px;
-    margin-bottom: 30px;
+    align-items: center;
+    gap: 12px;           /* 버튼 사이 간격 */
+    margin-bottom: 40px; /* 리스트 박스와의 간격 */
+    border-bottom: 1px solid #333; /* 하단 구분선 추가 */
+    padding-bottom: 20px;
 }
 
+
+/* [4] 개별 탭 버튼 디자인 (세련된 스타일) */
 .ranking-tab {
-    padding: 12px 28px;
-    border: 1px solid #ff8c00;
-    border-radius: 30px;
-    background-color: transparent;
-    color: #fff;
+    padding: 10px 24px;
+    border: 1px solid #444;
+    border-radius: 50px; /* 둥근 캡슐 모양 */
+    background-color: #1a1a1a;
+    color: #888;
+    font-size: 15px;
+    font-weight: 600;
     cursor: pointer;
-    transition: all 0.3s;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
+
+/* [5] 활성화된 탭 (Active) - 강렬한 오렌지 포인트 */
 .ranking-tab.active {
-    background-color: #fff;
-    color: #111;
+    background-color: #ED6701 !important;
+    color: #fff !important;
+    border-color: #ED6701 !important;
     font-weight: 700;
-    border-color: #ff8c00;
+    box-shadow: 0 4px 15px rgba(237, 103, 1, 0.4);
+    transform: translateY(-2px); /* 살짝 위로 떠오르는 효과 */
 }
 
+
+.ranking-tab:hover:not(.active) {
+    border-color: #777;
+    color: #fff;
+}
+
+/* 4. [리스트 박스 그릇] - 빨간 직사각형 하단 */
 #rankingContent {
-    min-height: 250px;
-    padding: 30px;
-    border-radius: 20px;
-    background-color: rgba(255,255,255,0.05);
-} */
-
-/* 랭킹페이지 하드코딩 용 - 레이아웃 설정 */
-/* 전체 컨테이너 */
-.ranking-container {
-    width: 1000px;
-    margin: 50px auto;
-    color: #e0e0e0;
+    width: 100%;
+    min-height: 500px;
+    background: #181818; /* 다크 모드 배경색 추가로 리스트 영역 강조 */
+    border-radius: 16px; /* 모서리를 둥글게 처리 */
+    padding: 20px;
+    margin: 0 auto;
+    position: relative; /* 자식 요소인 툴팁 위치 기준 */
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5); /* 전체 박스에 깊이감을 주는 그림자 */
 }
 
-/* 헤더 & 툴팁 배치 */
+/* 기존 .ranking-container는 #rankingContent의 스타일로 흡수 통합하여 코드를 줄였습니다. */
+
+/* 5. 헤더 & 툴팁 배치 */
 .ranking-header {
     display: flex;
     justify-content: space-between;
@@ -59,171 +86,75 @@
     margin-bottom: 20px;
 }
 
-.ranking-title { 
-	font-size: 24px; 
-	color: #fff; 
-	margin: 0; 
-}
-
-.ranking-title span { 
-	color: #ED6701; 
-	font-weight: bold;
-}
-
-/* --- 툴팁(말풍선) 스타일 --- */
-.tooltip-wrap { 
-	position: relative; 
-}
-
-.btn-ranking-info {
-    background: none; 
-    border: none; 
-    color: #aaa; 
-    cursor: pointer; 
-    font-size: 14px;
-}
-
-.btn-ranking-info:hover { 
-	color: #fff; 
-}
+/* --- 툴팁 스타일 (기존 코드 유지 및 정돈) --- */
+.tooltip-wrap { position: relative; }
+.btn-ranking-info { background: none; border: none; color: #aaa; cursor: pointer; font-size: 14px; }
+.btn-ranking-info:hover { color: #fff; }
 
 .ranking-tooltip {
-    display: none; /* 기본적으로 숨김, JS나 Hover로 켬 */
+    display: none;
     position: absolute;
-    top: 30px;
+    top: 35px;
     right: 0;
     width: 380px;
-    background: #181818;
+    background: #222; /* 툴팁 배경을 살짝 더 밝게 보정 */
     border: 1px solid #444;
     border-radius: 8px;
     padding: 20px;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.7);
     z-index: 100;
 }
-/* 말풍선 꼬리 */
+
 .ranking-tooltip::before {
-    content: ''; 
-    position: absolute; 
-    top: -8px; 
-    right: 30px;
-    width: 14px; 
-    height: 14px; 
-    background: #181818;
-    border-top: 1px solid #444; 
-    border-left: 1px solid #444;
+    content: ''; position: absolute; top: -8px; right: 30px;
+    width: 14px; height: 14px; background: #222;
+    border-top: 1px solid #444; border-left: 1px solid #444;
     transform: rotate(45deg);
 }
 
-.tooltip-header { 
-	display: flex; 
-	justify-content: space-between; 
-	margin-bottom: 15px; 
-	border-bottom: 1px solid #333; 
-	padding-bottom: 10px; 
-}
+.tooltip-header { display: flex; justify-content: space-between; margin-bottom: 15px; border-bottom: 1px solid #333; padding-bottom: 10px; }
+.btn-close-tooltip { background: none; border: none; color: #fff; font-size: 18px; cursor: pointer; }
+.tooltip-body .date { font-weight: bold; color: #ED6701; margin-bottom: 10px; font-size: 14px; }
+.tooltip-body ul { padding-left: 20px; margin: 0; font-size: 13px; color: #bbb; line-height: 1.6; }
 
-.tooltip-header h4 { 
-	margin: 0; 
-	color: #fff; 
-	font-size: 16px; 
-}
-
-.btn-close-tooltip { 
-	background: none; 
-	border: none; 
-	color: #fff; 
-	font-size: 18px; 
-	cursor: pointer; 
-}
-
-.tooltip-body .date { 
-	font-weight: bold; 
-	color: #ED6701; 
-	margin-bottom: 10px; 
-	font-size: 14px; 
-}
-
-.tooltip-body ul { 
-	padding-left: 20px; 
-	margin: 0; 
-	font-size: 13px; 
-	color: #bbb; 
-	line-height: 1.6; 
-}
-
-/* --- 랭킹 리스트 스타일 --- */
-.ranking-list { 
-	list-style: none; 
-	padding: 0; 
-	margin: 0; 
-}
-
+/* --- 랭킹 리스트 아이템 스타일 (기존 코드 유지 및 정돈) --- */
+.ranking-list { list-style: none; padding: 0; margin: 0; }
 .ranking-item {
     display: flex;
     align-items: center;
-    padding: 20px 0;
+    padding: 25px 10px; /* 기존보다 상하 여백을 늘려 시원해 보이게 함 */
     border-bottom: 1px solid #282828;
+    transition: background 0.2s;
 }
-.rank-num {
-    width: 80px; 
-    font-size: 36px; 
-    font-weight: 800; 
-    text-align: center; 
-    color: #555;
-}
-.rank-num.text-orange { 
-	color: #ED6701; 
-} /* 1, 2, 3위 등 상위권 색상 포인트 */
+.ranking-item:hover { background: rgba(255, 255, 255, 0.02); } /* 호버 시 미세한 배경색 변화 */
+
+.rank-num { width: 80px; font-size: 36px; font-weight: 800; text-align: center; color: #555; }
+.rank-num.text-orange { color: #ED6701; }
 
 .rank-poster img { 
-	width: 90px; 
-	border-radius: 6px; 
-	display: block; 
+    width: 100px; /* 기존 90px에서 100px로 살짝 키움 */
+    border-radius: 8px; 
+    display: block; 
+    box-shadow: 0 4px 10px rgba(0,0,0,0.3); /* 포스터에 입체감 추가 */
 }
+.rank-info { flex: 1; padding: 0 30px; }
+.badge { display: inline-block; padding: 3px 8px; background: #ED6701; color: #fff; font-size: 12px; border-radius: 4px; margin-bottom: 8px; }
+.show-title { font-size: 22px; /* 타이틀 크기를 살짝 키움 */ font-weight: bold; color: #fff; margin: 0 0 10px 0; }
+.show-date, .show-venue { margin: 3px 0; color: #aaa; font-size: 14px; }
 
-.rank-info { 
-	flex: 1; 
-	padding: 0 30px; 
-}
-
-.badge { 
-	display: inline-block; 
-	padding: 3px 8px; 
-	background: #ED6701; 
-	color: #fff; 
-	font-size: 12px; 
-	border-radius: 4px; 
-	margin-bottom: 8px; 
-}
-
-.show-title { 
-	font-size: 20px; 
-	font-weight: bold; 
-	color: #fff; 
-	margin: 0 0 10px 0; 
-}
-
-.show-date, .show-venue { 
-	margin: 3px 0; 
-	color: #aaa; 
-	font-size: 14px; 
-}
-
-.rank-action { 
-	width: 120px; 
-	text-align: right; 
-}
-
+/* --- 예매 버튼 (기존 코드 유지 및 정돈) --- */
+.rank-action { width: 150px; text-align: right; }
 .btn-reserve-sm {
-    background: transparent; 
-    border: 1px solid #ED6701; 
+    background: transparent;
+    border: 1px solid #ED6701;
     color: #ED6701;
-    padding: 10px 20px; 
-    border-radius: 4px; 
-    cursor: pointer; 
-    transition: 0.2s;
+    padding: 12px 24px; /* 버튼 크기를 살짝 키움 */
+    border-radius: 6px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.3s;
 }
-.btn-reserve-sm:hover { 
-	background: #ED6701; 
-	color: #fff; 
+.btn-reserve-sm:hover {
+    background: #ED6701;
+    color: #fff;
 }
