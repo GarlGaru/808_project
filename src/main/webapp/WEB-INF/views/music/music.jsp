@@ -80,7 +80,10 @@
             </div>
             <div class="music-home-body">
                 <div class="music-home-song" data-slot="title"></div>
-                <div class="music-home-artist" data-slot="artist"></div>
+                <button type="button"
+                        class="music-artist-link"
+                        data-slot="artist">
+                </button>
                 <div class="music-home-score" data-slot="label"></div>
             </div>
         </div>

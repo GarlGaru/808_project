@@ -31,6 +31,7 @@ public class RecommendService {
         }
 
         List<SongCardDTO> result = dao.getResultSongs(recommendSongs);
+        System.out.println("result : ");
         System.out.println(result.get(1));
         System.out.println(result.get(2));
         System.out.println(result.get(3));

@@ -14,7 +14,7 @@
         FETCH FIRST 5 ROWS ONLY
     </select>
 
-    <select id="selectRecommendedSongs" resultType="int">
+    <select id="selectRecommendedSongs" resultType="java.lang.Integer">
         SELECT s.song_id
         FROM songs_tbl s
         JOIN song_keyword_tbl sk ON s.song_id = sk.song_id
@@ -30,7 +30,7 @@
         FETCH FIRST #{amount} ROWS ONLY
     </select>
 
-    <select id="getResultSongs" resultType="com.spring.eze.reco.dto.KeywordScoreDTO">
+    <select id="getResultSongs" resultType="com.spring.eze.reco.dto.SongCardDTO">
         SELECT
         s.song_id          AS songId,
         ar.name            AS artistName,

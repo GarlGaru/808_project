@@ -79,6 +79,14 @@ async function MusicSlider({
 
     /* ── 7. 카드 클릭 & 재생 버튼 이벤트 위임 ──────────────────── */
     track.addEventListener('click', (e) => {
+        // 아티스트 버튼
+        const artistBtn = e.target.closest('.music-artist-link');
+        if (artistBtn) {
+            e.stopPropagation();
+            loadMainContent(`${path}/music/artist?artistId=${artistBtn.dataset.artistId}`);
+            return;
+        }
+        
         // 재생 버튼
         const playBtn = e.target.closest('.js-play-song');
         if (playBtn) {
@@ -93,6 +101,8 @@ async function MusicSlider({
         if (card) {
             loadMainContent(`${path}/music/detail?songId=${card.dataset.songId}`);
         }
+
+
     });
 }
 
@@ -147,10 +157,15 @@ function createCard(cardBase, song, path, label) {
     playBtn.dataset.cover  = cover;
     playBtn.setAttribute('aria-label', `${song.title} 재생`);
 
-    // 텍스트 슬롯
-    card.querySelector('[data-slot="title"]').textContent  = song.title;
-    card.querySelector('[data-slot="artist"]').textContent = song.artistName;
-    card.querySelector('[data-slot="label"]').textContent  = label;
+    // 제목 / 라벨
+    card.querySelector('[data-slot="title"]').textContent = song.title;
+    card.querySelector('[data-slot="label"]').textContent = label;
+
+    // 아티스트 버튼
+    const artistBtn = card.querySelector('[data-slot="artist"]');
+    artistBtn.textContent = song.artistName;
+    artistBtn.dataset.artistId = song.artistId;
+    artistBtn.type = 'button';
 
     return card;
 }
