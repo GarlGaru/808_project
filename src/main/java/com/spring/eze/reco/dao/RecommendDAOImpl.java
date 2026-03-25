@@ -31,6 +31,7 @@ public class RecommendDAOImpl implements RecommendDAO {
 
     @Override
     public List<SongCardDTO> getResultSongs(List<Integer> songIds) {
+        System.out.println("songIds :" + songIds);
         RecommendDAO dao = sqlSession.getMapper(RecommendDAO.class);
         return dao.getResultSongs(songIds);
     }
