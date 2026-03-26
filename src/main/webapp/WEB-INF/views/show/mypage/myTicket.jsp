@@ -39,11 +39,11 @@
         </div>
 
         <div class="myticket-container">
-            <!-- 상단 요약 -->
             <div class="myticket-summary">
                 <div class="summary-user">
                     <div class="summary-title">기본정보</div>
-                    <div class="summary-email">${email}</div>
+                    <div class="summary-nickname">${loginUser.nickname}</div>
+                    <div class="summary-email">${loginUser.email}</div>
                 </div>
 
                 <div class="summary-count-wrap">
@@ -54,7 +54,6 @@
                 </div>
             </div>
 
-            <!-- 최근 예매/취소 -->
             <div class="myticket-list-section">
                 <div class="section-header">
                     <h2>최근 예매내역</h2>
@@ -77,19 +76,20 @@
                     <c:otherwise>
                         <c:forEach var="t" items="${list}">
                             <div class="ticket-item">
-                                <!-- 예매일 -->
                                 <div class="col-date ticket-date">
                                     ${t.approvedAt}
                                 </div>
 
-                                <!-- 공연정보 -->
                                 <div class="col-show ticket-show">
                                     <div class="ticket-poster">
                                         <img src="${t.posterUrl}" alt="${t.title}">
                                     </div>
 
                                     <div class="ticket-show-info">
-                                        <div class="ticket-title">${t.title}</div>
+                                        <div class="ticket-title">
+                                        	<a href="${path}/show/showDetail?showId=${t.showId}" class="title-link">${t.title}
+                                        	</a>
+                                        </div>
                                         <div class="ticket-period">
                                             ${t.startDate} ~ ${t.endDate}
                                         </div>
@@ -97,7 +97,6 @@
                                     </div>
                                 </div>
 
-                                <!-- 예매정보 -->
                                 <div class="col-booking ticket-booking">
                                     <div><span class="label">예매번호</span> ${t.orderId}</div>
                                     <div><span class="label">관람일</span> ${t.playDate}</div>
@@ -105,18 +104,17 @@
                                     <div><span class="label">취소가능</span> ${t.cancelAvailable}</div>
                                 </div>
 
-                                <!-- 상태 -->
                                 <div class="col-status ticket-status">
                                     <div class="status-text">
                                         <c:choose>
-                                            <c:when test="${t.status eq 'READY'}">예매완료</c:when>
+                                            <c:when test="${t.status eq 'APPROVED'}">예매완료</c:when>
                                             <c:when test="${t.status eq 'CANCEL'}">취소완료</c:when>
                                             <c:otherwise>${t.status}</c:otherwise>
                                         </c:choose>
                                     </div>
 
                                     <c:if test="${t.cancelAvailable eq '가능'}">
-                                        <button type="button" class="cancel-btn">예매 취소</button>
+                                        <button type="button" class="cancel-btn" data-order-id="${t.orderId}">예매 취소</button>
                                     </c:if>
                                 </div>
                             </div>

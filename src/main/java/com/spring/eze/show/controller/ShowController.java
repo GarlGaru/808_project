@@ -71,10 +71,6 @@ public class ShowController {
 		return "show/show";
     }
 
-
-////리 뷰 긔!!!!!!!!!!!!////////////////////////////////////////////////////////////
-	
-	
 	// [공연장르상세페이지] <방법A> 장르 탭  -------------
 	@RequestMapping("/showList")
 	public String showList(@RequestParam(value="category", defaultValue="concert")String category, 
@@ -109,14 +105,15 @@ public class ShowController {
 		
 		model.addAttribute("menu", "myticket");
 		
-		Long userId = (Long) session.getAttribute("userId");
+		UserDTO loginUser = (UserDTO) session.getAttribute("loginUser");
 		
 		System.out.println("session userId = " + session.getAttribute("userId"));
 		
-		if(userId == null) {
-			userId = 1L;
-//			return "redirect:/authModal";
+		if(loginUser == null) {
+			return "redirect:/authModal";
 		}
+		
+		long userId = loginUser.getUserId(); 
 		
 		showservice.getMyTicketList(userId, model);
 		 
@@ -162,31 +159,7 @@ public class ShowController {
     return "show/scheduleTimeList"; 
 	}
 	
-	// [랭킹] ---------------
-	@RequestMapping("/ranking")
-	public String ranking(HttpServletRequest request, HttpServletResponse response, Model model)
-		   throws ServletException, IOException {
-        
-        log.info("ShowController - showRanking()");
-        
-        model.addAttribute("menu", "ranking");
-        showservice.getShowRanking(request, response, model);
-        return "show/ranking";
-    }
-	
-	// [랭킹] Ajax 용 ---------------
-	@RequestMapping("/rankingAjax")
-	public String rankingAjax(HttpServletRequest request, HttpServletResponse response, Model model)
-		   throws ServletException, IOException {
-        
-        log.info("ShowController - rankingAjax()");
-        
-        model.addAttribute("menu", "ranking");
-        showservice.getShowRanking(request, response, model);
-        return "show/rankingContent";
-    }
-
-   
+   //[리뷰] -------------------
 	@GetMapping("/review")
 	public String reviewPage(Model model) {
 	    log.info("리뷰 테스트 페이지 접속");
@@ -276,9 +249,6 @@ public class ShowController {
 	   return reviewService.getAvgRating(showId);
    }
    
-   // 리 뷰 끝 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
- 
-	
    // [랭킹 시작] ----------------
    @RequestMapping(value = "/ranking", method=RequestMethod.GET)
    public String showRanking(String category, Model model) {
@@ -311,12 +281,8 @@ public class ShowController {
 	   return "show/rankingContent";
    }
 	
-//// 여기부터 좌석이긔긔긔!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
    // [좌석] -------------
-
    // 좌석맵 조회(회차별)
-
 	@RequestMapping("/seat")
 	public String seat(HttpServletRequest request, HttpServletResponse response, Model model)
 			throws ServletException, IOException {
@@ -353,15 +319,6 @@ public class ShowController {
 		
 		return seatService.getSeatStatus(showId, scheduleId);
 	}
-	
-//    @RequestMapping("/seat-detail")
-//    public String seatDetail(HttpServletRequest request, HttpServletResponse response, Model model)
-//            throws ServletException, IOException {
-//        log.info("seatDetail");
-//
-//        return "show/show-detail";
-//    }
-	
 
     @ResponseBody
     @PostMapping("/reserveCheck")
@@ -430,11 +387,4 @@ public class ShowController {
 			return "fail";
 		}
 	}
-	
-	
-
-
-	
- 
-
 }
