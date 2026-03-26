@@ -168,7 +168,7 @@ public class ShowController {
 	@ResponseBody
 	@GetMapping("/reviewList")
 	public List<ReviewDTO> reviewList(
-	    @RequestParam(value="showId", required=false, defaultValue="PF_test_001") String showId, 
+	    @RequestParam(value="showId") String showId, 
 	    @RequestParam(value="page", required=false, defaultValue="1") int page, 
 	    @RequestParam(value="sort", required=false, defaultValue="latest") String sort) {
 	    
