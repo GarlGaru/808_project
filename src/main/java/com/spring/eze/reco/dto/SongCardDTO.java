@@ -5,16 +5,16 @@ public class SongCardDTO {
 
     private int songId;
     private String artistName;
-    private String songTitle;
+    private String title;
     private String coverImageUrl;
 
     public SongCardDTO() {
     }
 
-    public SongCardDTO(int songId, String artistName, String songTitle, String coverImageUrl) {
+    public SongCardDTO(int songId, String artistName, String title, String coverImageUrl) {
         this.songId = songId;
         this.artistName = artistName;
-        this.songTitle = songTitle;
+        this.title = title;
         this.coverImageUrl = coverImageUrl;
     }
 
@@ -34,12 +34,12 @@ public class SongCardDTO {
         this.artistName = artistName;
     }
 
-    public String getSongTitle() {
-        return songTitle;
+    public String getTitle() {
+        return title;
     }
 
-    public void setSongTitle(String songTitle) {
-        this.songTitle = songTitle;
+    public void setTitle(String title) {
+        this.title = title;
     }
 
     public String getCoverImageUrl() {
@@ -55,7 +55,7 @@ public class SongCardDTO {
         return "SongCardDTO{" +
                 "songId=" + songId +
                 ", artistName='" + artistName + '\'' +
-                ", songTitle='" + songTitle + '\'' +
+                ", songTitle='" + title + '\'' +
                 ", coverImageUrl='" + coverImageUrl + '\'' +
                 '}';
     }
