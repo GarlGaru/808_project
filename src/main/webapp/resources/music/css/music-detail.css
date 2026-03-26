@@ -295,6 +295,7 @@
 .music-detail-col-play {
     display: flex;
     justify-content: center;
+    align-items: center;
 }
 
 .music-detail-row-play-btn {
@@ -314,53 +315,58 @@
     transform: scale(1.04);
 }
 
+.music-artist-link-btn {
+    background: none;
+    border: none;
+    padding: 0;
+    color: #b3b3b3;
+    font: inherit;
+    cursor: pointer;
+    transition: color 0.18s ease, text-shadow 0.18s ease;
+}
+
+.music-artist-link-btn:hover {
+    color: #fff;
+    text-decoration: underline;
+    text-shadow: 0 0 8px rgba(255,255,255,0.14);
+}
+
+.music-artist-link {
+    color: #b3b3b3;
+    text-decoration: none;
+    font-size: inherit;
+    font-weight: 500;
+    transition: color 0.15s ease;
+    cursor: pointer;
+}
+
+.music-artist-link:hover {
+    color: #fff;
+    text-decoration: underline;
+}
+
+.js-like-song {
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    font-size: 22px;
+    color: #cfcfcf;
+    transition: transform 0.18s ease, color 0.18s ease;
+}
+
+.js-like-song:hover {
+    transform: scale(1.08);
+}
+
+.js-like-song.is-liked {
+    color: #ff4d6d;
+}
 /* =========================
    반응형
    ========================= */
-@media (max-width: 1400px) {
-    .music-detail-main-title {
-        font-size: 3.4rem;
-    }
-}
 
-@media (max-width: 1200px) {
-    .music-detail-hero {
-        flex-direction: column;
-        align-items: flex-start;
-        min-height: auto;
-    }
 
-    .music-detail-main-title {
-        font-size: 2.7rem;
-    }
-
-    .music-detail-meta-box {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
-	.music-detail-table-head {
-    display: grid;
-    grid-template-columns: 60px minmax(260px, 3fr) minmax(180px, 1.5fr) minmax(180px, 1.5fr) minmax(120px, 1fr) 90px;
-    align-items: center;
-    column-gap: 24px;
-	}
-	
-	.music-detail-table-head > div {
-	    display: flex;
-	    align-items: center;
-	    height: 100%;
-	}
-	
-	.music-detail-table-head .music-detail-col-play {
-	    justify-content: center;
-	}
-	    .music-detail-table-head,
-	    .music-detail-row {
-	        grid-template-columns: 50px minmax(220px, 2.4fr) minmax(140px, 1.2fr) minmax(140px, 1.2fr) minmax(90px, 0.9fr) 80px;
-    }
-	    }
-	}
-
-@media (max-width: 768px) {
+	@media (max-width: 768px) {
     .music-detail-page {
         border-radius: 0;
     }
@@ -368,7 +374,6 @@
     .music-detail-hero {
         padding: 28px 18px 20px 18px;
         gap: 20px;
-        
     }
 
     .music-detail-actions,
