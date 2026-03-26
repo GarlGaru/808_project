@@ -39,6 +39,17 @@
         </div>
 
         <div class="myticket-container">
+        	<c:set var="approvedCnt" value="0" />
+        	<c:set var="cancelCnt" value="0" />
+        	<c:forEach var="t" items="${list}">
+        		<c:if test="${t.status eq 'APPROVED'}">
+        			<c:set var="approvedCnt" value="${approvedCnt + 1}" />
+        		</c:if>
+        		<c:if test="${t.status eq 'CANCEL'}">
+        			<c:set var="cancelCnt" value="${cancelCne + 1}" />
+        		</c:if>
+        	</c:forEach>
+        	
             <div class="myticket-summary">
                 <div class="summary-user">
                     <div class="summary-title">기본정보</div>
@@ -46,10 +57,14 @@
                     <div class="summary-email">${loginUser.email}</div>
                 </div>
 
-                <div class="summary-count-wrap">
+                <div class="summary-count-wrap" style="display: flex; gap: 40px;">
                     <div class="summary-count-box">
-                        <div class="count-number">${ticketCount}</div>
+                        <div class="count-number">${approvedCnt}</div>
                         <div class="count-label">예매내역</div>
+                    </div>
+                    <div class="summary-count-box">
+                    	<div class="count-number" style="color: #999;">${cancelCnt}</div>
+                    	<div class="count-label">취소내역</div>
                     </div>
                 </div>
             </div>
@@ -101,19 +116,28 @@
                                     <div><span class="label">예매번호</span> ${t.orderId}</div>
                                     <div><span class="label">관람일</span> ${t.playDate}</div>
                                     <div><span class="label">매수</span> ${t.quantity}매</div>
-                                    <div><span class="label">취소가능</span> ${t.cancelAvailable}</div>
+                                    
+                                    <div>
+                                    	<span class="label">취소가능</span> 
+                                    	<c:choose>
+                                    		<c:when test="${t.status eq 'CANCEL'}">불가</c:when>
+                                    		<c:otherwise>${t.cancelAvailable}</c:otherwise>
+                                    	</c:choose>
+                                    </div>
                                 </div>
 
                                 <div class="col-status ticket-status">
                                     <div class="status-text">
                                         <c:choose>
                                             <c:when test="${t.status eq 'APPROVED'}">예매완료</c:when>
-                                            <c:when test="${t.status eq 'CANCEL'}">취소완료</c:when>
+                                            <c:when test="${t.status eq 'CANCEL'}">
+                                            	<span style="color: #999;">취소완료</span>
+                                            </c:when>
                                             <c:otherwise>${t.status}</c:otherwise>
                                         </c:choose>
                                     </div>
 
-                                    <c:if test="${t.cancelAvailable eq '가능'}">
+                                    <c:if test="${t.cancelAvailable eq '가능' and t.status eq 'APPROVED'}">
                                         <button type="button" class="cancel-btn" data-order-id="${t.orderId}">예매 취소</button>
                                     </c:if>
                                 </div>
@@ -130,5 +154,41 @@
     <script src="${path}/resources/common/js/jquery/jquery-2.2.4.min.js"></script>
     <script src="${path}/resources/common/bootstrap-4.6.2-dist/js/bootstrap.bundle.min.js"></script>
     <script src="${path}/resources/show/js/myTicket.js"></script>
+    
+    <script>
+    $(document).ready(function(){
+    	
+    	// 예매 취소 버튼 클릭
+    	$('.cancel-btn').click(function() {
+    		//클릭한 버튼의 data-order-id 값 불러오기
+    		let orderId = $(this).data('order-id');
+    	
+    		//취소 확인 알람창
+    		if (!confirm('정말 예매를 취소하시겠습니까?\n결제된 금액은 전액 환불됩니다.')) {
+    			return;
+    		}
+    		
+    		// 백엔드로 취소 요청 (ajax)
+    		$.ajax({
+    			url: '${path}/show/mypage/cancelTicket', 
+    			type: 'POST',
+    			data: {orderId: orderId},
+    			dataType: 'json',
+    			success: function(map){
+    				if (map.status === 'success') {
+    					alert(map.message);
+    					location.reload();
+    				} else {
+    					alert("취소실패: " + map.message);
+    				}
+    			},
+    			error: function(xhr, status, error) {
+    				console.error('Ajax 통신 에러: ', error);
+    				alert("서버와 통신 중 문제가 발생했습니다. 잠시 후 다시 시도해주세요.");
+    			}
+    		});
+    	});
+    });
+    </script>
 </body>
 </html>

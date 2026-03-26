@@ -103,4 +103,17 @@ public class ShowDAOImpl implements ShowDAO{
 		return sqlSession.selectOne("com.spring.eze.show.dao.Show.ShowDAO.selectScheduleInfo" ,scheduleId);
 	}
 
+	// 마이티켓 예매결제 취소 상태로 업데이트
+	@Override
+	public int updateTicketCancel(String orderId) {
+		System.out.println("ShowDAOImpl - updateTicketCancel()");
+		return sqlSession.update("com.spring.eze.show.dao.Show.ShowDAO.updateTicketCancel", orderId);
+	}
+
+	// 취소된 좌석 상태를 다싯 예매 가능으로 업데이트
+	@Override
+	public int updateTicketAvailable(String orderId) {
+		System.out.println("ShowDAOImpl - updateTicketAvailable()");
+		return sqlSession.update("com.spring.eze.show.dao.Show.ShowDAO.updateTicketAvailable", orderId);
+	}
 }

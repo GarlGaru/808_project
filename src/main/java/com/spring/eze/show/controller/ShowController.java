@@ -2,6 +2,7 @@ package com.spring.eze.show.controller;
 
 
 import com.spring.eze.main.service.MainService;
+import com.spring.eze.payment.service.kakaopayService;
 import com.spring.eze.show.dao.Show.ShowDAO;
 import com.spring.eze.show.dto.Seat.SeatDTO;
 import com.spring.eze.show.dto.Show.ShowDTO;
@@ -15,7 +16,10 @@ import com.spring.eze.show.service.show.ShowService;
 import com.spring.eze.user.dto.UserDTO;
 
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -59,6 +63,9 @@ public class ShowController {
 
 	@Autowired
 	private RankingService rankingService;
+	
+	@Autowired
+	private kakaopayService kakaoService;
    
    // [공연메인] -------------
 	@RequestMapping("")
@@ -99,25 +106,61 @@ public class ShowController {
 	
 	// [공연메인페이지] - 마이티켓연결
 	@RequestMapping("/mypage/myTicket")
-	public String myTicketPage(HttpSession session, Model model)
-		 throws ServletException, IOException {
+	public String myTicketPage(HttpSession session, Model model, HttpServletResponse response)
+		 throws Exception {
 		log.info("ShowController - 공연메인=>마이티켓연결");
 		
 		model.addAttribute("menu", "myticket");
 		
 		UserDTO loginUser = (UserDTO) session.getAttribute("loginUser");
 		
-		System.out.println("session userId = " + session.getAttribute("userId"));
-		
 		if(loginUser == null) {
-			return "redirect:/authModal";
+		    // 모델에 경고창에 띄울 텍스트를 담음
+		    model.addAttribute("msg", "로그인이 필요한 서비스입니다.");
+		    
+		    return "show/mypage/message"; 
 		}
 		
-		long userId = loginUser.getUserId(); 
+		long userId = loginUser.getUserId();
 		
 		showservice.getMyTicketList(userId, model);
-		 
+		
 		return "show/mypage/myTicket";
+	}
+		
+	// [결제] 마이티켓 예매취소------
+	@PostMapping("/mypage/cancelTicket")
+	@ResponseBody
+	public Map<String, Object> processCancelTicket(@RequestParam("orderId") String orderId, HttpSession session) {
+		log.info("ShowController - 마이티켓 예매취소");
+		
+		Map<String, Object> map = new HashMap<>();
+		
+		UserDTO loginUser = (UserDTO) session.getAttribute("loginUser");
+		
+		if(loginUser == null) {
+			map.put("status", "fail");
+			map.put("message", "로그인이 만료되었거나 로그인이 필요합니다.");
+			return map;
+		}
+		
+		try {
+			System.out.println("예매취소요청 - userId: " + loginUser.getUserId() + "orderId: " + orderId);
+			
+			kakaoService.cancel(orderId, null);
+			
+			map.put("status", "success");
+			map.put("message", "예매가 정상적으로 취소 및 환불되었습니다.");
+		} catch(IllegalArgumentException | IllegalStateException e) {
+			map.put("status", "fail");
+			map.put("message", e.getMessage());
+		} catch(Exception e) {
+			e.printStackTrace();
+			map.put("status", "error");
+			map.put("message", "취소 처리 중 오류가 발생했습니다. 관리자에게 문의해주세요.");
+		}
+		
+		return map;
 	}
 	
 	// [공연상세페이지] 공연개별페이지 -----
@@ -250,6 +293,7 @@ public class ShowController {
    }
    
    // [랭킹 시작] ----------------
+   // [랭킹 페이지] --------------
    @RequestMapping(value = "/ranking", method=RequestMethod.GET)
    public String showRanking(String category, Model model) {
 	  

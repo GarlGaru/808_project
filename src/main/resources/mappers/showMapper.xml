@@ -237,7 +237,7 @@
     JOIN schedule_tbl sch 
       ON tp.schedule_id = sch.schedule_id
     WHERE po.user_id = #{userId}
-      AND tp.ticket_status = 'APPROVED'
+      AND tp.ticket_status IN ('APPROVED', 'CANCEL')
     GROUP BY 
         po.order_id, po.user_id, po.approved_at, tp.ticket_status, 
         s.show_id, s.title, s.poster_url, s.venue_name, s.start_date, s.end_date, sch.play_date  
@@ -251,8 +251,27 @@
 	    JOIN ticket_payment_tbl tp 
 	      ON po.order_id = tp.order_id
 	    WHERE po.user_id = #{userId}
-	      AND tp.ticket_status = 'APPROVED'
+	      AND tp.ticket_status IN ('APPROVED', 'CANCEL')
 	</select>
+	
+	<!-- 마이티켓 티켓 결제 상태 cancel -->
+	<update id="updateTicketCancel" parameterType="String">
+		UPDATE ticket_payment_tbl
+		   SET ticket_status = 'CANCEL',
+		   	   canceled_at = SYSDATE
+		 WHERE order_id = #{orderId}
+	</update>
+	
+	<!-- 마이티켓 점유티켓 좌석 다시 '예매 가능' 전환 -->
+	<update id="updateTicketAvailable" parameterType="String">
+		UPDATE seat_tbl
+		   SET seat_status = 'AVAILABLE'
+		 WHERE seat_id
+		    IN (SELECT seat_id
+		    	  FROM ticket_payment_tbl
+		    	 WHERE order_id = #{orderId}
+		    )
+	</update>
 	
 	<!-- seat회차 넘기는거때문에 추가합니다 -->
 	<select id="selectScheduleInfo" parameterType="String" resultType="map">
