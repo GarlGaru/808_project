@@ -3,7 +3,6 @@
 <%@ include file="/WEB-INF/views/common/setting.jsp" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 
-<link rel="stylesheet" href="${path}/resources/music/css/player.css">
 
 <div class="music-player-fixed" id="globalPlayerRoot">
 
@@ -90,3 +89,5 @@
 </div>
 
 <script src="${path}/resources/common/js/jquery/jquery-2.2.4.min.js"></script>
+
+<!-- ============================================ -->

@@ -1,6 +1,5 @@
 package com.spring.eze.common;
 
-import com.spring.eze.playlist.controller.PlaylistController;
 import com.spring.eze.user.dto.UserDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
