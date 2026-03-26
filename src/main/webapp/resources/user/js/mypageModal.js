@@ -542,7 +542,7 @@ window.mpCancelMembership = function (orderId) {
     $container.empty().append(frag);
   }
 
-  /* TOP 10 곡 */
+  /* TOP 10 곡 coverImageUrl만 cp없음(DB경로에 맞춤)*/
   function renderSongs(list) {
     var $container = $('#mpTopList');
     if (!list || !list.length) {
@@ -562,7 +562,7 @@ window.mpCancelMembership = function (orderId) {
       var thumb = node.querySelector('.li-thumb');
 	  if (s.coverImageUrl) {
 	      var img = document.createElement('img');
-	      img.src = CP + s.coverImageUrl;
+	      img.src = s.coverImageUrl;
 	      img.alt = s.title;
 	      thumb.appendChild(img);
 	  }

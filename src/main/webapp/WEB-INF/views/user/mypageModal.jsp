@@ -210,9 +210,8 @@
         <div class="ms-title">FREE</div>
         <div class="ms-benefits">
           <div class="ms-item">광고 노출</div>
-          <div class="ms-item">전곡 하이라이트 감상</div>
+          <div class="ms-item">스트리밍 불가</div>
           <div class="ms-item">아티스트 정보 제공</div>
-          <div class="ms-item">표준 음질 제공</div>
           <div class="ms-item">기본 굿즈 구매</div>
         </div>
       </div>
@@ -222,14 +221,13 @@
         <div class="ms-benefits">
           <div class="ms-item">무제한 스트리밍</div>
           <div class="ms-item">AI 음악 추천</div>
-          <div class="ms-item">광고 없는 청취</div>
+          <div class="ms-item">808 플레이리스트</div>
           <div class="ms-item">고음질 스트리밍</div>
           <div class="ms-item">독점 콘텐츠</div>
-          <div class="ms-item">가사 실시간 지원</div>
         </div>
       </div>
       <%-- FREE일 때는 membership.orderId가 없으므로 빈 값 전달 방지 --%>
-      <button class="upgrade-btn" onclick="location.href='${pageContext.request.contextPath}/payment/subscribe'">PRO로 업그레이드</button>
+      <button class="upgrade-btn" onclick="handleProMembership()">PRO로 업그레이드</button>
     </c:otherwise>
   </c:choose>
 
