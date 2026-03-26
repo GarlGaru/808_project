@@ -1,27 +1,9 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ include file="/WEB-INF/views/common/setting.jsp" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<!DOCTYPE html>
-<html lang="ko">
-<head>
-    <meta charset="UTF-8">
-    <meta name="description" content="Music Detail Page">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>${song.title}</title>
-
-
-
-    <!-- 음악 페이지 전용 CSS -->
-
-    <link rel="stylesheet" href="${path}/resources/music/css/music-detail.css">
-</head>
-<body class="dark-mode">
 
     <div class="music-layout-page">
         <div class="music-layout-content">
-
-
 
             <!-- 상세 본문 -->
             <main class="music-layout-main">
@@ -38,7 +20,7 @@
                         <div class="music-detail-hero-cover-wrap">
                             <c:choose>
                                 <c:when test="${not empty song.coverImageUrl}">
-                                    <img src="${path}${song.coverImageUrl}"
+                                    <img src="${song.coverImageUrl}"
                                          alt="${song.title}"
                                          class="music-detail-hero-cover">
                                 </c:when>
@@ -75,19 +57,22 @@
                          ========================= -->
                     <section class="music-detail-actions">
                         <!-- 큰 재생 버튼 -->
-                    <button type="button"
-                        class="music-detail-row-play-btn js-play-song"
-                        data-song-id="${song.songId}"
-                        data-title="${song.title}"
-                        data-artist="${song.artistName}"
-                        data-cover="${song.coverImageUrl}">
-                        ▶
-                    </button>
+	                    <button type="button"
+						        class="music-detail-row-play-btn js-play-song"
+						        data-song-id="${song.songId}"
+						        data-title="${song.title}"
+						        data-artist="${song.artistName}"
+						        data-cover="${empty song.coverImageUrl ? '/resources/music/img/default_album.jpg' : song.coverImageUrl}">
+						    ▶
+						</button>
 
                         <!-- 좋아요 -->
-                        <button type="button" class="music-detail-icon-btn" title="좋아요">
-                            ♡
-                        </button>
+		                <button type="button"
+						        id="btnLike"
+						        class="music-detail-icon-btn js-like-song"
+						        aria-pressed="false">
+						    ♡
+						</button>
 
                         <!-- 추가 -->
                         <button type="button" class="music-detail-icon-btn" title="추가">
@@ -111,8 +96,11 @@
 
                         <div class="music-detail-meta-card">
                             <div class="music-detail-meta-label">아티스트</div>
-                            <div class="music-detail-meta-value">${song.artistName}</div>
-                        </div>
+							<button type="button" class="music-artist-link-btn"
+								onclick="event.stopPropagation(); loadMainContent('${path}/music/artist?artistId=${song.artistId}');">
+								${song.artistName}
+							</button>
+						</div>
 
                         <div class="music-detail-meta-card">
                             <div class="music-detail-meta-label">앨범</div>
@@ -152,9 +140,7 @@
 						
 						        <!-- 곡 한 줄 / 클릭 시 상세페이지 이동 -->
 						        <div class="music-detail-row"
-						             onclick="loadMainContent('${path}/music/detail?songId=${sim.songId}')">
-
-						
+    							 onclick="if (event.target.closest('.js-play-song, .music-artist-link')) return; loadMainContent('${path}/music/detail?songId=${sim.songId}')">
 						            <!-- 몇 번째 곡인지 번호 표시 -->
 						            <div class="music-detail-col-index">
 						                ${st.index + 1}
@@ -169,7 +155,7 @@
 						                 
 						                    <c:choose>
 						                        <c:when test="${not empty sim.coverImageUrl}">
-						                            <img src="${path}${sim.coverImageUrl}"
+						                            <img src="${sim.coverImageUrl}"
 						                                 alt="${sim.title}"
 						                                 class="music-detail-song-thumb">
 						                        </c:when>
@@ -185,12 +171,14 @@
                                         </div>
 										
 									</div>
-									
-									<div class="music-detail-col-artist">
-										${sim.artistName}
-										</div>
-										
-                                    <div class="music-detail-col-album">
+
+								       <a href="javascript:void(0);"
+		                                   class="music-artist-link"
+		                                   onclick="event.stopPropagation(); loadMainContent('${path}/music/artist?artistId=${sim.artistId}');">
+		                                    ${sim.artistName}
+		                                </a>
+
+									<div class="music-detail-col-album">
                                         ${sim.albumTitle}
                                     </div>
 
@@ -200,14 +188,15 @@
 
                                     <div class="music-detail-col-play">
                                    <button type="button"
-								        class="music-detail-hero-play-btn js-play-song"
-								        data-song-id="${sim.songId}"
-								        data-title="${sim.title}"
-								        data-artist="${sim.artistName}"
-								        data-cover="${sim.coverImageUrl}">
-									    ▶ 재생
-									</button>
-                                    </div>
+						        class="music-detail-row-play-btn js-play-song"
+						        data-song-id="${sim.songId}"
+						        data-title="${sim.title}"
+						        data-artist="${sosimng.artistName}"
+						        data-cover="${empty sim.coverImageUrl ? '/resources/music/img/default_album.jpg' : sim.coverImageUrl}">
+						    ▶
+						</button>
+						
+									</div>
                                 </div>
                             </c:forEach>
                         </div>
@@ -220,5 +209,48 @@
     <script src="${path}/resources/common/bootstrap-4.6.2-dist/js/bootstrap.bundle.min.js"></script>
     <script src="${path}/resources/common/js/main.js"></script>
 
-</body>
-</html>
+		<script>
+		$(function () {
+		    $(document).on('click', '.js-like-song', function (e) {
+		        e.stopPropagation();
+		
+		        const $btn = $(this);
+		        const songId = $btn.data('song-id');
+		
+		        if (!songId) {
+		            alert('곡 정보가 없습니다.');
+		            return;
+		        }
+		
+		        $.ajax({
+		            url: '${path}/music/toggleLike',
+		            type: 'GET',
+		            data: { songId: songId },
+		            success: function (res) {
+		                if (res === 'liked') {
+		                    $btn.addClass('is-liked');
+		                    $btn.text('♥');
+		                } else if (res === 'unliked') {
+		                    $btn.removeClass('is-liked');
+		                    $btn.text('♡');
+		                } else if (res === 'noLogin') {
+		                    alert('로그인 후 이용 가능합니다.');
+		                } else {
+		                    alert('좋아요 처리에 실패했습니다.');
+		                }
+		            },
+		            error: function () {
+		                alert('서버 오류가 발생했습니다.');
+		            }
+		        });
+		    });
+		});
+		</script>
+	<script>
+document.addEventListener('DOMContentLoaded', function () {
+    if (window.likeManager) {
+        window.likeManager.setSong('${song.songId}');
+    }
+});
+</script>
+

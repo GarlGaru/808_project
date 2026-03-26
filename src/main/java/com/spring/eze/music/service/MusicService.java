@@ -1,8 +1,16 @@
 package com.spring.eze.music.service;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.springframework.ui.Model;
+
+import com.spring.eze.music.dto.ArtistDTO;
 import com.spring.eze.music.dto.SongDTO;
 
 public interface MusicService {
@@ -39,5 +47,20 @@ public interface MusicService {
     
     //노래연결
     public String getSongPath(int songId);
-   
+    
+    //아티스트 상세페이지
+    public ArtistDTO getArtistDetail(int artistId);
+    
+    public List<SongDTO> getSongsByArtist(int artistId);
+    
+    //좋아요
+    public String toggleLike(int songId, int userId);
+    public int getLikeStatus(int songId, int userId);
+    public List<SongDTO> getLikedSongs(int userId);
+    
+    //검색
+    public List<SongDTO>  searchSongs(String keyword);
+    	
+    
+    
 }
