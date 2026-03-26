@@ -29,6 +29,7 @@ public class BoardServiceImpl implements BoardService {
 	private BoardDAO dao;
 
 	// 1. 목록 조회 (페이징)
+	// [BoardServiceImpl.java]
 	@Override
 	public void BoardList(HttpServletRequest request, HttpServletResponse response, Model model)
 	        throws ServletException, IOException {
@@ -69,7 +70,6 @@ public class BoardServiceImpl implements BoardService {
 	    model.addAttribute("sort", sort);
 	    model.addAttribute("searchType", searchType);
 	    model.addAttribute("keyword", keyword);
-	
 	    
 	    System.out.println("검색 타입: " + searchType);
 	    System.out.println("검색어: " + keyword);
@@ -124,6 +124,14 @@ public class BoardServiceImpl implements BoardService {
 	            File oldFile = new File(uploadPath, oldFileName);
 	            if (oldFile.exists()) oldFile.delete();
 	        }
+
+
+		BoardDTO dto = new BoardDTO();
+		dto.setBno(bno);
+		dto.setUserId(userId);
+		dto.setTitle(title);
+		dto.setContent(content);
+		dto.setYoutubeUrl(youtubeUrl); // DTO에 세팅
 
 	        // 새 파일 저장
 	        String originalName = file.getOriginalFilename();
@@ -250,5 +258,10 @@ public class BoardServiceImpl implements BoardService {
 	@Override
 	public int getTodayCount() {
 	    return dao.boardCntToday(); // 맵퍼에 새로 만든 쿼리를 호출해요.
+	}
+	@Override
+	public List<BoardDTO> getTodayBoardList() {
+	    return dao.getTodayBoardList(); // DAO에 새로 만들 메서드 호출
+
 	}
 }

@@ -39,6 +39,8 @@ public interface BoardService {
 	
 	
 	public int getTodayCount();
+
+	List<BoardDTO> getTodayBoardList();
 	   
 
 }
