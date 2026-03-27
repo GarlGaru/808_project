@@ -134,7 +134,7 @@
     )
     VALUES
     (
-      #{orderId},
+<!--       #{orderId}, -->
       #{seatId},
       #{showId},
       #{scheduleId},
