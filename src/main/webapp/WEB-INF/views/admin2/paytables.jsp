@@ -1,5 +1,7 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<!-- 데이터베이스 시간나오게하기위한거 -->
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 
 <c:set var="ctx" value="${pageContext.request.contextPath}" />
 <c:set var="adminRes" value="${ctx}/resources/common/admin" />
@@ -65,56 +67,56 @@
 <div id="wrapper">
 
     <!-- Sidebar -->
-    <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
+		<ul
+			class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion"
+			id="accordionSidebar">
 
-        <a class="sidebar-brand d-flex align-items-center justify-content-center" href="${adminUrl}">
-            <div class="sidebar-brand-icon">
-                <i class="fas fa-user-shield"></i>
-            </div>
-            <div class="sidebar-brand-text mx-3">808 ADMIN</div>
-        </a>
+			<a
+				class="sidebar-brand d-flex align-items-center justify-content-center"
+				href="${adminUrl}">
+				<div class="sidebar-brand-icon">
+					<i class="fas fa-user-shield"></i>
+				</div>
+				<div class="sidebar-brand-text mx-3">808 ADMIN</div>
+			</a>
 
-        <hr class="sidebar-divider my-0">
+			<hr class="sidebar-divider my-0">
 
-        <li class="nav-item">
-            <a class="nav-link" href="${adminUrl}">
-                <i class="fas fa-fw fa-tachometer-alt"></i>
-                <span>Dashboard</span>
-            </a>
-        </li>
+			<li class="nav-item"><a class="nav-link"
+				href="${adminUrl}"> <i class="fas fa-fw fa-tachometer-alt"></i>
+					<span>Dashboard</span>
+			</a></li>
 
-        <li class="nav-item">
-            <a class="nav-link" href="${adminUrl}/user">
-                <i class="fas fa-fw fa-users"></i>
-                <span>User Admin</span>
-            </a>
-        </li>
+			<li class="nav-item"><a class="nav-link" href="${adminUrl}/user">
+					<i class="fas fa-fw fa-users"></i> <span>User Admin</span>
+			</a></li>
 
-        <li class="nav-item active">
-            <a class="nav-link" href="${adminUrl}/pay">
-                <i class="fas fa-fw fa-credit-card"></i>
-                <span>Pay Admin</span>
-            </a>
-        </li>
+			<li class="nav-item active"><a class="nav-link" href="${adminUrl}/pay">
+					<i class="fas fa-fw fa-credit-card"></i> <span>Pay Admin</span>
+			</a></li>
 
-        <li class="nav-item">
-            <a class="nav-link" href="${adminUrl}/board">
-                <i class="fas fa-fw fa-clipboard-list"></i>
-                <span>Board Admin</span>
-            </a>
-        </li>
+			<li class="nav-item"><a class="nav-link"
+				href="${adminUrl}/board"> <i class="fas fa-fw fa-clipboard-list"></i>
+					<span>Board Admin</span>
+			</a></li>
 
-        <li class="nav-item">
-            <a class="nav-link" href="${adminUrl}/music">
-                <i class="fas fa-fw fa-music"></i>
-                <span>Music Admin</span>
-            </a>
-        </li>
+			<li class="nav-item"><a class="nav-link"
+				href="${adminUrl}/music"> <i class="fas fa-fw fa-music"></i> <span>Music
+						Admin</span>
+			</a></li>
+			
+			<li class="nav-item">
+			    <a class="nav-link" href="${adminUrl}/ticketpay">
+			        <i class="fas fa-fw fa-ticket-alt"></i>
+			        <span>Ticket Pay Admin</span>
+			    </a>
+			</li>
 
-        <hr class="sidebar-divider d-none d-md-block">
+			<hr class="sidebar-divider d-none d-md-block">
 
-    </ul>
-
+		</ul>
+	<!-- End Sidebar -->
+	
     <!-- Content Wrapper -->
     <div id="content-wrapper" class="d-flex flex-column">
 
@@ -181,8 +183,8 @@
                                             </c:choose>
                                         </td>
 
-                                        <td>${p.createdAt}</td>
-                                        <td>${p.approvedAt}</td>
+                                        <td><fmt:formatDate value="${p.createdAt}" pattern="yyyy-MM-dd HH:mm:ss" /></td>
+										<td><fmt:formatDate value="${p.approvedAt}" pattern="yyyy-MM-dd HH:mm:ss" /></td>
                                         <td>${p.failReason}</td>
 
                                         <td>
@@ -282,10 +284,12 @@
             return rowStatus === selectedStatus;
         });
 
+        //데이터베이스 정렬/페이징처리
         var table = $('#dataTable').DataTable({
             "pageLength": 10,
             "lengthMenu": [10, 25, 50, 100],
-            "ordering": true,
+            "ordering": true, 
+            "order": [[7, "desc"]],//최신글
             "searching": true,
             "language": {
                 "search": "검색:",

@@ -8,10 +8,9 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Admin - Tables</title>
+<title>808 Admin - 자유게시판</title>
 
 <link href="${adminRes}/vendor/fontawesome-free/css/all.min.css"
 	rel="stylesheet">
@@ -21,13 +20,10 @@
 <link href="${adminRes}/css/sb-admin-2.min.css" rel="stylesheet">
 <link href="${adminRes}/vendor/datatables/dataTables.bootstrap4.min.css"
 	rel="stylesheet">
-
 </head>
 
 <body id="page-top">
-
 	<div id="wrapper">
-
 		<!-- Sidebar -->
 		<ul
 			class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion"
@@ -44,8 +40,9 @@
 
 			<hr class="sidebar-divider my-0">
 
-			<li class="nav-item"><a class="nav-link" href="${adminUrl}">
-					<i class="fas fa-fw fa-tachometer-alt"></i> <span>Dashboard</span>
+			<li class="nav-item"><a class="nav-link"
+				href="${adminUrl}"> <i class="fas fa-fw fa-tachometer-alt"></i>
+					<span>Dashboard</span>
 			</a></li>
 
 			<li class="nav-item"><a class="nav-link" href="${adminUrl}/user">
@@ -56,7 +53,7 @@
 					<i class="fas fa-fw fa-credit-card"></i> <span>Pay Admin</span>
 			</a></li>
 
-			<li class="nav-item"><a class="nav-link"
+			<li class="nav-item active"><a class="nav-link"
 				href="${adminUrl}/board"> <i class="fas fa-fw fa-clipboard-list"></i>
 					<span>Board Admin</span>
 			</a></li>
@@ -65,31 +62,32 @@
 				href="${adminUrl}/music"> <i class="fas fa-fw fa-music"></i> <span>Music
 						Admin</span>
 			</a></li>
+			
+			<li class="nav-item">
+			    <a class="nav-link" href="${adminUrl}/ticketpay">
+			        <i class="fas fa-fw fa-ticket-alt"></i>
+			        <span>Ticket Pay Admin</span>
+			    </a>
+			</li>
 
 			<hr class="sidebar-divider d-none d-md-block">
 
 		</ul>
+		<!-- End Sidebar -->
 
-		<!-- Content Wrapper -->
 		<div id="content-wrapper" class="d-flex flex-column">
-
 			<div id="content">
-
-				<!-- Topbar -->
 				<nav
 					class="navbar navbar-expand navbar-light bg-white topbar mb-4 shadow">
-					<span class="h5 mb-0 text-gray-800">Tables Page</span>
+					<span class="h5 mb-0 text-gray-800">자유게시판 관리</span>
 				</nav>
 
-				<!-- Page Content -->
 				<div class="container-fluid">
-
-					<h1 class="h3 mb-2 text-gray-800">Tables</h1>
-
+					<h1 class="h3 mb-2 text-gray-800">Board Management</h1>
+					<p class="mb-4">자유게시판</p>
 					<div class="card shadow mb-4">
 						<div class="card-header py-3">
-							<h6 class="m-0 font-weight-bold text-primary">DataTables
-								Example</h6>
+							<h6 class="m-0 font-weight-bold text-primary">게시글데이터</h6>
 						</div>
 						<div class="card-body">
 							<div class="table-responsive">
@@ -98,11 +96,13 @@
 										<tr>
 											<th>BNO</th>
 											<th>USER_ID</th>
-											<th>nickname</th>
+											<th>Nickname</th>
 											<th>TITLE</th>
 											<th>CONTENT</th>
-											<th>VIEWCNT</th>
-											<th>YOUTUBE_URL</th>
+											<th>올린시간</th>
+											<th>VIEW</th>
+											<th>LIKE</th>
+											<th>URL</th>
 											<th>관리</th>
 										</tr>
 									</thead>
@@ -115,8 +115,7 @@
 												<td>${row.title}</td>
 												<td><a
 													href="${ctx}/board/board_update?bno=${row.bno}&user_id=${row.userId}"
-													style="text-decoration: none; color: inherit;"> 
-													    <c:choose>
+													style="text-decoration: none; color: inherit;"> <c:choose>
 															<c:when test="${not empty row.content}">
 																<c:set var="cont" value="${row.content}" />
 																<c:out
@@ -127,119 +126,140 @@
 															</c:otherwise>
 														</c:choose>
 												</a></td>
+												<td>${row.regdate}</td>
 												<td>${row.viewcnt}</td>
+												<td>${row.likeCount}</td>
 												<td>${row.youtubeUrl}</td>
 												<td>
-													<div class="btn-group">
-														<button type="button"
-															onclick="deletePost('${row.bno}', '${row.userId}')"
-															class="btn btn-danger btn-sm ml-1">삭제</button>
-													</div>
+													<button type="button"
+														onclick="deletePost('${row.bno}', '${row.userId}')"
+														class="btn btn-danger btn-sm">삭제</button>
 												</td>
 											</tr>
 										</c:forEach>
 									</tbody>
 								</table>
-								<div class="card-body">
-									<div class="table-responsive">
-										<table class="table table-bordered" id="dataTable"
-											width="100%">
-										</table>
 
-										<div class="row mt-3">
-											<div class="col-sm-12 col-md-5">
-												<div class="dataTables_info" role="status"
-													aria-live="polite">전체 ${paging.totalCount}건 중
-													${paging.currentPage}페이지 표시</div>
-											</div>
+								<div class="row mt-3">
+<div class="col-sm-12 col-md-5">
+        <div class="dataTables_info" role="status" aria-live="polite">
+            ${paging.startRow} ~ ${paging.endRow > paging.totalCount ? paging.totalCount : paging.endRow} 
+            / 총 ${paging.totalCount}개
+        </div>
+    </div>
+									<div class="col-sm-12 col-md-7">
+										<ul class="pagination justify-content-end">
+											<c:if test="${paging.prev >= 0}">
 
-											<div class="col-sm-12 col-md-7">
-												<div class="dataTables_paginate paging_simple_numbers">
-													<ul class="pagination justify-content-end">
-														<c:if test="${paging.prev > 0}">
-															<li class="paginate_button page-item previous"><a
-																href="${ctx}/admin/board?pageNum=${paging.prev}"
-																class="page-link">이전</a></li>
-														</c:if>
+												<ul class="pagination justify-content-end">
+													<li class="page-item ${paging.prev <= 0 ? 'disabled' : ''}">
+														<a
+														href="${paging.prev > 0 ? ctx.concat('/admin/board?pageNum=').concat(paging.prev).concat('&pageSize=').concat(paging.pageSize) : '#'}"
+														class="page-link">이전</a>
+													</li>
 
-														<c:forEach var="i" begin="${paging.startPage}"
-															end="${paging.endPage}">
-															<li
-																class="paginate_button page-item ${paging.currentPage == i ? 'active' : ''}">
-																<a href="${ctx}/admin/board?pageNum=${i}"
-																class="page-link">${i}</a>
-															</li>
-														</c:forEach>
+													<c:forEach var="i" begin="${paging.startPage}"
+														end="${paging.endPage}">
+														<li
+															class="page-item ${paging.currentPage == i ? 'active' : ''}">
+															<a
+															href="${ctx}/admin/board?pageNum=${i}&pageSize=${paging.pageSize}"
+															class="page-link">${i}</a>
+														</li>
+													</c:forEach>
 
-														<c:if test="${paging.next > 0}">
-															<li class="paginate_button page-item next"><a
-																href="${ctx}/admin/board?pageNum=${paging.next}"
-																class="page-link">다음</a></li>
-														</c:if>
+													<li class="page-item ${paging.next <= 0 ? 'disabled' : ''}">
+														<a
+														href="${paging.next > 0 ? ctx.concat('/admin/board?pageNum=').concat(paging.next).concat('&pageSize=').concat(paging.pageSize) : '#'}"
+														class="page-link">다음</a>
+													</li>
+												</ul>
+											</c:if>
 
-													</ul>
-												</div>
-											</div>
-										</div>
+
+										</ul>
 									</div>
 								</div>
 							</div>
 						</div>
 					</div>
-
-					<!-- Footer -->
-					<footer class="sticky-footer bg-white">
-						<div class="container my-auto text-center">
-							<span>Copyright &copy; Admin 2026</span>
-						</div>
-					</footer>
 				</div>
 			</div>
-			<a class="scroll-to-top rounded" href="#page-top"> <i
-				class="fas fa-angle-up"></i>
-			</a>
-			<script src="${adminRes}/vendor/jquery/jquery.min.js"></script>
-			<script src="${adminRes}/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-			<script src="${adminRes}/vendor/jquery-easing/jquery.easing.min.js"></script>
-			<script src="${adminRes}/js/sb-admin-2.min.js"></script>
-			<script src="${adminRes}/vendor/datatables/jquery.dataTables.min.js"></script>
-			<script
-				src="${adminRes}/vendor/datatables/dataTables.bootstrap4.min.js"></script>
+			<footer class="sticky-footer bg-white">
+				<div class="container my-auto text-center">
+					<span>Copyright &copy; Admin 2026</span>
+				</div>
+			</footer>
+		</div>
+	</div>
+	<a class="scroll-to-top rounded" href="#page-top"><i
+		class="fas fa-angle-up"></i></a>
 
-			<script>
-				$(document).ready(function() {
-					// 기존 테이블 파괴 후 재생성
-					if ($.fn.DataTable.isDataTable('#dataTable')) {
-						$('#dataTable').DataTable().destroy();
-					}
+	<script src="${adminRes}/vendor/jquery/jquery.min.js"></script>
+	<script src="${adminRes}/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+	<script src="${adminRes}/vendor/jquery-easing/jquery.easing.min.js"></script>
+	<script src="${adminRes}/js/sb-admin-2.min.js"></script>
+	<script src="${adminRes}/vendor/datatables/jquery.dataTables.min.js"></script>
+	<script
+		src="${adminRes}/vendor/datatables/dataTables.bootstrap4.min.js"></script>
 
-					$('#dataTable').DataTable({
-						"paging" : false, // 자동 페이징 끔 (우리가 만든 하단 버튼 사용)
-						"info" : false, // "전체 X건 중..." 텍스트 숨김 (커스텀 가능)
-						"ordering" : true, // 정렬 유지
-						"searching" : true, // 상단 검색창 UI 유지
-						"lengthChange" : true, // 상단 "개씩 보기" UI 유지
-						"autoWidth" : false,
-						"language" : {
-							"lengthMenu" : "_MENU_ 개씩 보기",
-							"search" : "검색:",
-							"emptyTable" : "데이터가 없습니다."
-						}
-					});
-				});
-				function deletePost(bno, userId) {
-				    if (confirm(bno + "번 게시글은 영구 삭제되어 복구할 수 없습니다. ")) {
-				        const pageNum = '${paging.currentPage}';
-				        const pageSize = '${paging.pageSize}';
-				        
-				        // target=admin 파라미터를 추가하여 컨트롤러가 관리자 페이지로 리다이렉트하게 함
-				        location.href = "${ctx}/board/board_delete?bno=" + bno 
-				                      + "&user_id=" + userId 
-				                      + "&pageNum=" + pageNum 
-				                      + "&pageSize=" + pageSize
-				                      + "&target=admin"; // 이 부분 추가
-				    }
-				}
-			</script>
+	<script>
+		$(document)
+				.ready(
+						function() {
+							// 서버에서 넘어온 현재 pageSize 값을 자바스크립트 변수로 저장
+							const currentPageSize = '${paging.pageSize}'
+									|| '10';
+
+							if ($.fn.DataTable.isDataTable('#dataTable')) {
+								$('#dataTable').DataTable().destroy();
+							}
+
+							const table = $('#dataTable')
+									.DataTable(
+											{
+												"paging" : true,
+												"pageLength" : parseInt(currentPageSize),
+												"lengthMenu" : [ 10, 25, 50,
+														100 ],
+												"info" : false,
+												"ordering" : true,
+												"searching" : true,
+												"autoWidth" : false,
+												"language" : {
+													"lengthMenu" : "_MENU_ 개씩 보기",
+													"search" : "검색:",
+													"zeroRecords" : "검색 결과가 없습니다.",
+													"emptyTable" : "데이터가 없습니다."
+												},
+												"dom" : '<"row"<"col-sm-12 col-md-6"l><"col-sm-12 col-md-6"f>>rt'
+											});
+
+							// 핵심 수정 부분: DataTable의 기본 동작을 막고 강제로 페이지 이동
+							// 'select' 태그의 change 이벤트를 직접 잡는 것이 가장 확실합니다.
+							$(document)
+									.on(
+											'change',
+											'select[name="dataTable_length"]',
+											function() {
+												const len = $(this).val();
+												const ctx = "${ctx}";
+												// 페이지 번호는 1로 리셋하고 선택한 개수(len)를 서버로 보냄
+												location.href = ctx
+														+ "/admin/board?pageNum=1&pageSize="
+														+ len;
+											});
+						});
+
+		function deletePost(bno, userId) {
+			if (confirm(bno + "번 게시글은 영구 삭제되어 복구할 수 없습니다.")) {
+				const pageNum = '${paging.currentPage}';
+				const pageSize = '${paging.pageSize}'; // 삭제 후 돌아올 때도 개수 유지
+				location.href = "${ctx}/board/board_delete?bno=" + bno
+						+ "&user_id=" + userId + "&pageNum=" + pageNum
+						+ "&pageSize=" + pageSize + "&target=admin";
+			}
+		}
+	</script>
 </body>
 </html>

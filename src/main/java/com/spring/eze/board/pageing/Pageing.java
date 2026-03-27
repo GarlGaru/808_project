@@ -28,7 +28,10 @@ public class Pageing {
             pageNum = "1";
         }
         this.pageNum = pageNum;
+
         this.currentPage = Integer.parseInt(pageNum);	
+        this.currentPage = Integer.parseInt(pageNum);
+
     }
 
     public void setTotalCount(int totalCount) {  

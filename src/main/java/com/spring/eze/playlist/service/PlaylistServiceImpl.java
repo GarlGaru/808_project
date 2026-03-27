@@ -7,6 +7,7 @@ import com.spring.eze.playlist.dto.PlaylistEleDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -18,7 +19,6 @@ public class PlaylistServiceImpl implements PlaylistService {
     @Autowired
     private PlaylistDAO dao;
 
-
     private static final String PLAYLIST_LIKE_TITLE = "_LIKE_";
     private static final String PLAYLIST_HISTORY_TITLE = "_HISTORY_";
 
@@ -28,9 +28,14 @@ public class PlaylistServiceImpl implements PlaylistService {
      * */
     @Override
     public List<PlaylistDTO> getPlaylistAll(int userId) {
-
+        System.out.println("getPlaylistAll");
         List<PlaylistDTO> list = dao.getPlaylistAll(userId);
+        for (PlaylistDTO playlistDTO : list) {
+            System.out.println(playlistDTO);
+        }
+
         if (list.size() < 2){    // 먼저 있는지 확인하고
+            System.out.println("Create new account playlist");
             //없으면 생성
             PlaylistDTO like = new PlaylistDTO(-1 , userId, PLAYLIST_LIKE_TITLE, PlaylistType.LIKE);
             PlaylistDTO history = new PlaylistDTO(-1 , userId, PLAYLIST_HISTORY_TITLE, PlaylistType.HISTORY);
@@ -38,26 +43,16 @@ public class PlaylistServiceImpl implements PlaylistService {
             dao.createPlaylist(history);
             list = dao.getPlaylistAll(userId);  // 갱신
         }
-        return list;
-    }
 
-    /**
-     * 플레이리스트 하나 만들기
-     * */
-    @Override
-    public int createPlaylist(int userId, String title) {
-        // 먼저 확인
-        // 이미 있으면 에러 메세지 표시
-        PlaylistDTO normal = new PlaylistDTO(-1, userId, title, PlaylistType.NORMAL);
-        int isExist = dao.checkPlaylistExist(normal);
-        if (isExist == 1) {
-            dao.createPlaylist(normal);
-            return 1;
-        } else {
-            return 0;
+        // NORMAL만 필터링해서 반환
+        List<PlaylistDTO> normalList = new ArrayList<>();
+        for (PlaylistDTO dto : list) {
+            if (dto.getListType() == PlaylistType.NORMAL) {
+                normalList.add(dto);
+            }
         }
+        return normalList;
     }
-
 
     /**
      * 플레이리스트 하나 가져오기
@@ -65,8 +60,8 @@ public class PlaylistServiceImpl implements PlaylistService {
     @Override
     public List<PlaylistEleDTO> getPlaylist(int playListId) {
         System.out.println("PlaylistServiceImpl - getPlaylist");
-        List<PlaylistEleDTO> dto = dao.getPlaylist(playListId);
-        return dto;
+        List<PlaylistEleDTO> list = dao.getPlaylist(playListId);
+        return list;
     }
 
     @Override
@@ -88,4 +83,25 @@ public class PlaylistServiceImpl implements PlaylistService {
         PlaylistDTO dto = dao.getUniquePlaylist(map);
         return dto;
     }
+
+
+
+
+    /**
+     * 플레이리스트 하나 만들기
+     * */
+    @Override
+    public int createPlaylist(int userId, String title) {
+        // 먼저 확인
+        // 이미 있으면 에러 메세지 표시
+        PlaylistDTO normal = new PlaylistDTO(-1, userId, title, PlaylistType.NORMAL);
+        int isExist = dao.checkPlaylistExist(normal);
+        if (isExist == 1) {
+            dao.createPlaylist(normal);
+            return 1;
+        } else {
+            return 0;
+        }
+    }
+
 }

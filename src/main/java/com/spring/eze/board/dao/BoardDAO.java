@@ -33,6 +33,10 @@ public interface BoardDAO {
 		// TODO Auto-generated method stub
 		return null;
 	}
+
+	public int boardCntToday();
+
+	public List<BoardDTO> getTodayBoardList();
 	
 	
 

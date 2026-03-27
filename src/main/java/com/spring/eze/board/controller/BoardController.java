@@ -1,6 +1,8 @@
 package com.spring.eze.board.controller;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -14,6 +16,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import org.springframework.web.bind.annotation.ResponseBody;
+
+
 import com.spring.eze.board.service.BoardService;
 
 @Controller
@@ -22,8 +27,11 @@ public class BoardController {
 
 	private static final Logger log = LoggerFactory.getLogger(BoardController.class);
 
+	
 	@Autowired
 	private BoardService boardservice;
+
+
 
 	@RequestMapping("/list")
 	public String BoardList(HttpServletRequest request, HttpServletResponse response, Model model)
@@ -32,6 +40,7 @@ public class BoardController {
 
 		// 2. 변경된 필드명 적용
 		boardservice.BoardList(request, response, model);
+
 
 		return "board/boardlist";
 	}
@@ -49,6 +58,7 @@ public class BoardController {
 	@RequestMapping("/board_update")
 	public String board_update(HttpServletRequest request, HttpServletResponse response, Model model)
 			throws ServletException, IOException {
+	
 		log.info("BoardController - board_detail");
 		HttpSession session = request.getSession();
 		Object loginUser = session.getAttribute("loginUser");
@@ -91,11 +101,12 @@ public class BoardController {
 
 	    // 4. 결정된 경로로 리다이렉트
 	    return "redirect:" + redirectPath + "?pageNum=" + pageNum + "&pageSize=" + pageSize;
-	}
+	}	
 	@RequestMapping("/plusReadCnt")
 	public String plusReadCnt(HttpServletRequest request, HttpServletResponse response, Model model)
 			throws ServletException, IOException {
 		log.info("BoardController - plusReadCnt");
+
 
 		// 2. 변경된 필드명 적용
 		boardservice.plusReadCnt(request, response, model);
@@ -128,11 +139,13 @@ public class BoardController {
 		return "board/plusReadCnt";
 	}
 
+
 	@RequestMapping("/insertBoard")
 	public String insertBoard(HttpServletRequest request, HttpServletResponse response, Model model)
 			throws ServletException, IOException {
 
 		log.info("BoardController - insertBoard ");
+
 
 		// 2. 변경된 필드명 적용
 		boardservice.boardInsert(request, response, model);
@@ -148,5 +161,27 @@ public class BoardController {
 		// 2. 변경된 필드명 적용
 		boardservice.BoardList(request, response, model);
 		return "/admin2/boardtables";
+	}
+	@RequestMapping("/admin/api/stats/boardTotalCnt")
+	@ResponseBody 
+	public int getBoardTotalCnt(HttpServletRequest request, Model model)
+			throws ServletException, IOException {
+	
+	    java.util.Map<String, Object> map = new java.util.HashMap<>();
+	    return boardservice.getTotalCnt(map); 
+	}
+	@RequestMapping("/admin/api/stats/boardTodayCnt")
+	@ResponseBody 
+	public int getBoardTodayCnt() {
+	    // 오늘 올라온 글자 수만 서비스에서 가져와서 대답해줘요.
+	    return boardservice.getTodayCount(); 
+	}
+	@RequestMapping("/admin/api/stats/boardTodayList")
+	@ResponseBody 
+	public java.util.List<com.spring.eze.board.dto.BoardDTO> getBoardTodayList() {
+
+	    return boardservice.getTodayBoardList();
+		
+
 	}
 }

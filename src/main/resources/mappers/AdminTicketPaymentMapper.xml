@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.spring.eze.admin.dao.AdminTicketPaymentDAO">
+
+    <select id="selectTicketPaymentList"
+            resultType="com.spring.eze.admin.dto.AdminTicketPaymentDTO">
+        SELECT
+            order_id      AS orderId,
+            seat_id       AS seatId,
+            show_id       AS showId,
+            schedule_id   AS scheduleId,
+            ticket_price  AS ticketPrice,
+            ticket_status AS ticketStatus,
+            created_at    AS createdAt,
+            canceled_at   AS canceledAt
+        FROM ticket_payment_tbl
+        ORDER BY created_at DESC, order_id DESC, seat_id DESC
+    </select>
+
+</mapper>

@@ -3,6 +3,7 @@ package com.spring.eze.music.dao;
 import java.util.List;
 import java.util.Map;
 
+import com.spring.eze.music.dto.ArtistDTO;
 import com.spring.eze.music.dto.SongDTO;
 
 public interface MusicDAO {
@@ -39,5 +40,17 @@ public interface MusicDAO {
     
     //노래 연결
     public String getSongPath(int songId);
- 
+    
+    //아티스트 상세페이지
+    public ArtistDTO getArtistDetail(int artistId);
+    public List<SongDTO> getSongsByArtist(int artistId);
+    
+    //좋아요
+    public int getLikeScoreSum(int songId, int userId);
+    public List<SongDTO> getLikedSongs(int userId);
+    
+    //검색
+    public List<SongDTO> getSearhSong(String keyword);
+    public List<ArtistDTO> getSearhArtist(String keyword);
+
 }
