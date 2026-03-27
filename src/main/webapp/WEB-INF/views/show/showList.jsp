@@ -17,21 +17,35 @@
 <body class="dark-mode">
     <%@ include file="/WEB-INF/views/common/common.jsp" %>
     <%@ include file="/WEB-INF/views/common/header.jsp" %>
-	<br><br>
+	<br>
     <!-- <br><br><br><br> -->
 
     <div class="container show-list-page">
 
         <!-- 상단 메인 장르 탭 -->
-        <div class="main-category-wrap">
-            <button class="tab-btn ${currentCategory == 'concert' ? 'active' : ''}"
-                    onclick="location.href='${path}/show/showList?category=concert&subCategory=all'">콘서트</button>
-            <button class="tab-btn ${currentCategory == 'musical' ? 'active' : ''}"
-                    onclick="location.href='${path}/show/showList?category=musical&subCategory=all'">뮤지컬</button>
-            <button class="tab-btn ${currentCategory == 'play' ? 'active' : ''}"
-                    onclick="location.href='${path}/show/showList?category=play&subCategory=all'">연극</button>
-        </div>
-
+         <div class="show-wrap">
+	      <div class="show-top-menu-wrap">
+		    <nav class="show-top-menu">
+		        <a href="${path}/show/showList?category=concert&subCategory=all"
+		           class="menu-item ${menu eq 'concert' ? 'active' : ''}">콘서트</a>
+		
+		        <a href="${path}/show/showList?category=musical&subCategory=all"
+		           class="menu-item ${menu eq 'musical' ? 'active' : ''}">뮤지컬</a>
+		
+		        <a href="${path}/show/showList?category=play&subCategory=all"
+		           class="menu-item ${menu eq 'play' ? 'active' : ''}">연극</a>
+		
+		        <a href="${path}/show/ranking"
+		           class="menu-item ${menu eq 'ranking' ? 'active' : ''}">랭킹</a>
+		
+		        <a href="${path}/show/mypage/myTicket"
+		           class="menu-item ${menu eq 'myticket' ? 'active' : ''}">마이티켓
+		        </a>
+		        
+		       <!--  <a href="javascript:void(0)" onclick="openAuthModal()" -->
+		    </nav>
+		</div>
+		<br>
         <!-- 제목 -->
         <h2 class="genre-title">${pageTitle}</h2>
 
@@ -97,7 +111,7 @@
             </c:choose>
         </div>
     </div>
-        
+   </div>     
 
         <%-- <!-- 중분류 + 정렬 -->
         <div class="filter-sort-wrap">
