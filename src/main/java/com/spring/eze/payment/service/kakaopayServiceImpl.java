@@ -26,6 +26,7 @@ import com.spring.eze.payment.dto.TicketPaymentDTO;
 import com.spring.eze.payment.dto.kakaopayapproveResponse;
 import com.spring.eze.payment.dto.kakaopayorderRequest;
 import com.spring.eze.payment.dto.kakaopayreadyResponse;
+import com.spring.eze.show.dao.Show.ShowDAO;
 import com.spring.eze.user.dto.UserDTO;
 
 @Service
