@@ -3,15 +3,14 @@ package com.spring.eze.user.dto;
 /**
  * MypageTopArtistDTO
  * 808 플레이 리포트 — 탑 아티스트 Top10
- * SONG_SCORE_TBL → SONGS_TBL → ARTISTS_TBL → ALBUMS_TBL 조인 결과 매핑
- * coverImageUrl: 해당 아티스트의 가장 최근 앨범 커버 사용
+ * coverImageUrl: 해당 아티스트 이미지사용
  */
 public class MypageTopArtistDTO {
 
-    private int    artistId;      // 아티스트 번호 (ARTISTS_TBL.ARTIST_ID)
-    private String name;          // 아티스트명 (ARTISTS_TBL.NAME)
-    private String coverImageUrl; // 앨범 커버 URL (ALBUMS_TBL.COVER_IMAGE_URL)
-    private int    playCount;     // 재생곡수 - SCORE=1 기준 COUNT(DISTINCT SONG_ID)
+    private int    artistId;      // 아티스트 번호 
+    private String name;          // 아티스트명 
+    private String coverImageUrl; // 앨범 커버
+    private int    playCount;     // 재생곡수
 
     public MypageTopArtistDTO() {
         super();

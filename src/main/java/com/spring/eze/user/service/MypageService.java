@@ -11,6 +11,7 @@ import com.spring.eze.user.dto.MypageMembershipDTO;
 import com.spring.eze.user.dto.MypageMonthlyStatDTO;
 import com.spring.eze.user.dto.MypagePaymentDTO;
 import com.spring.eze.user.dto.MypagePlayReportDTO;
+import com.spring.eze.user.dto.MypageReservationDTO;
 import com.spring.eze.user.dto.UserDTO;
 
 public interface MypageService {
@@ -44,6 +45,9 @@ public interface MypageService {
     // 통합 활동 내역 조회 
     public List<MypageActivityDTO> getMyActivityList(int userId, int page);
 
+    // 예매 내역
+    public List<MypageReservationDTO> getMyReservationList(int userId);
+    
     // 결제 내역 — 최신순 전체
     public List<MypagePaymentDTO> getMyPaymentList(int userId);
 

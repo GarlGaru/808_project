@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+ <mapper namespace="com.spring.eze.show.dao.ranking.RankingDAO">  <!-- namespace="패키지명.인터페이스" -->
+
+	<resultMap id="RankingMap" type="com.spring.eze.show.dto.ranking.RankingDTO">
+		<id property="id" column="id"/>
+		<result property="showMe" column="show_me"/>
+	</resultMap>
+		<select id="getTicketRanking" resultType="com.spring.eze.show.dto.ranking.RankingDTO">
+		    SELECT
+		       s.show_id AS showId,
+		       s.title AS title,
+		       s.start_date AS startDate,
+		       s.end_date AS endDate,
+		       s.venue_name AS venueName,
+		       s.poster_url AS posterUrl,
+		       COUNT(p.seat_id) AS reserveCount
+		    FROM
+		       ticket_payment_tbl p
+		    JOIN
+		       show_tbl s ON p.show_id = s.show_id
+		    WHERE
+		       p.ticket_status = 'APPROVED'
+		       
+		       <if test="category != null and category != 'all'">
+		           <choose>
+		               <when test="category == 'concert'">
+		                   AND s.genre LIKE '%대중음악%'
+		               </when>
+		               <when test="category == 'musical'">
+		                   AND s.genre LIKE '%뮤지컬%'
+		               </when>
+		               <when test="category == 'play'">
+		                   AND s.genre LIKE '%연극%'
+		               </when>
+		           </choose>
+		       </if>
+		       
+		    GROUP BY
+		       s.show_id, s.title, s.start_date, s.end_date, s.venue_name, s.poster_url
+		    ORDER BY
+		       reserveCount DESC
+		</select>
+		
+ </mapper>

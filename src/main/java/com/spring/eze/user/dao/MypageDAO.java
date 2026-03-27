@@ -6,6 +6,7 @@ import java.util.Map;
 import com.spring.eze.user.dto.MypageActivityDTO;
 import com.spring.eze.user.dto.MypagePaymentDTO;
 import com.spring.eze.user.dto.MypagePlayReportDTO;
+import com.spring.eze.user.dto.MypageReservationDTO;
 import com.spring.eze.user.dto.MypageTopArtistDTO;
 import com.spring.eze.user.dto.MypageTopSongDTO;
 import com.spring.eze.user.dto.MypageMonthlyStatDTO;
@@ -22,8 +23,8 @@ public interface MypageDAO {
     // 통합 활동 내역 조회 (userId, startRow, endRow 포함된 Map)
     public List<MypageActivityDTO> selectMyActivityList(Map<String, Object> map);
     
-//    // 예매 내역 - 최근 5건
-//    public List<MypageReservationDTO> selectMyReservationList(int userId);
+    // 예매 내역 - 최근 5건
+    public List<MypageReservationDTO> selectMyReservationList(int userId);
 
     // 결제 내역 - 최신순 전체
     public List<MypagePaymentDTO> selectMyPaymentList(int userId);
