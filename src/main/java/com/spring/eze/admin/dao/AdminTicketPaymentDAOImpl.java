@@ -1,4 +1,4 @@
-package com.spring.eze.admin.dto;
+package com.spring.eze.admin.dao;
 
 import java.util.List;
 
@@ -6,7 +6,7 @@ import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import com.spring.eze.admin.dao.AdminTicketPaymentDAO;
+import com.spring.eze.admin.dto.AdminTicketPaymentDTO;
 
 @Repository
 public class AdminTicketPaymentDAOImpl implements AdminTicketPaymentDAO {
