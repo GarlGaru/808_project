@@ -376,7 +376,7 @@
   /* margin: var(--am-btn-mt) 0 var(--am-btn-mb) 0; */
   /* font-family: "Syne", sans-serif; */ font-weight: 700;
   font-size: var(--am-btn-fs); letter-spacing: 1.2px; text-transform: uppercase;
-  background-color: #fff; color: #000; border: none; outline: none;
+  background: linear-gradient(90deg, #DF8845 0%, #ED6701 100%); color: #000; border: none; outline: none;
   cursor: pointer; transition: 0.2s;
   box-shadow: 6px 6px 14px rgba(0,0,0,0.8), -2px -2px 8px rgba(255,255,255,0.04);
 }

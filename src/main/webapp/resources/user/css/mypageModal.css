@@ -20,7 +20,6 @@
   --c-muted:   rgba(242,242,242,0.38);
   --c-muted2:  rgba(242,242,242,0.62);
   --c-border:  rgba(255,255,255,0.06);
-  --c-border2: rgba(255,255,255,0.12);
   --c-gold:    #c9a84c;
   --c-silver:  #888888;
   --c-bronze:  #6a4a2a;
@@ -108,7 +107,7 @@
 }
 
 .mypage-modal .sb-prof {
-  padding: 24px 16px 20px;
+  padding: 40px 16px 20px;
   text-align: center;
 }
 
@@ -178,9 +177,8 @@
   border-radius: 12px;
   font-weight: 500;
 }
-.mypage-modal .grade-badge.free     { background: rgba(100,200,100,0.15); color: #a0e0a0; }
-.mypage-modal .grade-badge.premium  { background: rgba(255,180,60,0.2);   color: #ffcc66; }
-.mypage-modal .grade-badge.ultimate { background: rgba(200,170,80,0.25);  color: #e0c070; }
+.mypage-modal .grade-badge.free     { background: linear-gradient(160deg, rgba(100, 200, 220, 0.20), rgba(60, 160, 200, 0.10)); color: #fff; }
+.mypage-modal .grade-badge.pro  { background: linear-gradient(160deg, #2a3a7e 40%, rgba(0,0,0,0.8) 100%);   color: #fff; }
 
 /* ── NAV ── */
 .mypage-modal .sb-nav { flex: 1; padding: 8px 0; }
@@ -276,7 +274,6 @@
   padding: 6px 24px 6px 12px;
   text-align-last: center;
   background: rgba(255,255,255,0.06);
-  border: 1px solid var(--c-border2);
   border-radius: 6px;
   color: var(--c-text);
   font-size: 12px;
@@ -469,9 +466,15 @@
    MEMBERSHIP
    ════════════════════════════════════ */
 /* ms-card: 공통 베이스에서 background/border/border-radius 상속 */
-.mypage-modal .ms-card,
+.mypage-modal .ms-card--free,
 .mypage-modal .ms-card--pro { padding: 20px; margin-bottom: 14px; }
 
+/* FREE 카드 */
+.mypage-modal .ms-card--free {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(160deg, rgba(100, 200, 220, 0.20), rgba(60, 160, 200, 0.10));
+}
 /* PRO 카드 */
 .mypage-modal .ms-card--pro {
   position: relative;
@@ -494,14 +497,14 @@
 
 .mypage-modal .ms-title  { font-size: 18px; font-weight: 700; color: var(--c-text); margin-bottom: 8px; }
 .mypage-modal .ms-expire { font-size: 12px; color: var(--c-muted); margin-bottom: 14px; }
-.mypage-modal .ms-benefits { display: flex; flex-wrap: wrap; gap: 8px; }
+.mypage-modal .ms-benefits { justify-content: center; display: flex; flex-wrap: wrap; gap: 8px; }
 /* ms-item: 공통 베이스에서 background/border/border-radius 상속 */
 .mypage-modal .ms-item { padding: 6px 12px; font-size: 12px; color: var(--c-muted2); }
 
 .mypage-modal .upgrade-btn {
   width: 100%;
   padding: 10px;
-  background: linear-gradient(135deg, rgba(200,170,80,0.3), rgba(150,120,50,0.2));
+  background: rgba(255,255,255,0.10);
   border: none;
   border-radius: 6px;
   color: var(--c-text);
@@ -509,11 +512,10 @@
   font-size: 12px;
   cursor: pointer;
   transition: background 0.2s;
-  margin-bottom: 14px;
 }
-.mypage-modal .upgrade-btn:hover   { background: rgba(232,93,4,0.32); }
-.mypage-modal .upgrade-btn--pro    { background: rgba(255,255,255,0.06); color: var(--c-muted2); }
-.mypage-modal .upgrade-btn--pro:hover { background: rgba(255,255,255,0.10); }
+.mypage-modal .upgrade-btn:hover   { background: linear-gradient(160deg, #2a3a7e 40%, rgba(0,0,0,0.8) 100%); }
+.mypage-modal .upgrade-btn--pro    { background: rgba(255,255,255,0.10); color: var(--c-muted2); }
+.mypage-modal .upgrade-btn--pro:hover { background: linear-gradient(160deg, rgba(100, 200, 220, 0.20), rgba(60, 160, 200, 0.10)); }
 
 /* ════════════════════════════════════
    PROFILE — 보기 (pv-)
