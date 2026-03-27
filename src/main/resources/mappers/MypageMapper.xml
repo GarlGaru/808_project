@@ -98,16 +98,33 @@
 
 
 <!-- ────────────────────────────────────────────
-     예매 내역 — 예매팀 연동 전 미사용
+     예매 내역
+     - SHOW_TBL의 DATE 타입을 활용해 공연 기간 포맷팅 (2026-11-07 ~ 2026-12-31)
+     - 디자인 포인트 디자인을 위해 등급과 좌석번호 분리
+     - 금액 포맷팅
+     - 스키마에 정의된 POSTER_URL 사용
 ──────────────────────────────────────────── -->
-  <!-- 예매팀 연동 후 주석 해제 예정 -->
-  <!--
-  <select id="selectMyReservationList" parameterType="int"
-          resultType="com.spring.eze.user.dto.MypageReservationDTO">
-      ...
-  </select>
-  -->
-
+<select id="selectMyReservationList" 
+        parameterType="int" 
+        resultType="com.spring.eze.user.dto.MypageReservationDTO">
+    SELECT * FROM (
+        SELECT 
+            P.ORDER_ID       AS reservationId,
+            S.TITLE          AS showTitle,
+            TO_CHAR(S.START_DATE, 'YYYY.MM.DD HH24:MI') AS startTime,
+            S.VENUE_NAME     AS venue,
+            ST.SEAT_GRADE    AS seatGrade,
+            ST.SEAT_LABEL    AS seatLabel,
+            '₩' || TO_CHAR(P.TICKET_PRICE, 'FM999,999,999') AS amt,
+            P.TICKET_STATUS  AS status,     S.POSTER_URL     AS posterImg   FROM TICKET_PAYMENT_TBL P
+        INNER JOIN PAYMENT_ORDER O ON P.ORDER_ID = O.ORDER_ID
+        INNER JOIN SHOW_TBL S      ON P.SHOW_ID = S.SHOW_ID
+        LEFT OUTER JOIN SEAT_TBL ST ON P.SEAT_ID = ST.SEAT_ID
+        WHERE O.USER_ID = #{userId}
+        ORDER BY P.CREATED_AT DESC
+    )
+    WHERE ROWNUM &lt;= 5
+</select>
 
 <!-- ────────────────────────────────────────────
      결제 내역 / 월별 지출 합계
@@ -194,7 +211,7 @@
   </select>
 
   <!-- 곡당 SCORE=5 >= 3회(30초 이상) 청취한 곡만 집계 — 취향 반영 기준 -->
-  <!-- SONG_GENRE_TBL 더미 데이터 INSERT 필요 (dummy_data 참고) -->
+  <!-- SONG_GENRE_TBL 더미 데이터 -->
   <select id="selectTopGenres" parameterType="map"
           resultType="com.spring.eze.user.dto.MypageGenreStatDTO">
     SELECT *

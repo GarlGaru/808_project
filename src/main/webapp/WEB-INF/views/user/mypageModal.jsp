@@ -445,8 +445,20 @@
   </div>
 </template>
 
-<%-- 예매 내역 — res-card 1개 뼈대 --%>
+
+<div class="tab-pane" id="tab-reservations">
+<!-- 예매 내역 출력 컨테이너 -->
+<div id="mpResCards">></div>
+</div>
+
+
+<!-- 예매 내역 — res-card 1개 뼈대 -->
 <template id="tmpl-res-card">
+<li class="nav-item" 
+    onclick="mpTab(this, 'reservations', '내 예매 내역', '최근 예매 정보입니다')">
+    예매 내역
+</li>
+
   <div class="res-card">
     <div class="res-poster">
       <div class="res-poster-bg"></div>
@@ -462,7 +474,7 @@
       <div class="res-seat"></div>
       <div class="res-price">
         <span class="res-amt"></span>
-        <button class="res-detail-btn">상세보기</button>
+        <button class="res-detail-btn" action="">상세보기</button>
       </div>
     </div>
   </div>

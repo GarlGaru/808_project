@@ -23,41 +23,6 @@
   /* ── 차트 인스턴스 ── */
   var _mpChart = null;
 
-  /* ── 예매 더미 데이터 (예매팀 연동 전) ── */
-  var RESERVATION_DUMMY = [
-    {
-      showTitle: '에릭카 마리노 단독 콘서트',
-      startTime: '2026.03.15 (일) 19:00',
-      venue:     '서울 올림픽홀',
-      seatLabel: 'A구역 12열 3번',
-      amt:       '₩88,000',
-      status:    'CONFIRMED',
-      gradient:  'linear-gradient(160deg,#4a1a3e 0%,#7a2a5e 40%,#5a1a4e 100%)',
-      posterImg: ''
-    },
-    {
-      showTitle: 'Isabella Romano Live Tour',
-      startTime: '2026.02.28 (토) 18:00',
-      venue:     '부산 KBS홀',
-      seatLabel: 'VIP 5열 7번',
-      amt:       '₩120,000',
-      status:    'CONFIRMED',
-      gradient:  'linear-gradient(160deg,#1a2a5e 0%,#2a3a7e 40%,#2a1a6e 100%)',
-      posterImg: ''
-    },
-    {
-      showTitle: '808 Beats Festival',
-      startTime: '2026.01.20 (화) 17:00',
-      venue:     '잠실실내체육관',
-      seatLabel: 'B구역 22열 15번',
-      amt:       '₩65,000',
-      status:    'CANCELLED',
-      gradient:  'linear-gradient(160deg,#181820 0%,#22183a 40%,#2a1a40 100%)',
-      posterImg: ''
-    }
-  ];
-
-
   /* ════════════════════════════════════════════
      열기 / 닫기 — ModalCore 위임
      ════════════════════════════════════════════ */
@@ -96,18 +61,26 @@
      ════════════════════════════════════════════ */
 
   window.mpTab = function (el, id, title, sub) {
+  console.log("지금 클릭한 탭 ID는? :", id);
+  
     $('.mypage-modal .nav-item').removeClass('active');
     $('.mypage-modal .tab-pane').removeClass('active');
     $(el).addClass('active');
     $('#tab-' + id).addClass('active');
     $('#mpTitle').text(title);
     $('#mpSub').text(sub);
-
+	if (id === 'reservations' && !window._mpResLoaded) {
+	window._mpResLoaded = true; 
+	    if (typeof mpLoadReservations === 'function') {
+	      mpLoadReservations();
+	    } else {
+	      console.error("mpLoadReservations 함수를 찾을 수 없습니다.");
+	    }
+	  }
     if (id === 'report'   && !window._mpReportLoaded) { window._mpReportLoaded = true; mpLoadPlayReport('THIS_MONTH'); }
     if (id === 'payments' && !window._mpPayLoaded)    { window._mpPayLoaded    = true; mpLoadPayments(); }
     if (id === 'activity' && !window._mpActLoaded)    { window._mpActLoaded    = true; mpLoadActivity(1); }
-  };
-
+  };	
 
   /* ════════════════════════════════════════════
      아바타 변경
@@ -512,8 +485,8 @@ window.mpCancelMembership = function (orderId) {
       : '전월 데이터 없음';
 
     var timeText;
-    if (totalH > 0)      { timeText = totalH + 'h' + (totalM > 0 ? ' ' + totalM + 'm' : ''); }
-    else if (totalM > 0) { timeText = totalM + 'm'; }
+    if (totalH > 0)      { timeText = totalH + '시간' + (totalM > 0 ? ' ' + totalM + '분' : ''); }
+    else if (totalM > 0) { timeText = totalM + '분'; }
     else                 { timeText = '-'; diffText = '-'; }
 
     $('#mpStatTime').text(timeText);
@@ -632,15 +605,34 @@ window.mpCancelMembership = function (orderId) {
       node.querySelector('.pay-icon').textContent   = typeIcon[p.paymentType] || '💳';
       node.querySelector('.pay-name').textContent   = p.itemName;
       
-      var d = new Date(p.approvedAt);
-	  var dateStr = d.getFullYear() + '.'
-		  + String(d.getMonth() + 1).padStart(2, '0') + '.'
-		  + String(d.getDate()).padStart(2, '0') + ' '
-		  + String(d.getHours()).padStart(2, '0') + ':'
-		  + String(d.getMinutes()).padStart(2, '0') + ':'
-		  + String(d.getSeconds()).padStart(2, '0');
+      
+ var targetDate;
+  if (p.status === 'READY') {
+    // 결제 대기일 때는 생성일(createdAt) 사용
+    targetDate = p.createdAt;
+  } else {
+    // 결제 완료/취소 등은 승인일(approvedAt) 사용
+    targetDate = p.approvedAt;
+  }
+
+  /* 날짜 변환 및 포맷팅 */
+  var dateStr = '-'; // 기본값
+  if (targetDate) {
+    var d = new Date(targetDate);
+    // 날짜가 유효한지 체크 (Invalid Date 방지)
+    if (!isNaN(d.getTime())) {
+      dateStr = d.getFullYear() + '.'
+        + String(d.getMonth() + 1).padStart(2, '0') + '.'
+        + String(d.getDate()).padStart(2, '0') + ' '
+        + String(d.getHours()).padStart(2, '0') + ':'
+        + String(d.getMinutes()).padStart(2, '0') + ':'
+        + String(d.getSeconds()).padStart(2, '0');
+    }
+  } 
+		  
       node.querySelector('.pay-sub').textContent = dateStr;
       node.querySelector('.pay-amount').textContent = '₩' + p.totalAmount.toLocaleString();
+      
       var badge = node.querySelector('.status-badge');
       badge.textContent = statusMap[p.status] || p.status;
       badge.className   = 'status-badge ' + (statusClass[p.status] || '');
@@ -722,22 +714,26 @@ window.mpCancelMembership = function (orderId) {
   }
 
   /* 예매 내역 */
-  function renderReservations() {
+  function renderReservations(dataList) {
     var el = document.getElementById('mpResCards');
     if (!el) return;
 
-    if (!RESERVATION_DUMMY.length) {
+	// 1. 여기서 dataList가 없으면 빈 배열([])로 초기화합니다.
+  	var list = dataList || [];
+
+	// 2. 이제 RESERVATION_DUMMY 대신 list.length를 체크
+    if (!list.length) {
       el.innerHTML = '<div class="res-empty"><div class="res-empty-icon">🎫</div><div>아직 예매 내역이 없습니다</div></div>';
       return;
     }
 
-    var statusMap   = { CONFIRMED:'예매완료', CANCELLED:'취소/환불', PENDING:'대기중' };
-    var statusClass = { CONFIRMED:'confirmed', CANCELLED:'cancelled', PENDING:'pending' };
+    var statusMap   = { APPROVED:'예매완료', CANCEL:'취소/환불'};
+    var statusClass = { CONFIRMED:'confirmed', CANCELLED:'cancelled'};
     var tmpl = document.getElementById('tmpl-res-card');
     var grid = document.createElement('div');
     grid.className = 'res-grid';
 
-    $.each(RESERVATION_DUMMY, function (i, r) {
+    $.each(list, function (i, r) {
       var node = tmpl.content.cloneNode(true);
 
       /* 포스터 배경 — 이미지 URL 또는 그라데이션 (동적 데이터값이라 JS에서 처리) */
@@ -913,8 +909,7 @@ function mpUpdateChart(statList) {
     });
 }
 
-/* 5. 모달 오픈 시 강제 리사이즈 (window.openMypage 수정) */
-/**
+/* 
  * 5. 모달 오픈 시 멤버십 데이터 로드 및 차트 리사이즈
  */
 window.openMypage = function () { 
@@ -972,7 +967,6 @@ window.openMypage = function () {
   /* ════════════════════════════════════════════
      Ajax 로드
      ════════════════════════════════════════════ */
-
   /* 플레이 리포트 */
   function mpLoadPlayReport(periodType) {
     $.ajax({
@@ -1101,9 +1095,7 @@ window.openMypage = function () {
   /* ════════════════════════════════════════════
      초기 렌더
      ════════════════════════════════════════════ */
-
   document.addEventListener('DOMContentLoaded', function () {
-    renderReservations();
     mpLoadPlayReport('THIS_MONTH');
     window._mpReportLoaded = true;
   });

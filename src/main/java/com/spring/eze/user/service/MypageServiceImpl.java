@@ -27,6 +27,7 @@ import com.spring.eze.user.dto.MypageMembershipDTO;
 import com.spring.eze.user.dto.MypageMonthlyStatDTO;
 import com.spring.eze.user.dto.MypagePaymentDTO;
 import com.spring.eze.user.dto.MypagePlayReportDTO;
+import com.spring.eze.user.dto.MypageReservationDTO;
 import com.spring.eze.user.dto.UserDTO;
 
 /**
@@ -207,6 +208,13 @@ public class MypageServiceImpl implements MypageService {
         return mypageDAO.selectMyActivityList(map);
     }
 
+     //예매 내역 — 최근 5건
+	  @Override
+	  public List<MypageReservationDTO> getMyReservationList(int userId) {
+	      return mypageDAO.selectMyReservationList(userId);
+	  }
+    
+    
     // 결제 내역 — 최신순 전체 조회
     @Override
     public List<MypagePaymentDTO> getMyPaymentList(int userId) {
