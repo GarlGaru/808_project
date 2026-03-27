@@ -3,15 +3,14 @@ package com.spring.eze.user.dto;
 /**
  * MypageTopSongDTO
  * 808 플레이 리포트 — 탑 곡 Top10
- * SONG_SCORE_TBL → SONGS_TBL → ARTISTS_TBL 조인 결과 매핑
  * 기간 필터: THIS_MONTH / LAST_MONTH / 3MONTH
  */
 public class MypageTopSongDTO {
 
-    private int    songId;        // 곡 번호 (SONGS_TBL.SONG_ID)
-    private String title;         // 곡 제목 (SONGS_TBL.TITLE)
-    private String artistName;    // 아티스트명 (ARTISTS_TBL.NAME)
-    private int    playCount;  	  // 재생횟수 - SCORE=1 COUNT(*)
+    private int    songId;        // 곡 번호 
+    private String title;         // 곡 제목 
+    private String artistName;    // 아티스트명 
+    private int    playCount;  	  // 재생횟수
     private String coverImageUrl; // 앨범커버
     
 	public MypageTopSongDTO() {
