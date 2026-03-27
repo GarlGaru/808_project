@@ -55,10 +55,10 @@ public class MypageDAOImpl implements MypageDAO {
        예매 내역
  	   ──────────────────────────────────────────── */
     // 예매 내역 - 최근 5건
-//    @Override
-//    public List<MypageReservationDTO> selectMyReservationList(int userId) {
-//        return mapper().selectMyReservationList(userId);
-//    }
+    @Override
+    public List<MypageReservationDTO> selectMyReservationList(int userId) {
+        return mapper().selectMyReservationList(userId);
+    }
     
     /* ────────────────────────────────────────────
        결제 내역

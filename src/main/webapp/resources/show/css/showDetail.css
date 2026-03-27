@@ -182,7 +182,7 @@
 }
 
 .tab-menu li.active {
-    border-bottom: 3px solid #fff;
+    border-bottom: 3px solid #ED6701;
     font-weight: 700;
 }
 
@@ -205,6 +205,7 @@
 	border-color: #ED6701 !important;
 	color: #fff !important;
 
+<<<<<<< HEAD
 
 
 
@@ -442,14 +443,13 @@
     color: #fff !important;
 }
 
-<<<<<<< HEAD
 
-=======
  */
+
 /* =====================================================
    공연 리뷰 탭 스타일
    ===================================================== */
->>>>>>> 7377b5f4e46418d17295d8ad8101d4e025903201
+
 
 
 /* 예매안내 show_notice.png */

@@ -4,10 +4,10 @@ public class MypageMembershipDTO {
 	
 	    // 멤버쉽 정보
 	    private String orderId;	   // 주문 번호
-	    private String itemName;   // 상품명 (예: 808 PRO 멤버십)
-	    private String expireDate; // 화면 표시용 만료일 (2026년 04월 30일)
+	    private String itemName;   // 상품명 (PRO, FREE는 멤버쉽, 나머지는 음악 or 공연)
+	    private String expireDate; // 화면 표시용 만료일
 	    private int daysLeft;      // D-Day (남은 일수)
-	    private String status;	   // 결제 상태 (APPROVED 등)
+	    private String status;	   // 결제 상태 (APPROVED, FAIl, READY, CANCEL)
 	    
 		public MypageMembershipDTO() {
 			super();

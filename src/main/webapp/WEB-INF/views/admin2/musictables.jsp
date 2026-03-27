@@ -162,7 +162,7 @@
                                                     <td>
                                                         <c:choose>
                                                             <c:when test="${not empty music.coverImageUrl}">
-                                                                <img src="${ctx}${music.coverImageUrl}"
+                                                                <img src="${music.coverImageUrl}"
                                                                      alt="cover"
                                                                      class="album-cover">
                                                             </c:when>

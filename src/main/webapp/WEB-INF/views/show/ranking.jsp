@@ -20,8 +20,6 @@
     <%@ include file="/WEB-INF/views/common/common.jsp" %>
     <%@ include file="/WEB-INF/views/common/header.jsp" %>
 
-   
-
 	<section class="ranking-section">
 	 <div class="show-wrap">
 	      <div class="show-top-menu-wrap">
@@ -46,8 +44,9 @@
 		    </nav>
 		</div>
 	<br><br>
+	
         <div class="ranking-title">랭킹</div>
-
+		<br>
         <div class="ranking-tab-box">
             <button type="button"
                     class="ranking-tab ${currentCategory == 'concert' ? 'active' : ''}"
@@ -68,7 +67,7 @@
     </section>
 	
 
-    <br><br><br><br>
+    <br>
 
 
     <%@ include file="/WEB-INF/views/common/footer.jsp" %>
@@ -82,26 +81,67 @@
     
     <script>
     $(function() {
-        $(".ranking-tab").on("click", function() {
-            let category = $(this).data("category");
+        // [중요] 컨텍스트 패스를 자바스크립트 변수로 안전하게 확보
+        const contextPath = "${pageContext.request.contextPath}";
+        console.log("랭킹 스크립트 로드됨. ContextPath:", contextPath);
 
+        // 1. Ajax 탭 전환 (선택자를 더 확실하게 지정)
+        $(document).on("click", "button.ranking-tab", function(e) {
+            // 클릭 이벤트 발생 확인용
+            console.log("탭 클릭됨!"); 
+            
+            const $this = $(this);
+            const category = $this.data("category");
+            console.log("선택된 카테고리:", category);
+
+            // UI 변경
             $(".ranking-tab").removeClass("active");
-            $(this).addClass("active");
-
+            $this.addClass("active");
+        
+            // Ajax 요청
             $.ajax({
-                url: "${path}/show/rankingAjax",
+                url: contextPath + "/show/rankingAjax",
                 type: "GET",
                 data: { category: category },
                 success: function(data) {
-                    $("#rankingContent").html(data);
+                    $('#rankingContent').html(data);
+                    $('#rankingContent').hide().show(0);
+                    
+                    console.log("CSS 적용 확인 완료");
+                    
+                    // 1. 타겟 확인
+                    const $container = $("#rankingContent");
+                    console.log("타겟 요소를 찾았나요?:", $container.length > 0 ? "YES" : "NO");
+
+                    // 2. 강제 교체 및 표시
+                    // .empty()로 기존 내용을 싹 비우고 새로 받은 data를 밀어 넣습니다.
+                    $container.empty().html(data).show();
+                    
+                    console.log("화면 업데이트 완료");
                 },
-                error: function() {
-                    alert("랭킹 탭 ajax 오류");
+                error: function(xhr, status, error) {
+                    console.error("Ajax 에러 발생:", status, error);
+                    alert("데이터를 불러오지 못했습니다.");
                 }
             });
         });
+
+        // 2. 툴팁 관련 (위임 방식 유지)
+        $(document).on("click", "#btnRankInfo", function(e) {
+            e.stopPropagation();
+            $("#rankTooltip").stop().fadeToggle(200);
+        });
+
+        $(document).on("click", "#btnCloseTooltip", function(e) {
+            $("#rankTooltip").stop().fadeOut(200);
+        });
+
+        $(document).on("click", function(e) {
+            if(!$(e.target).closest(".tooltip-wrap").length) {
+                $("#rankTooltip").stop().fadeOut(200);
+            }
+        });
     });
-    
     </script>
 </body>
 </html>

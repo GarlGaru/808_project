@@ -336,7 +336,7 @@ public class AdminController {
 			File saveFile = new File(dir, fileName);
 			albumImageFile.transferTo(saveFile);
 
-			dto.setCoverImageUrl("/resources/music/img/" + fileName);
+			dto.setCoverImageUrl("/eze/resources/music/img/" + fileName);
 		}
 
 		musicService.insertAlbum(dto);
