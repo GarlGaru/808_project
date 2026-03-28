@@ -1,23 +1,23 @@
 package com.spring.eze.reco.dto;
 
 public class KeywordScoreDTO {
-    private int keywordId;
+    private int genreId;
     private int totalScore;
 
     public KeywordScoreDTO() {
     }
 
-    public KeywordScoreDTO(int keywordId, int totalScore) {
-        this.keywordId = keywordId;
+    public KeywordScoreDTO(int genreId, int totalScore) {
+        this.genreId = genreId;
         this.totalScore = totalScore;
     }
 
-    public int getKeywordId() {
-        return keywordId;
+    public int getGenreId() {
+        return genreId;
     }
 
-    public void setKeywordId(int keywordId) {
-        this.keywordId = keywordId;
+    public void setGenreId(int genreId) {
+        this.genreId = genreId;
     }
 
     public int getTotalScore() {
@@ -31,7 +31,7 @@ public class KeywordScoreDTO {
     @Override
     public String toString() {
         return "KeywordScoreDTO{" +
-                "keywordId=" + keywordId +
+                "genreId=" + genreId +
                 ", totalScore=" + totalScore +
                 '}';
     }
