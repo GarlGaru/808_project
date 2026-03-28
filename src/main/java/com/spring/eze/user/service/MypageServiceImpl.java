@@ -126,11 +126,13 @@ public class MypageServiceImpl implements MypageService {
         MypageMembershipDTO membership = mypageDAO.selectMembershipInfo(userId);
         logger.info("<<< selectMembershipInfo userId={}, result={} >>>", userId, membership);
         
+        refreshSession(session, userId);
+        
         // 유효성 판단(세션 등급용)
         boolean isValid = (membership != null
                 && "APPROVED".equals(membership.getStatus())
                 && membership.getDaysLeft() >= 0);
-
+        
         // 세션 등급 동기화 — DB 상태와 세션 상태를 항상 일치시킴
         UserDTO loginUser = (UserDTO) session.getAttribute("loginUser");
         if (loginUser != null) {

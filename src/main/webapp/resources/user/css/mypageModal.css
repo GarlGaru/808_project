@@ -177,7 +177,7 @@
   border-radius: 12px;
   font-weight: 500;
 }
-.mypage-modal .grade-badge.free     { background: linear-gradient(160deg, rgba(100, 200, 220, 0.20), rgba(60, 160, 200, 0.10)); color: #fff; }
+.mypage-modal .grade-badge.free     { background: linear-gradient(160deg, #b56f38 40%, rgba(0,0,0,0.8) 100%); color: #fff; }
 .mypage-modal .grade-badge.pro  { background: linear-gradient(160deg, #2a3a7e 40%, rgba(0,0,0,0.8) 100%);   color: #fff; }
 
 /* ── NAV ── */
@@ -379,7 +379,7 @@
   transition: background 0.2s;
 }
 .mypage-modal .cmt-btn:hover,
-.mypage-modal .res-detail-btn:hover { background: rgba(255,255,255,0.12); }
+.mypage-modal .res-detail-btn:hover { background: linear-gradient(90deg, #b56f38 0%, #bf5301 100%); }
 .mypage-modal .cmt-btn.del          { color: #ff8888; }
 
 /* ════════════════════════════════════
@@ -412,55 +412,144 @@
 .mypage-modal .status-badge.cancelled { background: rgba(200,100,100,0.2); color: #ff9999; }
 .mypage-modal .status-badge.pending   { background: rgba(200,180,100,0.2); color: #ffcc66; }
 
+
 /* ════════════════════════════════════
-   RESERVATION
+   RESERVATION (세로형 + 3열 + 포스터 gradient)
    ════════════════════════════════════ */
-.mypage-modal .more-link       { color: var(--c-muted2); font-size: 13px; text-decoration: none; }
-.mypage-modal .more-link:hover { color: var(--c-text); }
 
-.mypage-modal .res-grid { display: flex; flex-direction: column; gap: 14px; }
-/* res-card: 공통 베이스에서 background/border/border-radius 상속 */
-.mypage-modal .res-card { overflow: hidden; }
+/* 🔥 3개씩 나열 (그리드) */
+.mypage-modal .res-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+  animation: mc-fadein 0.3s ease;
+}
 
+/* 카드 */
+.mypage-modal .res-card {
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.35s ease, box-shadow 0.35s ease;
+  cursor: pointer;
+  position: relative;
+}
+
+/* 카드 hover 시 살짝 상승 + 그림자 */
+.mypage-modal .res-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 8px 18px rgba(0,0,0,0.3);
+}
+
+/* 🔥 세로형 포스터 */
 .mypage-modal .res-poster {
   position: relative;
-  height: 100px;
+  width: 100%;
+  aspect-ratio: 2 / 3;   /* 세로형 */
   overflow: hidden;
 }
+
+/* 포스터 배경 (원본 이미지) */
 .mypage-modal .res-poster-bg {
   position: absolute;
   inset: 0;
   background-size: cover;
   background-position: center;
+  transition: transform 0.35s ease, filter 0.35s ease;
+  filter: brightness(0.8);   /* 기본 톤 다운 */
+  z-index: 0;
 }
-.mypage-modal .res-poster-dim {
+
+/* hover 시 확대 + 밝기 복구 */
+.mypage-modal .res-card:hover .res-poster-bg {
+  transform: scale(1.05);
+  filter: brightness(0.9);
+}
+
+/* 카드별 gradient overlay → 포스터 안에만 적용 */
+.mypage-modal .res-poster::before {
+  content: '';
   position: absolute;
   inset: 0;
-  background: linear-gradient(180deg, transparent 0%, rgba(0,0,0,0.8) 100%);
+  z-index: 1;
+  pointer-events: none;
+  opacity: 0.4; /* 기본 gradient 투명도 */
+  transition: opacity 0.35s ease;
 }
+
+/* 3개 카드마다 gradient 순환 */
+.mypage-modal .res-card:nth-child(3n+1) .res-poster::before {
+  background: linear-gradient(160deg,#4a1a3e 0%,#7a2a5e 40%,#5a1a4e 100%);
+}
+.mypage-modal .res-card:nth-child(3n+2) .res-poster::before {
+  background: linear-gradient(160deg,#1a2a5e 0%,#2a3a7e 40%,#2a1a6e 100%);
+}
+.mypage-modal .res-card:nth-child(3n+3) .res-poster::before {
+  background: linear-gradient(160deg,#181820 0%,#22183a 40%,#2a1a40 100%);
+}
+
+/* hover 시 overlay 사라짐 */
+.mypage-modal .res-card:hover .res-poster::before {
+  opacity: 0;
+}
+
+
+/* 텍스트 (overlay 위) */
 .mypage-modal .res-content {
   position: absolute;
   bottom: 10px;
-  left: 14px;
-  right: 14px;
+  left: 12px;
+  right: 12px;
   color: #fff;
+  z-index: 3; /* overlay 위 */
+  text-shadow : 0 1px 4px rgba(0,0,0,0.7); /* 글자 선명하게 */
+  res-content 
 }
-.mypage-modal .res-name  { font-size: 14px; font-weight: 600; }
-.mypage-modal .res-date  { font-size: 11px; opacity: 0.9; margin-top: 4px; }
-.mypage-modal .res-info  { padding: 14px; }
 
-/* res-venue / res-seat 공통 */
+.mypage-modal .res-name {
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1.3;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.mypage-modal .res-date {
+  font-size: 10px;
+  opacity: 0.85;
+  margin-top: 3px;
+}
+
+/* 아래 정보 (gradient 안 먹힘) */
+.mypage-modal .res-info {
+  padding: 12px;
+  position: relative;
+  z-index: 0; /* overlay 아래 */
+  background: none; /* gradient 영향 없음 */
+}
+
+/* 공통 텍스트 */
+
+.mypage-modal .res-time,
 .mypage-modal .res-venue,
-.mypage-modal .res-seat { font-size: 12px; color: var(--c-muted2); margin-bottom: 6px; }
-
-.mypage-modal .res-price {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-top: 10px;
+.mypage-modal .res-seat {
+  font-size: 11px;
+  color: var(--c-muted2);
+  margin-bottom: 4px;
 }
-.mypage-modal .res-empty      { text-align: center; padding: 40px; color: var(--c-muted); }
-.mypage-modal .res-empty-icon { font-size: 36px; margin-bottom: 10px; }
+
+
+/* 가격 우측 정렬 */
+.mypage-modal .res-amt {
+  display: block;
+  text-align: right;
+  font-weight: 500;
+  color: var(--c-text);
+  margin-top: 2px;
+}
+
 
 /* ════════════════════════════════════
    MEMBERSHIP
@@ -473,7 +562,7 @@
 .mypage-modal .ms-card--free {
   position: relative;
   overflow: hidden;
-  background: linear-gradient(160deg, rgba(100, 200, 220, 0.20), rgba(60, 160, 200, 0.10));
+  background: linear-gradient(90deg, #b56f38 40%, rgba(0,0,0,0.8) 100%);
 }
 /* PRO 카드 */
 .mypage-modal .ms-card--pro {
@@ -515,7 +604,7 @@
 }
 .mypage-modal .upgrade-btn:hover   { background: linear-gradient(160deg, #2a3a7e 40%, rgba(0,0,0,0.8) 100%); }
 .mypage-modal .upgrade-btn--pro    { background: rgba(255,255,255,0.10); color: var(--c-muted2); }
-.mypage-modal .upgrade-btn--pro:hover { background: linear-gradient(160deg, rgba(100, 200, 220, 0.20), rgba(60, 160, 200, 0.10)); }
+.mypage-modal .upgrade-btn--pro:hover { background: linear-gradient(160deg, #b56f38 20%, rgba(0,0,0,0.8) 100%); }
 
 /* ════════════════════════════════════
    PROFILE — 보기 (pv-)

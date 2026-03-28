@@ -68,14 +68,17 @@
              onclick="mpTab(this,'report','808 플레이 리포트','이번 달 나의 음악 청취 현황')">
           <span class="nav-icon"><i class="fa-sharp fa-solid fa-headphones"></i></span>808 플레이 리포트
         </div>
+        
+         <div class="nav-item"
+             onclick="mpTab(this,'reservations','예매 내역','공연 예매 내역')">
+          <span class="nav-icon"><i class="fa-sharp fa-solid fa-calendar-check"></i></span>예매 내역
+        </div>
+        
 		<div class="nav-item"
 		     onclick="mpTab(this,'activity','통합 활동 내역','내가 작성한 글, 댓글, 리뷰 목록')">
 		  <span class="nav-icon"><i class="fa-solid fa-list-ul"></i></span>활동 내역
 		</div>
-        <div class="nav-item"
-             onclick="mpTab(this,'reservation','예매 내역','공연 예매 내역')">
-          <span class="nav-icon"><i class="fa-sharp fa-solid fa-calendar-check"></i></span>예매 내역
-        </div>
+
         <div class="nav-item"
              onclick="mpTab(this,'payments','결제 내역','결제 기록')">
           <span class="nav-icon"><i class="fa-sharp fa-solid fa-credit-card"></i></span>결제 내역
@@ -150,6 +153,41 @@
           </div>
         </div>
 
+
+	<!-- ─── RESERVATION 탭 ─── -->
+	<div class="tab-pane" id="tab-reservations">
+	  <div class="sec-title">최근 예매 내역</div>
+	  
+	  <div id="mpResCards"></div>
+	  <div class="more-link-wrap">
+	    <button id="mpTicketMoreBtn"  class="outline-btn outline-btn--full" onclick="" style="display:none" >전체 예매 내역 보기</button>
+	  </div>
+	</div>
+	
+	<!-- 예약 카드 템플릿 -->
+	<template id="tmpl-res-card">
+	  <div class="res-card">
+	    <div class="res-poster">
+	      <div class="res-poster-bg"></div>
+	      <div class="res-content">
+	        <div class="res-name"></div>
+	        <div class="res-date"></div> <!-- 공연 기간 -->
+	        <span class="status-badge"></span>
+	      </div>
+	    </div>
+	    <div class="res-info">
+	      <div class="res-venue"></div> <div class="res-seat"></div> <!-- 좌석 요약 -->
+	      <span class="res-time"></span> <!-- 관람일자 -->
+	      <div class="res-price">
+	        <span class="res-amt"></span>
+	        <button class="res-detail-btn">상세보기</button>
+	      </div>
+	    </div>
+	  </div>
+	</template>
+
+
+
         <!-- ─── ACTIVITY ─── -->
         <div class="tab-pane" id="tab-activity">
 		  <div id="mpActivityList"></div>
@@ -158,16 +196,6 @@
 		  </div>
 		</div>
 
-        <!-- ─── RESERVATION ─── -->
-        <div class="tab-pane" id="tab-reservation">
-          <div class="sec-title">최근 예매 내역</div>
-          <div id="mpResCards"></div>
-          <div class="more-link-wrap">
-            <a href="${pageContext.request.contextPath}/show/mypage/myTicket" class="more-link">
-              전체 예매 내역 보기 →
-            </a>
-          </div>
-        </div>
 
         <!-- ─── PAYMENTS ─── -->
         <div class="tab-pane" id="tab-payments">
@@ -445,39 +473,5 @@
   </div>
 </template>
 
-
-<div class="tab-pane" id="tab-reservations">
-<!-- 예매 내역 출력 컨테이너 -->
-<div id="mpResCards">></div>
-</div>
-
-
-<!-- 예매 내역 — res-card 1개 뼈대 -->
-<template id="tmpl-res-card">
-<li class="nav-item" 
-    onclick="mpTab(this, 'reservations', '내 예매 내역', '최근 예매 정보입니다')">
-    예매 내역
-</li>
-
-  <div class="res-card">
-    <div class="res-poster">
-      <div class="res-poster-bg"></div>
-      <div class="res-poster-dim"></div>
-      <div class="res-content">
-        <div class="res-name"></div>
-        <div class="res-date"></div>
-        <span class="status-badge"></span>
-      </div>
-    </div>
-    <div class="res-info">
-      <div class="res-venue"></div>
-      <div class="res-seat"></div>
-      <div class="res-price">
-        <span class="res-amt"></span>
-        <button class="res-detail-btn" action="">상세보기</button>
-      </div>
-    </div>
-  </div>
-</template>
 
 <script src="${pageContext.request.contextPath}/resources/user/js/mypageModal.js"></script>
