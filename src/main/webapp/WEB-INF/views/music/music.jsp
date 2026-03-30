@@ -110,6 +110,7 @@
             </aside>
 
             <!-- music-layout-main: 메인 콘텐츠가 들어가는 영역 현재는 mainstory.jsp를 포함-->
+            
             <main class="music-layout-main">
                <div id="main-content-area"></div>
             </main>

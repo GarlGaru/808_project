@@ -191,7 +191,7 @@
 						        class="music-detail-row-play-btn js-play-song"
 						        data-song-id="${sim.songId}"
 						        data-title="${sim.title}"
-						        data-artist="${sosimng.artistName}"
+						        data-artist="${sim.artistName}"
 						        data-cover="${empty sim.coverImageUrl ? '/resources/music/img/default_album.jpg' : sim.coverImageUrl}">
 						    ▶
 						</button>

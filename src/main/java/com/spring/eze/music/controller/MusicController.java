@@ -103,35 +103,8 @@ public class MusicController {
         log.info("<<< url => /ranking >>>");
         return "/music/ranking";
     }
-    //아티스트 페이지
-    @GetMapping("/artist")
-    public String artistDetail(@RequestParam("artistId") int artistId, Model model) {
-        model.addAttribute("artistId", artistId);
-
-        ArtistDTO artist = musicService.getArtistDetail(artistId);
-        List<SongDTO> artistSongs = musicService.getSongsByArtist(artistId);
-        model.addAttribute("artist", artist);
-        model.addAttribute("artistSongs", artistSongs);
-        
-        
-        log.info("artistId = {}", artistId);
-        log.info("artist = {}", artist);
-
-        if (artist != null) {
-            log.info("artist.name = {}", artist.getName());
-            log.info("artist.profileImageUrl = {}", artist.getProfileImageUrl());
-        }
-
-        if (artistSongs != null && !artistSongs.isEmpty()) {
-            log.info("first song title = {}", artistSongs.get(0).getTitle());
-            log.info("first song coverImageUrl = {}", artistSongs.get(0).getCoverImageUrl());
-        } else {
-            log.info("artistSongs is empty");
-        }
-        
-        System.out.println("artistDetail 진입, artistId = " + artistId);
-        return "music/artist";
-    }
+    
+   
 
     // 재생 시작 점수
     @GetMapping("/playScore")
@@ -173,7 +146,7 @@ public class MusicController {
         return "success";
     }
 
-    // 좋아요 점수
+    // 좋아요 토글
     @GetMapping("/toggleLike")
     @ResponseBody
     public String toggleLike(@RequestParam int songId, HttpSession session) {
@@ -188,6 +161,7 @@ public class MusicController {
         return musicService.toggleLike(songId, userId);
     }
     
+    //좋아요 점수값 
     @GetMapping("/likeStatus")
     @ResponseBody
     public String likeStatus(@RequestParam int songId, HttpSession session) {
@@ -204,6 +178,7 @@ public class MusicController {
         return likeSum > 0 ? "liked" : "unliked";
     }
     
+    //좋아요 리스트
     @GetMapping("/likedList")
     public String likedList(HttpSession session, Model model) {
 
@@ -219,7 +194,8 @@ public class MusicController {
 
         return "music/likedList";
     }
-    //곡상세 페이지
+    
+    //곡 상세 페이지
     @GetMapping("/detail")
     public String songDetail(@RequestParam("songId") int songId, Model model) {
 
@@ -235,12 +211,44 @@ public class MusicController {
 
         return "music/detail";
     }
+    
+    //아티스트 상세 페이지
+    @GetMapping("/artist")
+    public String artistDetail(@RequestParam("artistId") int artistId, Model model) {
+        model.addAttribute("artistId", artistId);
+
+        ArtistDTO artist = musicService.getArtistDetail(artistId);
+        List<SongDTO> artistSongs = musicService.getSongsByArtist(artistId);
+        model.addAttribute("artist", artist);
+        model.addAttribute("artistSongs", artistSongs);
+        
+        
+        log.info("artistId = {}", artistId);
+        log.info("artist = {}", artist);
+
+        if (artist != null) {
+            log.info("artist.name = {}", artist.getName());
+            log.info("artist.profileImageUrl = {}", artist.getProfileImageUrl());
+        }
+
+        if (artistSongs != null && !artistSongs.isEmpty()) {
+            log.info("first song title = {}", artistSongs.get(0).getTitle());
+            log.info("first song coverImageUrl = {}", artistSongs.get(0).getCoverImageUrl());
+        } else {
+            log.info("artistSongs is empty");
+        }
+        
+        System.out.println("artistDetail 진입, artistId = " + artistId);
+        return "music/artist";
+    }
+    
     //노래연결
     @GetMapping(value = "/songPath", produces = "text/plain; charset=UTF-8")
     @ResponseBody
     public String getSongPath(@RequestParam("songId") int songId) {
         return musicService.getSongPath(songId);
     }
+    
     //검색
     @GetMapping("/search")
     public String search(@RequestParam(value = "keyword", required = false) String keyword,
@@ -260,19 +268,10 @@ public class MusicController {
 
         return "music/search";
     }
-    @RequestMapping("/search")
-    public String seach(HttpServletRequest request,HttpServletResponse response, Model model)
-            throws ServletException, IOException{
-
-        log.info("<<</search.jq>>>");
-
-
-        return "music/search";
-    }
 
     @GetMapping("/weekly-ranking")
     @ResponseBody
-    public List<SongDTO> weeklyRanking(HttpSession session) {
+    public List<SongDTO> weeklyRanking() {
         log.info("Get weekly-ranking");
         return musicService.getweeklyRanking();
 
@@ -280,7 +279,7 @@ public class MusicController {
 
     @GetMapping("/today-hits")
     @ResponseBody
-    public List<SongDTO> todayHitSongs(HttpSession session) {
+    public List<SongDTO> todayHitSongs() {
         log.info("Get today-hits");
         return musicService.getTodayHitSongs();
 
@@ -288,9 +287,9 @@ public class MusicController {
 
     @GetMapping("/genre-ranking")
     @ResponseBody
-    public List<SongDTO> genreRanking(HttpSession session) {
+    public List<SongDTO> genreRanking() {
         log.info("Get genre-ranking");
-        return musicService.getGenreRanking(1); // 기본 장르 1
+        return musicService.getGenreRanking(1); 
 
     }
 

@@ -29,7 +29,7 @@ async function loadMainContent(url) {
         if (initFn && typeof window[initFn] === 'function') {
             window[initFn]();
         }
-
+ 	
     } catch (error) {
         // 네트워크 오류 등 요청 자체가 실패한 경우
         result.innerHTML = "요청 실패";
