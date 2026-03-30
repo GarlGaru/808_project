@@ -176,8 +176,6 @@
 		        s.title,
 		        a.name AS artist_name,
 		        al.title AS album_title,
-		        g.name AS genre_name,
-		        g.genre_id,
 		        al.cover_image_url,
 		        s.song_path
 		    FROM songs_tbl s
@@ -185,10 +183,6 @@
 		        ON s.artist_id = a.artist_id
 		    JOIN albums_tbl al
 		        ON s.album_id = al.album_id
-		    JOIN song_genre_tbl sg
-		        ON s.song_id = sg.song_id
-		    JOIN genres_tbl g
-		        ON sg.genre_id = g.genre_id
 		    WHERE s.song_id = #{songId}
 		</select>
 		

@@ -15,23 +15,36 @@ public class RecommendDAOImpl implements RecommendDAO {
     private SqlSession sqlSession;
 
     @Override
-    public List<KeywordScoreDTO> selectTopKeywords(int userId) {
+    public List<KeywordScoreDTO> selectTopKeywordsByUser(int userId) {
         RecommendDAO dao = sqlSession.getMapper(RecommendDAO.class);
-        return dao.selectTopKeywords(userId);
+        return dao.selectTopKeywordsByUser(userId);
     }
 
     @Override
-    public List<Integer> selectRecommendedSongs(int userId, List<KeywordScoreDTO> topKeywords, int amount) {
-        System.out.println("user  :" + userId);
-        System.out.println("top :" + topKeywords);
-        System.out.println("amount :" + amount);
+    public List<Integer> selectSongsByKeywords(
+            List<KeywordScoreDTO> topKeywords, int amount) {
         RecommendDAO dao = sqlSession.getMapper(RecommendDAO.class);
-        return dao.selectRecommendedSongs(userId, topKeywords, amount);
+        return dao.selectSongsByKeywords(topKeywords, amount);
     }
+
+    @Override
+    public List<Integer> selectPopularSongsByKeywords(
+            List<KeywordScoreDTO> topKeywords, int amount) {
+        RecommendDAO dao = sqlSession.getMapper(RecommendDAO.class);
+        return dao.selectPopularSongsByKeywords(topKeywords, amount);
+    }
+
+    @Override
+    public List<Integer> selectRecentSongsByTopKeywords(
+            List<KeywordScoreDTO> topKeywords, int amount) {
+        RecommendDAO dao = sqlSession.getMapper(RecommendDAO.class);
+        return dao.selectRecentSongsByTopKeywords(topKeywords, amount);
+    }
+
+
 
     @Override
     public List<SongCardDTO> getResultSongs(List<Integer> songIds) {
-        System.out.println("songIds :" + songIds);
         RecommendDAO dao = sqlSession.getMapper(RecommendDAO.class);
         return dao.getResultSongs(songIds);
     }

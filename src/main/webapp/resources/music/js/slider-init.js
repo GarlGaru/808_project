@@ -112,22 +112,22 @@ function initMusicReco(){
 
     /* ── 좋아할만한 인기 트랙 ───────────────────────────────────────── */
     MusicSlider({
-        mountId:  'today-slider-mount',
+        mountId:  'reco-popular-slider-mount',
         title:    '좋아할만한 인기 트랙',
         subtitle: '나와 비슷한 취향의 사용자들이 많이 찾는 곡.',
-        apiUrl:   `${path}/music/today-hits`,
-        sliderId: 'todaySlider',
+        apiUrl:   `${path}/music/personal-recommend-popular`,
+        sliderId: 'recoPopularSlider',
         label:    '좋아할만한 인기 트랙',
         path,
     });
 
     /* ── 좋아할만한 최신 곡 ─────────────────────────────────────────── */
     MusicSlider({
-        mountId:  'genre-slider-mount',
+        mountId:  'reco-latest-slider-mount',
         title:    '좋아할만한 최신 곡',
         subtitle: '새로나온 곡, 이런건 어떠세요?',
-        apiUrl:   `${path}/music/genre-ranking`,
-        sliderId: 'genreSlider',
+        apiUrl:   `${path}/music/personal-recommend-latest`,
+        sliderId: 'recoLatestSlider',
         label:    '좋아할만한 최신 곡',
         path,
     });
