@@ -204,337 +204,251 @@
 	background: #ED6701 !important;
 	border-color: #ED6701 !important;
 	color: #fff !important;
+}
+
+
+/* 예비용) 1. 상단 정보 */
+/* .detail-top {
+    display: flex;
+    gap: 40px;
+    margin-bottom: 40px;
+    border: 1px solid rgba(255,255,255,0.15);
+    padding: 30px;
+}
+
+.poster-area {
+    width: 320px;
+    flex-shrink: 0;
+}
+
+.poster-area img {
+    width: 100%;
+    display: block;
+    border-radius: 10px;
+}
+
+.info-area {
+    flex: 1;
+}
+
+.show-title {
+    font-size: 40px;
+    font-weight: 700;
+    margin-bottom: 24px;
+}
+
+.info-list {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 24px 0;
+}
+
+.info-list li {
+    margin-bottom: 16px;
+    font-size: 20px;
+}
+
+.info-list strong {
+    display: inline-block;
+    width: 120px;
+}
+
+.btn-group {
+    margin-top: 30px;
+}
+
+.btn-reserve {
+    width: 180px;
+    height: 50px;
+    font-size: 18px;
+    cursor: pointer;
+} */
+
+
+
+/* 2. 날짜 / 회차 */
+/* .booking-area {
+    margin-bottom: 40px;
+    border: 1px solid rgba(255,255,255,0.15);
+}
+
+.booking-top {
+    display: flex;
+    min-height: 240px;
+}
+
+.date-area,
+.time-area {
+    width: 50%;
+    padding: 24px;
+}
+
+.date-area {
+    border-right: 1px solid rgba(255,255,255,0.15);
+}
+
+.date-area h3,
+.time-area h3 {
+    margin-bottom: 20px;
+    font-size: 28px;
+} */
+
+
+	
+/* 공연후기 */
+/* 피그마 입히기 전 공연상세페이지 임시 css */
+/* 전체 컨테이너 여백 */
+/* .show-detail-wrapper {
+    width: 1200px;
+    margin: 0 auto;
+    padding: 40px 20px 80px;
+}
+1. 상단 정보
+.detail-top {
+    display: flex;
+    gap: 40px;
+    margin-bottom: 40px;
+    border: 1px solid rgba(255,255,255,0.15);
+    padding: 30px;
+}
+.poster-area {
+    width: 320px;
+    flex-shrink: 0;
+}
+.poster-area img {
+    width: 100%;
+    display: block;
+    border-radius: 10px;
+}
+.info-area {
+    flex: 1;
+}
+.show-title {
+    font-size: 40px;
+    font-weight: 700;
+    margin-bottom: 24px;
+}
+.info-list {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 24px 0;
+}
+.info-list li {
+    margin-bottom: 16px;
+    font-size: 20px;
+}
+.info-list strong {
+    display: inline-block;
+    width: 120px;
+}
+.btn-group {
+    margin-top: 30px;
+}
+.btn-reserve {
+    width: 180px;
+    height: 50px;
+    font-size: 18px;
+    cursor: pointer;
+}
+2. 날짜 / 회차
+.booking-area {
+    margin-bottom: 40px;
+    border: 1px solid rgba(255,255,255,0.15);
+}
+.booking-top {
+    display: flex;
+    min-height: 240px;
+}
+.date-area,
+.time-area {
+    width: 50%;
+    padding: 24px;
+}
+.date-area {
+    border-right: 1px solid rgba(255,255,255,0.15);
+}
+.date-area h3,
+.time-area h3 {
+    margin-bottom: 20px;
+    font-size: 28px;
+}
+회차 시간 버튼
+.date-btn,
+.time-btn {
+    display: inline-block;
+    margin: 0 10px 10px 0;
+    padding: 10px 16px;
+    font-size: 16px;
+    cursor: pointer;
+    background-color: transparent;
+    border: 1px solid #ccc;
+    color: #fff;
+    border-radius: 4px;
+}
+회차 버튼 활성화
+.time-btn.active {
+    background-color: #000000;
+    border-color: #000000;
+    color: #fff !important;
+}
+.booking-bottom {
+    border-top: 1px solid rgba(255,255,255,0.15);
+    padding: 20px 24px;
+    display: flex;
+    justify-content: flex-end;
+}
+.btn-booking {
+    width: 200px;
+    height: 56px;
+    font-size: 18px;
+    cursor: pointer;
+}
+3. 하단 탭
+.detail-bottom {
+    margin-top: 30px;
+}
+.tab-menu {
+    display: flex;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    border-bottom: 1px solid rgba(255,255,255,0.2);
+}
+.tab-menu li {
+    padding: 16px 28px;
+    cursor: pointer;
+    font-size: 18px;
+}
+.tab-menu li.active {
+    border-bottom: 3px solid #fff;
+    font-weight: 700;
+}
+.tab-content {
+    min-height: 300px;
+    padding: 30px 20px;
+}
+.tab-section {
+    font-size: 18px;
+    line-height: 1.8;
+}
+
+달력선택
+.flatpickr-calendar .flatpickr-day.selected,
+.flatpickr-calendar .flatpickr-day.selected:hover,
+.flatpickr-calendar .flatpickr-day.selected:focus {
+    background: #ED6701 !important;
+    border-color: #ED6701 !important;
+    color: #fff !important;
+}
+
+
+ */
 
 /* =====================================================
    공연 리뷰 탭 스타일
    ===================================================== */
 
-.review-tab-wrap {
-    padding: 10px 0;
-}
 
-/* ── 섹션 타이틀 ── */
-.review-section-title {
-    color: #ffffff;
-    font-weight: 700;
-    margin-bottom: 20px;
-    letter-spacing: -0.5px;
-    font-size: 1.4rem;
-}
-
-/* ── 작성 영역 ── */
-.review-write-area {
-    border-left: 4px solid #ED6701;
-    padding-left: 20px;
-    margin-bottom: 30px;
-}
-
-.review-login-msg {
-    color: gray;
-    margin-top: 10px;
-}
-
-/* ── 별점 ── */
-.review-star-area {
-    margin-bottom: 16px;
-}
-
-.review-tab-wrap .star {
-    font-size: 32px;
-    cursor: pointer;
-    opacity: 0.3;
-    transition: all 0.2s ease-in-out;
-    margin-right: 8px;
-    filter: drop-shadow(0 0 6px rgba(237, 103, 1, 0.5));
-    user-select: none;
-}
-
-.review-tab-wrap .star:hover {
-    transform: scale(1.2) rotate(-5deg);
-    opacity: 1;
-}
-
-/* ── 작성공간 ── */
-.review-textarea {
-    width: 100%;
-    background: #222222;
-    border: 1px solid #333;
-    border-radius: 12px;
-    color: white;
-    padding: 18px;
-    resize: none;
-    font-size: 1rem;
-    transition: all 0.3s ease;
-    box-sizing: border-box;
-}
-
-.review-textarea::placeholder {
-    color: #777;
-}
-
-.review-textarea:focus {
-    outline: none;
-    border-color: #ED6701;
-    background: #282828;
-    box-shadow: 0 0 12px rgba(237, 103, 1, 0.2);
-    transform: scale(1.01);
-}
-
-.review-edit-textarea {
-    background: #222 !important;
-    color: #e0e0e0 !important;
-    border-color: #444 !important;
-    border-radius: 8px;
-    resize: none;
-}
-
-.review-edit-controls {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    flex-wrap: wrap;
-    margin-top: 8px;
-}
-
-/* ── 수정/삭제 버튼 (Bootstrap btn 오버라이드) ── */
-.review-btn-zone .btn {
-    border-radius: 999px !important;
-    padding: 5px 16px !important;
-    font-weight: 600;
-    font-size: 0.82rem;
-    transition: all 0.25s ease;
-}
-
-.review-btn-zone .btn-secondary {
-    background: transparent !important;
-    border: 1px solid #DF8845 !important;
-    color: #DF8845 !important;
-}
-
-.review-btn-zone .btn-secondary:hover {
-    background: linear-gradient(135deg, #DF8845, #ED6701) !important;
-    color: #fff !important;
-    border-color: transparent !important;
-    box-shadow: 0 4px 12px rgba(237, 103, 1, 0.35);
-}
-
-.review-btn-zone .btn-danger {
-    background: transparent !important;
-    border: 1px solid #ff5e5e !important;
-    color: #ff5e5e !important;
-}
-
-.review-btn-zone .btn-danger:hover {
-    background: #ff5e5e !important;
-    color: #fff !important;
-    border-color: transparent !important;
-    box-shadow: 0 4px 12px rgba(255, 94, 94, 0.35);
-}
-
-/* ── 수정 저장/취소 버튼 ── */
-.review-edit-controls .btn-primary {
-    background: linear-gradient(135deg, #DF8845, #ED6701) !important;
-    border: none !important;
-    border-radius: 999px !important;
-    color: #fff !important;
-    font-weight: 700;
-    padding: 5px 18px !important;
-    transition: all 0.25s ease;
-}
-
-.review-edit-controls .btn-primary:hover {
-    box-shadow: 0 4px 14px rgba(237, 103, 1, 0.45);
-    transform: translateY(-1px);
-}
-
-.review-edit-controls .btn-warning {
-    background: transparent !important;
-    border: 1px solid #aaa !important;
-    border-radius: 999px !important;
-    color: #aaa !important;
-    font-weight: 700;
-    padding: 5px 18px !important;
-    transition: all 0.25s ease;
-}
-
-.review-edit-controls .btn-warning:hover {
-    border-color: #fff !important;
-    color: #fff !important;
-}
-
-/* ── 작성 버튼 ── */
-.review-submit-btn {
-    background: linear-gradient(135deg, #DF8845, #ED6701);
-    color: white;
-    border: none;
-    padding: 12px 32px;
-    border-radius: 999px;
-    font-weight: 800;
-    font-size: 1rem;
-    cursor: pointer;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    margin-top: 15px;
-    letter-spacing: 0.5px;
-    box-shadow: 0 4px 14px rgba(237, 103, 1, 0.3);
-}
-
-.review-submit-btn:hover {
-    transform: translateY(-3px) scale(1.02);
-    box-shadow: 0 8px 20px rgba(237, 103, 1, 0.5);
-}
-
-/* ── 구분선 ── */
-.review-divider {
-    border-color: #282828;
-    margin: 24px 0;
-}
-
-/* ── 목록 헤더 (타이틀 + 정렬 + 평균별점) ── */
-.review-list-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 12px;
-    margin-bottom: 6px;
-}
-
-.review-list-controls {
-    display: flex;
-    align-items: center;
-    gap: 16px;
-}
-
-.review-sort-select {
-    background: #222;
-    color: #e0e0e0;
-    border: 1px solid #333;
-    border-radius: 8px;
-    padding: 6px 12px;
-    font-size: 0.95rem;
-}
-
-.review-sort-select:focus {
-    outline: none;
-    border-color: #ED6701;
-}
-
-.avg-rating-label {
-    color: #DF8845;
-    font-size: 1.05rem;
-    font-weight: 600;
-}
-
-#avgRating {
-    color: #ED6701;
-    font-size: 1.2rem;
-    font-weight: 800;
-}
-
-/* ── 리뷰 카드 ── */
-.review-box {
-    background: #181818;
-    border-radius: 14px;
-    padding: 24px;
-    margin-bottom: 20px;
-    border: 1px solid transparent;
-    transition: all 0.3s ease;
-    cursor: default;
-    animation: reviewFade 0.8s ease;
-}
-
-.review-box:hover {
-    background: #222222;
-    border-color: #DF8845;
-    transform: translateY(-4px);
-    box-shadow: 0 8px 24px rgba(237, 103, 1, 0.1);
-}
-
-@keyframes reviewFade {
-    from { opacity: 0; transform: translateY(10px); }
-    to   { opacity: 1; transform: translateY(0);    }
-}
-
-.review-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 15px;
-}
-
-.review-writer {
-    color: #ED6701;
-    font-weight: 700;
-    font-size: 1.15rem;
-}
-
-.review-rating {
-    color: #DF8845;
-    font-size: 1.1rem;
-    font-weight: 700;
-}
-
-.review-content {
-    color: #cccccc;
-    margin-bottom: 20px;
-    font-size: 1.05rem;
-    line-height: 1.7;
-}
-
-.review-footer {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border-top: 1px solid #282828;
-    padding-top: 15px;
-    font-size: 0.9rem;
-    color: #666;
-}
-
-.review-date {
-    font-size: 12px;
-    color: gray;
-}
-
-.review-btn-zone {
-    display: flex;
-    gap: 6px;
-}
-
-/* ── 더보기 버튼 ── */
-.review-more-btn {
-    background: transparent;
-    border: 1px solid #DF8845;
-    color: #DF8845;
-    width: 100%;
-    padding: 14px 0;
-    border-radius: 999px;
-    font-weight: 700;
-    font-size: 1rem;
-    cursor: pointer;
-    margin: 20px 0 40px;
-    transition: all 0.3s ease;
-    letter-spacing: 0.5px;
-}
-
-.review-more-btn:hover {
-    background: linear-gradient(135deg, #DF8845, #ED6701);
-    border-color: transparent;
-    color: #fff;
-    transform: translateY(-2px);
-    box-shadow: 0 6px 18px rgba(237, 103, 1, 0.35);
-}
-
-/* ── 빈 목록 안내 ── */
-.review-empty {
-    color: #666;
-    text-align: center;
-    padding: 40px 0;
-    font-size: 1rem;
-}
-
-
-}
 
 /* 예매안내 show_notice.png */
 .show-notice-wrap {

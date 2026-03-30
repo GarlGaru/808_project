@@ -1,9 +1,14 @@
 @charset "UTF-8";
 
 
+.page-container {
+    margin: 20px;
+    box-sizing: border-box;
+}
+
 .step-header{
-	max-width: 1200px;
-	margin: 20px 20px 15px 20px;
+	width: 100%;
+	margin: 0 0 15px 0;
 	background: #1e1e1e;
 	border: 1px solid #ED6701;
 	border-radius: 10px;
@@ -20,8 +25,8 @@
 }
     
 .seat-container {
-    display: inline-block;
-    min-width: 100%; 
+    display: block;
+    width: 100%; 
     margin-top: 30px;
     text-align: center;
 }
@@ -78,14 +83,10 @@
 
 .seat-wrapper {
     display: flex;
-    justify-content: center;
-    align-items: flex-start;
+    width: 100%;
     gap: 20px;
-    margin-top: 40px;
-    padding: 0 20px;
-    width: fit-content;
-    min-width: 100%; 
     box-sizing: border-box;
+    align-items: stretch;
 }
 
 /* 왼쪽 좌석 */
@@ -137,6 +138,13 @@
 .grade.r { background: #C3F7C1; }
 .grade.s { background: #AED6E6; }
 
+#reserveForm{
+	width: 100%;
+	margin: 0;
+	padding: 0;
+	display: block;
+}
+
 /* 예약 버튼 (주황 그라데이션) */
 .reserve-btn {
     width: 100%;
@@ -156,14 +164,13 @@
 
 /* 좌석 박스 */
 .seat-box{
+	flex: 1;
 	background: #111;
 	border: 2px solid #ED6701;
 	border-radius: 12px;
-	padding: 19px;
+	padding: 20px;
 	box-shadow: 0 8px 20px rgba(0,0,0,0.4);
-	flex: 1;
-    overflow-x: auto; 
-    white-space: nowrap; 
+    min-width: 0;
 }
 
 /* 가격표 박스 */
