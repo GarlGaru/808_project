@@ -7,7 +7,7 @@
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
-<title>Premium Orange Board - List</title>
+<title>BoardList</title>		
     <!-- 공통 CSS -->
     <link rel="stylesheet" href="${path}/resources/common/css/style.css">
     <link rel="stylesheet" href="${path}/resources/common/style.css">
@@ -165,7 +165,7 @@
 }
 
 .page-link.active {
-	background: #ffcc00;
+	background: #ED6701;
 	color: #2b1407;
 }
 
@@ -179,7 +179,7 @@
 	display: inline-block;
 	padding: 12px 35px;
 	/* 왼쪽에서 오른쪽으로 흐르는 오렌지-옐로우 그라데이션 */
-	background: linear-gradient(135deg, #ffcc00 0%, #ff9500 100%);
+	background: linear-gradient(90deg, #DF8845 0%, #ED6701 100%);;
 	color: #2b1407;
 	border-radius: 50px;
 	font-weight: 800;
@@ -237,7 +237,7 @@
 }
 
 .best-badge {
-	background: linear-gradient(135deg, #ffcc00 0%, #ff9500 100%);
+	background: linear-gradient(135deg, #ED6701 0%, #ff9500 100%);
 	color: #2b1407;
 	padding: 3px 10px;
 	border-radius: 20px;
@@ -254,7 +254,7 @@
 .rank-icon {
 	font-style: italic;
 	font-weight: 900;
-	color: #ffcc00;
+	color: #ED6701;
 }
 
 .nav-link:hover {
@@ -292,7 +292,8 @@
     <%@ include file="/WEB-INF/views/common/header.jsp" %>
 
 	<div class="container">
-		<h2 style="text-align: center; font-weight: 800; color: #ffcc00; letter-spacing: 3px;">COMMUNITY</h2>
+		<br>
+		<br>
 		
 		<div class="board-header">
 			<div class="total-info">
@@ -341,7 +342,7 @@
 							<td>${best.nickname}</td>
 							<td><fmt:formatDate value="${best.regdate}" pattern="yyyy-MM-dd" /></td>
 							<td>${best.viewcnt}</td>
-							<td style="color: #ffcc00; font-weight: bold;">${best.likeCount}</td>
+							<td style="color: #ED6701; font-weight: bold;">${best.likeCount}</td>
 						</tr>
 					</c:forEach>
 
@@ -361,7 +362,7 @@
 							<td>${b.nickname}</td>
 							<td><fmt:formatDate value="${b.regdate}" pattern="yyyy-MM-dd" /></td>
 							<td>${b.viewcnt}</td>
-							<td style="color: #ffcc00; font-weight: bold;">${b.likeCount}</td>
+							<td style="color: #ED6701; font-weight: bold;">${b.likeCount}</td>
 						</tr>
 					</c:forEach>
 				</tbody>
