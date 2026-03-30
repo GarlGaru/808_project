@@ -46,7 +46,7 @@
         			<c:set var="approvedCnt" value="${approvedCnt + 1}" />
         		</c:if>
         		<c:if test="${t.status eq 'CANCEL'}">
-        			<c:set var="cancelCnt" value="${cancelCne + 1}" />
+        			<c:set var="cancelCnt" value="${cancelCnt + 1}" />
         		</c:if>
         	</c:forEach>
         	
