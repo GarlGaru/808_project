@@ -27,7 +27,7 @@ public interface MypageDAO {
     public List<MypageReservationDTO> selectMyReservationList(int userId);
 
     // 결제 내역 - 최신순 전체
-    public List<MypagePaymentDTO> selectMyPaymentList(int userId);
+    public List<MypagePaymentDTO> selectMyPaymentList(Map<String, Object> map);
 
     // 월별 지출 합계(최근 12개월) - Chart.js용
     public List<MypageMonthlyStatDTO> selectMonthlyStats(int userId);

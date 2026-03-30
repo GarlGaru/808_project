@@ -65,8 +65,8 @@ public class MypageDAOImpl implements MypageDAO {
 	   ──────────────────────────────────────────── */
     // 결제 내역 - 최신순 전체
     @Override
-    public List<MypagePaymentDTO> selectMyPaymentList(int userId) {
-        return mapper().selectMyPaymentList(userId);
+    public List<MypagePaymentDTO> selectMyPaymentList(Map<String, Object> map) {
+        return mapper().selectMyPaymentList(map);
     }
     
     // 월별 지출 합계(최근 12개월)

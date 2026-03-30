@@ -131,18 +131,24 @@
 <!-- ────────────────────────────────────────────
      결제 내역 / 월별 지출 합계
 ──────────────────────────────────────────── -->
-  <select id="selectMyPaymentList" parameterType="int" resultType="com.spring.eze.user.dto.MypagePaymentDTO">
-    SELECT ORDER_ID     AS orderId
-         , ITEM_NAME    AS itemName
-         , TOTAL_AMOUNT AS totalAmount
-         , APPROVED_AT  AS approvedAt
-         , CREATED_AT   AS createdAt
-         , STATUS       AS status
-         , PAYMENT_TYPE AS paymentType
-      FROM PAYMENT_ORDER
-     WHERE USER_ID = #{userId}
-     ORDER BY CREATED_AT DESC
-  </select>
+<select id="selectMyPaymentList" parameterType="map" resultType="com.spring.eze.user.dto.MypagePaymentDTO">
+  SELECT * FROM (
+    SELECT A.*, ROWNUM AS RNUM FROM (
+      SELECT ORDER_ID     AS orderId
+           , ITEM_NAME    AS itemName
+           , TOTAL_AMOUNT AS totalAmount
+           , APPROVED_AT  AS approvedAt
+           , CREATED_AT   AS createdAt
+           , STATUS       AS status
+           , PAYMENT_TYPE AS paymentType
+        FROM PAYMENT_ORDER
+       WHERE USER_ID = #{userId}
+       ORDER BY CREATED_AT DESC
+    ) A
+    WHERE ROWNUM &lt;= #{endRow}
+  )
+  WHERE RNUM &gt;= #{startRow}
+</select>
 
   <!-- 최근 12개월, APPROVED 상태만, 월별 GROUP BY — Chart.js 바 차트용 -->
   <select id="selectMonthlyStats" parameterType="int" resultType="com.spring.eze.user.dto.MypageMonthlyStatDTO">

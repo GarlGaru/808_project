@@ -210,7 +210,7 @@ public class MypageServiceImpl implements MypageService {
         return mypageDAO.selectMyActivityList(map);
     }
 
-     //예매 내역 — 최근 5건
+	 //예매 내역 — 최근 6건
 	  @Override
 	  public List<MypageReservationDTO> getMyReservationList(int userId) {
 	      return mypageDAO.selectMyReservationList(userId);
@@ -218,10 +218,14 @@ public class MypageServiceImpl implements MypageService {
     
     
     // 결제 내역 — 최신순 전체 조회
-    @Override
-    public List<MypagePaymentDTO> getMyPaymentList(int userId) {
-        return mypageDAO.selectMyPaymentList(userId);
-    }
+	  @Override
+	  public List<MypagePaymentDTO> getMyPaymentList(int userId, int page) {
+	      Map<String, Object> map = new HashMap<>();
+	      map.put("userId",   userId);
+	      map.put("startRow", (page - 1) * PAGE_SIZE + 1);
+	      map.put("endRow",   page * PAGE_SIZE);
+	      return mypageDAO.selectMyPaymentList(map);
+	  }
 
     // 월별 지출 합계 — Chart.js 바 차트용 (yearMonth, totalAmount)
     @Override

@@ -128,13 +128,12 @@ public class MypageController {
     // ─────────────────────────────────────────────────────																															  
     @ResponseBody
     @RequestMapping(value = "/mypage/payments", method = RequestMethod.GET)
-    public List<MypagePaymentDTO> getMyPayments(HttpSession session) {
+    public List<MypagePaymentDTO> getMyPayments(HttpSession session,
+                                                 @RequestParam(defaultValue = "1") int page) {
         logger.info("<<< url => /mypage/payments >>>");
-
         UserDTO loginUser = getLoginUser(session);
         if (loginUser == null) return null;
-
-        return mypageService.getMyPaymentList(loginUser.getUserId());
+        return mypageService.getMyPaymentList(loginUser.getUserId(), page);
     }
 
     // ─────────────────────────────────────────────────────

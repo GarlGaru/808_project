@@ -49,7 +49,7 @@ public interface MypageService {
     public List<MypageReservationDTO> getMyReservationList(int userId);
     
     // 결제 내역 — 최신순 전체
-    public List<MypagePaymentDTO> getMyPaymentList(int userId);
+    List<MypagePaymentDTO> getMyPaymentList(int userId, int page);
 
     // 월별 지출 합계 — Chart.js용
     public List<MypageMonthlyStatDTO> getMonthlyStats(int userId);

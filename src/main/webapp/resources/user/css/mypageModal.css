@@ -503,7 +503,6 @@
   color: #fff;
   z-index: 3; /* overlay 위 */
   text-shadow : 0 1px 4px rgba(0,0,0,0.7); /* 글자 선명하게 */
-  res-content 
 }
 
 .mypage-modal .res-name {
