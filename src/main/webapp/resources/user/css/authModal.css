@@ -298,7 +298,7 @@
   padding-left: var(--am-input-pl);
   font-size: var(--am-input-fs); letter-spacing: 0.15px;
   font-family: "DM Sans", sans-serif;
-  background-color: rgba(255,255,255,0.04);
+  background-color: #1B1B1B;
   color: var(--am-white);
   caret-color: var(--am-white);
   border: 1px solid rgba(255,255,255,0.07);
@@ -542,5 +542,5 @@
 #auth-overlay input:-webkit-autofill,
 #auth-overlay input:-webkit-autofill:hover,
 #auth-overlay input:-webkit-autofill:focus {
-  box-shadow: 0 0 0px 1000px var(--am-card) inset !important;
+  -webkit-box-shadow: 0 0 0 1000px #1B1B1B inset !important;
 }
