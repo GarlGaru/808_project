@@ -377,9 +377,12 @@ public class ShowController {
     	}
     	
     	String userId = String.valueOf(loginUser.getUserId());
-    	
+    	try {
         boolean result = seatService.checkAndLockSeats(showId, scheduleId, seats, userId);
         return result ? "success" : "fail";
+    }catch (RuntimeException e) {
+    	return "fail";
+    }
     }
     
 	@PostMapping("/reserve")
