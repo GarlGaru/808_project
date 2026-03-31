@@ -274,6 +274,7 @@
   padding: 6px 24px 6px 12px;
   text-align-last: center;
   background: rgba(255,255,255,0.06);
+  border: none;
   border-radius: 6px;
   color: var(--c-text);
   font-size: 12px;
@@ -281,7 +282,10 @@
   -moz-appearance: none;
   appearance: none;
 }
-.mypage-modal .mp-select option { background: #1a1e28; color: #f2f2f2; }
+.mypage-modal .mp-select option { 
+  background: #1a1e28; color: #f2f2f2; 
+  }
+  
 
 .select-wrap { position: relative; display: inline-block; }
 .select-wrap::after {
@@ -503,7 +507,6 @@
   color: #fff;
   z-index: 3; /* overlay 위 */
   text-shadow : 0 1px 4px rgba(0,0,0,0.7); /* 글자 선명하게 */
-  res-content 
 }
 
 .mypage-modal .res-name {
@@ -722,7 +725,7 @@
 /* 저장 / 주요 액션 버튼 */
 .mypage-modal .primary-btn {
   padding: 7px 18px;
-  background: rgba(232,93,4,0.25);
+  background: linear-gradient(90deg, #b56f38 0%, #bf5301 100%);
   border: none;
   border-radius: 6px;
   color: var(--c-text);

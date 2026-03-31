@@ -32,7 +32,6 @@ public class MypageController {
 																						 
     @Autowired
     private MypageServiceImpl mypageService;
-
 																																  
     // 세션에서 loginUser 꺼내는 공통 헬퍼
     private UserDTO getLoginUser(HttpSession session) {
