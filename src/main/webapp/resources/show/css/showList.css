@@ -51,7 +51,7 @@
 
 /* 공연 장르 전체 스타일 */
 .show-list-page {
-    padding-top: 10px;
+    padding-top: 0 !important;
 }
 
 .main-category-wrap {
@@ -61,7 +61,7 @@
 }
 
 .genre-title {
-    margin: 10px 0 30px;
+    margin: 0 0 30px;  /* 10px → 0으로 변경 */
     font-size: 2.2rem;
     font-weight: 700;
 }
