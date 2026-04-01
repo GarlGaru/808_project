@@ -15,7 +15,9 @@ import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.interceptor.TransactionAspectSupport;
 import org.springframework.ui.Model;
 
 import com.spring.eze.show.dao.Seat.SeatDAO;
@@ -146,7 +148,7 @@ public class SeatServiceImpl implements SeatService {
 		
 	}
 	@Override
-	@Transactional
+	@Transactional(isolation = Isolation.READ_COMMITTED)
 	public boolean checkAndLockSeats(String showId, int scheduleId, List<String> seats, String userId){
 		
 //	    boolean isAvailable = dao.checkAndLockSeats(showId, scheduleId, seats);
@@ -161,6 +163,10 @@ public class SeatServiceImpl implements SeatService {
 
 	    int updated = dao.holdSeatsNow(map);
 	    
+	    if(updated != seats.size()) {
+	    	throw new RuntimeException("좌석 선점 실패"); // 자동으로 롤백됨
+	    }
+	    
 	    System.out.println("=== checkAndLockSeats 디버그 ===");
 	    System.out.println("showId: " + showId);
 	    System.out.println("scheduleId: " + scheduleId);
@@ -168,7 +174,7 @@ public class SeatServiceImpl implements SeatService {
 	    System.out.println("updated:" + updated);
 	    System.out.println("seats.size(): " + seats.size());
 	    
-	    return updated == seats.size(); //발표용 return
+	    return true;
 	}
 
 	@Override
