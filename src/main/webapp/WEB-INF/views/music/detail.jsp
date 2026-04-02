@@ -67,9 +67,11 @@
 						</button>
 
                         <!-- 좋아요 -->
-		                <button type="button"
-						        id="btnLike"
-						        class="music-detail-icon-btn js-like-song"
+		              	<button type="button"
+						        id="detailLikeBtn"
+						        class="music-detail-icon-btn js-like-btn"
+						        data-like-scope="detail"
+						        data-song-id="${song.songId}"
 						        aria-pressed="false">
 						    ♡
 						</button>
@@ -108,8 +110,10 @@
                         </div>
 
                         <div class="music-detail-meta-card">
-                            <div class="music-detail-meta-label">장르</div>
-                            <div class="music-detail-meta-value">${song.genreName}</div>
+                            <div class="music-detail-meta-label">#해시태그</div>
+                            <c:forEach var="genre" items="${keylist}">
+							    <div class="music-detail-meta-value">${genre.keyword}</div>
+							</c:forEach>
                         </div>
                     </section>
 
@@ -128,7 +132,7 @@
                             <div class="music-detail-col-song">제목</div>
                            	<div class="music-detail-col-artist">아티스트</div>
                             <div class="music-detail-col-album">앨범</div>
-                            <div class="music-detail-col-genre">장르</div>
+                            <div class="music-detail-col-genre">#해시태그</div>
                             <div class="music-detail-col-play">재생</div>
                         </div>
 
@@ -191,7 +195,7 @@
 						        class="music-detail-row-play-btn js-play-song"
 						        data-song-id="${sim.songId}"
 						        data-title="${sim.title}"
-						        data-artist="${sosimng.artistName}"
+						        data-artist="${sim.artistName}"
 						        data-cover="${empty sim.coverImageUrl ? '/resources/music/img/default_album.jpg' : sim.coverImageUrl}">
 						    ▶
 						</button>
@@ -209,48 +213,6 @@
     <script src="${path}/resources/common/bootstrap-4.6.2-dist/js/bootstrap.bundle.min.js"></script>
     <script src="${path}/resources/common/js/main.js"></script>
 
-		<script>
-		$(function () {
-		    $(document).on('click', '.js-like-song', function (e) {
-		        e.stopPropagation();
 		
-		        const $btn = $(this);
-		        const songId = $btn.data('song-id');
-		
-		        if (!songId) {
-		            alert('곡 정보가 없습니다.');
-		            return;
-		        }
-		
-		        $.ajax({
-		            url: '${path}/music/toggleLike',
-		            type: 'GET',
-		            data: { songId: songId },
-		            success: function (res) {
-		                if (res === 'liked') {
-		                    $btn.addClass('is-liked');
-		                    $btn.text('♥');
-		                } else if (res === 'unliked') {
-		                    $btn.removeClass('is-liked');
-		                    $btn.text('♡');
-		                } else if (res === 'noLogin') {
-		                    alert('로그인 후 이용 가능합니다.');
-		                } else {
-		                    alert('좋아요 처리에 실패했습니다.');
-		                }
-		            },
-		            error: function () {
-		                alert('서버 오류가 발생했습니다.');
-		            }
-		        });
-		    });
-		});
-		</script>
-	<script>
-document.addEventListener('DOMContentLoaded', function () {
-    if (window.likeManager) {
-        window.likeManager.setSong('${song.songId}');
-    }
-});
-</script>
+	
 

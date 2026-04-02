@@ -38,11 +38,11 @@ function initMainStory() {
     /* ── 장르 인기곡 ─────────────────────────────────────────── */
     MusicSlider({
         mountId:  'genre-slider-mount',
-        title:    '장르 인기곡',
-        subtitle: '선택한 장르에서 인기 있는 곡들이에요.',
+        title:    'K-POP 인기곡',
+        subtitle: '이번주 K-POP에서 인기가 높은 곡입니다.',
         apiUrl:   `${path}/music/genre-ranking`,
         sliderId: 'genreSlider',
-        label:    '장르 인기곡',
+        label:    'K-POP 인기곡',
         path,
     });
 }
@@ -82,11 +82,11 @@ function initRanking() {
     /* ── 장르 인기곡 ─────────────────────────────────────────── */
     MusicSlider({
         mountId:  'genre-ranking-mount',
-        title:    '장르 인기곡',
-        subtitle: '선택된 장르에서 반응이 높은 곡입니다.',
+        title:    'K-POP 인기곡',
+        subtitle: '이번주 K-POP에서 인기가 높은 곡입니다.',
         apiUrl:   `${path}/music/genre-ranking`,
         sliderId: 'genreRankingSlider',
-        label:    '장르 인기곡',
+        label:    'K-POP 인기곡',
         path,
     });
 }
@@ -112,22 +112,22 @@ function initMusicReco(){
 
     /* ── 좋아할만한 인기 트랙 ───────────────────────────────────────── */
     MusicSlider({
-        mountId:  'today-slider-mount',
+        mountId:  'reco-popular-slider-mount',
         title:    '좋아할만한 인기 트랙',
         subtitle: '나와 비슷한 취향의 사용자들이 많이 찾는 곡.',
-        apiUrl:   `${path}/music/today-hits`,
-        sliderId: 'todaySlider',
+        apiUrl:   `${path}/music/personal-recommend-popular`,
+        sliderId: 'recoPopularSlider',
         label:    '좋아할만한 인기 트랙',
         path,
     });
 
     /* ── 좋아할만한 최신 곡 ─────────────────────────────────────────── */
     MusicSlider({
-        mountId:  'genre-slider-mount',
+        mountId:  'reco-latest-slider-mount',
         title:    '좋아할만한 최신 곡',
         subtitle: '새로나온 곡, 이런건 어떠세요?',
-        apiUrl:   `${path}/music/genre-ranking`,
-        sliderId: 'genreSlider',
+        apiUrl:   `${path}/music/personal-recommend-latest`,
+        sliderId: 'recoLatestSlider',
         label:    '좋아할만한 최신 곡',
         path,
     });

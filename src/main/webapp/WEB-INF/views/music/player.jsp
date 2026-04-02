@@ -66,7 +66,13 @@
 
     <!-- 오른쪽: 부가 버튼 -->
     <div class="player-right">
-        <button type="button" class="player-btn" id="btnLike">♡</button>
+       <button type="button"
+	        class="player-btn js-like-btn"
+	        id="playerLikeBtn"
+	        data-like-scope="player"
+	        aria-pressed="false">
+		    ♡
+		</button>
 
         <div class="player-volume-wrap">
             <span class="player-volume-icon">🔊</span>

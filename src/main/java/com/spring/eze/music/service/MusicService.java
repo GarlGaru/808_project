@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.ui.Model;
 
 import com.spring.eze.music.dto.ArtistDTO;
+import com.spring.eze.music.dto.KeywordDTO;
 import com.spring.eze.music.dto.SongDTO;
 
 public interface MusicService {
@@ -61,6 +62,7 @@ public interface MusicService {
     //검색
     public List<SongDTO>  searchSongs(String keyword);
     	
-    
+    //해쉬태그 
+    public List<KeywordDTO> getKeyword(int songId);
     
 }

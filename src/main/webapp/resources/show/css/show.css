@@ -1,7 +1,7 @@
 @charset "UTF-8";
 /*===== page container ====*/
 .show-wrap {max-width: 1200px; margin: 0 auto; padding: 0px 16px 40px;}
-.section{margin-top: 28px;}
+.section{margin-top: 0;}
 .section-title{font-size: 22px; font-weight: 700; margin: 0 0 14px}
 
 /* /*==== Genre Banner ====*/
