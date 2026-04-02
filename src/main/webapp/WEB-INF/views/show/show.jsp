@@ -23,8 +23,7 @@
 			<img src="${path}/resources/presentation/show.png">
 		</a>
     </div> --%>
- 	<br><br>
-
+ 	
     <div class="show-wrap">
 	      <div class="show-top-menu-wrap">
 		    <nav class="show-top-menu">
@@ -47,7 +46,7 @@
 		       <!--  <a href="javascript:void(0)" onclick="openAuthModal()" -->
 		    </nav>
 		</div>
-			<br>
+		<br>	
 	       <div class="main-show-section-full">
 	    <div class="section">
 	        <h2 class="section-title" id="main-section-title">공연</h2>

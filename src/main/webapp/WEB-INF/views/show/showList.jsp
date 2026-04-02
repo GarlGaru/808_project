@@ -17,9 +17,7 @@
 <body class="dark-mode">
     <%@ include file="/WEB-INF/views/common/common.jsp" %>
     <%@ include file="/WEB-INF/views/common/header.jsp" %>
-	<br>
-    <!-- <br><br><br><br> -->
-
+	
     <div class="container show-list-page">
 
         <!-- 상단 메인 장르 탭 -->

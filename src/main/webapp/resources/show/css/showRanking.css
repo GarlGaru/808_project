@@ -3,7 +3,7 @@
 /* 1. 전체 레이아웃 */
 .ranking-section {
     max-width: 1100px; /* 전체 너비를 1100px로 제한하여 정돈된 느낌을 줌 */
-    margin: 60px auto; /* 상하 여백을 60px 줘서 답답함을 해소 */
+    margin: 0 auto; /* 상하 여백을 60px 줘서 답답함을 해소 */
     padding: 0 20px; /* 양옆에 최소한의 여백 확보 */
     color: #fff;
 }
