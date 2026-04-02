@@ -11,7 +11,7 @@
 <meta charset="UTF-8">
 <meta name="viewport"
 	content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<title>Premium Orange Board - ${dto.title}</title>
+<title>Board-${dto.title}</title>
 
 <link rel="stylesheet" href="${path}/resources/common/css/style.css">
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -80,7 +80,7 @@ body {
 }
 
 .meta-key {
-	color: #ffcc00;
+	color: linear-gradient(90deg, #DF8845 0%, #ED6701 100%);
 	font-size: 11px;
 	font-weight: 800;
 	text-transform: uppercase;
@@ -148,8 +148,8 @@ body {
 }
 
 .btn-green {
-	background: #ffcc00;
-	color: #331a00;
+	background: linear-gradient(90deg, #DF8845 0%, #ED6701 100%);
+	color:  #fff;
 }
 
 .btn-dark {
@@ -387,7 +387,7 @@ body {
 				</div>
 			</c:if>
 
-			<div class="post-main-content">${dto.content}</div>
+			<div class="post-main-content"><c:out value="${dto.content}" /></div>
 
 			<%-- 유튜브 영상 출력 영역 --%>
 			<c:if test="${not empty dto.youtubeUrl}">
@@ -421,11 +421,9 @@ body {
 
 			<div class="btn-container">
 				<c:if test="${sessionScope.loginUser.userId eq dto.userId}">
-					<button class="pill-button btn-green" id="btnEdit">EDIT /
-						DELETE</button>
+					<button class="pill-button btn-green" id="btnEdit">수정 / 삭제</button>
 				</c:if>
-				<button class="pill-button btn-dark" id="btnList">BACK TO
-					LIST</button>
+				<button class="pill-button btn-dark" id="btnList">목록으로</button>
 				<button class="pill-button btn-red" id="btnLike">
 					<span id="likeText">LIKE</span> <span id="likeCount"
 						style="margin-left: 8px; font-weight: 800;">0</span>
@@ -433,14 +431,14 @@ body {
 			</div>
 
 			<div class="comment-box-card">
-				<h3 style="color: #ffcc00; margin-bottom: 20px; font-weight: 800;">COMMENTS</h3>
+				<h3 style="color: #linear-gradient(90deg, #DF8845 0%, #ED6701 100%); margin-bottom: 20px; font-weight: 800;">댓글목록</h3>
 				<textarea id="reply_content" rows="3" maxlength="200"
 					placeholder="댓글을 입력하세요. (최대 200자)"></textarea>
 				<div
 					style="display: flex; justify-content: space-between; align-items: center; margin-top: 10px;">
 					<span id="replyCharCount" class="char-count-reply">0 / 200자</span>
 					<button type="button" id="btnReply" class="pill-button btn-green"
-						style="padding: 10px 30px;">SUBMIT</button>
+						style="padding: 10px 30px;">작성하기</button>
 				</div>
 				<div id="comment_list" style="margin-top: 30px;"></div>
 			</div>

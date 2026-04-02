@@ -21,14 +21,20 @@
 /* ── 공통 CSS 변수 ── */
 :root {
   /* 공통 색상 */
-  --modal-bg:       rgba(0, 0, 0, 0.6);
-  --modal-blur:     blur(14px);
+ --modal-bg: radial-gradient(
+      circle at 50% 50%, 
+      rgba(60, 60, 65, 0.3) 0%,   /* 중앙: 더 밝고 투명하게 */
+      rgba(15, 15, 20, 0.6) 70%,  /* 중간: 은은한 어둠 */
+      rgba(0, 0, 0, 0.8) 100%     /* 가장자리: 0.9에서 0.8로 하향 */
+  );
+  --modal-blur:     blur(12px);
   --modal-text:     #f2f2f2;
   --modal-gray:     rgba(242, 242, 242, 0.4);
   --modal-muted:    rgba(242, 242, 242, 0.38);
   --modal-border:   rgba(255, 255, 255, 0.06);
   --modal-border2:  rgba(255, 255, 255, 0.12);
   --modal-shadow-d: rgba(0, 0, 0, 0.9);
+  /* --modal-shadow-d: rgba(255, 160, 50, 0.3); */
   --modal-shadow-l: rgba(255, 255, 255, 0.04);
 
   /* 공통 카드/사이드바 배경
@@ -64,14 +70,19 @@
   position: fixed;
   inset: 0;
   z-index: 9999;
-  background: var(--modal-bg);
-  backdrop-filter: var(--modal-blur);
-  -webkit-backdrop-filter: var(--modal-blur);
+  background: var(--modal-bg); /* 이것만 남깁니다 */
+  /* background-color: rgba(0, 0, 0, 0.2); <- 이 줄을 삭제하세요! */
+  
+  backdrop-filter: blur(15px); /* 블러를 살짝 높이면 투명해도 고급스럽습니다 */
+  -webkit-backdrop-filter: blur(15px);
+  
   display: flex;
   align-items: center;
   justify-content: center;
   font-family: 'DM Sans', sans-serif;
   color: var(--modal-gray);
+  
+  animation: mc-fadein 0.4s ease-out; /* 애니메이션도 잊지 말고 추가! */
 }
 
 /* ── 공통 닫기 버튼 기반 ──

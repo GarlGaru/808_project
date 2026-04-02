@@ -5,6 +5,7 @@ import java.util.Map;
 
 import com.spring.eze.show.dto.Seat.SeatDTO;
 
+
 public interface SeatDAO {
 
 	// 좌석 전체 조회 (공연 + 회차 기준)

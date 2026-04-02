@@ -336,7 +336,7 @@ public class AdminController {
 			File saveFile = new File(dir, fileName);
 			albumImageFile.transferTo(saveFile);
 
-			dto.setCoverImageUrl("/resources/music/img/" + fileName);
+			dto.setCoverImageUrl("/eze/resources/music/img/" + fileName);
 		}
 
 		musicService.insertAlbum(dto);
@@ -348,7 +348,7 @@ public class AdminController {
 		return "/admin2/admin_album";
 	}
 
-	// 장르 조회
+	// 해시태그 조회
 	@GetMapping("/music/admin_genre")
 	public String admingenre(Model model) {
 
@@ -358,13 +358,13 @@ public class AdminController {
 		return "/admin2/admin_genre";
 	}
 
-	// 장르 저장
+	// 해시태그 저장
 	@PostMapping("/music/admin_genre")
 	public String insertGenre(AdminMusicDTO dto, Model model) {
 
 		musicService.insertGenre(dto);
 
-		model.addAttribute("msg", "장르 등록 완료");
+		model.addAttribute("msg", "해시태그 등록 완료");
 		model.addAttribute("genreList", musicService.selectGenreList());
 
 		return "/admin2/admin_genre";

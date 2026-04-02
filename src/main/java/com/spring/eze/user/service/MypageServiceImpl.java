@@ -27,6 +27,7 @@ import com.spring.eze.user.dto.MypageMembershipDTO;
 import com.spring.eze.user.dto.MypageMonthlyStatDTO;
 import com.spring.eze.user.dto.MypagePaymentDTO;
 import com.spring.eze.user.dto.MypagePlayReportDTO;
+import com.spring.eze.user.dto.MypageReservationDTO;
 import com.spring.eze.user.dto.UserDTO;
 
 /**
@@ -94,9 +95,9 @@ public class MypageServiceImpl implements MypageService {
      *   수정 → 세션 갱신은 항상 Service 안에서 한 세트로 처리해야 일관성 유지
      */
     private void refreshSession(HttpSession session, int userId) {
-        UserDTO updated = getUserWithProfile(userId);
-        updated.setPassword(null); // 보안: BCrypt 해시를 세션에 남기지 않음
-        session.setAttribute("loginUser", updated);
+        UserDTO updated = getUserWithProfile(userId); //DB에서 최신 정보 가져오기
+        updated.setPassword(null); 					  // 보안: BCrypt 해시를 세션에 남기지 않음
+        session.setAttribute("loginUser", updated);	  // 세션에 덮어쓰기
     }
 
 
@@ -123,11 +124,15 @@ public class MypageServiceImpl implements MypageService {
     @Override
     public MypageMembershipDTO getMembershipInfo(int userId, HttpSession session) {
         MypageMembershipDTO membership = mypageDAO.selectMembershipInfo(userId);
-
+        logger.info("<<< selectMembershipInfo userId={}, result={} >>>", userId, membership);
+        
+        refreshSession(session, userId);
+        
+        // 유효성 판단(세션 등급용)
         boolean isValid = (membership != null
                 && "APPROVED".equals(membership.getStatus())
                 && membership.getDaysLeft() >= 0);
-
+        
         // 세션 등급 동기화 — DB 상태와 세션 상태를 항상 일치시킴
         UserDTO loginUser = (UserDTO) session.getAttribute("loginUser");
         if (loginUser != null) {
@@ -135,7 +140,7 @@ public class MypageServiceImpl implements MypageService {
             loginUser.getProfile().setMembershipType(isValid ? "PRO" : "FREE");
             session.setAttribute("loginUser", loginUser);
         }
-
+        
         return isValid ? membership : null;
     }
 
@@ -159,7 +164,7 @@ public class MypageServiceImpl implements MypageService {
         // GLB_SCORE_* 값이 바뀌어도 여기만 자동 반영됨
         Map<String, Object> scoreMap = new HashMap<>();
         scoreMap.put("userId",        userId);
-        scoreMap.put("scorePlay",     GlobalVariableHolder.GLB_SCORE_PLAY);
+		/* scoreMap.put("scorePlay", GlobalVariableHolder.GLB_SCORE_PLAY); */
         scoreMap.put("scoreInterval", GlobalVariableHolder.GLB_SCORE_INTERVAL);
     	
         // 1. 청취 요약 숫자 (총 청취시간, 재생곡수, 고유트랙수)
@@ -205,11 +210,22 @@ public class MypageServiceImpl implements MypageService {
         return mypageDAO.selectMyActivityList(map);
     }
 
+	 //예매 내역 — 최근 6건
+	  @Override
+	  public List<MypageReservationDTO> getMyReservationList(int userId) {
+	      return mypageDAO.selectMyReservationList(userId);
+	  }
+    
+    
     // 결제 내역 — 최신순 전체 조회
-    @Override
-    public List<MypagePaymentDTO> getMyPaymentList(int userId) {
-        return mypageDAO.selectMyPaymentList(userId);
-    }
+	  @Override
+	  public List<MypagePaymentDTO> getMyPaymentList(int userId, int page) {
+	      Map<String, Object> map = new HashMap<>();
+	      map.put("userId",   userId);
+	      map.put("startRow", (page - 1) * PAGE_SIZE + 1);
+	      map.put("endRow",   page * PAGE_SIZE);
+	      return mypageDAO.selectMyPaymentList(map);
+	  }
 
     // 월별 지출 합계 — Chart.js 바 차트용 (yearMonth, totalAmount)
     @Override
@@ -382,7 +398,7 @@ public class MypageServiceImpl implements MypageService {
             dto.setDayIndex(i);
             dto.setDayName(DAY_NAMES[i]);    // 숫자 인덱스 → "월", "화" 등으로 변환
             dto.setPlayCount(counts[i]);
-            dto.setAvgPlayTimeSec(counts[i] * 10); // 재생수 * 10초 (SCORE=5 기준 단순 추정)
+            // dto.setAvgPlayTimeSec(counts[i] * 10); // 요일별 차트 구현시 활성화
             result.add(dto);
         }
         return result;
