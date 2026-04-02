@@ -104,43 +104,51 @@
      - 금액 포맷팅
      - 스키마에 정의된 POSTER_URL 사용
 ──────────────────────────────────────────── -->
-<select id="selectMyReservationList" 
-        parameterType="int" 
-        resultType="com.spring.eze.user.dto.MypageReservationDTO">
-    SELECT * FROM (
-        SELECT 
-            P.ORDER_ID       AS reservationId,
-            S.TITLE          AS showTitle,
-            TO_CHAR(S.START_DATE, 'YYYY.MM.DD HH24:MI') AS startTime,
-            S.VENUE_NAME     AS venue,
-            ST.SEAT_GRADE    AS seatGrade,
-            ST.SEAT_LABEL    AS seatLabel,
-            '₩' || TO_CHAR(P.TICKET_PRICE, 'FM999,999,999') AS amt,
-            P.TICKET_STATUS  AS status,     S.POSTER_URL     AS posterImg   FROM TICKET_PAYMENT_TBL P
-        INNER JOIN PAYMENT_ORDER O ON P.ORDER_ID = O.ORDER_ID
-        INNER JOIN SHOW_TBL S      ON P.SHOW_ID = S.SHOW_ID
-        LEFT OUTER JOIN SEAT_TBL ST ON P.SEAT_ID = ST.SEAT_ID
-        WHERE O.USER_ID = #{userId}
-        ORDER BY P.CREATED_AT DESC
-    )
-    WHERE ROWNUM &lt;= 5
+<select id="selectMyReservationList" parameterType="int" resultType="com.spring.eze.user.dto.MypageReservationDTO">
+    SELECT 
+        PO.ORDER_ID        AS reservationId,
+        S.TITLE            AS showTitle,
+        S.START_DATE       AS startDate,
+        S.END_DATE         AS endDate,
+        S.VENUE_NAME       AS venue,
+        ST.SEAT_GRADE      AS seatGrade,
+        ST.SEAT_LABEL      AS seatLabel,
+        TP.TICKET_PRICE    AS ticketPrice,
+        PO.QUANTITY        AS quantity,
+        TP.TICKET_STATUS   AS status,
+        S.POSTER_URL       AS posterImg,
+        SC.PLAY_DATE       AS playDate
+    FROM PAYMENT_ORDER PO
+    JOIN TICKET_PAYMENT_TBL TP ON PO.ORDER_ID = TP.ORDER_ID
+    JOIN SHOW_TBL S          ON TP.SHOW_ID = S.SHOW_ID
+    LEFT JOIN SEAT_TBL ST     ON TP.SEAT_ID = ST.SEAT_ID
+    LEFT JOIN SCHEDULE_TBL SC ON TP.SCHEDULE_ID = SC.SCHEDULE_ID
+    WHERE PO.USER_ID = #{userId}
+    ORDER BY TP.CREATED_AT DESC
 </select>
+
 
 <!-- ────────────────────────────────────────────
      결제 내역 / 월별 지출 합계
 ──────────────────────────────────────────── -->
-  <select id="selectMyPaymentList" parameterType="int" resultType="com.spring.eze.user.dto.MypagePaymentDTO">
-    SELECT ORDER_ID     AS orderId
-         , ITEM_NAME    AS itemName
-         , TOTAL_AMOUNT AS totalAmount
-         , APPROVED_AT  AS approvedAt
-         , CREATED_AT   AS createdAt
-         , STATUS       AS status
-         , PAYMENT_TYPE AS paymentType
-      FROM PAYMENT_ORDER
-     WHERE USER_ID = #{userId}
-     ORDER BY CREATED_AT DESC
-  </select>
+<select id="selectMyPaymentList" parameterType="map" resultType="com.spring.eze.user.dto.MypagePaymentDTO">
+  SELECT * FROM (
+    SELECT A.*, ROWNUM AS RNUM FROM (
+      SELECT ORDER_ID     AS orderId
+           , ITEM_NAME    AS itemName
+           , TOTAL_AMOUNT AS totalAmount
+           , APPROVED_AT  AS approvedAt
+           , CREATED_AT   AS createdAt
+           , STATUS       AS status
+           , PAYMENT_TYPE AS paymentType
+        FROM PAYMENT_ORDER
+       WHERE USER_ID = #{userId}
+       ORDER BY CREATED_AT DESC
+    ) A
+    WHERE ROWNUM &lt;= #{endRow}
+  )
+  WHERE RNUM &gt;= #{startRow}
+</select>
 
   <!-- 최근 12개월, APPROVED 상태만, 월별 GROUP BY — Chart.js 바 차트용 -->
   <select id="selectMonthlyStats" parameterType="int" resultType="com.spring.eze.user.dto.MypageMonthlyStatDTO">

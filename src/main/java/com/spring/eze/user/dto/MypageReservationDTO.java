@@ -1,51 +1,50 @@
 package com.spring.eze.user.dto;
 
+import java.util.Date;
+
 public class MypageReservationDTO {
 
-    // 1. 기본 식별 정보
-    private int reservationId;   // 예매 번호
+    private String reservationId;   // 결제번호
+    private String showTitle;       // 공연 제목
+    private Date startDate;         // 공연 기간 시작
+    private Date endDate;           // 공연 기간 종료
+    // private String showTime;     // 공연 시간 HH:MM~HH:MM
+    private String venue;           // 공연장
+    private String seatGrade;       // 좌석 등급
+    private String seatLabel;       // 좌석 번호
+    private String ticketPrice;     // 문자열로 들어오는 금액 ("VIP 150,000원")
+    private int quantity;           // 매수
+    private String status;          // 예매 상태
+    private String posterImg;       // 포스터 경로
+    private Date playDate;			// 관람일자
     
-    // 2. 공연 정보 (show_tbl 기반)
-    private String showTitle;    // 공연 제목 (title)
-    private String startTime;    // 공연 기간 또는 관람일 (가공된 문자열)
-    private String venue;        // 공연 장소 (venue_name)
-    private String posterPath;   // 포스터 경로 (poster_url)
-
-    // 3. 좌석 정보 (seat_tbl 기반 - 디자인 포인트를 위해 분리!)
-    private String seatGrade;    // 좌석 등급 (VIP, R, S 등)
-    private String seatLabel;    // 좌석 번호 (A-12 등)
-
-    // 4. 결제 및 상태 (reservation_tbl 기반)
-    private String amt;          // 가공된 결제 금액 (₩88,000)
-    private String status;       // 예매 상태 (CONFIRMED, CANCELLED 등)
-
-    // 5. 프론트엔드 전용 (필요 시 Service에서 세팅)
-    private String gradient;     // 포스터 없을 때 깔아줄 배경색
-
 	public MypageReservationDTO() {
 		super();
 	}
 
-	public MypageReservationDTO(int reservationId, String showTitle, String startTime, String venue, String posterPath,
-			String seatGrade, String seatLabel, String amt, String status, String gradient) {
+	public MypageReservationDTO(String reservationId, String showTitle, Date startDate, Date endDate, String venue,
+			String seatGrade, String seatLabel, String ticketPrice, int quantity, String status, String posterImg,
+			Date playDate) {
 		super();
 		this.reservationId = reservationId;
 		this.showTitle = showTitle;
-		this.startTime = startTime;
+		this.startDate = startDate;
+		this.endDate = endDate;
 		this.venue = venue;
-		this.posterPath = posterPath;
 		this.seatGrade = seatGrade;
 		this.seatLabel = seatLabel;
-		this.amt = amt;
+		this.ticketPrice = ticketPrice;
+		this.quantity = quantity;
 		this.status = status;
-		this.gradient = gradient;
+		this.posterImg = posterImg;
+		this.playDate = playDate;
 	}
 
-	public int getReservationId() {
+	public String getReservationId() {
 		return reservationId;
 	}
 
-	public void setReservationId(int reservationId) {
+	public void setReservationId(String reservationId) {
 		this.reservationId = reservationId;
 	}
 
@@ -57,12 +56,20 @@ public class MypageReservationDTO {
 		this.showTitle = showTitle;
 	}
 
-	public String getStartTime() {
-		return startTime;
+	public Date getStartDate() {
+		return startDate;
 	}
 
-	public void setStartTime(String startTime) {
-		this.startTime = startTime;
+	public void setStartDate(Date startDate) {
+		this.startDate = startDate;
+	}
+
+	public Date getEndDate() {
+		return endDate;
+	}
+
+	public void setEndDate(Date endDate) {
+		this.endDate = endDate;
 	}
 
 	public String getVenue() {
@@ -71,14 +78,6 @@ public class MypageReservationDTO {
 
 	public void setVenue(String venue) {
 		this.venue = venue;
-	}
-
-	public String getPosterPath() {
-		return posterPath;
-	}
-
-	public void setPosterPath(String posterPath) {
-		this.posterPath = posterPath;
 	}
 
 	public String getSeatGrade() {
@@ -97,12 +96,20 @@ public class MypageReservationDTO {
 		this.seatLabel = seatLabel;
 	}
 
-	public String getAmt() {
-		return amt;
+	public String getTicketPrice() {
+		return ticketPrice;
 	}
 
-	public void setAmt(String amt) {
-		this.amt = amt;
+	public void setTicketPrice(String ticketPrice) {
+		this.ticketPrice = ticketPrice;
+	}
+
+	public int getQuantity() {
+		return quantity;
+	}
+
+	public void setQuantity(int quantity) {
+		this.quantity = quantity;
 	}
 
 	public String getStatus() {
@@ -113,23 +120,30 @@ public class MypageReservationDTO {
 		this.status = status;
 	}
 
-	public String getGradient() {
-		return gradient;
+	public String getPosterImg() {
+		return posterImg;
 	}
 
-	public void setGradient(String gradient) {
-		this.gradient = gradient;
+	public void setPosterImg(String posterImg) {
+		this.posterImg = posterImg;
+	}
+
+	public Date getPlayDate() {
+		return playDate;
+	}
+
+	public void setPlayDate(Date playDate) {
+		this.playDate = playDate;
 	}
 
 	@Override
 	public String toString() {
-		return "MypageReservationDTO [reservationId=" + reservationId + ", showTitle=" + showTitle + ", startTime="
-				+ startTime + ", venue=" + venue + ", posterPath=" + posterPath + ", seatGrade=" + seatGrade
-				+ ", seatLabel=" + seatLabel + ", amt=" + amt + ", status=" + status + ", gradient=" + gradient + "]";
+		return "MypageReservationDTO [reservationId=" + reservationId + ", showTitle=" + showTitle + ", startDate="
+				+ startDate + ", endDate=" + endDate + ", venue=" + venue + ", seatGrade=" + seatGrade + ", seatLabel="
+				+ seatLabel + ", ticketPrice=" + ticketPrice + ", quantity=" + quantity + ", status=" + status
+				+ ", posterImg=" + posterImg + ", playDate=" + playDate + "]";
 	}
-	
-	
-	
-	
-}
 
+	
+
+}

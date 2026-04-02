@@ -9,7 +9,7 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <title>장르 관리</title>
+    <title>해시태그 관리</title>
 
     <link href="${adminRes}/css/sb-admin-2.min.css" rel="stylesheet">
     <link href="${adminRes}/vendor/datatables/dataTables.bootstrap4.min.css" rel="stylesheet">
@@ -72,8 +72,8 @@
 
     <div class="page-header-box">
         <div>
-            <h2>장르 관리</h2>
-            <div class="sub-text">장르 조회 및 등록 페이지</div>
+            <h2>해시태그 관리</h2>
+            <div class="sub-text">해시태그 조회 및 등록 페이지</div>
         </div>
     </div>
 
@@ -89,14 +89,14 @@
     <!-- 접이식 목록 -->
     <div class="mb-4">
         <a class="toggle-link" data-toggle="collapse" href="#genreListCollapse" role="button" aria-expanded="true" aria-controls="genreListCollapse">
-            장르 목록 보기 / 숨기기
+            해시태그 목록 보기 / 숨기기
         </a>
     </div>
 
     <div class="collapse show" id="genreListCollapse">
         <div class="card shadow mb-4 genre-table-card">
             <div class="card-header py-3 d-flex justify-content-between align-items-center">
-                <h6 class="m-0 font-weight-bold text-primary">등록된 장르 목록</h6>
+                <h6 class="m-0 font-weight-bold text-primary">등록된 해시태그 목록</h6>
                 <span class="badge badge-primary">
                     총 <c:out value="${empty genreList ? 0 : genreList.size()}" />개
                 </span>
@@ -106,8 +106,8 @@
                     <table id="genreTable" class="table table-bordered table-hover text-center" width="100%" cellspacing="0">
                         <thead class="thead-light">
                             <tr>
-                                <th style="width:140px;">장르 ID</th>
-                                <th>장르명</th>
+                                <th style="width:140px;">해시태그 ID</th>
+                                <th>해시태그명</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -122,7 +122,7 @@
 
                     <c:if test="${empty genreList}">
                         <div class="text-center text-muted mt-3">
-                            등록된 장르가 없습니다.
+                            등록된 해시태그가 없습니다.
                         </div>
                     </c:if>
                 </div>
@@ -133,14 +133,14 @@
     <!-- 등록 -->
     <div class="card shadow mb-4 genre-form-card">
         <div class="card-header py-3">
-            <h6 class="m-0 font-weight-bold text-primary">장르 등록</h6>
+            <h6 class="m-0 font-weight-bold text-primary">해시태그 등록</h6>
         </div>
         <div class="card-body">
             <form action="${adminUrl}/music/admin_genre" method="post">
 
                 <div class="form-group">
                     <label for="genreName">
-                        장르명
+                        해시태그명
                         <span class="required-mark">*</span>
                     </label>
                     <input type="text" id="genreName" name="genreName" class="form-control" required>

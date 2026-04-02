@@ -11,7 +11,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport"
 	content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<title>Premium Orange Board - 글쓰기</title>
+<title>Board - 글쓰기</title>
 
 <link rel="stylesheet" href="${path}/resources/common/css/style.css">
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
