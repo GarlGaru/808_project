@@ -100,7 +100,7 @@
       <div class="pane-header">
         <div class="pane-title" id="mpTitle"><i class="fa-solid fa-headphones"></i> 808 플레이 리포트</div>
         
-        <div class="pane-sub"   id="mpSub">이번 달 나의 음악 청취 현황</div>
+        <div class="pane-sub"   id="mpSub">이번 달, 당신의 사운드 인사이트</div>
       </div>
 
       <div class="pane-body">
@@ -109,7 +109,7 @@
         <div class="tab-pane active" id="tab-report">
           <div class="stat-grid">
             <div class="stat-card">
-              <div class="stat-label">총 청취 시간<span class="mp-tip" data-tip="실제로 감상한 곡들의 누적 시간이에요">?</span></div>
+              <div class="stat-label">총 감상 시간<span class="mp-tip" data-tip="실제로 감상한 곡들의 누적 시간이에요">?</span></div>
               <div class="stat-num" id="mpStatTime">-</div>
               <div class="stat-sub" id="mpStatTimeSub">-</div>
             </div>
@@ -121,7 +121,7 @@
             <div class="stat-card">
               <div class="stat-label">활발한 요일<span class="mp-tip" data-tip="청취한 기록이 가장 많은 요일이에요.">?</span></div>
               <div class="stat-num stat-num--day" id="mpStatDay">-</div>
-              <div class="stat-sub">최다 청취 요일</div>
+              <div class="stat-sub">최다 감상 요일</div>
             </div>
           </div>
           <div class="two-col">
@@ -139,19 +139,23 @@
               </div>
               <div id="mpTopList"></div>
             </div>
-            <%-- 장르 + 아티스트 --%>
-            <div class="two-col__right">
-              <div class="stat-card stat-card--inner stat-card--flex">
-                <div class="sec-title sec-title--sm">TOP 장르<span class="mp-tip" data-tip="자주 감상한 곡들의 장르를 분석해 취향을 반영했어요.">?</span></div>
-                <div class="genre-grid" id="mpTopGenres"></div>
-              </div>
-              <div class="stat-card stat-card--inner stat-card--flex">
-                <div class="sec-title sec-title--sm">TOP 아티스트<span class="mp-tip" data-tip="다양한 곡을 가장 오래 감상한 결과로 찾아낸 아티스트예요.">?</span></div>
-                <div id="mpTopArtists"></div>
-              </div>
-            </div>
-          </div>
-        </div>
+		 <%-- 장르 + 아티스트 --%>
+		<div class="two-col__right">
+		  <div class="stat-card stat-card--inner stat-card--flex">
+		    <div class="sec-title sec-title--sm">TOP 장르<span class="mp-tip" data-tip="자주 감상한 곡들의 장르를 분석해 취향을 반영했어요.">?</span></div>
+		    <div class="genre-chart-wrap" id="mpTopGenres">
+		      <canvas id="genreDonutChart"></canvas>
+		    </div><%-- genre-chart-wrap 닫기 --%>
+		  </div><%-- stat-card 닫기 --%>
+		
+		  <div class="stat-card stat-card--inner stat-card--flex">
+		    <div class="sec-title sec-title--sm">TOP 아티스트<span class="mp-tip" data-tip="다양한 곡을 가장 오래 감상한 결과로 찾아낸 아티스트예요.">?</span></div>
+		    <div id="mpTopArtists"></div>
+		  </div><%-- stat-card 닫기 --%>
+		</div><%-- two-col__right 닫기 --%>
+		</div>
+		</div>
+		
 
 
   <!-- ─── RESERVATION 탭 ─── -->

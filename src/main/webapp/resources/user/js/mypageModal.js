@@ -292,6 +292,7 @@
 
   /** 멤버십 정보 조회 및 버튼 상태 업데이트 */
   function _apiLoadMembership() {
+  console.log(CP + '/mypage/membershipInfo');
     _ajax({
       url: CP + '/mypage/membershipInfo',
       success: function (data) {
@@ -378,29 +379,83 @@
     $('#mpStatDay').text(data.busiestDay || '-');
   }
 
-  /* ── TOP 장르 ── */
+/* ── TOP 장르 ── */
+let _genreChart = null;
 
-  /**
-   * TOP 장르 태그 목록 렌더링
-   * @param {Array} list - 장르 목록
-   */
-  function _renderGenres(list) {
-    const $container = $('#mpTopGenres');
-    if (!list || !list.length) {
-      $container.html('<div class="empty-box">아직 장르 데이터가 없어요</div>');
-      return;
-    }
-    const tmpl = document.getElementById('tmpl-genre-tag');
-    const frag = document.createDocumentFragment();
+function _renderGenres(list) {
+  const $container = $('#mpTopGenres');
 
-    $.each(list, function (i, g) {
-      const node = tmpl.content.cloneNode(true);
-      node.querySelector('.genre-name').textContent = g.genreName;
-      node.querySelector('.genre-pct').textContent  = g.percentage + '%';
-      frag.appendChild(node);
-    });
-    $container.empty().append(frag);
+  if (!list || !list.length) {
+    $container.html('<div class="empty-box">아직 장르 데이터가 없어요</div>');
+    return;
   }
+
+  const labels = list.map(g => g.genreName);
+  const data   = list.map(g => g.percentage);
+  const colors = [
+	  'rgba(232, 120,  50, 0.55)', // 메인 오렌지
+	  'rgba(255, 180,  80, 0.55)', // 앰버
+	  'rgba(99,  179, 255, 0.55)', // 아이스 블루 (대비)
+	  'rgba(183, 110, 255, 0.55)', // 퍼플 (대비)
+	  'rgba(0,   210, 180, 0.55)', // 민트 (대비)
+	  'rgba(255, 100, 120, 0.55)', // 코랄
+	  'rgba(120, 140, 255, 0.55)', // 페리윙클
+	];
+
+  if (_genreChart) {
+    _genreChart.destroy();
+    _genreChart = null;
+  }
+
+  const ctx = document.getElementById('genreDonutChart').getContext('2d');
+
+  _genreChart = new Chart(ctx, {
+    type: 'doughnut',
+    data: {
+      labels: labels,
+      datasets: [{
+        data:            data,
+        backgroundColor: colors.slice(0, data.length),
+        borderWidth:     0
+      }]
+    },
+    options: {
+      cutout: '65%',
+      plugins: {
+        legend: {
+          position: 'bottom',
+          labels: {
+            color:     'rgba(255, 255, 255, 0.35)',
+            font:      { size: 10 },
+            boxWidth:  8,
+            boxHeight: 8,
+            padding:   6
+          }
+        },
+        tooltip: {
+          callbacks: {
+            label: ctx => ` ${ctx.label}  ${ctx.raw}%`
+          }
+        }
+      }
+    },
+    plugins: [{
+      id: 'centerText',
+      afterDraw(chart) {
+        const { ctx, chartArea: { top, bottom, left, right } } = chart;
+        const cx = (left + right) / 2;
+        const cy = (top + bottom) / 2;
+        ctx.save();
+        ctx.font         = '11px sans-serif';
+        ctx.fillStyle    = 'rgba(255, 255, 255, 0.25)';
+        ctx.textAlign    = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText('TOP 장르', cx, cy);
+        ctx.restore();
+      }
+    }]
+  });
+}
 
   /* ── TOP 10 곡 ── */
 
@@ -789,7 +844,7 @@
           data:            emptyValues,
           backgroundColor: colors.bg,
           borderColor:     colors.bd,
-          borderWidth:     1,
+          borderWidth:     0,
           borderRadius:    6,
           barPercentage:   0.5
         }]
