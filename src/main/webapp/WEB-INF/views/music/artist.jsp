@@ -16,7 +16,7 @@
                     <div class="music-artist-hero-bg">
                         <c:choose>
                             <c:when test="${not empty artist.profileImageUrl}">
-                                <img src="${artist.profileImageUrl}"
+                                <img src="${path}${artist.profileImageUrl}"
                                      alt="${artist.name}"
                                      class="music-artist-hero-bg-img">
                             </c:when>

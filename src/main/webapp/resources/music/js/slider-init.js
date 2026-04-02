@@ -38,11 +38,11 @@ function initMainStory() {
     /* ── 장르 인기곡 ─────────────────────────────────────────── */
     MusicSlider({
         mountId:  'genre-slider-mount',
-        title:    '장르 인기곡',
-        subtitle: '선택한 장르에서 인기 있는 곡들이에요.',
+        title:    'K-POP 인기곡',
+        subtitle: '이번주 K-POP에서 인기가 높은 곡입니다.',
         apiUrl:   `${path}/music/genre-ranking`,
         sliderId: 'genreSlider',
-        label:    '장르 인기곡',
+        label:    'K-POP 인기곡',
         path,
     });
 }
@@ -82,11 +82,11 @@ function initRanking() {
     /* ── 장르 인기곡 ─────────────────────────────────────────── */
     MusicSlider({
         mountId:  'genre-ranking-mount',
-        title:    '장르 인기곡',
-        subtitle: '선택된 장르에서 반응이 높은 곡입니다.',
+        title:    'K-POP 인기곡',
+        subtitle: '이번주 K-POP에서 인기가 높은 곡입니다.',
         apiUrl:   `${path}/music/genre-ranking`,
         sliderId: 'genreRankingSlider',
-        label:    '장르 인기곡',
+        label:    'K-POP 인기곡',
         path,
     });
 }

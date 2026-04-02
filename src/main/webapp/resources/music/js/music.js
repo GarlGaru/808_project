@@ -24,7 +24,7 @@ async function loadMainContent(url) {
 
         // 받아온 HTML을 해당 영역에 삽입
         result.innerHTML = html;
-
+		//받아온 RESULT 안에 initFn 이 있으면 실행해라
         const initFn = result.querySelector('[data-init]')?.dataset.init;
         if (initFn && typeof window[initFn] === 'function') {
             window[initFn]();
@@ -73,7 +73,7 @@ const playerManager = playerRoot ? {
     btnNext: playerRoot.querySelector('#btnNext'),
 
     // 좋아요 버튼
-    btnLike: playerRoot.querySelector('#btnLike'),
+    btnLike: playerRoot.querySelector('#playerLikeBtn'),
 
     // 현재 재생 중인 곡 ID를 담아두는 hidden/input 요소
     currentSongIdInput: playerRoot.querySelector('#currentSongId'),

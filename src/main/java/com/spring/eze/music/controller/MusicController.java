@@ -6,6 +6,7 @@ import com.spring.eze.user.dto.UserDTO;
 
 
 import com.spring.eze.music.dto.ArtistDTO;
+import com.spring.eze.music.dto.KeywordDTO;
 import com.spring.eze.music.dto.SongDTO;
 
 import java.io.IOException;
@@ -152,13 +153,21 @@ public class MusicController {
     public String toggleLike(@RequestParam int songId, HttpSession session) {
 
         UserDTO loginUser = (UserDTO) session.getAttribute("loginUser");
+        
+        log.info("toggleLike 호출됨 - songId={}", songId);
+        log.info("toggleLike session loginUser={}", loginUser);
 
         if (loginUser == null) {
             return "noLogin";
         }
 
         int userId = loginUser.getUserId();
-        return musicService.toggleLike(songId, userId);
+        log.info("toggleLike 시작 - userId={}, songId={}", userId, songId);
+         
+        String result = musicService.toggleLike(songId, userId);
+        log.info("toggleLike 결과 - userId={}, songId={}, result={}", userId, songId, result);
+
+        return result;
     }
     
     //좋아요 점수값 
@@ -205,10 +214,12 @@ public class MusicController {
         Map<String, Object> param = new HashMap<>();
         param.put("songId", songId);
         param.put("genreId", song.getGenreId());
-
+        
+        List<KeywordDTO> keylist = musicService.getKeyword(songId);
         List<SongDTO> similarList = musicService.getSimilarSongs(param);
         model.addAttribute("similarList", similarList);
-
+        model.addAttribute("keylist",keylist);
+        
         return "music/detail";
     }
     
