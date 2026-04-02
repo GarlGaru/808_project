@@ -167,11 +167,20 @@ public class kakaoPayController {
     //카카오 결제된거 취소(환불)
     @GetMapping("/request_cancel")
     @ResponseBody
-    public String cancelRequest(@RequestParam("orderId") String orderId){
-    	System.out.println("컨트롤러 orderId = [" + orderId + "]");
-    	kakaopayService.cancel(orderId, null); // null = 전체취소
-    	
-    	return "OK";
-    }
-    
+    public String cancelRequest(@RequestParam("orderId") String orderId, HttpSession session){
+        System.out.println("controller orderId = [" + orderId + "]");
+        kakaopayService.cancel(orderId, null);
+
+        UserDTO loginUser = (UserDTO) session.getAttribute("loginUser");
+        if (loginUser != null) {
+            UserDTO freshUser = mypageService.getUserWithProfile(loginUser.getUserId());
+            freshUser.setPassword(null);
+            if (freshUser.getProfile() != null) {
+                freshUser.getProfile().setMembershipType("FREE");
+            }
+            session.setAttribute("loginUser", freshUser);
+        }
+
+        return "OK";
+    }    
 }
