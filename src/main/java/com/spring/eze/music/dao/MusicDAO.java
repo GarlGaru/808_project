@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.spring.eze.music.dto.ArtistDTO;
+import com.spring.eze.music.dto.KeywordDTO;
 import com.spring.eze.music.dto.SongDTO;
 
 public interface MusicDAO {
@@ -48,9 +49,39 @@ public interface MusicDAO {
     //좋아요
     public int getLikeScoreSum(int songId, int userId);
     public List<SongDTO> getLikedSongs(int userId);
+    public int existsLikeScoreRow(int songId, int userId);
+    public void insertLikeScore(int songId, int userId);
+    public void deleteLikeScore(int songId, int userId);
+    
+    //좋아요 플레이 리스트 추가
+    public Integer getLikePlaylistId(int userId);
+    public void createLikePlaylist(int userId);
+    public int existsPlaylistElement(int playlistId, int songId);
+    public void insertPlaylistElement(int playlistId, int songId);
+    public void deletePlaylistElement(int playlistId, int songId);
+    
     
     //검색
     public List<SongDTO> getSearhSong(String keyword);
     public List<ArtistDTO> getSearhArtist(String keyword);
+    
+    
+    
+    //키워드 리스트 
+    public List<KeywordDTO> getKeywordList(int songId);
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
 
 }

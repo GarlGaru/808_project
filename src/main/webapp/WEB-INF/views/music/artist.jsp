@@ -16,7 +16,7 @@
                     <div class="music-artist-hero-bg">
                         <c:choose>
                             <c:when test="${not empty artist.profileImageUrl}">
-                                <img src="${artist.profileImageUrl}"
+                                <img src="${path}${artist.profileImageUrl}"
                                      alt="${artist.name}"
                                      class="music-artist-hero-bg-img">
                             </c:when>
@@ -43,17 +43,17 @@
 
                 <!-- 2) 액션 버튼 -->
                 <section class="music-artist-actions">
-<c:if test="${not empty artistSongs}">
-    <button type="button"
-            class="music-artist-play-main-btn js-play-song"
-            data-song-id="${artistSongs[0].songId}"
-            data-title="${artistSongs[0].title}"
-            data-artist="${artistSongs[0].artistName}"
-            data-cover="${empty artistSongs[0].coverImageUrl ? '/resources/music/img/default_album.jpg' : artistSongs[0].coverImageUrl}"
-            onclick="event.stopPropagation(); playerManager.playByButton(this);">
-        ▶
-    </button>
-</c:if>
+					<c:if test="${not empty artistSongs}">
+					    <button type="button"
+					            class="music-artist-play-main-btn js-play-song"
+					            data-song-id="${artistSongs[0].songId}"
+					            data-title="${artistSongs[0].title}"
+					            data-artist="${artistSongs[0].artistName}"
+					            data-cover="${empty artistSongs[0].coverImageUrl ? '/resources/music/img/default_album.jpg' : artistSongs[0].coverImageUrl}"
+					            onclick="event.stopPropagation(); playerManager.playByButton(this);">
+					        ▶
+					    </button>
+					</c:if>
 
 
                     <button type="button" class="music-artist-more-btn">

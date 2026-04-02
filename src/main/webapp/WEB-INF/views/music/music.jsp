@@ -70,7 +70,8 @@
     <template id="music-card-template">
         <div class="music-home-card" data-song-id="">
             <div class="music-home-thumb-wrap">
-                <img class="music-home-thumb" src="" alt="">
+                <img class="music-home-thumb" src="" alt=""
+                onerror="this.onerror=null; this.src='/eze/resources/music/img/default_album.png';">
                 <button type="button"
                         class="music-home-play-btn js-play-song"
                         data-song-id=""
@@ -110,6 +111,7 @@
             </aside>
 
             <!-- music-layout-main: 메인 콘텐츠가 들어가는 영역 현재는 mainstory.jsp를 포함-->
+            
             <main class="music-layout-main">
                <div id="main-content-area"></div>
             </main>
