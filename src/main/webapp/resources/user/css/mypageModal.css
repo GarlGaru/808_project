@@ -310,6 +310,28 @@
 .mypage-modal .genre-name { font-weight: 500; color: var(--c-text); }
 .mypage-modal .genre-pct  { font-size: 11px; color: var(--c-muted); }
 
+/* 장르 차트 */
+.genre-chart-wrap {
+  position: relative;
+  width: 100%;
+  max-width: 170px;   /* 크기 줄이기 */
+  margin: 0 auto;
+}
+
+.genre-chart-center {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 11px;
+  font-family: inherit;           /* 기존 모달 폰트 상속 */
+  color: rgba(255, 255, 255, 0.35);
+  pointer-events: none;
+  white-space: nowrap;
+  letter-spacing: 0.05em;
+}
+
+
 /* ── 리스트 아이템 ── */
 .mypage-modal .list-item {
   display: flex;

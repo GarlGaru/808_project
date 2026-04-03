@@ -62,15 +62,17 @@ public class MypageController {
      * 멤버십 정보 조회 API (AJAX: 동적 갱신용)
      */
     @RequestMapping(value = "/mypage/membershipInfo", method = RequestMethod.GET)
-    @ResponseBody // JSON 데이터를 리턴하도록 명시
+    @ResponseBody
     public MypageMembershipDTO membershipInfo(HttpSession session) {
         logger.info("<<< url => /mypage/membershipInfo (API) >>>");
         
         UserDTO loginUser = getLoginUser(session);
-        if (loginUser == null) return null; // 혹은 에러 객체 반환
+        if (loginUser == null) return new MypageMembershipDTO(); // ← 빈 객체 반환
         
-        // 실시간 멤버십 상태만 JSON으로 반환
-        return mypageService.getMembershipInfo(loginUser.getUserId(), session);
+        MypageMembershipDTO dto = mypageService.getMembershipInfo(loginUser.getUserId(), session);
+        if (dto == null) return new MypageMembershipDTO(); // ← 이것도 빈 객체로
+        
+        return dto;
     }
     
     // ─────────────────────────────────────────────────────

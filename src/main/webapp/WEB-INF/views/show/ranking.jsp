@@ -43,8 +43,7 @@
 		       <!--  <a href="javascript:void(0)" onclick="openAuthModal()" -->
 		    </nav>
 		</div>
-	<br><br>
-	
+		<br><br>
         <div class="ranking-title">랭킹</div>
 		<br>
         <div class="ranking-tab-box">
