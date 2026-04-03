@@ -1,4 +1,5 @@
-import { getPlaylistAll, getPlaylist, getLikes, getHistory } from './api.js'
+import { getPlaylistAll, getPlaylist,getLikeSongs, getHistory } from './api.js'
+import { renderLikeSongs } from './likedListView.js'
 
 document.addEventListener("DOMContentLoaded", async () => {
 
@@ -8,9 +9,18 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     // --- 좋아요 클릭 ---
     btnLike.addEventListener("click", async () => {
-        const data = await getLikes();
-        console.log("좋아요:", data);
-    });
+	    console.log("좋아요 리스트 버튼 클릭됨");
+
+	    try {
+	        const data = await getLikeSongs();
+	        console.log("좋아요 곡 목록:", data);
+	        console.log("배열인가?", Array.isArray(data));
+	
+	        renderLikeSongs(data);
+	    } catch (error) {
+	        console.error("좋아요 곡 목록 조회 실패:", error);
+	    }
+	});
 
     // --- 히스토리 클릭 ---
     btnHistory.addEventListener("click", async () => {
@@ -45,3 +55,5 @@ document.addEventListener("DOMContentLoaded", async () => {
     });
 
 });
+
+

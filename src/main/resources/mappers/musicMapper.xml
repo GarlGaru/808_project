@@ -128,14 +128,14 @@
 	
 	<!--좋아요 목록 조회 추가-->
 	<select id="getLikedSongs" parameterType="int" resultMap="songDetailResultMap">
-		 SELECT DISTINCT
+	    SELECT
 	        s.song_id,
 	        s.artist_id,
 	        s.title,
 	        a.name AS artist_name,
 	        al.title AS album_title,
-	        g.name AS genre_name,
-	        g.genre_id,
+	        LISTAGG(g.name, ', ') WITHIN GROUP (ORDER BY g.name) AS genre_name,
+	        MIN(g.genre_id) AS genre_id,
 	        al.cover_image_url,
 	        s.song_path
 	    FROM song_score_tbl ss
@@ -151,6 +151,14 @@
 	        ON sg.genre_id = g.genre_id
 	    WHERE ss.user_id = #{userId}
 	      AND ss.score = 300
+	    GROUP BY
+	        s.song_id,
+	        s.artist_id,
+	        s.title,
+	        a.name,
+	        al.title,
+	        al.cover_image_url,
+	        s.song_path
 	    ORDER BY s.song_id DESC
 	</select>
 		

@@ -203,6 +203,20 @@ public class MusicController {
 
         return "music/likedList";
     }
+    //
+    @GetMapping("/like/songs")  //fetch로 이주소를 부르면 여기로 들어온다.
+    @ResponseBody  //return값을 jsp로 해석하지 않고 응답데이터 자체로 보낸다.
+    public List<SongDTO> getLikedSongList(HttpSession session) {
+
+        UserDTO loginUser = (UserDTO) session.getAttribute("loginUser");
+
+        if (loginUser == null) {
+            return java.util.Collections.emptyList();
+        }
+
+        int userId = loginUser.getUserId();
+        return musicService.getLikedSongs(userId);
+    }
     
     //곡 상세 페이지
     @GetMapping("/detail")
