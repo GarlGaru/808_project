@@ -2,6 +2,7 @@ package com.spring.eze.reco.dao;
 
 import com.spring.eze.reco.dto.KeywordScoreDTO;
 import com.spring.eze.reco.dto.SongCardDTO;
+import com.spring.eze.reco.dto.SongDetailDTO;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -32,5 +33,10 @@ public interface RecommendDAO {
     /** 결과로 나온 song id로 화면에 뿌릴 정보 가져오기 */
     List<SongCardDTO> getResultSongs(
             @Param("songIds") List<Integer> songIds);
+
+
+    // SongDetailDTO selectSongDetail(@Param("songId") Integer songId);
+
+    List<SongDetailDTO> selectSongDetailsBySongIds(@Param("songIds") List<Integer> songIds);
 
 }
