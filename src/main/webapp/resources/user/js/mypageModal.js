@@ -817,7 +817,7 @@ function _renderGenres(list) {
         bd.push('rgba(232, 93, 4, 0.8)');
       } else {
         const r = maxVal > 0 ? v / maxVal : 0;
-        bg.push('rgba(255, 255, 255, ' + (0.04 + r * 0.1).toFixed(2) + ')');
+        bg.push('rgba(230, 230, 230, ' + (0.5 + r * 0.2).toFixed(2) + ')');
         bd.push('rgba(255, 255, 255, 0.05)');
       }
     });
@@ -915,10 +915,8 @@ function _renderGenres(list) {
      6. PROFILE — 아바타 / 프로필 수정
      ════════════════════════════════════════════════════════════ */
 
-  /**
-   * 아바타 파일 선택 시 미리보기 표시 및 서버 업로드
-   * @param {HTMLInputElement} input - file input 요소
-   */
+
+  // 아바타 파일 선택 시 미리보기 표시 및 서버 업로드
   function _mpChangeAvatar(input) {
     if (!input.files || !input.files[0]) { return; }
     const file = input.files[0];

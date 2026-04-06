@@ -2,7 +2,6 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %> 
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<c:set var="now" value="<%=System.currentTimeMillis()%>" />
 <%--
   mypageModal.jsp — 헤더 include 전용 fragment
   열기: <button onclick="openMypage()">마이페이지</button>
@@ -35,7 +34,7 @@
           <div class="av" id="mpAv" onclick="document.getElementById('mpAvFile').click()">
             <c:choose>
               <c:when test="${not empty loginUser.profile.photoUrl}">
-                <img src="${pageContext.request.contextPath}${loginUser.profile.photoUrl}?v=${now}" alt="프로필">
+                <img src="${pageContext.request.contextPath}${loginUser.profile.photoUrl}" alt="프로필">
               </c:when>
               <c:otherwise>
                 ${fn:substring(loginUser.nickname, 0, 1)}
