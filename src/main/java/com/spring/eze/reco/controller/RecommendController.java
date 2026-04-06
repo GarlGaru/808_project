@@ -78,4 +78,10 @@ public class RecommendController {
     }
 
 
+    @GetMapping("/music/chat")
+    public String chatPage(HttpServletRequest request) {
+        log.info("Reco Controller : chatPage");
+
+        return "music/chat";
+    }
 }

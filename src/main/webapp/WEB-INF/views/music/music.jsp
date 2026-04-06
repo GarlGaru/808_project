@@ -30,6 +30,10 @@
     <link rel="stylesheet" href="${path}/resources/music/css/music-search.css">
     <link rel="stylesheet" href="${path}/resources/music/css/music-like.css">
     
+    <!--chat bot-->
+    <link rel="stylesheet" href="${path}/resources/music/css/ai-chat.css">
+    
+    
 </head>
 <body class="dark-mode">
 
@@ -137,6 +141,7 @@
 	 <%-- 추천 js 로딩 --%>
     <script src="${path}/resources/music/js/musicSlider.js"></script>
     <script src="${path}/resources/music/js/slider-init.js"></script>
+    <script src="${path}/resources/music/js/ai-chat.js"></script>
 
 	<script>
 	    window.addEventListener("DOMContentLoaded", function() {

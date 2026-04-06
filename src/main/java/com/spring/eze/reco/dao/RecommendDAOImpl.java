@@ -2,6 +2,7 @@ package com.spring.eze.reco.dao;
 
 import com.spring.eze.reco.dto.KeywordScoreDTO;
 import com.spring.eze.reco.dto.SongCardDTO;
+import com.spring.eze.reco.dto.SongDetailDTO;
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -47,5 +48,11 @@ public class RecommendDAOImpl implements RecommendDAO {
     public List<SongCardDTO> getResultSongs(List<Integer> songIds) {
         RecommendDAO dao = sqlSession.getMapper(RecommendDAO.class);
         return dao.getResultSongs(songIds);
+    }
+
+    @Override
+    public List<SongDetailDTO> selectSongDetailsBySongIds(List<Integer> songIds) {
+        RecommendDAO dao = sqlSession.getMapper(RecommendDAO.class);
+        return dao.selectSongDetailsBySongIds(songIds);
     }
 }

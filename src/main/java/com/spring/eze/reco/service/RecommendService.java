@@ -4,6 +4,7 @@ import com.spring.eze.music.dto.SongDTO;
 import com.spring.eze.reco.dao.RecommendDAO;
 import com.spring.eze.reco.dto.KeywordScoreDTO;
 import com.spring.eze.reco.dto.SongCardDTO;
+import com.spring.eze.reco.dto.SongDetailDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -100,6 +101,15 @@ public class RecommendService {
                     songDTO.getCoverImageUrl()
             );
             result.add(songCardDTO);
+        }
+        return result;
+    }
+
+    public List<SongDetailDTO> getSongDetailListBySongId(List<Integer> songIds) {
+        System.out.println("getSongDetailListBySongId");
+        List<SongDetailDTO> result = dao.selectSongDetailsBySongIds(songIds);
+        for (SongDetailDTO dto : result) {
+            System.out.println(dto);
         }
         return result;
     }
