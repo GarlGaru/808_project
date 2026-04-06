@@ -63,6 +63,7 @@ pip install -r requirements.txt
 python -m scripts.init_db
 
 # 노이즈 필터링 (Oracle → GPT 판별 → SQLite)
+# !!! 오래걸리고 토큰 많이 사용하는 작업이므로 미리 만들어놓은 것을 받아 쓸 것 !!!
 python -m scripts.run_noise_filter
 
 # 곡 임베딩 생성 (Oracle + SQLite → OpenAI → .npy)
