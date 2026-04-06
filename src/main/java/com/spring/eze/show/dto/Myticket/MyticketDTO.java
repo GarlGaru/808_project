@@ -21,6 +21,7 @@ public class MyticketDTO {
 	private String venueName;
 	private Date startDate;
 	private Date endDate;
+	private String showId;
 	
 	// schedule_tbl
 	private Date playDate;
@@ -41,7 +42,7 @@ public class MyticketDTO {
 	public MyticketDTO(String email, long reservationId, long userId, String orderId, String approvedAt,
 			Integer quantity, String status, String title, String posterUrl, String venueName, Date startDate,
 			Date endDate, Date playDate, Integer totalPrice, String paymentStatus, String paymentMethod,
-			String cancelAvailable) {
+			String cancelAvailable, String showId) {
 		super();
 		this.email = email;
 		this.reservationId = reservationId;
@@ -60,6 +61,7 @@ public class MyticketDTO {
 		this.paymentStatus = paymentStatus;
 		this.paymentMethod = paymentMethod;
 		this.cancelAvailable = cancelAvailable;
+		this.showId = showId;
 	}
 
 	public String getEmail() {
@@ -198,13 +200,22 @@ public class MyticketDTO {
 		this.cancelAvailable = cancelAvailable;
 	}
 
+	public String getShowId() {
+		return showId;
+	}
+
+	public void setShowId(String showId) {
+		this.showId = showId;
+	}
+
 	@Override
 	public String toString() {
 		return "MyticketDTO [email=" + email + ", reservationId=" + reservationId + ", userId=" + userId + ", orderId="
 				+ orderId + ", approvedAt=" + approvedAt + ", quantity=" + quantity + ", status=" + status + ", title="
 				+ title + ", posterUrl=" + posterUrl + ", venueName=" + venueName + ", startDate=" + startDate
-				+ ", endDate=" + endDate + ", playDate=" + playDate + ", totalPrice=" + totalPrice + ", paymentStatus="
-				+ paymentStatus + ", paymentMethod=" + paymentMethod + ", cancelAvailable=" + cancelAvailable + "]";
+				+ ", endDate=" + endDate + ", showId=" + showId + ", playDate=" + playDate + ", totalPrice="
+				+ totalPrice + ", paymentStatus=" + paymentStatus + ", paymentMethod=" + paymentMethod
+				+ ", cancelAvailable=" + cancelAvailable + "]";
 	}
 
 }

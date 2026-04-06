@@ -55,18 +55,18 @@ public class MypageDAOImpl implements MypageDAO {
        예매 내역
  	   ──────────────────────────────────────────── */
     // 예매 내역 - 최근 5건
-//    @Override
-//    public List<MypageReservationDTO> selectMyReservationList(int userId) {
-//        return mapper().selectMyReservationList(userId);
-//    }
+    @Override
+    public List<MypageReservationDTO> selectMyReservationList(int userId) {
+        return mapper().selectMyReservationList(userId);
+    }
     
     /* ────────────────────────────────────────────
        결제 내역
 	   ──────────────────────────────────────────── */
     // 결제 내역 - 최신순 전체
     @Override
-    public List<MypagePaymentDTO> selectMyPaymentList(int userId) {
-        return mapper().selectMyPaymentList(userId);
+    public List<MypagePaymentDTO> selectMyPaymentList(Map<String, Object> map) {
+        return mapper().selectMyPaymentList(map);
     }
     
     // 월별 지출 합계(최근 12개월)

@@ -6,6 +6,7 @@ import com.spring.eze.user.dto.UserDTO;
 
 
 import com.spring.eze.music.dto.ArtistDTO;
+import com.spring.eze.music.dto.KeywordDTO;
 import com.spring.eze.music.dto.SongDTO;
 
 import java.io.IOException;
@@ -152,13 +153,21 @@ public class MusicController {
     public String toggleLike(@RequestParam int songId, HttpSession session) {
 
         UserDTO loginUser = (UserDTO) session.getAttribute("loginUser");
+        
+        log.info("toggleLike 호출됨 - songId={}", songId);
+        log.info("toggleLike session loginUser={}", loginUser);
 
         if (loginUser == null) {
             return "noLogin";
         }
 
         int userId = loginUser.getUserId();
-        return musicService.toggleLike(songId, userId);
+        log.info("toggleLike 시작 - userId={}, songId={}", userId, songId);
+         
+        String result = musicService.toggleLike(songId, userId);
+        log.info("toggleLike 결과 - userId={}, songId={}, result={}", userId, songId, result);
+
+        return result;
     }
     
     //좋아요 점수값 
@@ -194,6 +203,20 @@ public class MusicController {
 
         return "music/likedList";
     }
+    //
+    @GetMapping("/like/songs")  //fetch로 이주소를 부르면 여기로 들어온다.
+    @ResponseBody  //return값을 jsp로 해석하지 않고 응답데이터 자체로 보낸다.
+    public List<SongDTO> getLikedSongList(HttpSession session) {
+
+        UserDTO loginUser = (UserDTO) session.getAttribute("loginUser");
+
+        if (loginUser == null) {
+            return java.util.Collections.emptyList();
+        }
+
+        int userId = loginUser.getUserId();
+        return musicService.getLikedSongs(userId);
+    }
     
     //곡 상세 페이지
     @GetMapping("/detail")
@@ -205,10 +228,12 @@ public class MusicController {
         Map<String, Object> param = new HashMap<>();
         param.put("songId", songId);
         param.put("genreId", song.getGenreId());
-
+        
+        List<KeywordDTO> keylist = musicService.getKeyword(songId);
         List<SongDTO> similarList = musicService.getSimilarSongs(param);
         model.addAttribute("similarList", similarList);
-
+        model.addAttribute("keylist",keylist);
+        
         return "music/detail";
     }
     

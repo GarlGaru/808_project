@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import com.spring.eze.music.dto.ArtistDTO;
+import com.spring.eze.music.dto.KeywordDTO;
 import com.spring.eze.music.dto.SongDTO;
 
 @Repository
@@ -128,6 +129,95 @@ public class MusicDAOImpl implements MusicDAO {
 	public List<SongDTO> getLikedSongs(int userId) {
 	    return sqlSession.selectList(NS + "getLikedSongs", userId);
 	}
+	//좋아요 확인용  있으면 1 없으면 0 으로 확인
+	@Override
+	public int existsLikeScoreRow(int songId, int userId) {
+	 	Map<String, Object> param = new HashMap<>();
+	    param.put("songId", songId);
+	    param.put("userId", userId);
+
+	    Integer result = sqlSession.selectOne(NS + "existsLikeScoreRow", param);
+	    return result == null ? 0 : result;
+	}
+	//좋아요 insert
+	@Override
+	public void insertLikeScore(int songId, int userId) {
+		Map<String, Object> param = new HashMap<>();
+		param.put("songId", songId);
+		param.put("userId", userId);
+		
+		sqlSession.insert(NS + "insertLikeScore" , param);
+		
+	}
+	//좋아요 delete
+	@Override
+	public void deleteLikeScore(int songId, int userId) {
+		Map<String, Object> param = new HashMap<>();
+	    param.put("songId", songId);
+	    param.put("userId", userId);
+
+	    sqlSession.delete(NS + "deleteLikeScore", param);
+		
+	}
+	/**
+	 * 현재 로그인한 사용자의 LIKE 타입 플레이리스트 ID를 조회한다.
+	 * 없으면 null 이 반환된다.
+	 */
+	@Override
+	public Integer getLikePlaylistId(int userId) {
+	    return sqlSession.selectOne(NS + "getLikePlaylistId", userId);
+	}
+
+	/**
+	 * 현재 로그인한 사용자의 LIKE 타입 플레이리스트를 생성한다.
+	 * playlists_tbl 에 title='좋아요', list_type='LIKE' 로 insert 된다.
+	 */
+	@Override
+	public void createLikePlaylist(int userId) {
+	    sqlSession.insert(NS + "createLikePlaylist", userId);
+	}
+
+	/**
+	 * 특정 플레이리스트에 특정 곡이 이미 들어있는지 확인한다.
+	 * 중복 insert 방지용이다.
+	 */
+	@Override
+	public int existsPlaylistElement(int playlistId, int songId) {
+	    Map<String, Object> param = new HashMap<>();
+	    param.put("playlistId", playlistId);
+	    param.put("songId", songId);
+
+	    Integer result = sqlSession.selectOne(NS + "existsPlaylistElement", param);
+	    return result == null ? 0 : result;
+	}
+
+	/**
+	 * 특정 플레이리스트에 특정 곡을 추가한다.
+	 * playlist_ele_tbl 에 playlist_id, song_id 를 insert 한다.
+	 */
+	@Override
+	public void insertPlaylistElement(int playlistId, int songId) {
+	    Map<String, Object> param = new HashMap<>();
+	    param.put("playlistId", playlistId);
+	    param.put("songId", songId);
+
+	    sqlSession.insert(NS + "insertPlaylistElement", param);
+	}
+
+	/**
+	 * 특정 플레이리스트에서 특정 곡을 삭제한다.
+	 * 좋아요 취소 시 playlist_ele_tbl 에서 해당 곡을 제거할 때 사용한다.
+	 */
+	@Override
+	public void deletePlaylistElement(int playlistId, int songId) {
+	    Map<String, Object> param = new HashMap<>();
+	    param.put("playlistId", playlistId);
+	    param.put("songId", songId);
+
+	    sqlSession.delete(NS + "deletePlaylistElement", param);
+	}
+	
+	
 //검색
 	@Override
 	public List<SongDTO> getSearhSong(String keyword) {
@@ -140,5 +230,15 @@ public class MusicDAOImpl implements MusicDAO {
 		
 		return sqlSession.selectList(NS+"getSearhArtist",keyword);
 	}
+//키워드 리스트
+	@Override
+	public List<KeywordDTO> getKeywordList(int songId) {
+		
+		return sqlSession.selectList(NS +"getKeywordList",songId);
+	}
+
+
+
+
     
 }

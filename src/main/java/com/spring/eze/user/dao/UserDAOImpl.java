@@ -18,7 +18,7 @@ public class UserDAOImpl implements UserDAO {
     // 1. 회원가입
     @Override
     public int insertUser(UserDTO dto) {
-        // [수업 방식] 매퍼 연결 후 변수에 담아서 리턴
+        //매퍼 연결 후 변수에 담아서 리턴
         UserDAO dao = sqlSession.getMapper(UserDAO.class);
         int insertCnt = dao.insertUser(dto);
         return insertCnt;

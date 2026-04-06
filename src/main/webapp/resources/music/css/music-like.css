@@ -1,0 +1,367 @@
+@charset "UTF-8";
+
+/* =========================
+   좋아요 리스트 페이지 전체
+   ========================= */
+.music-liked-page {
+    min-height: 100%;
+    background: linear-gradient(180deg, #1b1b1b 0%, #111 220px, #0b0b0b 100%);
+    color: #fff;
+    padding-bottom: 120px;
+}
+
+/* =========================
+   상단 헤더 영역
+   ========================= */
+.music-liked-hero {
+    display: flex;
+    align-items: flex-end;
+    gap: 28px;
+    padding: 32px 32px 28px;
+    min-height: 320px;
+    background:
+        linear-gradient(180deg, rgba(255,255,255,0.10) 0%, rgba(255,255,255,0.04) 35%, rgba(0,0,0,0.20) 100%),
+        linear-gradient(135deg, #5e5e5e 0%, #2f2f2f 55%, #181818 100%);
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+
+.music-liked-hero-cover {
+    width: 232px;
+    height: 232px;
+    border-radius: 8px;
+    overflow: hidden;
+    background: linear-gradient(180deg, #2d2d2d 0%, #222 100%);
+    box-shadow: 0 18px 40px rgba(0,0,0,0.45);
+    flex-shrink: 0;
+}
+
+.music-liked-hero-cover img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.music-liked-hero-cover--placeholder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 82px;
+    color: rgba(255,255,255,0.55);
+    width: 100%;
+    height: 100%;
+}
+
+.music-liked-hero-info {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    min-width: 0;
+}
+
+.music-liked-hero-type {
+    font-size: 13px;
+    color: rgba(255,255,255,0.88);
+    font-weight: 700;
+    margin-bottom: 14px;
+}
+
+.music-liked-hero-title {
+    font-size: clamp(46px, 6vw, 88px);
+    line-height: 0.95;
+    font-weight: 900;
+    letter-spacing: -0.04em;
+    margin: 0 0 18px;
+    color: #fff;
+}
+
+.music-liked-hero-meta {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    color: rgba(255,255,255,0.80);
+    font-size: 15px;
+}
+
+.music-liked-hero-meta strong {
+    color: #fff;
+    font-weight: 700;
+}
+
+/* =========================
+   상단 액션 바
+   ========================= */
+.music-liked-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 18px 32px 22px;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+
+.music-liked-toolbar-left,
+.music-liked-toolbar-right {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.music-liked-toolbar-icon {
+    width: 42px;
+    height: 42px;
+    border-radius: 999px;
+    border: none;
+    background: transparent;
+    color: rgba(255,255,255,0.78);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    cursor: pointer;
+    transition: all 0.18s ease;
+}
+
+.music-liked-toolbar-icon:hover {
+    background: rgba(255,255,255,0.08);
+    color: #fff;
+}
+
+.music-liked-toolbar-view {
+    font-size: 15px;
+    color: rgba(255,255,255,0.75);
+}
+
+/* =========================
+   리스트 래퍼
+   ========================= */
+.music-liked-content {
+    padding: 0 16px 40px;
+}
+
+.music-liked-table {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
+}
+
+.music-liked-table thead th {
+    text-align: left;
+    font-size: 13px;
+    font-weight: 600;
+    color: rgba(255,255,255,0.70);
+    padding: 14px 16px;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+
+.music-liked-table thead th.col-num {
+    width: 52px;
+}
+
+.music-liked-table thead th.col-title {
+    width: 42%;
+}
+
+.music-liked-table thead th.col-artist {
+    width: 20%;
+}
+
+.music-liked-table thead th.col-album {
+    width: 22%;
+}
+
+.music-liked-table thead th.col-genre {
+    width: 10%;
+}
+
+.music-liked-table thead th.col-play {
+    width: 90px;
+    text-align: center;
+}
+
+.music-liked-table tbody tr {
+    border-radius: 8px;
+    transition: background 0.18s ease;
+    cursor: pointer;
+}
+
+.music-liked-table tbody tr:hover {
+    background: rgba(255,255,255,0.05);
+}
+
+.music-liked-table tbody td {
+    padding: 12px 16px;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+    vertical-align: middle;
+    color: rgba(255,255,255,0.92);
+    font-size: 15px;
+}
+
+/* =========================
+   번호 컬럼
+   ========================= */
+.music-liked-rank {
+    color: rgba(255,255,255,0.78);
+    font-weight: 500;
+}
+
+/* =========================
+   제목 셀
+   ========================= */
+.music-liked-song-cell {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    min-width: 0;
+}
+
+.music-liked-song-cover {
+    width: 52px;
+    height: 52px;
+    border-radius: 6px;
+    object-fit: cover;
+    background: #1d1d1d;
+    flex-shrink: 0;
+}
+
+.music-liked-song-text {
+    min-width: 0;
+}
+
+.music-liked-song-name {
+    color: #fff;
+    font-size: 17px;
+    font-weight: 700;
+    line-height: 1.3;
+    margin-bottom: 3px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.music-liked-song-sub {
+    color: rgba(255,255,255,0.64);
+    font-size: 13px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* =========================
+   텍스트 컬럼
+   ========================= */
+.music-liked-artist-link,
+.music-liked-album-text,
+.music-liked-genre-text {
+    color: rgba(255,255,255,0.84);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.music-liked-artist-link {
+    background: transparent;
+    border: none;
+    padding: 0;
+    font: inherit;
+    cursor: pointer;
+    transition: color 0.18s ease;
+}
+
+.music-liked-artist-link:hover {
+    color: #fff;
+    text-decoration: underline;
+}
+
+/* =========================
+   재생 버튼
+   ========================= */
+.music-liked-play-cell {
+    text-align: center;
+}
+
+.music-liked-play-btn {
+    width: 38px;
+    height: 38px;
+    border-radius: 999px;
+    border: none;
+    background: #ff9800;
+    color: #111;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.16s ease, filter 0.16s ease;
+}
+
+.music-liked-play-btn:hover {
+    transform: scale(1.06);
+    filter: brightness(1.05);
+}
+
+/* =========================
+   빈 상태
+   ========================= */
+.music-liked-empty {
+    padding: 80px 24px;
+    text-align: center;
+    color: rgba(255,255,255,0.62);
+    font-size: 16px;
+}
+
+/* =========================
+   반응형
+   ========================= */
+@media (max-width: 1024px) {
+    .music-liked-hero {
+        min-height: auto;
+        align-items: center;
+        padding: 24px;
+    }
+
+    .music-liked-hero-cover {
+        width: 180px;
+        height: 180px;
+    }
+
+    .music-liked-hero-title {
+        font-size: clamp(38px, 5vw, 64px);
+    }
+
+    .music-liked-table thead th.col-album,
+    .music-liked-table tbody td.music-liked-album-cell {
+        display: none;
+    }
+}
+
+@media (max-width: 768px) {
+    .music-liked-hero {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 20px;
+    }
+
+    .music-liked-hero-cover {
+        width: 160px;
+        height: 160px;
+    }
+
+    .music-liked-toolbar {
+        padding: 16px 20px;
+    }
+
+    .music-liked-content {
+        padding: 0 10px 32px;
+    }
+
+    .music-liked-table thead th.col-genre,
+    .music-liked-table tbody td.music-liked-genre-cell {
+        display: none;
+    }
+
+    .music-liked-song-name {
+        font-size: 15px;
+    }
+}

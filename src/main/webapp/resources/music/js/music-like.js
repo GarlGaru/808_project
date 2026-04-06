@@ -11,100 +11,145 @@
  */
  
  const likeManager = {
-    currentSongId: null,
-    liked: false,
-    selectors: {
-        likeBtn: '#btnLike'
-    },
+    currentSongId: null, // 플레이어 현재곡
+    likedSongMap: {},
 
     init: function () {
         this.bindEvents();
+        this.syncInitialButtons();
     },
 
     bindEvents: function () {
         const self = this;
 
-        $(document).on('click', this.selectors.likeBtn, function (e) {
+        $(document).on('click', '.js-like-btn', function (e) {
             e.preventDefault();
-            self.toggleLike();
+            e.stopPropagation();
+
+            const $btn = $(this);
+            const scope = $btn.data('like-scope');
+
+            let songId = '';
+
+            // 플레이어 버튼이면 현재 재생곡 기준
+            if (scope === 'player') {
+                songId = self.currentSongId;
+            } else {
+                // 디테일 버튼이면 자기 data-song-id 기준
+                songId = $btn.data('song-id');
+            }
+
+            if (!songId) {
+                alert('곡 정보가 없습니다.');
+                return;
+            }
+
+            self.toggleLike(songId);
         });
     },
 
     setSong: function (songId) {
         this.currentSongId = songId || null;
-        this.resetLikeButton();
-
-        if (!this.currentSongId) {
-            return;
-        }
-
-        this.fetchLikeStatus();
-    },
-
-    resetLikeButton: function () {
-        this.liked = false;
-        this.render();
-    },
-
-    render: function () {
-        const $btn = $(this.selectors.likeBtn);
-
-        if (!$btn.length) return;
-
-        $btn.toggleClass('is-liked', this.liked);
-        $btn.attr('aria-pressed', this.liked ? 'true' : 'false');
-        $btn.text(this.liked ? '♥' : '♡');
-    },
-
-    fetchLikeStatus: function () {
-        const self = this;
+        this.syncPlayerButton();
 
         if (!this.currentSongId) return;
 
-        $.ajax({
-            url: path + '/music/likeStatus',
-            type: 'GET',
-            data: { songId: this.currentSongId },
-            success: function (res) {
-                if (res === 'liked') {
-                    self.liked = true;
-                } else {
-                    self.liked = false;
-                }
-                self.render();
-            },
-            error: function () {
-                self.liked = false;
-                self.render();
+        this.fetchLikeStatus(this.currentSongId);
+    },
+
+    syncInitialButtons: function () {
+        const $detailBtn = $('#detailLikeBtn');
+        if ($detailBtn.length) {
+            const detailSongId = $detailBtn.data('song-id');
+            if (detailSongId) {
+                this.fetchLikeStatus(detailSongId);
+            }
+        }
+
+        if (this.currentSongId) {
+            this.fetchLikeStatus(this.currentSongId);
+        }
+    },
+
+    syncPlayerButton: function () {
+        const $playerBtn = $('#playerLikeBtn');
+
+        if (!$playerBtn.length) return;
+
+        const liked = !!this.likedSongMap[this.currentSongId];
+
+        $playerBtn.toggleClass('is-liked', liked);
+        $playerBtn.attr('aria-pressed', liked ? 'true' : 'false');
+        $playerBtn.text(liked ? '♥' : '♡');
+    },
+
+    renderSongButtons: function (songId, liked) {
+        // 플레이어 버튼 갱신
+        if (String(this.currentSongId || '') === String(songId)) {
+            const $playerBtn = $('#playerLikeBtn');
+            $playerBtn.toggleClass('is-liked', liked);
+            $playerBtn.attr('aria-pressed', liked ? 'true' : 'false');
+            $playerBtn.text(liked ? '♥' : '♡');
+        }
+
+        // 디테일 버튼 갱신
+        $('.js-like-btn[data-song-id]').each(function () {
+            const $btn = $(this);
+            if (String($btn.data('song-id')) === String(songId)) {
+                $btn.toggleClass('is-liked', liked);
+                $btn.attr('aria-pressed', liked ? 'true' : 'false');
+                $btn.text(liked ? '♥' : '♡');
             }
         });
     },
 
-    toggleLike: function () {
+    fetchLikeStatus: function (songId) {
         const self = this;
 
-        if (!this.currentSongId) {
-            alert('선택된 곡이 없습니다.');
-            return;
-        }
+        if (!songId) return;
+
+        $.ajax({
+            url: path + '/music/likeStatus',
+            type: 'GET',
+            data: { songId: songId },
+            success: function (res) {
+                const liked = (res === 'liked');
+                self.likedSongMap[String(songId)] = liked;
+                self.renderSongButtons(songId, liked);
+            },
+            error: function () {
+                self.likedSongMap[String(songId)] = false;
+                self.renderSongButtons(songId, false);
+            }
+        });
+    },
+
+    toggleLike: function (songId) {
+        const self = this;
 
         $.ajax({
             url: path + '/music/toggleLike',
             type: 'GET',
-            data: { songId: this.currentSongId },
+            data: { songId: songId },
             success: function (res) {
                 if (res === 'noLogin') {
                     alert('로그인 후 이용 가능합니다.');
                     return;
                 }
 
+                let liked = false;
+
                 if (res === 'liked') {
-                    self.liked = true;
+                    liked = true;
                 } else if (res === 'unliked') {
-                    self.liked = false;
+                    liked = false;
+                } else {
+                    alert('좋아요 처리에 실패했습니다.');
+                    return;
                 }
 
-                self.render();
+                self.likedSongMap[String(songId)] = liked;
+                self.renderSongButtons(songId, liked);
 
                 if (typeof loadLikedSidebar === 'function') {
                     loadLikedSidebar();

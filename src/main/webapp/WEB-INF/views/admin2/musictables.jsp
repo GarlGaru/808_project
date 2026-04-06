@@ -112,7 +112,7 @@
             <div class="container-fluid">
 
                 <h1 class="h3 mb-2 text-gray-800">Music Tables</h1>
-                <p class="mb-4">노래 / 아티스트 / 앨범 / 장르 목록</p>
+                <p class="mb-4">노래 / 아티스트 / 앨범 / 해시태그 목록</p>
 
                 <div class="card shadow mb-4">
                     <div class="card-header py-3 d-flex justify-content-between align-items-center">
@@ -131,7 +131,7 @@
                         &nbsp;
                     
                         <button type="button" class="btn btn-warning" data-toggle="modal" data-target="#genreModal">
-                            <i class="fas fa-plus"></i> 장르 등록
+                            <i class="fas fa-plus"></i> 해시태그 등록
                         </button>
                         &nbsp;
                     </div>
@@ -146,7 +146,7 @@
                                         <th>노래 제목</th>
                                         <th>아티스트</th>
                                         <th>앨범명</th>
-                                        <th>장르</th>
+                                        <th>해시태그</th>
                                         <th>발매일</th>
                                         <th>노래</th>
                                     </tr>
@@ -162,7 +162,7 @@
                                                     <td>
                                                         <c:choose>
                                                             <c:when test="${not empty music.coverImageUrl}">
-                                                                <img src="${ctx}${music.coverImageUrl}"
+                                                                <img src="${music.coverImageUrl}"
                                                                      alt="cover"
                                                                      class="album-cover">
                                                             </c:when>
@@ -279,13 +279,13 @@
     </div>
 </div>
 
-<!-- 장르 등록 모달 -->
+<!-- 해시태그 등록 모달 -->
 <div class="modal fade" id="genreModal" tabindex="-1" role="dialog" aria-labelledby="genreModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-xl" role="document" style="max-width: 1200px;">
         <div class="modal-content">
 
             <div class="modal-header">
-                <h5 class="modal-title" id="genreModalLabel">장르 등록</h5>
+                <h5 class="modal-title" id="genreModalLabel">해시태그 등록</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="닫기">
                     <span aria-hidden="true">&times;</span>
                 </button>

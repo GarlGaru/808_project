@@ -1,7 +1,7 @@
 @charset "UTF-8";
 /*===== page container ====*/
 .show-wrap {max-width: 1200px; margin: 0 auto; padding: 0px 16px 40px;}
-.section{margin-top: 28px;}
+.section{margin-top: 0;}
 .section-title{font-size: 22px; font-weight: 700; margin: 0 0 14px}
 
 /* /*==== Genre Banner ====*/
@@ -344,4 +344,74 @@
     .upcoming-show-poster {
         height: 220px;
     }
+}
+
+/* --- 캐스팅 전용 css --- */
+.cast-section { padding: 36px 20px; color: #fff; }
+.cast-section .tab-title { font-size: 42px; font-weight: 700; margin-bottom: 10px; color:#fff; }
+.cast-section .tab-desc { font-size: 15px; color: #aaa; margin-bottom: 24px; }
+.cast-box {
+	background: #141414;
+	border: 1px solid rgba(255,255,255,0.08);
+	border-left: 4px solid #ED6701;
+	border-radius: 14px;
+	padding: 24px 28px;
+	box-shadow: 0 8px 24px rgba(0,0,0,0.25);
+}
+.cast-list { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 10px; }
+.cast-item {
+	display: inline-flex;
+	align-items: center;
+	padding: 10px 18px;
+	border-radius: 999px;
+	background: #1a1a1a;
+	border: 1px solid rgba(237, 103, 1, 0.45);
+	color: #fff;
+	font-size: 15px;
+	font-weight: 500;
+	transition: all 0.2s ease;
+}
+.cast-item:hover {
+	transform: translateY(-2px);
+	border-color: #ED6701;
+	box-shadow: 0 4px 14px rgba(237, 103, 1, 0.2);
+}
+.cast-item::before {
+	content: "";
+	width: 6px;
+	height: 6px;
+	margin-right: 8px;
+	border-radius: 50%;
+	background: linear-gradient(135deg, #DF8845, #ED6701);
+}
+
+/* ---------- 상세정보 전용 css ---------------- */
+.detail-info-box {
+	background: #141414;
+	border: 1px solid rgba(255,255,255,0.08);
+	border-left: 4px solid #ED6701;
+	border-radius: 14px;
+	padding: 24px 28px;
+	box-shadow: 0 8px 24px rgba(0,0,0,0.25);
+	margin-top: 20px;
+}
+
+/* 내부 텍스트 디자인 및 정렬 */
+.detail-info-box p {
+	color: #cccccc;
+	font-size: 18px;
+	margin-bottom: 16px;
+	line-height: 1.6;
+	display: flex;
+}
+
+.detail-info-box p:last-child{
+	margin-bottom: 0;
+}
+
+.detail-info-box p strong{
+	color: #ffffff;
+	font-weight: 700;
+	width: 80px;
+	flex-shrink: 0;
 }

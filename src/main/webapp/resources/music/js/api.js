@@ -17,6 +17,12 @@ export async function getLikes() {
     return data;
 }
 
+export async function getLikeSongs() {
+    const response = await fetch("/eze/music/like/songs");
+    const data = await response.json();
+    return data;
+}
+
 export async function getHistory() {
     const response = await fetch("/eze/history");
     const data = await response.json();

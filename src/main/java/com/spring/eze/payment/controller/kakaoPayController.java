@@ -1,5 +1,6 @@
 package com.spring.eze.payment.controller;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -9,16 +10,23 @@ import com.spring.eze.payment.dto.kakaopayorderRequest;
 import com.spring.eze.payment.dto.kakaopayreadyResponse;
 import com.spring.eze.payment.service.kakaopayService;
 
+import java.util.Map;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import com.spring.eze.user.dto.UserDTO;
+import com.spring.eze.user.service.MypageService;
+import com.spring.eze.user.service.UserService;
 
 @Controller
 @RequestMapping("/kakaopay") // ★ 여기 고정: /eze/kakaopay/...
 public class kakaoPayController {
 
     private final kakaopayService kakaopayService;
+    
+    @Autowired
+    private MypageService mypageService;
 
     public kakaoPayController(kakaopayService kakaopayService) {
         this.kakaopayService = kakaopayService;
@@ -124,7 +132,14 @@ public class kakaoPayController {
         // /WEB-INF/views/payment/kakaoPayApprove.jsp
         // 테스트용
         //return "payment/kakaoPayApprove";
-        // 실제로 쓸거(현재 메인으로보냄)
+        // 승인 후 최신 회원정보 다시 조회
+        
+        // DB에서 최신 회원정보 다시 조회해서 세션 갱신
+        
+        UserDTO freshUser = mypageService.getUserWithProfile((int) userId);
+        freshUser.setPassword(null);
+        session.setAttribute("loginUser", freshUser);
+       
         return "redirect:/main";
     }
 
@@ -152,11 +167,20 @@ public class kakaoPayController {
     //카카오 결제된거 취소(환불)
     @GetMapping("/request_cancel")
     @ResponseBody
-    public String cancelRequest(@RequestParam("orderId") String orderId){
-    	System.out.println("컨트롤러 orderId = [" + orderId + "]");
-    	kakaopayService.cancel(orderId, null); // null = 전체취소
-    	
-    	return "OK";
-    }
-    
+    public String cancelRequest(@RequestParam("orderId") String orderId, HttpSession session){
+        System.out.println("controller orderId = [" + orderId + "]");
+        kakaopayService.cancel(orderId, null);
+
+        UserDTO loginUser = (UserDTO) session.getAttribute("loginUser");
+        if (loginUser != null) {
+            UserDTO freshUser = mypageService.getUserWithProfile(loginUser.getUserId());
+            freshUser.setPassword(null);
+            if (freshUser.getProfile() != null) {
+                freshUser.getProfile().setMembershipType("FREE");
+            }
+            session.setAttribute("loginUser", freshUser);
+        }
+
+        return "OK";
+    }    
 }
