@@ -757,159 +757,145 @@ function _renderGenres(list) {
 
 
   /* ════════════════════════════════════════════════════════════
-     5. CHART — 결제 탭 막대 차트
-     ════════════════════════════════════════════════════════════ */
+   5. CHART — 결제 탭 라인 차트 (트렌디 + 튐 방지 버전)
+   ════════════════════════════════════════════════════════════ */
 
-  /** Chart.js 인스턴스 (탭 이탈 시 파괴, 재진입 시 재생성) */
-  let _chart = null;
+/** Chart.js 인스턴스 */
+let _chart = null;
 
-  /** 1~12월 레이블 배열 생성 */
-  function _buildMonthLabels() {
-    const labels = [];
-    for (let m = 1; m <= 12; m++) { labels.push(m + '월'); }
-    return labels;
-  }
+/** 1~12월 레이블 */
+function _buildMonthLabels() {
+  return Array.from({length: 12}, (_, i) => (i+1) + '월');
+}
 
-  /**
-   * 서버 응답 월별 통계를 12개 슬롯 배열로 변환
-   * @param {Array} statList - [{ yearMonth: 'yyyy-MM', totalAmount: number }]
-   * @returns {number[]} 길이 12 배열
-   */
-  function _mapToMonthValues(statList) {
-    const values = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
-    if (statList && statList.length) {
-      $.each(statList, function (i, m) {
-        const month = parseInt(m.yearMonth.substring(5), 10);
-        if (month >= 1 && month <= 12) { values[month - 1] = m.totalAmount; }
-      });
-    }
-    return values;
-  }
-
-  /**
-   * Canvas 컨텍스트에서 주황 그라디언트 생성
-   * @param {CanvasRenderingContext2D} ctx
-   * @returns {CanvasGradient|string}
-   */
-  function _getOrangeGradient(ctx) {
-    if (!ctx) { return 'rgba(232, 93, 4, 0.5)'; }
-    const w = ctx.canvas.width  || 300;
-    const h = ctx.canvas.height || 150;
-    const g = ctx.createLinearGradient(0, 0, w * 0.4, h);
-    g.addColorStop(0,   'rgba(180, 60, 20, 0.45)');
-    g.addColorStop(0.4, 'rgba(237, 103, 1, 0.55)');
-    g.addColorStop(1,   'rgba(140, 45, 10, 0.45)');
-    return g;
-  }
-
-  /**
-   * 최대값 막대만 주황 강조, 나머지는 반투명 흰색
-   * @param {number[]} values
-   * @param {CanvasRenderingContext2D} ctx
-   * @returns {{ bg: Array, bd: Array }}
-   */
-  function _calcBarColors(values, ctx) {
-    const maxVal = Math.max.apply(null, values.concat([0]));
-    const bg = [], bd = [];
-    $.each(values, function (i, v) {
-      if (v === maxVal && maxVal > 0) {
-        bg.push(_getOrangeGradient(ctx));
-        bd.push('rgba(232, 93, 4, 0.8)');
-      } else {
-        const r = maxVal > 0 ? v / maxVal : 0;
-        bg.push('rgba(230, 230, 230, ' + (0.5 + r * 0.2).toFixed(2) + ')');
-        bd.push('rgba(255, 255, 255, 0.05)');
-      }
+/** 서버 데이터 → 12개월 배열 */
+function _mapToMonthValues(statList) {
+  const values = Array(12).fill(0);
+  if (statList && statList.length) {
+    statList.forEach(m => {
+      const month = parseInt(m.yearMonth.substring(5), 10);
+      if (month >= 1 && month <= 12) values[month-1] = m.totalAmount;
     });
-    return { bg: bg, bd: bd };
   }
+  return values;
+}
 
-  /** 결제 탭 차트 초기 생성 (빈 데이터로 렌더링) */
-  function _createChart() {
-    const canvas = document.getElementById('mpPayChart');
-    if (!canvas || !window.Chart) { return; }
+/** 오렌지 그라데이션 (라인 영역용) */
+function _getOrangeGradient(ctx) {
+  if (!ctx) return 'rgba(232, 93, 4, 0.2)';
+  const h = ctx.canvas.height || 150;
+  const g = ctx.createLinearGradient(0, 0, 0, h);
+  g.addColorStop(0,   'rgba(237, 103, 1, 0.45)');
+  g.addColorStop(0.5, 'rgba(237, 103, 1, 0.2)');
+  g.addColorStop(1,   'rgba(237, 103, 1, 0.05)');
+  return g;
+}
 
-    // 이전 차트 파괴 후 재생성
-    if (_chart) { _chart.destroy(); _chart = null; }
+/** 최대값 인덱스 */
+function _getMaxIndex(values) {
+  let max = 0, idx = -1;
+  values.forEach((v,i)=>{ if(v>max){ max=v; idx=i; } });
+  return idx;
+}
 
-    const ctx         = canvas.getContext('2d');
-    const emptyValues = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
-    const colors      = _calcBarColors(emptyValues, ctx);
+/** 차트 생성 */
+function _createChart() {
+  const canvas = document.getElementById('mpPayChart');
+  if (!canvas || !window.Chart) return;
 
-    _chart = new Chart(ctx, {
-      type: 'bar',
-      data: {
-        labels:   _buildMonthLabels(),
-        datasets: [{
-          data:            emptyValues,
-          backgroundColor: colors.bg,
-          borderColor:     colors.bd,
-          borderWidth:     0,
-          borderRadius:    6,
-          barPercentage:   0.5
-        }]
+  if (_chart) { _chart.destroy(); _chart = null; }
+
+  const ctx = canvas.getContext('2d');
+  const emptyValues = Array(12).fill(0);
+
+  _chart = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: _buildMonthLabels(),
+      datasets: [{
+        data: emptyValues,
+        borderColor: 'rgba(232, 93, 4, 0.9)',
+        backgroundColor: _getOrangeGradient(ctx),
+        fill: true,
+        tension: 0.25,         // 곡선 부드럽게
+        borderWidth: 2,
+        pointRadius: 3,
+        pointHoverRadius: 6,
+        pointBackgroundColor: '#fff',
+        pointBorderColor: 'rgba(232, 93, 4, 0.9)',
+        pointBorderWidth: 2
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      animations: {
+        y: {
+          from: function(ctx){
+            return ctx.chart.scales.y.getPixelForValue(0); // 바닥에서 시작
+          },
+          duration: 900,
+          easing: 'easeInOutCubic' // 초반 튐 방지
+        },
+        x: { duration: 0 }
       },
-      options: {
-        responsive:          true,
-        maintainAspectRatio: false,
-        animations: {
-          y: {
-            duration: 800,
-            easing:   'easeOutQuart',
-            from: function (ctx) { return ctx.chart.scales.y.getPixelForValue(0); }
-          },
-          x: { duration: 0 }
-        },
-        plugins: {
-          legend:  { display: false },
-          tooltip: {
-            backgroundColor: 'rgba(15, 19, 25, 0.98)',
-            borderColor:     'rgba(255, 255, 255, 0.08)',
-            borderWidth:     1,
-            padding:         10,
-            callbacks: {
-              label: function (c) {
-                return c.raw > 0 ? '₩' + c.raw.toLocaleString() + ' 결제되었어요' : '결제 내역이 없어요';
-              }
-            }
-          }
-        },
-        scales: {
-          x: {
-            grid:  { display: true, drawOnChartArea: false, color: 'rgba(255,255,255,0.1)' },
-            ticks: { color: 'rgba(242,242,242,0.3)', font: { size: 10 } }
-          },
-          y: {
-            display: true,
-            grid:    { color: 'rgba(255,255,255,0.05)', borderDash: [3, 3], drawTicks: false },
-            border:  { display: false },
-            ticks: {
-              color:         'rgba(242,242,242,0.2)',
-              font:          { size: 9 },
-              maxTicksLimit: 4,
-              callback: function (v) { return v > 0 ? v.toLocaleString() : ''; }
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          backgroundColor: 'rgba(15, 19, 25, 0.98)',
+          borderColor: 'rgba(255, 255, 255, 0.08)',
+          borderWidth: 1,
+          padding: 10,
+          displayColors: false,
+          callbacks: {
+            label: function(c){
+              return c.raw > 0
+                ? '₩' + c.raw.toLocaleString() + ' 결제되었어요'
+                : '결제 내역이 없어요';
             }
           }
         }
+      },
+      scales: {
+        x: {
+          grid: { display: false },
+          ticks: { color: 'rgba(242,242,242,0.4)', font: { size: 10 } }
+        },
+        y: {
+          grid: { color: 'rgba(255,255,255,0.05)', borderDash: [3,3] },
+          border: { display: false },
+          ticks: {
+            color: 'rgba(242,242,242,0.25)',
+            font: { size: 9 },
+            maxTicksLimit: 4,
+            callback: v => v > 0 ? v.toLocaleString() : ''
+          }
+        }
       }
-    });
-  }
+    }
+  });
+}
 
-  /**
-   * 차트 데이터 업데이트 및 애니메이션 재생
-   * @param {Array} statList - 서버 응답 월별 통계
-   */
-  function _updateChart(statList) {
-    if (!_chart) { return; }
-    const values = _mapToMonthValues(statList);
-    const colors = _calcBarColors(values, _chart.ctx);
-    _chart.data.datasets[0].data            = values;
-    _chart.data.datasets[0].backgroundColor = colors.bg;
-    _chart.data.datasets[0].borderColor     = colors.bd;
-    _chart.resize();
-    _chart.update({ duration: 800, easing: 'easeOutQuart' });
-  }
+/** 차트 업데이트 */
+function _updateChart(statList) {
+  if (!_chart) return;
 
+  const values = _mapToMonthValues(statList);
+  const maxIdx = _getMaxIndex(values);
+
+  const pointRadiusArr = values.map((v,i) => i===maxIdx?6:3);
+  const pointBgArr     = values.map((v,i) => i===maxIdx?'#ff6a00':'#fff');
+
+  _chart.data.datasets[0].data = values;
+  _chart.data.datasets[0].backgroundColor = _getOrangeGradient(_chart.ctx);
+  _chart.data.datasets[0].pointRadius = pointRadiusArr;
+  _chart.data.datasets[0].pointBackgroundColor = pointBgArr;
+
+  _chart.update({
+    duration: 900,
+    easing: 'easeInOutCubic' // 애니메이션 부드럽게
+  });
+}
 
   /* ════════════════════════════════════════════════════════════
      6. PROFILE — 아바타 / 프로필 수정
