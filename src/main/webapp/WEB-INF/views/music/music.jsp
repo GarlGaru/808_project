@@ -145,7 +145,9 @@
 
     <script>
 	    window.addEventListener("DOMContentLoaded", async function() {
-	        await loadMainContent("${path}/music/mainstory");
+	        // 초기 페이지 state 기록 (뒤로가기 시 mainstory로 복원)
+	        history.replaceState({ musicUrl: "${path}/music/mainstory" }, '', location.pathname + location.search);
+	        await loadMainContent("${path}/music/mainstory", false);
 
 	        const pending = sessionStorage.getItem("pendingMusicSong");
 	        if (!pending) return;

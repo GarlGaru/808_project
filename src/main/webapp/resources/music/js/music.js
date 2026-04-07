@@ -3,7 +3,10 @@
 // ==============================
 
 // 메인 콘텐츠 영역에 URL의 HTML을 비동기로 불러와 넣는 함수
-async function loadMainContent(url) {
+// pushState: true면 히스토리에 추가 (기본값 true, popstate에서 호출 시 false)
+async function loadMainContent(url, pushState) {
+    if (pushState === undefined) pushState = true;
+
     // 서버에서 받아온 결과를 넣을 영역
     const result = document.getElementById("main-content-area");
 
@@ -29,13 +32,25 @@ async function loadMainContent(url) {
         if (initFn && typeof window[initFn] === 'function') {
             window[initFn]();
         }
- 	
+
+        // 히스토리에 현재 URL 기록 (뒤로가기 지원)
+        if (pushState) {
+            history.pushState({ musicUrl: url }, '', location.pathname + location.search);
+        }
+
     } catch (error) {
         // 네트워크 오류 등 요청 자체가 실패한 경우
         result.innerHTML = "요청 실패";
         console.error(error);
     }
 }
+
+// 브라우저 뒤로가기/앞으로가기 시 콘텐츠 복원
+window.addEventListener('popstate', function(e) {
+    if (e.state && e.state.musicUrl) {
+        loadMainContent(e.state.musicUrl, false);
+    }
+});
 
 // ==============================
 // 전역 경로 / 플레이어 루트 설정

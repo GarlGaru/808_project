@@ -16,10 +16,11 @@
             </svg>
         </button>
     </form>
-    <hr>
-
 
         <div id="ai-chat-input-wrap">
+            <br>
+            <h1 id="ai-chat-greeting"></h1>
+            <br>
             <div id="ai-chat-input-bar">
             <textarea id="ai-chat-msg" rows="1" placeholder="메시지를 입력하세요..."></textarea>
             <button id="ai-chat-send" onclick="loadMainContent('${path}/music/chat')">
@@ -27,6 +28,7 @@
             </button>
             </div>
         </div>
+    <hr>
 
     <div data-init="initMainStory">
         <div id="weekly-slider-mount"></div>

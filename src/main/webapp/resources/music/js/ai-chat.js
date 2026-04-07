@@ -105,6 +105,8 @@ function initAiChat() {
         ta.value = pending;
         go();
     }
+
+    
 }
 
 // mainstory에서 Enter/클릭 시 텍스트를 sessionStorage에 저장 후 chat 페이지로 이동
@@ -133,4 +135,5 @@ function initAiChat() {
             if (t) sessionStorage.setItem('ai-chat-pending', t);
         }
     });
+    
 })();
