@@ -56,9 +56,16 @@ function initAiChat() {
         if(data.songs && data.songs.length){
             const list = document.createElement('div');
             list.className = 'ai-chat-songs';
+            const PATH = document.documentElement.dataset.contextPath || window.APP_PATH || '';
             data.songs.forEach(s => {
                 const c = document.createElement('div');
                 c.className = 'ai-chat-card';
+                if (s.song_id) {
+                    c.style.cursor = 'pointer';
+                    c.onclick = function() {
+                        loadMainContent(PATH + '/music/detail?songId=' + encodeURIComponent(s.song_id));
+                    };
+                }
                 let h = '<div class="ai-chat-card-title">'+esc(s.song_title)+'</div>';
                 h += '<div class="ai-chat-card-meta">'+esc(s.artist_name)+' · '+esc(s.album_title)+'</div>';
                 if(s.genres && s.genres.length){
@@ -91,4 +98,39 @@ function initAiChat() {
         return d.innerHTML;
     }
 
+    // pending 메시지가 있으면 자동 전송
+    const pending = sessionStorage.getItem('ai-chat-pending');
+    if (pending) {
+        sessionStorage.removeItem('ai-chat-pending');
+        ta.value = pending;
+        go();
+    }
 }
+
+// mainstory에서 Enter/클릭 시 텍스트를 sessionStorage에 저장 후 chat 페이지로 이동
+(function() {
+    const PATH = document.documentElement.dataset.contextPath || window.APP_PATH || '';
+
+    document.addEventListener('keydown', function(e) {
+        if (document.getElementById('ai-chat-container')) return;
+        const ta = document.getElementById('ai-chat-msg');
+        if (!ta || e.target !== ta) return;
+        if (e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault();
+            const t = ta.value.trim();
+            if (t) sessionStorage.setItem('ai-chat-pending', t);
+            loadMainContent(PATH + '/music/chat');
+        }
+    });
+
+    document.addEventListener('click', function(e) {
+        if (document.getElementById('ai-chat-container')) return;
+        const btn = e.target.closest('#ai-chat-send');
+        if (!btn) return;
+        const ta = document.getElementById('ai-chat-msg');
+        if (ta) {
+            const t = ta.value.trim();
+            if (t) sessionStorage.setItem('ai-chat-pending', t);
+        }
+    });
+})();
