@@ -32,6 +32,9 @@
     
     <!--chat bot-->
     <link rel="stylesheet" href="${path}/resources/music/css/ai-chat.css">
+
+    <%-- 부트스트랩 아이콘 --%>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
     
     
 </head>

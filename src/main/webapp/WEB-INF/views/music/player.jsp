@@ -14,7 +14,7 @@
                     <img src="${path}${song.coverImageUrl}" alt="cover" id="playerCover">
                 </c:when>
                 <c:otherwise>
-                    <img src="${path}/resources/music/img/default_album.jpg" alt="cover" id="playerCover">
+                    <img src="${path}/resources/music/img/default_album.png" alt="cover" id="playerCover">
                 </c:otherwise>
             </c:choose>
         </div>
