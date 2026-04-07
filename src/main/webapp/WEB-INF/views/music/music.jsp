@@ -143,9 +143,23 @@
     <script src="${path}/resources/music/js/slider-init.js"></script>
     <script src="${path}/resources/music/js/ai-chat.js"></script>
 
-	<script>
-	    window.addEventListener("DOMContentLoaded", function() {
-	        loadMainContent("${path}/music/mainstory");
+    <script>
+	    window.addEventListener("DOMContentLoaded", async function() {
+	        await loadMainContent("${path}/music/mainstory");
+
+	        const pending = sessionStorage.getItem("pendingMusicSong");
+	        if (!pending) return;
+
+	        sessionStorage.removeItem("pendingMusicSong");
+
+	        try {
+	            const song = JSON.parse(pending);
+	            if (song && song.songId) {
+	                await loadMainContent("${path}/music/detail?songId=" + encodeURIComponent(song.songId));
+	            }
+	        } catch (error) {
+	            console.error("Failed to open pending music detail", error);
+	        }
 	    });
 	</script>
 </body>

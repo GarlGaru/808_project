@@ -69,7 +69,7 @@
       order_id       AS orderId,
       reservation_id AS reservationId,
       user_id        AS userId,
-      item_name      AS itemName,
+<!--       item_name      AS itemName, -->
       quantity       AS quantity,
       total_amount   AS totalAmount,
       tid            AS tid,
