@@ -21,6 +21,16 @@ async function MusicSlider({
     path = '',
     label = '',
 }) {
+
+    
+    /* ── 5 -> 0. REST API로 일단 데이터 있는지부터 검사 ─────────────────────────────── */
+    const songs = await getSongList(apiUrl);
+    if (!songs.length) {
+        // 아얘 표시 안함
+        return;
+    }
+
+
     /* ── 1. <template> 에서 뼈대 복제 ─────────────────────────── */
     const sliderTpl = document.getElementById('music-slider-template');
     const cardTpl   = document.getElementById('music-card-template');
@@ -59,16 +69,16 @@ async function MusicSlider({
     mount.querySelector('[data-action="next"]')
          .addEventListener('click', () => moveSlider(sliderId,  1));
 
-    /* ── 5. REST API로 데이터 로드 ─────────────────────────────── */
-    const songs = await getSongList(apiUrl);
+    // /* ── 5. REST API로 데이터 로드 ─────────────────────────────── */
+    // const songs = await getSongList(apiUrl);
 
     /* ── 6. 카드 렌더링 ────────────────────────────────────────── */
-    if (!songs.length) {
-        empty.style.display               = '';
-        track.parentElement.style.display = 'none';
-        empty.textContent                 = `${title} 데이터가 없습니다.`;
-        return;
-    }
+    // if (!songs.length) {
+    //     empty.style.display               = '';
+    //     track.parentElement.style.display = 'none';
+    //     empty.textContent                 = `${title} 데이터가 없습니다.`;
+    //     return;
+    // }
 
     const cardBase = cardTpl.content.firstElementChild;
 

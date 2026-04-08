@@ -41,7 +41,7 @@
                             <div class="music-search-top-cover-wrap">
                                 <img
                                     class="music-search-top-cover"
-                                    src="${empty topSong.coverImageUrl ? '/resources/music/img/default_album.jpg' : topSong.coverImageUrl}"
+                                    src="${empty topSong.coverImageUrl ? '/resources/music/img/default_album.png' : topSong.coverImageUrl}"
                                     alt="${topSong.title}">
                             </div>
 
@@ -59,7 +59,7 @@
                                     data-song-id="${topSong.songId}"
                                     data-title="${topSong.title}"
                                     data-artist="${topSong.artistName}"
-                                    data-cover="${empty topSong.coverImageUrl ? '/resources/music/img/default_album.jpg' : topSong.coverImageUrl}">
+                                    data-cover="${empty topSong.coverImageUrl ? '/resources/music/img/default_album.png' : topSong.coverImageUrl}">
                                 ▶
                             </button>
                         </div>
@@ -78,7 +78,7 @@
                                 <div class="music-search-song-left">
                                     <img
                                         class="music-search-song-cover"
-                                        src="${empty song.coverImageUrl ? '/resources/music/img/default_album.jpg' : song.coverImageUrl}"
+                                        src="${empty song.coverImageUrl ? '/resources/music/img/default_album.png' : song.coverImageUrl}"
                                         alt="${song.title}">
 
                                     <div class="music-search-song-meta">
@@ -93,7 +93,7 @@
 									        data-song-id="${song.songId}"
 									        data-title="${song.title}"
 									        data-artist="${song.artistName}"
-									        data-cover="${empty song.coverImageUrl ? '/resources/music/img/default_album.jpg' : song.coverImageUrl}">
+									        data-cover="${empty song.coverImageUrl ? '/resources/music/img/default_album.png' : song.coverImageUrl}">
 									 		   ▶
 										</button>
                                 </div>
@@ -113,7 +113,7 @@
                             <div class="music-search-media-thumb-wrap">
                                 <img
                                     class="music-search-media-thumb"
-                                    src="${empty song.coverImageUrl ? '/resources/music/img/default_album.jpg' : song.coverImageUrl}"
+                                    src="${empty song.coverImageUrl ? '/resources/music/img/default_album.png' : song.coverImageUrl}"
                                     alt="${song.albumTitle}">
                             </div>
 

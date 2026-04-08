@@ -31,6 +31,7 @@
     <hr>
 
     <div data-init="initMainStory">
+        <div id="personal-recommend-mount"></div>
         <div id="weekly-slider-mount"></div>
         <div id="today-slider-mount"></div>
         <div id="genre-slider-mount"></div>

@@ -49,7 +49,7 @@
 					            data-song-id="${artistSongs[0].songId}"
 					            data-title="${artistSongs[0].title}"
 					            data-artist="${artistSongs[0].artistName}"
-					            data-cover="${empty artistSongs[0].coverImageUrl ? '/resources/music/img/default_album.jpg' : artistSongs[0].coverImageUrl}"
+					            data-cover="${empty artistSongs[0].coverImageUrl ? '/resources/music/img/default_album.png' : artistSongs[0].coverImageUrl}"
 					            onclick="event.stopPropagation(); playerManager.playByButton(this);">
 					        ▶
 					    </button>
@@ -85,7 +85,7 @@
                                                      class="music-artist-song-thumb">
                                             </c:when>
                                             <c:otherwise>
-                                                <img src="${path}/resources/music/img/default_album.jpg"
+                                                <img src="${path}/resources/music/img/default_album.png"
                                                      alt="default album"
                                                      class="music-artist-song-thumb">
                                             </c:otherwise>
@@ -111,7 +111,7 @@
 									        data-song-id="${song.songId}"
 									        data-title="${song.title}"
 									        data-artist="${song.artistName}"
-									        data-cover="${empty song.coverImageUrl ? '/resources/music/img/default_album.jpg' : song.coverImageUrl}"
+									        data-cover="${empty song.coverImageUrl ? '/resources/music/img/default_album.png' : song.coverImageUrl}"
 									        onclick="event.stopPropagation(); playerManager.playByButton(this);">
 									    ▶
 									</button>

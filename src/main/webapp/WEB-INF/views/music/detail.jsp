@@ -25,7 +25,7 @@
                                          class="music-detail-hero-cover">
                                 </c:when>
                                 <c:otherwise>
-                                    <img src="${path}/resources/music/img/default_album.jpg"
+                                    <img src="${path}/resources/music/img/default_album.png"
                                          alt="default album"
                                          class="music-detail-hero-cover">
                                 </c:otherwise>
@@ -62,7 +62,7 @@
 						        data-song-id="${song.songId}"
 						        data-title="${song.title}"
 						        data-artist="${song.artistName}"
-						        data-cover="${empty song.coverImageUrl ? '/resources/music/img/default_album.jpg' : song.coverImageUrl}">
+						        data-cover="${empty song.coverImageUrl ? '/resources/music/img/default_album.png' : song.coverImageUrl}">
 						    ▶
 						</button>
 
@@ -164,7 +164,7 @@
 						                                 class="music-detail-song-thumb">
 						                        </c:when>
 						                        <c:otherwise>
-						                            <img src="${path}/resources/music/img/default_album.jpg"
+						                            <img src="${path}/resources/music/img/default_album.png"
 						                                 alt="default album"
 						                                 class="music-detail-song-thumb">
 						                        </c:otherwise>
@@ -196,7 +196,7 @@
 						        data-song-id="${sim.songId}"
 						        data-title="${sim.title}"
 						        data-artist="${sim.artistName}"
-						        data-cover="${empty sim.coverImageUrl ? '/resources/music/img/default_album.jpg' : sim.coverImageUrl}">
+						        data-cover="${empty sim.coverImageUrl ? '/resources/music/img/default_album.png' : sim.coverImageUrl}">
 						    ▶
 						</button>
 						

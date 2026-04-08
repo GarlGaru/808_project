@@ -2,7 +2,7 @@ function getCoverSrc(song) {
     const path = window.APP_PATH || '';
 
     if (!song.coverImageUrl) {
-        return path + '/resources/music/img/default_album.jpg';
+        return path + '/resources/music/img/default_album.png';
     }
 
     if (song.coverImageUrl.startsWith('http')) {
@@ -81,7 +81,7 @@ export function renderLikeSongs(songList) {
         const albumTitle = escapeHtml(song.albumTitle || '');
         const genreName = escapeHtml(song.genreName || '');
         const coverSrc = escapeHtml(getCoverSrc(song));
-        const rawCover = escapeHtml(song.coverImageUrl || '/resources/music/img/default_album.jpg');
+        const rawCover = escapeHtml(song.coverImageUrl || '/resources/music/img/default_album.png');
 
         return `
             <tr onclick="loadMainContent('${path}/music/detail?songId=${songId}')">

@@ -27,6 +27,17 @@ function initMainStory() {
 
     const path = document.documentElement.dataset.contextPath ?? '';
 
+    /* ── 취향 기반 추천 ─────────────────────────────────────────── */
+    MusicSlider({
+        mountId:  'personal-recommend-mount',
+        title:    '취향 기반 추천',
+        subtitle: '좋아할 만한 곡들을 모아봤어요.',
+        apiUrl:   `${path}/music/personal-recommend`,
+        sliderId: 'recoSlider',
+        label:    '취향 기반 추천',
+        path,
+    });
+    
     /* ── 주간 인기곡 ─────────────────────────────────────────── */
     MusicSlider({
         mountId:  'weekly-slider-mount',

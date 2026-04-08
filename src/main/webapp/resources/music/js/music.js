@@ -401,7 +401,7 @@ const playerManager = playerRoot ? {
         }
 
         // 기본 커버 이미지 경로
-        let coverSrc = path + '/resources/music/img/default_album.jpg';
+        let coverSrc = path + '/resources/music/img/default_album.png';
 
         // 커버 이미지가 있으면 상황에 따라 경로 보정
         if (song.coverImageUrl) {
