@@ -3,10 +3,10 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 
     <div class="music-layout-page">
-        <div class="music-layout-content">
+        <%-- <div class="music-layout-content"> --%>
 
             <!-- 상세 본문 -->
-            <main class="music-layout-main">
+            <%-- <main class="music-layout-main"> --%>
                 <div class="music-detail-page">
 
                     <!-- =========================
@@ -206,8 +206,8 @@
                         </div>
                     </section>
                 </div>
-            </main>
-        </div>
+            <%-- </main> --%>
+        <%-- </div> --%>
     </div>
     <script src="${path}/resources/common/js/jquery/jquery-2.2.4.min.js"></script>
     <script src="${path}/resources/common/bootstrap-4.6.2-dist/js/bootstrap.bundle.min.js"></script>

@@ -6,9 +6,9 @@
 <link rel="stylesheet" href="${path}/resources/music/css/music-artist.css">
 
 <div class="music-layout-page">
-    <div class="music-layout-content">
+    <%-- <div class="music-layout-content"> --%>
 
-        <main class="music-layout-main">
+        <%-- <main class="music-layout-main"> --%>
             <div class="music-artist-page">
 
                 <!-- 1) 상단 히어로 -->
@@ -122,6 +122,6 @@
                 </section>
 
             </div>
-        </main>
-    </div>
+        <%-- </main> --%>
+    <%-- </div> --%>
 </div>
