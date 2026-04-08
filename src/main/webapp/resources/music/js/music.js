@@ -3,7 +3,10 @@
 // ==============================
 
 // 메인 콘텐츠 영역에 URL의 HTML을 비동기로 불러와 넣는 함수
-async function loadMainContent(url) {
+// pushState: true면 히스토리에 추가 (기본값 true, popstate에서 호출 시 false)
+async function loadMainContent(url, pushState) {
+    if (pushState === undefined) pushState = true;
+
     // 서버에서 받아온 결과를 넣을 영역
     const result = document.getElementById("main-content-area");
 
@@ -29,13 +32,25 @@ async function loadMainContent(url) {
         if (initFn && typeof window[initFn] === 'function') {
             window[initFn]();
         }
- 	
+
+        // 히스토리에 현재 URL 기록 (뒤로가기 지원)
+        if (pushState) {
+            history.pushState({ musicUrl: url }, '', location.pathname + location.search);
+        }
+
     } catch (error) {
         // 네트워크 오류 등 요청 자체가 실패한 경우
         result.innerHTML = "요청 실패";
         console.error(error);
     }
 }
+
+// 브라우저 뒤로가기/앞으로가기 시 콘텐츠 복원
+window.addEventListener('popstate', function(e) {
+    if (e.state && e.state.musicUrl) {
+        loadMainContent(e.state.musicUrl, false);
+    }
+});
 
 // ==============================
 // 전역 경로 / 플레이어 루트 설정
@@ -106,6 +121,9 @@ const playerManager = playerRoot ? {
     volumeFillEl: playerRoot.querySelector('#playerVolumeFill'),
 
     // ===== 상태값 =====
+
+    // 재생 실패 시 대신 재생할 fallback 음원 URL
+    FALLBACK_URL: 'https://github.com/rafaelreis-hotmart/Audio-Sample-files/raw/master/sample.mp3',
 
     // 현재 재생 가능한 플레이리스트 배열
     playlist: [],
@@ -227,6 +245,18 @@ const playerManager = playerRoot ? {
             if (!this.intervalScoreSent && this.audio.currentTime >= 30 && this.getCurrentSongId()) {
                 this.sendScore(path + '/music/intervalScore');
                 this.intervalScoreSent = true;
+            }
+        });
+
+        // 오디오 로드 실패 시 fallback URL로 전환
+        this.audio.addEventListener('error', () => {
+            console.error('오디오 로드 실패, fallback URL로 전환합니다.');
+            if (this.audio.src && this.audio.src !== this.FALLBACK_URL) {
+                this.audio.src = this.FALLBACK_URL;
+                this.audio.load();
+                this.audio.play().catch(err => {
+                    console.error('fallback 재생 실패:', err);
+                });
             }
         });
 
@@ -386,7 +416,7 @@ const playerManager = playerRoot ? {
         }
 
         // 기본 커버 이미지 경로
-        let coverSrc = path + '/resources/music/img/default_album.jpg';
+        let coverSrc = path + '/resources/music/img/default_album.png';
 
         // 커버 이미지가 있으면 상황에 따라 경로 보정
         if (song.coverImageUrl) {
@@ -468,12 +498,12 @@ const playerManager = playerRoot ? {
     async loadAndPlay(song) {
         try {
             // 서버에서 실제 음원 경로 조회
-            const songPath = await this.fetchSongPath(song.songId);
+            let songPath = await this.fetchSongPath(song.songId);
 
-            // 경로가 없으면 재생 중단
+            // 경로가 없으면 fallback URL로 재생
             if (!songPath) {
-                alert('음원 경로를 찾을 수 없습니다.');
-                return;
+                console.warn('songPath가 비어있어 fallback URL로 재생합니다.');
+                songPath = this.FALLBACK_URL;
             }
 
             // 조회한 경로를 song 객체에 넣기
@@ -491,7 +521,14 @@ const playerManager = playerRoot ? {
             }
         } catch (err) {
             console.error('곡 재생 실패:', err);
-            alert('곡 재생 중 오류가 발생했습니다.');
+            console.warn('fallback URL로 재생합니다.');
+            this.audio.src = this.FALLBACK_URL;
+            this.audio.load();
+            try {
+                await this.audio.play();
+            } catch (e2) {
+                console.error('fallback 재생도 실패:', e2);
+            }
         }
     },
 

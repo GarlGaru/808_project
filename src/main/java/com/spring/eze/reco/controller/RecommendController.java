@@ -27,8 +27,8 @@ public class RecommendController {
     @Autowired
     private RecommendService service;
 
-    @Autowired
-    private MusicService musicService;
+//    @Autowired
+//    private MusicService musicService;
 
     /**
      * 취향 기반 추천
@@ -55,7 +55,8 @@ public class RecommendController {
         log.info("Reco Controller : recommendPopularForUser");
         int userId = lsh.getUserIdFromSession(request);
         if (userId == SESSION_ERROR) {  // 로그인 안했으면 주간 랭킹
-            return service.convertToSongCardDTO(musicService.getweeklyRanking());
+//            return service.convertToSongCardDTO(musicService.getweeklyRanking());
+            return List.of();
         }
 
         return service.recommendPopularForUser(userId);
@@ -70,7 +71,7 @@ public class RecommendController {
     public List<SongCardDTO> recommendLatestForUser(HttpServletRequest request) {
         log.info("Reco Controller : recommendLatestForUser");
         int userId = lsh.getUserIdFromSession(request);
-        if (userId == SESSION_ERROR) {  // 로그인 안했으면 그냥 최신곡
+        if (userId == SESSION_ERROR) {  // 로그인 안했으면 빈 리스트
             return List.of();
         }
 

@@ -10,9 +10,34 @@
 
 function initMainStory() {
     console.log("MainStory tab init start");
+    // ai-chat-greeting 랜덤 문구
+    const greetings = [
+        "오늘은 어떤 곡을 찾아 드릴까요?",
+        "지금 기분에 맞는 음악을 찾아볼까요?",
+        "어떤 장르가 끌리시나요?",
+        "오늘 하루를 채울 노래를 골라드릴게요!",
+        "듣고 싶은 곡이 있으신가요?",
+        "음악으로 오늘을 특별하게 만들어 보세요 🎵"
+    ];
+    const greetingEl = document.getElementById('ai-chat-greeting');
+    if (greetingEl) {
+        greetingEl.textContent = greetings[Math.floor(Math.random() * greetings.length)];
+        console.log(greetingEl.textContent);
+    }
 
     const path = document.documentElement.dataset.contextPath ?? '';
 
+    /* ── 취향 기반 추천 ─────────────────────────────────────────── */
+    MusicSlider({
+        mountId:  'personal-recommend-mount',
+        title:    '취향 기반 추천',
+        subtitle: '좋아할 만한 곡들을 모아봤어요.',
+        apiUrl:   `${path}/music/personal-recommend`,
+        sliderId: 'recoSlider',
+        label:    '취향 기반 추천',
+        path,
+    });
+    
     /* ── 주간 인기곡 ─────────────────────────────────────────── */
     MusicSlider({
         mountId:  'weekly-slider-mount',

@@ -3,10 +3,10 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 
     <div class="music-layout-page">
-        <div class="music-layout-content">
+        <%-- <div class="music-layout-content"> --%>
 
             <!-- 상세 본문 -->
-            <main class="music-layout-main">
+            <%-- <main class="music-layout-main"> --%>
                 <div class="music-detail-page">
 
                     <!-- =========================
@@ -25,7 +25,7 @@
                                          class="music-detail-hero-cover">
                                 </c:when>
                                 <c:otherwise>
-                                    <img src="${path}/resources/music/img/default_album.jpg"
+                                    <img src="${path}/resources/music/img/default_album.png"
                                          alt="default album"
                                          class="music-detail-hero-cover">
                                 </c:otherwise>
@@ -62,7 +62,7 @@
 						        data-song-id="${song.songId}"
 						        data-title="${song.title}"
 						        data-artist="${song.artistName}"
-						        data-cover="${empty song.coverImageUrl ? '/resources/music/img/default_album.jpg' : song.coverImageUrl}">
+						        data-cover="${empty song.coverImageUrl ? '/resources/music/img/default_album.png' : song.coverImageUrl}">
 						    ▶
 						</button>
 
@@ -164,7 +164,7 @@
 						                                 class="music-detail-song-thumb">
 						                        </c:when>
 						                        <c:otherwise>
-						                            <img src="${path}/resources/music/img/default_album.jpg"
+						                            <img src="${path}/resources/music/img/default_album.png"
 						                                 alt="default album"
 						                                 class="music-detail-song-thumb">
 						                        </c:otherwise>
@@ -196,7 +196,7 @@
 						        data-song-id="${sim.songId}"
 						        data-title="${sim.title}"
 						        data-artist="${sim.artistName}"
-						        data-cover="${empty sim.coverImageUrl ? '/resources/music/img/default_album.jpg' : sim.coverImageUrl}">
+						        data-cover="${empty sim.coverImageUrl ? '/resources/music/img/default_album.png' : sim.coverImageUrl}">
 						    ▶
 						</button>
 						
@@ -206,8 +206,8 @@
                         </div>
                     </section>
                 </div>
-            </main>
-        </div>
+            <%-- </main> --%>
+        <%-- </div> --%>
     </div>
     <script src="${path}/resources/common/js/jquery/jquery-2.2.4.min.js"></script>
     <script src="${path}/resources/common/bootstrap-4.6.2-dist/js/bootstrap.bundle.min.js"></script>
