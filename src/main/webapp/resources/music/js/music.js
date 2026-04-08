@@ -122,6 +122,9 @@ const playerManager = playerRoot ? {
 
     // ===== 상태값 =====
 
+    // 재생 실패 시 대신 재생할 fallback 음원 URL
+    FALLBACK_URL: 'https://github.com/rafaelreis-hotmart/Audio-Sample-files/raw/master/sample.mp3',
+
     // 현재 재생 가능한 플레이리스트 배열
     playlist: [],
 
@@ -242,6 +245,18 @@ const playerManager = playerRoot ? {
             if (!this.intervalScoreSent && this.audio.currentTime >= 30 && this.getCurrentSongId()) {
                 this.sendScore(path + '/music/intervalScore');
                 this.intervalScoreSent = true;
+            }
+        });
+
+        // 오디오 로드 실패 시 fallback URL로 전환
+        this.audio.addEventListener('error', () => {
+            console.error('오디오 로드 실패, fallback URL로 전환합니다.');
+            if (this.audio.src && this.audio.src !== this.FALLBACK_URL) {
+                this.audio.src = this.FALLBACK_URL;
+                this.audio.load();
+                this.audio.play().catch(err => {
+                    console.error('fallback 재생 실패:', err);
+                });
             }
         });
 
@@ -483,12 +498,12 @@ const playerManager = playerRoot ? {
     async loadAndPlay(song) {
         try {
             // 서버에서 실제 음원 경로 조회
-            const songPath = await this.fetchSongPath(song.songId);
+            let songPath = await this.fetchSongPath(song.songId);
 
-            // 경로가 없으면 재생 중단
+            // 경로가 없으면 fallback URL로 재생
             if (!songPath) {
-                alert('음원 경로를 찾을 수 없습니다.');
-                return;
+                console.warn('songPath가 비어있어 fallback URL로 재생합니다.');
+                songPath = this.FALLBACK_URL;
             }
 
             // 조회한 경로를 song 객체에 넣기
@@ -506,7 +521,14 @@ const playerManager = playerRoot ? {
             }
         } catch (err) {
             console.error('곡 재생 실패:', err);
-            alert('곡 재생 중 오류가 발생했습니다.');
+            console.warn('fallback URL로 재생합니다.');
+            this.audio.src = this.FALLBACK_URL;
+            this.audio.load();
+            try {
+                await this.audio.play();
+            } catch (e2) {
+                console.error('fallback 재생도 실패:', e2);
+            }
         }
     },
 
