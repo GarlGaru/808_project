@@ -36,6 +36,12 @@ public interface ShowDAO {
 	
 	// 마이티켓 카운트(예매내역 확인)
 	public int getMyTicketCount(long userId);
+	
+	// 마이티켓 예매결제 취소 상태로 업데이트
+	public int updateTicketCancel(String orderId);
+	
+	// 취소된 좌석 상태를 다싯 예매 가능으로 업데이트
+	public int updateTicketAvailable(String orderId);
 
 	//seat 팝업에 공연회차 가져오랴거 만듦
 	public Map<String, Object> selectScheduleInfo(String scheduleId);

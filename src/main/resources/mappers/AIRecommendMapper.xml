@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+ <mapper namespace="com.spring.eze.reco.dao.RecommendDAO">
+
+    <resultMap id="SongDetailResultMap" type="com.spring.eze.reco.dto.SongDetailDTO">
+        <id property="song_id" column="song_id"/>
+        <result property="song_title" column="song_title"/>
+        <result property="album_title" column="album_title"/>
+        <result property="artist_name" column="artist_name"/>
+        <collection property="genres" ofType="string" column="song_id" select="selectGenresBySongId"/>
+    </resultMap>
+
+    <select id="selectSongDetail" resultMap="SongDetailResultMap">
+        SELECT
+            s.song_id,
+            s.title AS song_title,
+            al.title AS album_title,
+            ar.name AS artist_name,
+            g.name AS genre_name
+        FROM songs_tbl s
+        JOIN albums_tbl al ON s.album_id = al.album_id
+        JOIN artists_tbl ar ON s.artist_id = ar.artist_id
+        LEFT JOIN song_genre_tbl sg ON s.song_id = sg.song_id
+        LEFT JOIN genres_tbl g ON sg.genre_id = g.genre_id
+        WHERE s.song_id = #{songId}
+    </select>
+
+
+    <select id="selectSongDetailsBySongIds" resultMap="SongDetailResultMap">
+        SELECT
+        s.song_id,
+        s.title AS song_title,
+        al.title AS album_title,
+        ar.name AS artist_name
+        FROM songs_tbl s
+        JOIN albums_tbl al ON s.album_id = al.album_id
+        JOIN artists_tbl ar ON s.artist_id = ar.artist_id
+        WHERE s.song_id IN
+        <foreach collection="songIds" item="songId" open="(" separator="," close=")">
+            #{songId}
+        </foreach>
+    </select>
+
+    <select id="selectGenresBySongId" resultType="string">
+        SELECT g.name
+        FROM song_genre_tbl sg
+        JOIN genres_tbl g ON sg.genre_id = g.genre_id
+        WHERE sg.song_id = #{song_id}
+    </select>
+
+ </mapper> 

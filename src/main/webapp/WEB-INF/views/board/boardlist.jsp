@@ -3,36 +3,24 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <%@ include file="/WEB-INF/views/common/setting.jsp"%>
-
 <!DOCTYPE html>
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
-<title>Premium Orange Board - List</title>
+<title>BoardList</title>		
+    <!-- 공통 CSS -->
+    <link rel="stylesheet" href="${path}/resources/common/css/style.css">
+    <link rel="stylesheet" href="${path}/resources/common/style.css">
+
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<style>
 
 <link rel="stylesheet" href="${path}/resources/common/css/style.css">
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
 <style>
-/* [전체 배경 스타일] */
-body {	
-	/* 배경색: 짙은 검정 유지 */
-	background-color: #141414 !important;
-	/* 배경 이미지: 상단 오렌지색을 훨씬 밝고 선명하게 수정 (0.15 -> 0.4) */
-	background-image: radial-gradient(circle at top, rgba(255, 107, 19, 0.4)
-		0%, transparent 60%),
-		linear-gradient(180deg, #1d120a 0%, #141414 100%) !important;
-	/* 상단에 오렌지색 네온 라인 추가하여 '튀는' 느낌 강조 */
-	border-top: 5px solid #ff6b13 !important;
-	box-shadow: inset 0 10px 30px -10px rgba(255, 107, 19, 0.5) !important;
-	padding-top: 130px !important;
-	margin: 0;
-	min-height: 100vh;
-	font-family: 'Pretendard', -apple-system, sans-serif;
-	color: #ffffff;
-	background-attachment: fixed;
-}
-
 .container {
 	margin: 0 auto;
 	max-width: 1100px;
@@ -177,7 +165,7 @@ body {
 }
 
 .page-link.active {
-	background: #ffcc00;
+	background: #ED6701;
 	color: #2b1407;
 }
 
@@ -191,7 +179,7 @@ body {
 	display: inline-block;
 	padding: 12px 35px;
 	/* 왼쪽에서 오른쪽으로 흐르는 오렌지-옐로우 그라데이션 */
-	background: linear-gradient(135deg, #ffcc00 0%, #ff9500 100%);
+	background: linear-gradient(90deg, #DF8845 0%, #ED6701 100%);;
 	color: #2b1407;
 	border-radius: 50px;
 	font-weight: 800;
@@ -249,7 +237,7 @@ body {
 }
 
 .best-badge {
-	background: linear-gradient(135deg, #ffcc00 0%, #ff9500 100%);
+	background: linear-gradient(135deg, #ED6701 0%, #ff9500 100%);
 	color: #2b1407;
 	padding: 3px 10px;
 	border-radius: 20px;
@@ -266,8 +254,13 @@ body {
 .rank-icon {
 	font-style: italic;
 	font-weight: 900;
-	color: #ffcc00;
+	color: #ED6701;
 }
+
+.nav-link:hover {
+    color: #ffcc00 !important; /* 마우스 올리면 시그니처 오렌지색 */
+}
+
 </style>
 <script>
 	$(function() {
@@ -293,15 +286,18 @@ body {
 	});
 </script>
 </head>
-<body>
-	<%@ include file="/WEB-INF/views/common/header.jsp"%>
+<body class="dark-mode">
+	<!-- 공통 상단 영역 -->
+	<%@ include file="/WEB-INF/views/common/common.jsp" %>
+    <%@ include file="/WEB-INF/views/common/header.jsp" %>
 
 	<div class="container">
-		<h2 style="text-align: center; font-weight: 800; color: #ffcc00; letter-spacing: 3px;">COMMUNITY</h2>
+		<br>
+		<br>
 		
 		<div class="board-header">
 			<div class="total-info">
-				Total <span style="color: #ffcc00; font-weight: bold;">${paging.totalCount}</span> posts [cite: 37]
+				Total <span style="color: #ffcc00; font-weight: bold;">${paging.totalCount}</span>
 			</div>
 
 			<div class="sort-radio-group">
@@ -344,9 +340,9 @@ body {
 								</c:if>
                             </td>
 							<td>${best.nickname}</td>
-							<td><fmt:formatDate value="${best.regdate}" pattern="MM-dd" /></td>
+							<td><fmt:formatDate value="${best.regdate}" pattern="yyyy-MM-dd" /></td>
 							<td>${best.viewcnt}</td>
-							<td style="color: #ffcc00; font-weight: bold;">${best.likeCount}</td>
+							<td style="color: #ED6701; font-weight: bold;">${best.likeCount}</td>
 						</tr>
 					</c:forEach>
 
@@ -364,9 +360,9 @@ body {
 								</c:if>
                             </td>
 							<td>${b.nickname}</td>
-							<td><fmt:formatDate value="${b.regdate}" pattern="MM-dd" /></td>
+							<td><fmt:formatDate value="${b.regdate}" pattern="yyyy-MM-dd" /></td>
 							<td>${b.viewcnt}</td>
-							<td style="color: #ffcc00; font-weight: bold;">${b.likeCount}</td>
+							<td style="color: #ED6701; font-weight: bold;">${b.likeCount}</td>
 						</tr>
 					</c:forEach>
 				</tbody>

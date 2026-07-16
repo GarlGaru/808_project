@@ -11,7 +11,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport"
 	content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<title>Premium Orange Board - 수정 및 상세</title>
+<title>Board - 수정 및 상세</title>
 
 <link rel="stylesheet" href="${path}/resources/common/css/style.css">
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -19,18 +19,24 @@
 <style>
 /* [스타일 섹션은 기존 디자인 유지를 위해 생략하지 않고 포함합니다] */
 body {
-	background-color: #141414 !important;
-	background-image: radial-gradient(circle at top, rgba(255, 107, 19, 0.4)
-		0%, transparent 60%),
-		linear-gradient(180deg, #1d120a 0%, #141414 100%) !important;
-	border-top: 5px solid #ff6b13 !important;
-	box-shadow: inset 0 10px 30px -10px rgba(255, 107, 19, 0.5) !important;
-	padding-top: 130px !important;
-	margin: 0;
-	min-height: 100vh;
-	font-family: 'Pretendard', -apple-system, sans-serif;
-	color: #ffffff;
-	background-attachment: fixed;
+    /* style.css에 정의된 변수를 그대로 사용하여 배경 구현 */
+    background: linear-gradient(
+        180deg,
+        #DF8845 0%,    /* --page-bg-start */
+        #6B4121 10%,   /* --page-bg-mid */
+        #1A0F08 20%,   /* --page-bg-mid-end */
+        #000000 100%   /* --page-bg-end */
+    ) !important;
+    
+    /* 배경 고정 및 최소 높이 설정 */
+    background-attachment: fixed !important;
+    min-height: 100vh;
+    margin: 0;
+    
+    /* 상단 여백 및 기본 텍스트 설정 */
+    padding-top: 150px !important; /* style.css의 .sample-main 패딩 기준 */
+    font-family: 'Pretendard', -apple-system, sans-serif;
+    color: #ffffff;
 }
 
 .table_div {

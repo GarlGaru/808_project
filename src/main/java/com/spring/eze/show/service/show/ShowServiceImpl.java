@@ -154,7 +154,7 @@ public class ShowServiceImpl implements ShowService{
 
 	// 마이티켓
 	@Override
-	public void getMyTicketList(Long userId, Model model) 
+	public void getMyTicketList(long userId, Model model) 
 			throws ServletException, IOException {
 		System.out.println("ShowServiceImpl - getMyTicketList()");
 		

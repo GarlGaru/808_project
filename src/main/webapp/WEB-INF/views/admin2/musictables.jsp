@@ -48,55 +48,55 @@
 <div id="wrapper">
 
     <!-- Sidebar -->
-    <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
+		<ul
+			class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion"
+			id="accordionSidebar">
 
-        <a class="sidebar-brand d-flex align-items-center justify-content-center" href="${adminUrl}">
-            <div class="sidebar-brand-icon">
-                <i class="fas fa-user-shield"></i>
-            </div>
-            <div class="sidebar-brand-text mx-3">808 ADMIN</div>
-        </a>
+			<a
+				class="sidebar-brand d-flex align-items-center justify-content-center"
+				href="${adminUrl}">
+				<div class="sidebar-brand-icon">
+					<i class="fas fa-user-shield"></i>
+				</div>
+				<div class="sidebar-brand-text mx-3">808 ADMIN</div>
+			</a>
 
-        <hr class="sidebar-divider my-0">
+			<hr class="sidebar-divider my-0">
 
-        <li class="nav-item">
-            <a class="nav-link" href="${adminUrl}">
-                <i class="fas fa-fw fa-tachometer-alt"></i>
-                <span>Dashboard</span>
-            </a>
-        </li>
+			<li class="nav-item"><a class="nav-link"
+				href="${adminUrl}"> <i class="fas fa-fw fa-tachometer-alt"></i>
+					<span>Dashboard</span>
+			</a></li>
 
-        <li class="nav-item">
-            <a class="nav-link" href="${adminUrl}/user">
-                <i class="fas fa-fw fa-users"></i>
-                <span>User Admin</span>
-            </a>
-        </li>
+			<li class="nav-item"><a class="nav-link" href="${adminUrl}/user">
+					<i class="fas fa-fw fa-users"></i> <span>User Admin</span>
+			</a></li>
 
-        <li class="nav-item">
-            <a class="nav-link" href="${adminUrl}/pay">
-                <i class="fas fa-fw fa-credit-card"></i>
-                <span>Pay Admin</span>
-            </a>
-        </li>
+			<li class="nav-item"><a class="nav-link" href="${adminUrl}/pay">
+					<i class="fas fa-fw fa-credit-card"></i> <span>Pay Admin</span>
+			</a></li>
 
-        <li class="nav-item">
-            <a class="nav-link" href="${adminUrl}/board">
-                <i class="fas fa-fw fa-clipboard-list"></i>
-                <span>Board Admin</span>
-            </a>
-        </li>
+			<li class="nav-item"><a class="nav-link"
+				href="${adminUrl}/board"> <i class="fas fa-fw fa-clipboard-list"></i>
+					<span>Board Admin</span>
+			</a></li>
 
-        <li class="nav-item active">
-            <a class="nav-link" href="${adminUrl}/music">
-                <i class="fas fa-fw fa-music"></i>
-                <span>Music Admin</span>
-            </a>
-        </li>
+			<li class="nav-item active"><a class="nav-link"
+				href="${adminUrl}/music"> <i class="fas fa-fw fa-music"></i> <span>Music
+						Admin</span>
+			</a></li>
+			
+			<li class="nav-item">
+			    <a class="nav-link" href="${adminUrl}/ticketpay">
+			        <i class="fas fa-fw fa-ticket-alt"></i>
+			        <span>Ticket Pay Admin</span>
+			    </a>
+			</li>
 
-        <hr class="sidebar-divider d-none d-md-block">
+			<hr class="sidebar-divider d-none d-md-block">
 
-    </ul>
+		</ul>
+		<!-- End Sidebar -->
 
     <!-- Content Wrapper -->
     <div id="content-wrapper" class="d-flex flex-column">
@@ -112,7 +112,7 @@
             <div class="container-fluid">
 
                 <h1 class="h3 mb-2 text-gray-800">Music Tables</h1>
-                <p class="mb-4">노래 / 아티스트 / 앨범 / 장르 목록</p>
+                <p class="mb-4">노래 / 아티스트 / 앨범 / 해시태그 목록</p>
 
                 <div class="card shadow mb-4">
                     <div class="card-header py-3 d-flex justify-content-between align-items-center">
@@ -131,7 +131,7 @@
                         &nbsp;
                     
                         <button type="button" class="btn btn-warning" data-toggle="modal" data-target="#genreModal">
-                            <i class="fas fa-plus"></i> 장르 등록
+                            <i class="fas fa-plus"></i> 해시태그 등록
                         </button>
                         &nbsp;
                     </div>
@@ -146,7 +146,7 @@
                                         <th>노래 제목</th>
                                         <th>아티스트</th>
                                         <th>앨범명</th>
-                                        <th>장르</th>
+                                        <th>해시태그</th>
                                         <th>발매일</th>
                                         <th>노래</th>
                                     </tr>
@@ -162,7 +162,7 @@
                                                     <td>
                                                         <c:choose>
                                                             <c:when test="${not empty music.coverImageUrl}">
-                                                                <img src="${ctx}${music.coverImageUrl}"
+                                                                <img src="${music.coverImageUrl}"
                                                                      alt="cover"
                                                                      class="album-cover">
                                                             </c:when>
@@ -279,13 +279,13 @@
     </div>
 </div>
 
-<!-- 장르 등록 모달 -->
+<!-- 해시태그 등록 모달 -->
 <div class="modal fade" id="genreModal" tabindex="-1" role="dialog" aria-labelledby="genreModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-xl" role="document" style="max-width: 1200px;">
         <div class="modal-content">
 
             <div class="modal-header">
-                <h5 class="modal-title" id="genreModalLabel">장르 등록</h5>
+                <h5 class="modal-title" id="genreModalLabel">해시태그 등록</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="닫기">
                     <span aria-hidden="true">&times;</span>
                 </button>

@@ -6,6 +6,7 @@
 
 <!DOCTYPE html>
 <html lang="ko">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -19,12 +20,13 @@
 <body class="dark-mode">
     <%@ include file="/WEB-INF/views/common/common.jsp" %>
 
+   <div class="page-container">
     <div class="step-header">
         <div class="step-title">
             <span class="step-num">1&nbsp;. </span>&nbsp;좌석 선택
         </div>
     </div>
-
+   
     <form id="reserveForm" action="${pageContext.request.contextPath}/show/reserve" method="post">
         <input type="hidden" name="showId" value="${showId}">
         <input type="hidden" name="scheduleId" value="${scheduleId}">
@@ -112,7 +114,7 @@
             </div>
         </div>
     </form>
-
+</div>
     <script src="${path}/resources/common/js/jquery/jquery-2.2.4.min.js"></script>
     <script src="${path}/resources/common/bootstrap-4.6.2-dist/js/bootstrap.bundle.min.js"></script>
     <script src="${path}/resources/common/js/plugins/plugins.js"></script>
@@ -120,16 +122,17 @@
     <script src="${path}/resources/common/js/main.js"></script>
 
     <script>
-	$(document).ready(function(){
+   $(document).ready(function(){
 
     function autoResizePopup() {
         if (window.opener) {
+           if(window.outerWidth >= 1200 && window.outerHeight >= 800) return;
             const contentWidth  = document.body.scrollWidth  + 60;
             const contentHeight = document.body.scrollHeight + 60;
             const maxWidth = window.screen.availWidth - 50;
             const maxHeight = window.screen.availHeight - 50;
-            const finalWidth  = Math.min(Math.max(contentWidth,  800), maxWidth);
-            const finalHeight = Math.min(Math.max(contentHeight, 600), maxHeight);
+            const finalWidth  = Math.min(Math.max(contentWidth,  1200), maxWidth);
+            const finalHeight = Math.min(Math.max(contentHeight, 800), maxHeight);
             window.resizeTo(finalWidth, finalHeight);
             const left = (window.screen.width  - finalWidth)  / 2;
             const top  = (window.screen.height - finalHeight) / 2;
@@ -144,6 +147,14 @@
 
     // ✅ 좌석 체크박스
     $("input[name='selectedSeats']").on("change", function() {
+       
+       const loginUserId = "${sessionScope.loginUser.userId}";
+       if(!loginUserId){
+          $(this).prop("checked",false);
+          alert("로그인 후 이용해주세요.");
+          return;
+       }
+       
         const selectedCount = $("input[name='selectedSeats']:checked").length;
         if (selectedCount > 4) {
             $(this).prop("checked", false);
@@ -185,12 +196,10 @@
             },
             success: function(res){
                 if(res === "success"){
-                    const popupName = "reservePopup";   
-                    const specs = "width=1200,height=850,top=50,left=100,scrollbars=yes";
-                    window.open("", popupName, specs);  
-                    const $form = $("#reserveForm");
-                    $form.attr("target", popupName);
-                    $form.submit();
+                    
+                    $("#reserveForm").removeAttr("target");
+                    $("#reserveForm").submit();
+                    
                 } else if(res === "login_required") {
                     alert("로그인 후 이용해주세요.");
                 } else {

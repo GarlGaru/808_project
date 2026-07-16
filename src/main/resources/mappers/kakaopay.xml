@@ -5,78 +5,205 @@
 
 <mapper namespace="com.spring.eze.payment.dao.PaymentDAO">
 
-  <!-- 1) 주문 저장: tid는 처음엔 NULL (READY 단계) -->
+  <!-- ========================= -->
+  <!-- 공통 결제 -->
+  <!-- ========================= -->
+
+  <!-- 주문 저장 -->
   <insert id="insertOrder" parameterType="com.spring.eze.payment.dto.PaymentOrderDTO">
-    INSERT INTO PAYMENT_ORDER
-    (ORDER_ID, RESERVATION_ID, USER_ID, ITEM_NAME, QUANTITY, TOTAL_AMOUNT, STATUS, PAYMENT_TYPE)
+    INSERT INTO payment_order
+    (
+      order_id,
+      reservation_id,
+      user_id,
+      item_name,
+      quantity,
+      total_amount,
+      status,
+      payment_type
+    )
     VALUES
-    (#{orderId}, #{reservationId}, #{userId}, #{itemName},
-     #{quantity}, #{totalAmount}, #{status}, #{paymentType})
+    (
+      #{orderId},
+      #{reservationId},
+      #{userId},
+      #{itemName},
+      #{quantity},
+      #{totalAmount},
+      #{status},
+      #{paymentType}
+    )
   </insert>
-  
-  <!-- 구독 결제시 같이 유저 프로필에도 같이저장함 -->
-  <update id="updateMembershipType">
+
+  <!-- 구독 결제시 유저 프로필 갱신 -->
+  <update id="updateMembershipType" parameterType="map">
     UPDATE profile_tbl
-    SET membership_type = #{membershipType}
-    WHERE user_id = #{userId}
- </update>
+       SET membership_type = #{membershipType},
+           updated_at = SYSDATE
+     WHERE user_id = #{userId}
+  </update>
 
-  <!-- 2) tid 업데이트 (ready 성공 후) -->
+  <!-- tid 업데이트 -->
   <update id="updateTid" parameterType="com.spring.eze.payment.dto.PaymentOrderDTO">
-    UPDATE PAYMENT_ORDER
-       SET TID = #{tid}
-     WHERE ORDER_ID = #{orderId}
+    UPDATE payment_order
+       SET tid = #{tid}
+     WHERE order_id = #{orderId}
   </update>
 
-  <!-- 3) 상태 업데이트 (approve 성공/실패 등) -->
+  <!-- 상태 업데이트 -->
   <update id="updateStatus" parameterType="com.spring.eze.payment.dto.PaymentOrderDTO">
-    UPDATE PAYMENT_ORDER
-       SET STATUS = #{status},
-           APPROVED_AT = CASE WHEN #{status} = 'APPROVED' THEN SYSDATE ELSE APPROVED_AT END
-     WHERE ORDER_ID = #{orderId}
+    UPDATE payment_order
+       SET status = #{status},
+           approved_at = CASE
+                           WHEN #{status} = 'APPROVED' THEN SYSDATE
+                           ELSE approved_at
+                         END
+     WHERE order_id = #{orderId}
   </update>
 
-  <!-- 4) orderId로 주문 조회 (approve에서 tid/paymentType 찾을 때 필요) -->
-  <select id="selectOrder" parameterType="string"
+  <!-- 주문 조회 -->
+  <select id="selectOrder"
+          parameterType="string"
           resultType="com.spring.eze.payment.dto.PaymentOrderDTO">
     SELECT
-      ORDER_ID      AS orderId,
-      RESERVATION_ID AS reservationId,
-      USER_ID       AS userId,
-      ITEM_NAME     AS itemName,
-      QUANTITY      AS quantity,
-      TOTAL_AMOUNT  AS totalAmount,
-      TID           AS tid,
-      STATUS        AS status,
-      PAYMENT_TYPE  AS paymentType,
-      CREATED_AT    AS createdAt,
-      APPROVED_AT   AS approvedAt,
-      FAIL_REASON   AS failReason
-    FROM PAYMENT_ORDER
-    WHERE ORDER_ID = #{orderId}
+      order_id       AS orderId,
+      reservation_id AS reservationId,
+      user_id        AS userId,
+<!--       item_name      AS itemName, -->
+      quantity       AS quantity,
+      total_amount   AS totalAmount,
+      tid            AS tid,
+      status         AS status,
+      payment_type   AS paymentType,
+      created_at     AS createdAt,
+      approved_at    AS approvedAt,
+      fail_reason    AS failReason
+    FROM payment_order
+    WHERE order_id = #{value}
   </select>
 
-  <!-- 5) 실패 업데이트 -->
+  <!-- 실패 업데이트 -->
   <update id="updateFail" parameterType="com.spring.eze.payment.dto.PaymentOrderDTO">
-    UPDATE PAYMENT_ORDER
-       SET STATUS = #{status},
-           FAIL_REASON = #{failReason}
-     WHERE ORDER_ID = #{orderId}
+    UPDATE payment_order
+       SET status = #{status},
+           fail_reason = #{failReason}
+     WHERE order_id = #{orderId}
+  </update>
+
+  <!-- 결제 취소 실패 사유 -->
+  <update id="updateFailReason" parameterType="com.spring.eze.payment.dto.PaymentOrderDTO">
+    UPDATE payment_order
+       SET fail_reason = #{failReason}
+     WHERE order_id = #{orderId}
+  </update>
+
+  <!-- 구독 결제 취소시 FREE 복구 -->
+  <update id="downgradeMembershipToFree" parameterType="long">
+    UPDATE profile_tbl
+       SET membership_type = 'FREE',
+           updated_at = SYSDATE
+     WHERE user_id = #{value}
+  </update>
+
+  <!-- ========================= -->
+  <!-- 티켓 결제 -->
+  <!-- ========================= -->
+
+  <!-- 좌석 라벨로 seat_id 조회 -->
+  <select id="selectSeatIdByLabel" parameterType="map" resultType="long">
+    SELECT seat_id
+      FROM seat_tbl
+     WHERE show_id = #{showId}
+       AND schedule_id = #{scheduleId}
+       AND seat_label = #{seatLabel}
+  </select>
+
+  <!-- 티켓 결제 이력 등록 -->
+  <insert id="insertTicketPayment"
+          parameterType="com.spring.eze.payment.dto.TicketPaymentDTO">
+    INSERT INTO ticket_payment_tbl
+    (
+      order_id,
+      seat_id,
+      show_id,
+      schedule_id,
+      ticket_price,
+      ticket_status,
+      created_at,
+      canceled_at
+    )
+    VALUES
+    (
+	  #{orderId}, 
+      #{seatId},
+      #{showId},
+      #{scheduleId},
+      #{ticketPrice},
+      #{ticketStatus},
+      SYSDATE,
+      NULL
+    )
+  </insert>
+
+  <!-- 주문번호로 티켓 결제 이력 조회 -->
+  <select id="selectTicketPaymentsByOrderId"
+          parameterType="string"
+          resultType="com.spring.eze.payment.dto.TicketPaymentDTO">
+    SELECT
+      order_id      AS orderId,
+      seat_id       AS seatId,
+      show_id       AS showId,
+      schedule_id   AS scheduleId,
+      ticket_price  AS ticketPrice,
+      ticket_status AS ticketStatus,
+      created_at    AS createdAt,
+      canceled_at   AS canceledAt
+    FROM ticket_payment_tbl
+    WHERE order_id = #{value}
+    ORDER BY seat_id ASC
+  </select>
+
+  <!-- 주문번호로 티켓 결제 이력 취소 처리 -->
+  <update id="updateTicketPaymentCancelByOrderId" parameterType="string">
+    UPDATE ticket_payment_tbl
+       SET ticket_status = 'CANCEL',
+           canceled_at = SYSDATE
+     WHERE order_id = #{value}
+  </update>
+
+  <!-- 선택 좌석 RESERVED 처리 -->
+  <update id="updateSeatStatusSold" parameterType="map">
+    UPDATE seat_tbl
+       SET seat_status = 'RESERVED'
+     WHERE seat_id IN
+     <foreach collection="seatIds" item="seatId" open="(" separator="," close=")">
+       #{seatId}
+     </foreach>
+  </update>
+
+  <!-- 주문번호 기준 좌석 AVAILABLE 복구 -->
+  <update id="updateSeatStatusAvailableByOrderId" parameterType="string">
+    UPDATE seat_tbl
+       SET seat_status = 'AVAILABLE',
+           hold_at = NULL
+     WHERE seat_id IN
+     (
+       SELECT seat_id
+         FROM ticket_payment_tbl
+        WHERE order_id = #{value}
+     )
   </update>
   
-  	<!-- 결제 취소 -->
-  	<update id="updateFailReason" parameterType="com.spring.eze.payment.dto.PaymentOrderDTO">
-	  UPDATE payment_order
-	     SET fail_reason = #{failReason}
-	   WHERE order_id = #{orderId}
-	</update>
-	
-	<!-- 구독 결제취소시 상태값 업데이트 -->
-	<update id="downgradeMembershipToFree" parameterType="long">
-	    UPDATE profile_tbl
-	       SET membership_type = 'FREE',
-	           updated_at = SYSDATE
-	     WHERE user_id = #{userId}
+	  <!-- 선택 좌석 HELD 처리 -->
+	<update id="updateSeatStatusHeld" parameterType="map">
+	  UPDATE seat_tbl
+	     SET seat_status = 'HELD',
+	         hold_at = SYSDATE
+	   WHERE seat_id IN
+	   <foreach collection="seatIds" item="seatId" open="(" separator="," close=")">
+	     #{seatId}
+	   </foreach>
+	     AND seat_status = 'AVAILABLE'
 	</update>
 
 </mapper>

@@ -1,440 +1,474 @@
 package com.spring.eze.payment.service;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.servlet.http.HttpSession;
 
-import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestTemplate;
 
 import com.spring.eze.payment.dao.PaymentDAO;
 import com.spring.eze.payment.dto.KakaoPayCancelResponse;
 import com.spring.eze.payment.dto.PaymentOrderDTO;
+import com.spring.eze.payment.dto.TicketPaymentDTO;
 import com.spring.eze.payment.dto.kakaopayapproveResponse;
 import com.spring.eze.payment.dto.kakaopayorderRequest;
 import com.spring.eze.payment.dto.kakaopayreadyResponse;
+import com.spring.eze.show.dao.Show.ShowDAO;
 import com.spring.eze.user.dto.UserDTO;
 
-@Service
+@Service // 스프링 서비스 빈 등록
 public class kakaopayServiceImpl implements kakaopayService {
 
-	//결제취소시 세션아이디필요함
-	// 매 메서드마다 세션에서 loginUser 꺼내는 코드가 반복되므로 private 메서드로 분리해서 중복 제거
-	@Autowired
-	private HttpSession session;
-	
-	private UserDTO getLoginUser() {
-	    UserDTO loginUser = (UserDTO) session.getAttribute("loginUser");
-	    System.out.println("loginUser = " + loginUser);
-	    System.out.println("loginUser.userId = " + (loginUser != null ? loginUser.getUserId() : null));
-	    return loginUser;
-	}
-	
-	
-    // DB 접근용 DAO
-    // payment_order 같은 결제 관련 테이블 insert / update / select 담당
-    private final PaymentDAO paymentDAO;
+    @Autowired
+    private HttpSession session; // 현재 로그인 세션 접근용
 
-    // 외부 REST API 호출용 객체
-    // 여기서는 카카오페이 ready / approve / cancel 호출에 사용
-    private final RestTemplate restTemplate = new RestTemplate();
+    @Autowired
+    private PaymentDAO paymentDAO; // 결제 관련 DB 처리 DAO
 
-    // 생성자 주입
-    public kakaopayServiceImpl(PaymentDAO paymentDAO) {
-        this.paymentDAO = paymentDAO;
-    }
+    private final RestTemplate restTemplate = new RestTemplate(); // 카카오페이 API 호출용
 
-    // =========================
-    // 카카오페이 Open API 엔드포인트
-    // =========================
-
-    // 결제 준비(ready) 요청 URL
-    // 사용자가 결제하기 버튼 눌렀을 때 첫 번째로 호출됨
+    // 카카오페이 단건결제 API 주소
     private static final String READY_URL   = "https://open-api.kakaopay.com/online/v1/payment/ready";
-
-    // 결제 승인(approve) 요청 URL
-    // 사용자가 카카오 결제창에서 결제를 완료한 뒤,
-    // 카카오가 pg_token을 가지고 우리 approval_url로 리다이렉트하면 호출됨
     private static final String APPROVE_URL = "https://open-api.kakaopay.com/online/v1/payment/approve";
-
-    // 우리 서버 기준 기본 주소
-    // 카카오 ready 요청 시 approval_url / cancel_url / fail_url 만들 때 사용
-    // 주의: 지금 localhost라 실제 배포/외부 테스트 시엔 접근 불가할 수 있음
-    private static final String BASE_URL = "http://localhost/eze";
-
-    // 결제 취소(cancel) 요청 URL
     private static final String CANCEL_URL  = "https://open-api.kakaopay.com/online/v1/payment/cancel";
 
-    /**
-     * 카카오 API 요청용 공통 헤더 생성
-     *
-     * Authorization:
-     *   JNDI에 등록된 secret key를 읽어서 카카오 인증 헤더로 사용
-     *
-     * Content-Type:
-     *   카카오 Open API는 JSON 바디를 받으므로 application/json 설정
-     */
-    private HttpHeaders headers() {
-        HttpHeaders h = new HttpHeaders();
-        h.set("Authorization", "SECRET_KEY " + jndi("kakao/secretKey").trim());
-        h.setContentType(MediaType.APPLICATION_JSON);
-        return h;
+    // 로컬 프로젝트 기준 콜백 URL 베이스
+    private static final String BASE_URL = "http://localhost/eze";
+
+    // 홀드 처리 세션키로 쓰려던 값들
+    // 지금은 주석 처리되어 사용 안 함
+    //private static final String SESSION_HOLD_DONE = "seatHoldDone";
+    //private static final String SESSION_HOLD_ORDER_ID = "seatHoldOrderId";
+
+    // 세션에서 로그인 사용자 꺼내는 공통 메서드
+    private UserDTO getLoginUser() {
+        return (UserDTO) session.getAttribute("loginUser");
     }
 
-    /**
-     * JNDI 값 조회
-     *
-     * 예:
-     *   java:comp/env/kakao/secretKey
-     *
-     * 보통 server.xml / context.xml 또는 톰캣 환경설정에 넣어둔 값을 읽어오는 용도
-     * API 키를 코드에 직접 박지 않기 위해 사용
-     */
+    // 카카오페이 API 호출용 공통 헤더 생성
+    private HttpHeaders headers() {
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Authorization", "SECRET_KEY " + jndi("kakao/secretKey").trim());
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        return headers;
+    }
+
+    // 톰캣 JNDI에서 시크릿키 조회
     private String jndi(String name) {
         try {
-            Context ctx = new InitialContext();
-            Object value = ctx.lookup("java:comp/env/" + name);
-            return String.valueOf(value);
+            Context init = new InitialContext();
+            Context env = (Context) init.lookup("java:comp/env");
+            return (String) env.lookup(name);
         } catch (Exception e) {
-            throw new RuntimeException("JNDI lookup failed: " + name, e);
+            throw new RuntimeException("JNDI lookup 실패: " + name, e);
         }
     }
 
-    // =========================
-    // READY
-    // =========================
-    /**
-     * 카카오 결제 준비 단계
-     *
-     * 역할:
-     * 1. 우리 DB에 주문(order) 정보를 READY 상태로 먼저 저장
-     * 2. 카카오페이에 ready 요청
-     * 3. 카카오에서 받은 tid(거래번호)를 우리 DB에 저장
-     * 4. 프론트는 응답으로 받은 next_redirect_pc_url 등으로 카카오 결제창 이동
-     *
-     * @param req           화면에서 받은 결제 요청 정보 (상품명, 수량, 금액, 결제타입 등)
-     * @param orderId       우리 시스템 주문번호
-     * @param userId        결제 사용자 번호
-     * @param reservationId 예매번호 (티켓 결제인 경우 연결될 예약번호)
-     */
+    // 홀드 관련 세션 제거용이었음
+    // 현재는 사용 안 함
+//    private void clearSeatHoldSession() {
+//        session.removeAttribute(SESSION_HOLD_DONE);
+//        session.removeAttribute(SESSION_HOLD_ORDER_ID);
+//    }
+
     @Override
+    @Transactional // DB 저장 + API 호출 흐름을 하나의 트랜잭션으로 처리
     public kakaopayreadyResponse ready(kakaopayorderRequest req,
                                        String orderId,
                                        long userId,
                                        long reservationId) {
 
-        // 프론트에서 문자열로 넘어온 수량/총금액을 숫자로 변환
-        int qty = Integer.parseInt(req.getQuantity());
-        int total = Integer.parseInt(req.getTotalPrice());
+        // 세션 로그인 체크
+        UserDTO loginUser = getLoginUser();
+        if (loginUser == null) {
+            throw new IllegalStateException("로그인 세션이 없습니다.");
+        }
 
-        // 카카오 ready 요청 시 같이 넘겨줄 리다이렉트 주소들
-        // approval_url : 결제 성공 후 카카오가 되돌아올 주소
-        // cancel_url   : 사용자가 결제창에서 취소 눌렀을 때 돌아올 주소
-        // fail_url     : 결제 실패 시 돌아올 주소
-        String approvalUrl = BASE_URL + "/kakaopay/approve?orderId=" + orderId + "&userId=" + userId;
+        // 요청값 자체 null 체크
+        if (req == null) {
+            throw new IllegalArgumentException("결제 요청값이 없습니다.");
+        }
+
+        int qty;
+        int total;
+
+        // 문자열로 들어온 수량/금액을 숫자로 변환
+        try {
+            qty = Integer.parseInt(req.getQuantity());
+            total = Integer.parseInt(req.getTotalPrice());
+        } catch (NumberFormatException e) {
+            throw new IllegalArgumentException("수량 또는 금액이 숫자가 아닙니다.");
+        }
+
+        String type = req.getPaymentType(); // 결제 타입(TICKET / SUBSCRIBE)
+
+        // 수량 검증
+        if (qty <= 0) {
+            throw new IllegalArgumentException("수량은 1 이상이어야 합니다.");
+        }
+
+        // 금액 검증
+        if (total <= 0) {
+            throw new IllegalArgumentException("금액은 0보다 커야 합니다.");
+        }
+
+        // 결제 타입 검증
+        if (!"TICKET".equals(type) && !"SUBSCRIBE".equals(type)) {
+            throw new IllegalArgumentException("paymentType은 TICKET 또는 SUBSCRIBE만 가능합니다.");
+        }
+
+        // 원래 티켓 결제 시 좌석 HOLD를 여기서 또 하려던 코드
+        // 그런데 JSP 쪽에서 이미 HOLD를 하고 있어서 중복 HOLD 에러 발생 가능
+        // 그래서 현재는 전체 주석 처리 상태
+//        if ("TICKET".equals(type)) {
+//            Boolean seatHoldDone = (Boolean) session.getAttribute(SESSION_HOLD_DONE);
+//            String seatHoldOrderId = (String) session.getAttribute(SESSION_HOLD_ORDER_ID);
+//
+//            boolean alreadyHeldForThisOrder =
+//                    Boolean.TRUE.equals(seatHoldDone) && orderId != null && orderId.equals(seatHoldOrderId);
+//
+//            if (!alreadyHeldForThisOrder) {
+//
+//                String[] selectedSeats = (String[]) session.getAttribute("selectedSeats");
+//                String showId = (String) session.getAttribute("selectedShowId");
+//                Object scheduleObj = session.getAttribute("selectedScheduleId");
+//
+//                if (selectedSeats == null || selectedSeats.length == 0) {
+//                    throw new IllegalArgumentException("선택된 좌석 정보가 없습니다.");
+//                }
+//
+//                if (showId == null || scheduleObj == null) {
+//                    throw new IllegalArgumentException("공연 정보가 없습니다.");
+//                }
+//
+//                long scheduleId;
+//                if (scheduleObj instanceof Long) {
+//                    scheduleId = (Long) scheduleObj;
+//                } else {
+//                    scheduleId = Long.parseLong(String.valueOf(scheduleObj));
+//                }
+//
+//                List<Long> seatIds = new ArrayList<>();
+//
+//                for (String rawSeatLabel : selectedSeats) {
+//                    String seatLabel = rawSeatLabel == null ? null : rawSeatLabel.trim();
+//
+//                    if (seatLabel == null || seatLabel.isEmpty()) {
+//                        throw new IllegalArgumentException("좌석 라벨이 비어 있습니다.");
+//                    }
+//
+//                    Map<String, Object> seatParam = new HashMap<>();
+//                    seatParam.put("showId", showId);
+//                    seatParam.put("scheduleId", scheduleId);
+//                    seatParam.put("seatLabel", seatLabel);
+//
+//                    Long seatId = paymentDAO.selectSeatIdByLabel(seatParam);
+//
+//                    if (seatId == null) {
+//                        throw new IllegalArgumentException("seat_id 조회 실패: " + seatLabel);
+//                    }
+//
+//                    seatIds.add(seatId);
+//                }
+//
+//                if (!seatIds.isEmpty()) {
+//                    Map<String, Object> holdMap = new HashMap<>();
+//                    holdMap.put("seatIds", seatIds);
+//
+//                    int heldCount = paymentDAO.updateSeatStatusHeld(holdMap);
+//
+//                    if (heldCount != seatIds.size()) {
+//                        throw new IllegalStateException("선택 좌석 중 이미 HELD 또는 SOLD 상태인 좌석이 있습니다.");
+//                    }
+//
+//                    session.setAttribute(SESSION_HOLD_DONE, true);
+//                    session.setAttribute(SESSION_HOLD_ORDER_ID, orderId);
+//                }
+//            }
+//        }
+
+        // 카카오페이 결제 성공/취소/실패 후 돌아올 콜백 URL 생성
+        String approvalUrl = BASE_URL + "/kakaopay/approve?orderId=" + orderId;
         String cancelUrl   = BASE_URL + "/kakaopay/cancel?orderId=" + orderId;
         String failUrl     = BASE_URL + "/kakaopay/fail?orderId=" + orderId;
 
-        // -------------------------
-        // 1) 우리 DB에 주문 정보 먼저 저장
-        // -------------------------
-        // 왜 먼저 저장하냐?
-        // -> 카카오 결제창 갔다가 돌아왔을 때 orderId 기준으로 결제 흐름을 추적하기 위해
+        // payment_order 테이블에 먼저 READY 상태 주문 저장
         PaymentOrderDTO order = new PaymentOrderDTO();
-        order.setOrderId(orderId);               // 우리 주문번호
-        order.setReservationId(reservationId);   // 연결된 예약번호
-        order.setUserId(userId);                 // 결제한 사용자
-        order.setItemName(req.getItemName());    // 상품명
-        order.setQuantity(qty);                  // 수량
-        order.setTotalAmount(total);             // 총 결제금액
-        order.setStatus("READY");                // 아직 승인 전이므로 READY 상태
+        order.setOrderId(orderId);
+        order.setReservationId(reservationId);
+        order.setUserId(loginUser.getUserId()); // 실제 로그인 유저 기준 저장
+        order.setItemName(req.getItemName());
+        order.setQuantity(qty);
+        order.setTotalAmount(total);
+        order.setStatus("READY");
+        order.setPaymentType(type);
 
-        // 결제 타입 검증
-        // TICKET / SUBSCRIBE 둘 중 하나만 허용
-        String type = req.getPaymentType();
-        if (!"TICKET".equals(type) && !"SUBSCRIBE".equals(type)) {
-            throw new IllegalArgumentException("paymentType must be TICKET or SUBSCRIBE");
-        }
-
-        // 주문에 결제 타입 저장
-        // 이후 approve 단계에서 티켓인지, 구독인지 분기 처리할 때 사용
-        order.setPaymentType(req.getPaymentType());
-
-        // DB insert
         paymentDAO.insertOrder(order);
 
-        // -------------------------
-        // 2) 카카오 ready 요청용 JSON 바디 구성
-        // -------------------------
+        // 카카오페이 ready 요청 바디 구성
         Map<String, Object> body = new HashMap<>();
-
-        // 테스트 CID
-        // 실서비스에서는 실제 가맹점 CID 사용
         body.put("cid", "TC0ONETIME");
-
-        // 우리 주문번호 / 사용자번호
         body.put("partner_order_id", orderId);
-        body.put("partner_user_id", String.valueOf(userId));
-
-        // 상품 정보
+        body.put("partner_user_id", String.valueOf(loginUser.getUserId()));
         body.put("item_name", req.getItemName());
         body.put("quantity", qty);
         body.put("total_amount", total);
-        body.put("tax_free_amount", 0); // 비과세 금액. 없으면 0
-
-        // 결제 완료/취소/실패 후 돌아올 주소들
+        body.put("tax_free_amount", 0);
         body.put("approval_url", approvalUrl);
         body.put("cancel_url", cancelUrl);
         body.put("fail_url", failUrl);
 
-        // 헤더 + 바디를 하나로 묶어서 전송 엔티티 생성
-        HttpHeaders h = headers();
-        HttpEntity<Map<String, Object>> entity = new HttpEntity<>(body, h);
+        HttpEntity<Map<String, Object>> entity = new HttpEntity<>(body, headers());
 
         try {
-            // 카카오 ready API 호출
-            ResponseEntity<kakaopayreadyResponse> res =
+            // 카카오페이 ready API 호출
+            ResponseEntity<kakaopayreadyResponse> response =
                     restTemplate.postForEntity(READY_URL, entity, kakaopayreadyResponse.class);
 
-            // 응답 본문 꺼냄
-            kakaopayreadyResponse resp = res.getBody();
+            kakaopayreadyResponse readyResponse = response.getBody();
 
-            // -------------------------
-            // 3) 카카오가 발급한 tid 저장
-            // -------------------------
-            // tid = 카카오 거래번호
-            // approve / cancel 때 꼭 필요하므로 DB에 저장해야 함
-            if (resp != null && resp.getTid() != null) {
-                PaymentOrderDTO upd = new PaymentOrderDTO();
-                upd.setOrderId(orderId);
-                upd.setTid(resp.getTid());
-                paymentDAO.updateTid(upd);
+            // 응답으로 받은 tid를 DB에 저장
+            if (readyResponse != null && readyResponse.getTid() != null) {
+                PaymentOrderDTO tidDto = new PaymentOrderDTO();
+                tidDto.setOrderId(orderId);
+                tidDto.setTid(readyResponse.getTid());
+                paymentDAO.updateTid(tidDto);
             }
 
-            // 프론트에서는 이 응답 안의 redirect URL로 카카오 결제창 이동
-            return resp;
+            return readyResponse;
 
         } catch (HttpStatusCodeException e) {
-            // 카카오 ready 실패 시
-            // 우리 주문도 FAIL로 갱신해서 나중에 상태 추적 가능하게 함
-            PaymentOrderDTO fail = new PaymentOrderDTO();
-            fail.setOrderId(orderId);
-            fail.setStatus("FAIL");
-            fail.setFailReason(e.getStatusCode() + " " + e.getResponseBodyAsString());
-            paymentDAO.updateFail(fail);
+            // ready 실패 시 payment_order를 FAIL 처리
+            //clearSeatHoldSession();
 
+            PaymentOrderDTO failDto = new PaymentOrderDTO();
+            failDto.setOrderId(orderId);
+            failDto.setStatus("FAIL");
+            failDto.setFailReason(e.getStatusCode() + " " + e.getResponseBodyAsString());
+            paymentDAO.updateFail(failDto);
             throw e;
         }
     }
 
-    // =========================
-    // APPROVE
-    // =========================
-    /**
-     * 카카오 결제 승인 단계
-     *
-     * 흐름:
-     * 1. ready 때 저장한 order 조회
-     * 2. DB에 저장된 tid + 카카오가 넘겨준 pg_token으로 approve 호출
-     * 3. 성공 시 payment_order 상태를 APPROVED로 변경
-     * 4. 결제타입에 따라 후처리
-     *    - TICKET    : 좌석/예약 확정 처리
-     *    - SUBSCRIBE : 회원권/구독권 시작 처리
-     */
     @Override
-    public kakaopayapproveResponse approve(String pgToken,
-                                           String orderId,
-                                           long userId) {
+    @Transactional
+    public kakaopayapproveResponse approve(String pgToken, String orderId, long userId) {
 
-        // DB에서 기존 주문 조회
-        // 여기 안에 tid, paymentType, amount 같은 정보가 들어있음
+        // 주문번호로 기존 결제주문 조회
         PaymentOrderDTO order = paymentDAO.selectOrder(orderId);
+        if (order == null) {
+            throw new IllegalStateException("주문정보가 없습니다. orderId=" + orderId);
+        }
 
-        // 카카오 approve 요청 바디 구성
+        // ready 때 저장된 tid가 있어야 승인 가능
+        if (order.getTid() == null || order.getTid().trim().isEmpty()) {
+            throw new IllegalStateException("tid가 없습니다. orderId=" + orderId);
+        }
+
+        // 승인 시점에도 로그인 세션 확인
+        UserDTO loginUser = getLoginUser();
+        if (loginUser == null) {
+            throw new IllegalStateException("로그인 세션이 없습니다.");
+        }
+
+        // 카카오페이 approve 요청 바디 구성
         Map<String, Object> body = new HashMap<>();
         body.put("cid", "TC0ONETIME");
-        body.put("tid", order.getTid());                    // ready 때 받은 카카오 거래번호
-        body.put("partner_order_id", orderId);              // 우리 주문번호
-        body.put("partner_user_id", String.valueOf(userId));// 우리 사용자번호
-        body.put("pg_token", pgToken);                      // 카카오가 성공 후 넘겨준 승인토큰
+        body.put("tid", order.getTid());
+        body.put("partner_order_id", orderId);
+        body.put("partner_user_id", String.valueOf(loginUser.getUserId()));
+        body.put("pg_token", pgToken);
 
-        HttpHeaders h = headers();
-        HttpEntity<Map<String, Object>> entity = new HttpEntity<>(body, h);
+        HttpEntity<Map<String, Object>> entity = new HttpEntity<>(body, headers());
 
         try {
-            // 카카오 approve 호출
-            ResponseEntity<kakaopayapproveResponse> res =
+            // 카카오페이 approve API 호출
+            ResponseEntity<kakaopayapproveResponse> response =
                     restTemplate.postForEntity(APPROVE_URL, entity, kakaopayapproveResponse.class);
 
-            // -------------------------
-            // 승인 성공 → 우리 주문 상태 APPROVED
-            // -------------------------
-            PaymentOrderDTO upd = new PaymentOrderDTO();
-            upd.setOrderId(orderId);
-            upd.setStatus("APPROVED");
-            paymentDAO.updateStatus(upd);
+            // payment_order 상태를 APPROVED 로 변경
+            PaymentOrderDTO statusDto = new PaymentOrderDTO();
+            statusDto.setOrderId(orderId);
+            statusDto.setStatus("APPROVED");
+            paymentDAO.updateStatus(statusDto);
 
-            // -------------------------
-            // 결제 타입별 후처리
-            // -------------------------
-            // 현재 네 코드에서는 TICKET은 주석만 있고,
-            // SUBSCRIBE는 membershipType을 PRO로 바꾸는 처리만 들어있음
+            // 티켓 결제인 경우
             if ("TICKET".equals(order.getPaymentType())) {
-                // 티켓 결제인 경우 해야 할 것 예시:
-                // - reservation_tbl 상태 확정
-                // - seat_tbl 상태 BOOKED 확정
-                // - 결제 완료 시간 저장
-                // 지금은 비어있음
-            } else if ("SUBSCRIBE".equals(order.getPaymentType())) {
-                // 구독 결제인 경우
-                // 사용자 멤버십을 PRO로 변경
-            	Map<String, Object> param = new HashMap<>();
-            	
-            	//세션에서 아이디받아서 넣을거임
-            	UserDTO loginUser = getLoginUser();
-            	long payuserid = loginUser.getUserId();
-            	System.out.println("payuserid" + payuserid);
-            	
-            	param.put("userId", payuserid);
-                param.put("membershipType", "PRO");
 
+                // 세션에 저장된 좌석/공연 정보 꺼내기
+                String[] selectedSeats = (String[]) session.getAttribute("selectedSeats");
+                String showId = (String) session.getAttribute("selectedShowId");
+                Object scheduleObj = session.getAttribute("selectedScheduleId");
+
+                if (selectedSeats == null || selectedSeats.length == 0) {
+                    throw new IllegalArgumentException("선택된 좌석 정보가 없습니다.");
+                }
+
+                if (showId == null || scheduleObj == null) {
+                    throw new IllegalArgumentException("공연 정보가 없습니다.");
+                }
+
+                long scheduleId;
+                if (scheduleObj instanceof Long) {
+                    scheduleId = (Long) scheduleObj;
+                } else {
+                    scheduleId = Long.parseLong(String.valueOf(scheduleObj));
+                }
+
+                // 좌석 수로 나눠서 1좌석당 가격 계산
+                int eachPrice = order.getTotalAmount() / selectedSeats.length;
+                List<Long> seatIds = new ArrayList<>();
+
+                // 선택한 좌석마다 seat_id 조회 후 ticket_payment 저장
+                for (String rawSeatLabel : selectedSeats) {
+                    String seatLabel = rawSeatLabel == null ? null : rawSeatLabel.trim();
+
+                    if (seatLabel == null || seatLabel.isEmpty()) {
+                        throw new IllegalArgumentException("좌석 라벨이 비어 있습니다.");
+                    }
+
+                    Map<String, Object> seatParam = new HashMap<>();
+                    seatParam.put("showId", showId);
+                    seatParam.put("scheduleId", scheduleId);
+                    seatParam.put("seatLabel", seatLabel);
+
+                    Long seatId = paymentDAO.selectSeatIdByLabel(seatParam);
+
+                    if (seatId == null) {
+                        throw new IllegalArgumentException("seat_id 조회 실패: " + seatLabel);
+                    }
+
+                    TicketPaymentDTO tp = new TicketPaymentDTO();
+                    tp.setOrderId(orderId);
+                    tp.setSeatId(seatId);
+                    tp.setShowId(showId);
+                    tp.setScheduleId(scheduleId);
+                    tp.setTicketPrice(eachPrice);
+                    tp.setTicketStatus("APPROVED");
+
+                    paymentDAO.insertTicketPayment(tp);
+                    seatIds.add(seatId);
+                }
+
+                // 승인 완료된 좌석들을 SOLD 상태로 변경
+                if (!seatIds.isEmpty()) {
+                    Map<String, Object> seatMap = new HashMap<>();
+                    seatMap.put("seatIds", seatIds);
+                    paymentDAO.updateSeatStatusSold(seatMap);
+                }
+
+                // 결제 완료 후 세션에 남아있는 좌석 선택 정보 제거
+                //clearSeatHoldSession();
+                session.removeAttribute("selectedSeats");
+                session.removeAttribute("selectedShowId");
+                session.removeAttribute("selectedScheduleId");
+
+            // 구독 결제인 경우
+            } else if ("SUBSCRIBE".equals(order.getPaymentType())) {
+
+                // 유저 멤버십을 PRO로 변경
+                Map<String, Object> param = new HashMap<>();
+                param.put("userId", order.getUserId());
+                param.put("membershipType", "PRO");
                 paymentDAO.updateMembershipType(param);
+
+            } else {
+                throw new IllegalArgumentException("지원하지 않는 결제 타입입니다: " + order.getPaymentType());
             }
 
-            return res.getBody();
+            return response.getBody();
 
         } catch (HttpStatusCodeException e) {
-            // 승인 실패 → 주문 FAIL 처리
-            PaymentOrderDTO fail = new PaymentOrderDTO();
-            fail.setOrderId(orderId);
-            fail.setStatus("FAIL");
-            fail.setFailReason(e.getStatusCode() + " " + e.getResponseBodyAsString());
-            paymentDAO.updateFail(fail);
-
+            // 승인 실패 시 주문 상태 FAIL 처리
+            PaymentOrderDTO failDto = new PaymentOrderDTO();
+            failDto.setOrderId(orderId);
+            failDto.setStatus("FAIL");
+            failDto.setFailReason(e.getStatusCode() + " " + e.getResponseBodyAsString());
+            paymentDAO.updateFail(failDto);
             throw e;
         }
     }
 
-    // =========================
-    // CANCEL
-    // =========================
-    /**
-     * 결제 취소
-     *
-     * 흐름:
-     * 1. orderId로 기존 주문 조회
-     * 2. 취소 가능한 상태인지 검증
-     * 3. 카카오 cancel API 호출
-     * 4. 성공 시 우리 주문 상태를 CANCEL로 변경
-     * 5. 실패 시 failReason만 기록
-     *
-     * @param orderId      취소할 주문번호
-     * @param cancelAmount 취소 금액(null이면 전체취소)
-     */
     @Override
+    @Transactional
     public KakaoPayCancelResponse cancel(String orderId, Integer cancelAmount) {
 
-        System.out.println("서비스 진입 orderId = [" + orderId + "]");
-
-        // 주문 조회
+        // 취소할 주문 조회
         PaymentOrderDTO order = paymentDAO.selectOrder(orderId);
-
-        // 주문 자체가 없으면 취소 불가
         if (order == null) {
-            throw new IllegalArgumentException("결제내역이 없습니다" + orderId);
+            throw new IllegalArgumentException("결제내역이 없습니다. orderId=" + orderId);
         }
 
-        // 이미 취소된 주문이면 중복 취소 방지
+        // 이미 취소된 건이면 막음
         if ("CANCEL".equals(order.getStatus())) {
-            throw new IllegalArgumentException("이미 취소된 건입니다" + orderId);
+            throw new IllegalArgumentException("이미 취소된 건입니다. orderId=" + orderId);
         }
 
-        // 승인된 결제만 취소 가능
-        // READY / FAIL / CANCEL 상태는 취소 대상 아님
+        // APPROVED 상태만 취소 가능
         if (!"APPROVED".equals(order.getStatus())) {
-            throw new IllegalArgumentException("APPROVED만 취소 current = " + order.getStatus());
+            throw new IllegalArgumentException("취소 가능한 상태가 아닙니다. status=" + order.getStatus());
         }
 
-        // tid가 없으면 카카오 취소 요청 자체를 만들 수 없음
-        if (order.getTid() == null || order.getTid().isBlank()) {
-            throw new IllegalArgumentException("tid가 null입니다");
+        // tid 없으면 카카오 취소 API 호출 불가
+        if (order.getTid() == null || order.getTid().trim().isEmpty()) {
+            throw new IllegalStateException("취소할 tid가 없습니다. orderId=" + orderId);
         }
 
-        // 취소금액이 없으면 전체금액 취소로 처리
+        // 부분취소 금액이 없으면 전체취소로 처리
         int amount = (cancelAmount == null) ? order.getTotalAmount() : cancelAmount;
 
-        // 취소 금액 검증
-        if (amount <= 0) throw new IllegalArgumentException("amount > 0");
-
-        // -------------------------
-        // 카카오 cancel 요청 바디
-        // -------------------------
+        // 카카오페이 cancel 요청 바디 구성
         Map<String, Object> body = new HashMap<>();
-        body.put("cid", "TC0ONETIME");         // 테스트 가맹점 CID
-        body.put("tid", order.getTid());       // 카카오 거래번호
-        body.put("cancel_amount", amount);     // 취소금액
-        body.put("cancel_tax_free_amount", 0); // 비과세 취소금액. 없으면 0
+        body.put("cid", "TC0ONETIME");
+        body.put("tid", order.getTid());
+        body.put("cancel_amount", amount);
+        body.put("cancel_tax_free_amount", 0);
 
-        // 디버깅 로그
-        System.out.println("조회된 orderId = [" + order.getOrderId() + "]");
-        System.out.println("조회된 tid = [" + order.getTid() + "]");
-        System.out.println("조회된 status = [" + order.getStatus() + "]");
-
-        HttpHeaders h = headers();
-        HttpEntity<Map<String, Object>> entity = new HttpEntity<>(body, h);
+        HttpEntity<Map<String, Object>> entity = new HttpEntity<>(body, headers());
 
         try {
-            // 카카오 취소 API 호출
-            ResponseEntity<KakaoPayCancelResponse> res =
+            // 카카오페이 cancel API 호출
+            ResponseEntity<KakaoPayCancelResponse> response =
                     restTemplate.postForEntity(CANCEL_URL, entity, KakaoPayCancelResponse.class);
 
-            // -------------------------
-            // 취소 성공 → 우리 주문 상태 CANCEL
-            // -------------------------
-            PaymentOrderDTO upd = new PaymentOrderDTO();
-            upd.setOrderId(orderId);
-            upd.setStatus("CANCEL");
-            paymentDAO.updateStatus(upd);
-            
-          //세션에서 아이디받아서 넣을거임
-        	UserDTO loginUser = getLoginUser();
-        	long payuserid = loginUser.getUserId();
-        	System.out.println("payuserid" + payuserid);
+            // payment_order 상태를 CANCEL 로 변경
+            PaymentOrderDTO cancelDto = new PaymentOrderDTO();
+            cancelDto.setOrderId(orderId);
+            cancelDto.setStatus("CANCEL");
+            paymentDAO.updateStatus(cancelDto);
 
-            // 결제 타입별 취소 후처리
+            // 구독 취소면 FREE로 다운그레이드
             if ("SUBSCRIBE".equals(order.getPaymentType())) {
-            	
-                // 구독 취소 -> membership_type FREE로 복구
-                paymentDAO.downgradeMembershipToFree(payuserid);
+                paymentDAO.downgradeMembershipToFree(order.getUserId());
 
+            // 티켓 취소면 ticket_payment 취소 + 좌석 AVAILABLE 복구
             } else if ("TICKET".equals(order.getPaymentType())) {
-                // 티켓 취소 -> 좌석/예약 복구
-                // paymentDAO.cancelReservation(...);
-                // paymentDAO.releaseSeats(...);
+                paymentDAO.updateTicketPaymentCancelByOrderId(orderId);
+                paymentDAO.updateSeatStatusAvailableByOrderId(orderId);
+                //clearSeatHoldSession();
             }
 
-            return res.getBody();
+            return response.getBody();
 
         } catch (HttpStatusCodeException e) {
-            // 취소 실패 시 failReason만 기록
-            PaymentOrderDTO fail = new PaymentOrderDTO();
-            
-            
-        	
-            fail.setOrderId(orderId);
-            fail.setFailReason("CANCEL_FAIL:" + e.getStatusCode() + " " + e.getResponseBodyAsString());
-            paymentDAO.updateFailReason(fail);
-
+            // 취소 API 실패 사유만 fail_reason 컬럼에 기록
+            PaymentOrderDTO failDto = new PaymentOrderDTO();
+            failDto.setOrderId(orderId);
+            failDto.setFailReason(e.getStatusCode() + " " + e.getResponseBodyAsString());
+            paymentDAO.updateFailReason(failDto);
             throw e;
         }
     }

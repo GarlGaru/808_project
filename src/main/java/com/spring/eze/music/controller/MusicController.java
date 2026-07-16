@@ -2,12 +2,19 @@ package com.spring.eze.music.controller;
 
 import com.spring.eze.music.service.MusicService;
 import com.spring.eze.user.dto.UserDTO;
+
+
+
+import com.spring.eze.music.dto.ArtistDTO;
+import com.spring.eze.music.dto.KeywordDTO;
 import com.spring.eze.music.dto.SongDTO;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -28,6 +35,8 @@ public class MusicController {
 
     private static final Logger log = LoggerFactory.getLogger(MusicController.class);
 
+
+	
     @Autowired
     private MusicService musicService;
 
@@ -95,6 +104,8 @@ public class MusicController {
         log.info("<<< url => /ranking >>>");
         return "/music/ranking";
     }
+    
+   
 
     // 재생 시작 점수
     @GetMapping("/playScore")
@@ -136,10 +147,33 @@ public class MusicController {
         return "success";
     }
 
-    // 좋아요 점수
-    @GetMapping("/likeScore")
+    // 좋아요 토글
+    @GetMapping("/toggleLike")
     @ResponseBody
-    public String recordLikeScore(@RequestParam int songId, HttpSession session) {
+    public String toggleLike(@RequestParam int songId, HttpSession session) {
+
+        UserDTO loginUser = (UserDTO) session.getAttribute("loginUser");
+        
+        log.info("toggleLike 호출됨 - songId={}", songId);
+        log.info("toggleLike session loginUser={}", loginUser);
+
+        if (loginUser == null) {
+            return "noLogin";
+        }
+
+        int userId = loginUser.getUserId();
+        log.info("toggleLike 시작 - userId={}, songId={}", userId, songId);
+         
+        String result = musicService.toggleLike(songId, userId);
+        log.info("toggleLike 결과 - userId={}, songId={}, result={}", userId, songId, result);
+
+        return result;
+    }
+    
+    //좋아요 점수값 
+    @GetMapping("/likeStatus")
+    @ResponseBody
+    public String likeStatus(@RequestParam int songId, HttpSession session) {
 
         UserDTO loginUser = (UserDTO) session.getAttribute("loginUser");
 
@@ -148,11 +182,43 @@ public class MusicController {
         }
 
         int userId = loginUser.getUserId();
-        musicService.addLikeScore(songId, userId);
+        int likeSum = musicService.getLikeStatus(songId, userId);
 
-        return "success";
+        return likeSum > 0 ? "liked" : "unliked";
     }
-    //곡상세 페이지
+    
+    //좋아요 리스트
+    @GetMapping("/likedList")
+    public String likedList(HttpSession session, Model model) {
+
+        UserDTO loginUser = (UserDTO) session.getAttribute("loginUser");
+
+        if (loginUser == null) {
+            model.addAttribute("likedSongs", java.util.Collections.emptyList());
+            return "music/likedList";
+        }
+
+        int userId = loginUser.getUserId();
+        model.addAttribute("likedSongs", musicService.getLikedSongs(userId));
+
+        return "music/likedList";
+    }
+    //
+    @GetMapping("/like/songs")  //fetch로 이주소를 부르면 여기로 들어온다.
+    @ResponseBody  //return값을 jsp로 해석하지 않고 응답데이터 자체로 보낸다.
+    public List<SongDTO> getLikedSongList(HttpSession session) {
+
+        UserDTO loginUser = (UserDTO) session.getAttribute("loginUser");
+
+        if (loginUser == null) {
+            return java.util.Collections.emptyList();
+        }
+
+        int userId = loginUser.getUserId();
+        return musicService.getLikedSongs(userId);
+    }
+    
+    //곡 상세 페이지
     @GetMapping("/detail")
     public String songDetail(@RequestParam("songId") int songId, Model model) {
 
@@ -162,16 +228,94 @@ public class MusicController {
         Map<String, Object> param = new HashMap<>();
         param.put("songId", songId);
         param.put("genreId", song.getGenreId());
-
+        
+        List<KeywordDTO> keylist = musicService.getKeyword(songId);
         List<SongDTO> similarList = musicService.getSimilarSongs(param);
         model.addAttribute("similarList", similarList);
-
+        model.addAttribute("keylist",keylist);
+        
         return "music/detail";
     }
+    
+    //아티스트 상세 페이지
+    @GetMapping("/artist")
+    public String artistDetail(@RequestParam("artistId") int artistId, Model model) {
+        model.addAttribute("artistId", artistId);
+
+        ArtistDTO artist = musicService.getArtistDetail(artistId);
+        List<SongDTO> artistSongs = musicService.getSongsByArtist(artistId);
+        model.addAttribute("artist", artist);
+        model.addAttribute("artistSongs", artistSongs);
+        
+        
+        log.info("artistId = {}", artistId);
+        log.info("artist = {}", artist);
+
+        if (artist != null) {
+            log.info("artist.name = {}", artist.getName());
+            log.info("artist.profileImageUrl = {}", artist.getProfileImageUrl());
+        }
+
+        if (artistSongs != null && !artistSongs.isEmpty()) {
+            log.info("first song title = {}", artistSongs.get(0).getTitle());
+            log.info("first song coverImageUrl = {}", artistSongs.get(0).getCoverImageUrl());
+        } else {
+            log.info("artistSongs is empty");
+        }
+        
+        System.out.println("artistDetail 진입, artistId = " + artistId);
+        return "music/artist";
+    }
+    
     //노래연결
+    @GetMapping(value = "/songPath", produces = "text/plain; charset=UTF-8")
     @ResponseBody
-    @GetMapping("/songPath")
     public String getSongPath(@RequestParam("songId") int songId) {
         return musicService.getSongPath(songId);
     }
+    
+    //검색
+    @GetMapping("/search")
+    public String search(@RequestParam(value = "keyword", required = false) String keyword,
+                         Model model) {
+
+        log.info("<<< /music/search >>>");
+        log.info("keyword = {}", keyword);
+
+        List<SongDTO> searchList = null;
+
+        if (keyword != null && !keyword.trim().isEmpty()) {
+            searchList = musicService.searchSongs(keyword.trim());
+        }
+
+        model.addAttribute("keyword", keyword);
+        model.addAttribute("searchList", searchList);
+
+        return "music/search";
+    }
+
+    @GetMapping("/weekly-ranking")
+    @ResponseBody
+    public List<SongDTO> weeklyRanking() {
+        log.info("Get weekly-ranking");
+        return musicService.getweeklyRanking();
+
+    }
+
+    @GetMapping("/today-hits")
+    @ResponseBody
+    public List<SongDTO> todayHitSongs() {
+        log.info("Get today-hits");
+        return musicService.getTodayHitSongs();
+
+    }
+
+    @GetMapping("/genre-ranking")
+    @ResponseBody
+    public List<SongDTO> genreRanking() {
+        log.info("Get genre-ranking");
+        return musicService.getGenreRanking(1); 
+
+    }
+
 }

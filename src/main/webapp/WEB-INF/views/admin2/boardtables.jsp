@@ -24,9 +24,11 @@
 
 <body id="page-top">
 	<div id="wrapper">
+		<!-- Sidebar -->
 		<ul
 			class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion"
 			id="accordionSidebar">
+
 			<a
 				class="sidebar-brand d-flex align-items-center justify-content-center"
 				href="${adminUrl}">
@@ -35,21 +37,43 @@
 				</div>
 				<div class="sidebar-brand-text mx-3">808 ADMIN</div>
 			</a>
+
 			<hr class="sidebar-divider my-0">
-			<li class="nav-item"><a class="nav-link" href="${adminUrl}"><i
-					class="fas fa-fw fa-tachometer-alt"></i> <span>Dashboard</span></a></li>
-			<li class="nav-item"><a class="nav-link" href="${adminUrl}/user"><i
-					class="fas fa-fw fa-users"></i> <span>User Admin</span></a></li>
-			<li class="nav-item"><a class="nav-link" href="${adminUrl}/pay"><i
-					class="fas fa-fw fa-credit-card"></i> <span>Pay Admin</span></a></li>
-			<li class="nav-item active"><a class="nav-link"
-				href="${adminUrl}/board"><i class="fas fa-fw fa-clipboard-list"></i>
-					<span>Board Admin</span></a></li>
+
 			<li class="nav-item"><a class="nav-link"
-				href="${adminUrl}/music"><i class="fas fa-fw fa-music"></i> <span>Music
-						Admin</span></a></li>
+				href="${adminUrl}"> <i class="fas fa-fw fa-tachometer-alt"></i>
+					<span>Dashboard</span>
+			</a></li>
+
+			<li class="nav-item"><a class="nav-link" href="${adminUrl}/user">
+					<i class="fas fa-fw fa-users"></i> <span>User Admin</span>
+			</a></li>
+
+			<li class="nav-item"><a class="nav-link" href="${adminUrl}/pay">
+					<i class="fas fa-fw fa-credit-card"></i> <span>Pay Admin</span>
+			</a></li>
+
+			<li class="nav-item active"><a class="nav-link"
+				href="${adminUrl}/board"> <i class="fas fa-fw fa-clipboard-list"></i>
+					<span>Board Admin</span>
+			</a></li>
+
+			<li class="nav-item"><a class="nav-link"
+				href="${adminUrl}/music"> <i class="fas fa-fw fa-music"></i> <span>Music
+						Admin</span>
+			</a></li>
+			
+			<li class="nav-item">
+			    <a class="nav-link" href="${adminUrl}/ticketpay">
+			        <i class="fas fa-fw fa-ticket-alt"></i>
+			        <span>Ticket Pay Admin</span>
+			    </a>
+			</li>
+
 			<hr class="sidebar-divider d-none d-md-block">
+
 		</ul>
+		<!-- End Sidebar -->
 
 		<div id="content-wrapper" class="d-flex flex-column">
 			<div id="content">
@@ -63,7 +87,7 @@
 					<p class="mb-4">자유게시판</p>
 					<div class="card shadow mb-4">
 						<div class="card-header py-3">
-							<h6 class="m-0 font-weight-bold text-primary">게시글 목록</h6>
+							<h6 class="m-0 font-weight-bold text-primary">게시글데이터</h6>
 						</div>
 						<div class="card-body">
 							<div class="table-responsive">
@@ -75,7 +99,9 @@
 											<th>Nickname</th>
 											<th>TITLE</th>
 											<th>CONTENT</th>
+											<th>올린시간</th>
 											<th>VIEW</th>
+											<th>LIKE</th>
 											<th>URL</th>
 											<th>관리</th>
 										</tr>
@@ -100,7 +126,9 @@
 															</c:otherwise>
 														</c:choose>
 												</a></td>
+												<td>${row.regdate}</td>
 												<td>${row.viewcnt}</td>
+												<td>${row.likeCount}</td>
 												<td>${row.youtubeUrl}</td>
 												<td>
 													<button type="button"

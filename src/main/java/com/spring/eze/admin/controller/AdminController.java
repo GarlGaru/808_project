@@ -8,6 +8,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,10 +20,12 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.spring.eze.admin.dto.AdminMusicDTO;
 import com.spring.eze.admin.dto.AdminPaymentOrderDTO;
+import com.spring.eze.admin.dto.AdminTicketPaymentDTO;
 import com.spring.eze.admin.dto.AdminUserDTO;
 import com.spring.eze.admin.dto.DailyCountDTO;
 import com.spring.eze.admin.service.AdminMusicService;
 import com.spring.eze.admin.service.AdminStatsService;
+import com.spring.eze.admin.service.AdminTicketPaymentService;
 import com.spring.eze.board.dto.BoardDTO;
 import com.spring.eze.board.service.BoardService;
 
@@ -36,6 +39,9 @@ public class AdminController {
 	private final AdminMusicService musicService;
 	private final BoardService boardservice;
 
+	@Autowired
+    private AdminTicketPaymentService adminTicketPaymentService;
+	
 	public AdminController(AdminStatsService service, AdminMusicService musicService, BoardService boardservice) {
 		this.service = service;
 		this.musicService = musicService;
@@ -330,7 +336,7 @@ public class AdminController {
 			File saveFile = new File(dir, fileName);
 			albumImageFile.transferTo(saveFile);
 
-			dto.setCoverImageUrl("/resources/music/img/" + fileName);
+			dto.setCoverImageUrl("/eze/resources/music/img/" + fileName);
 		}
 
 		musicService.insertAlbum(dto);
@@ -342,7 +348,7 @@ public class AdminController {
 		return "/admin2/admin_album";
 	}
 
-	// 장르 조회
+	// 해시태그 조회
 	@GetMapping("/music/admin_genre")
 	public String admingenre(Model model) {
 
@@ -352,17 +358,25 @@ public class AdminController {
 		return "/admin2/admin_genre";
 	}
 
-	// 장르 저장
+	// 해시태그 저장
 	@PostMapping("/music/admin_genre")
 	public String insertGenre(AdminMusicDTO dto, Model model) {
 
 		musicService.insertGenre(dto);
 
-		model.addAttribute("msg", "장르 등록 완료");
+		model.addAttribute("msg", "해시태그 등록 완료");
 		model.addAttribute("genreList", musicService.selectGenreList());
 
 		return "/admin2/admin_genre";
 	}
+	
+	// 티켓팅
+	@RequestMapping("/ticketpay")
+    public String ticketPayList(Model model) {
+        List<AdminTicketPaymentDTO> ticketPayList = adminTicketPaymentService.getTicketPaymentList();
+        model.addAttribute("ticketPayList", ticketPayList);
+        return "admin2/ticketPayTables";
+    }
 
 	// 디비연결해서 데이터리스트로가져올거임
 

@@ -28,9 +28,9 @@ html, body {
 .music-layout-content {
     display: flex;
     width: 100%;
-    min-height: calc(100vh - 86px);
+    min-height: 100vh;
     padding-top: 28px;     /* 헤더 높이만큼 아래로 밀기 */
-    padding-bottom: 110px; /* 하단 플레이어 높이만큼 여백 */
+    /* padding-bottom: 110px; 하단 플레이어 높이만큼 여백 */
     box-sizing: border-box;
 }
 
@@ -48,7 +48,7 @@ html, body {
     flex: 1;
     min-width: 0;
     background: #111;
-    padding: 80px 24px 40px 24px;
+    padding: 80px 24px 10px 24px;
     overflow-x: hidden;
     border-radius: 10px 10px 0 0;
 }

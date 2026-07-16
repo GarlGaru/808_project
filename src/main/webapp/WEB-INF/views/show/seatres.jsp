@@ -118,23 +118,91 @@
 		        timeLeft--;
 		    }, 1000);
 		    
-		    $('.btn-next').on('click', function(){
+		    /* 기존 코드
+		    	$('.btn-next').on('click', function(){
 		        if(!$('#chk-agree').is(':checked')) {
 		            alert("예매 및 환불 안내 확인 후 체크해주세요.");
 		            return;
 		        }
 		        isMovingToPayment = true; 
 		        location.href = "${path}/show/payment";
+		    }); */
+		    
+		    /* 26/03/23 동렬 교체 코드*/
+		    $('.btn-next').on('click', function(e){
+		        e.preventDefault();
+
+		        if(!$('#chk-agree').is(':checked')) {
+		            alert("예매 및 환불 안내 확인 후 체크해주세요.");
+		            return;
+		        }
+
+		        isMovingToPayment = true;
+		        $('#paymentForm').submit();
 		    });
+		    
+		    /* 여기까지 */
 		    
 		    $('.btn-prev').on('click', function(){
 		        releaseSeatsAjax(function() {
+		        	
+		        	const currentWidth = window.outerWidth;
+		        	const currentHeight = window.outerHeight;
+		        	const currentLeft = window.screenX;
+		        	const currentTop = window.screenY;
+		        	
 		            location.href = "${path}/show/seat?showId=${param.showId}&scheduleId=${param.scheduleId}";
+		            
+		            setTimeout(function(){
+		            	window.resizeTo(currentWidth, currentHeight);
+		            	window.moveTo(currentLeft, currentTop);
+		            }, 300);
 		        });
 		    });
 		});
+		
+		$(document).ready(function() {
+		    function resizeToContent() {
+		        if (window.opener) {
+		          
+		            const contentHeight = document.body.scrollHeight + 100; 
+		            const currentWidth = window.outerWidth; 
+		            
+		            const maxHeight = window.screen.availHeight * 0.7;
+		            const finalHeight = Math.min(contentHeight, maxHeight);
+		            
+		            window.resizeTo(currentWidth, finalHeight);
+		        }
+		    }
+		    setTimeout(resizeToContent, 200);
+		});
 		</script>
+	<form id="paymentForm" action="${path}/kakaopay/ready" method="post">
+    
+	    <!-- 결제 타입 -->
+	    <input type="hidden" name="paymentType" value="TICKET">
 	
+	    <!-- 공연 ID -->
+	    <input type="hidden" name="showId" value="${param.showId}">
+	
+	    <!-- 회차 ID -->
+	    <input type="hidden" name="scheduleId" value="${param.scheduleId}">
+	
+	    <!-- 상품명 -->
+	    <input type="hidden" name="itemName" value="${param.show_title}">
+	
+	    <!-- 수량 -->
+	    <input type="hidden" name="quantity" value="${fn:length(paramValues.selectedSeats)}">
+	
+	    <!-- 총 결제금액 -->
+	    <input type="hidden" name="totalPrice" value="${totalTicketPrice}">
+	
+	    <!-- 선택 좌석 -->
+	    <c:forEach var="seat" items="${paramValues.selectedSeats}">
+	        <input type="hidden" name="selectedSeats" value="${seat}">
+	    </c:forEach>
+	</form>
+
 	<div class="wrapper">
 		<div class="left-side">
 			<div class="section-box">
@@ -174,7 +242,15 @@
 
 			<div class="footer-btns">
 				<button class="btn btn-prev" >이전</button> 	<!-- onclick="window.close()" -->
-				<button class="btn btn-next" onclick="alert('결제 페이지로 이동합니다.')">다음단계</button>
+
+				<!-- <button class="btn btn-next" >다음단계</button> -->
+
+				<!-- 기존코드 -->
+				<!-- <button class="btn btn-next" onclick="alert('결제 페이지로 이동합니다.')">다음단계</button>  -->
+				
+				<!-- 교체코드 -->
+				<button type="button" class="btn btn-next">다음단계</button>
+
 			</div>
 		</div>
 
